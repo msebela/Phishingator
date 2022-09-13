@@ -121,7 +121,7 @@ Postup pro založení nové podvodné stránky je následující:
 * přidat podvodnou stránku v sekci *Podvodné stránky* (v adresáři nastaveném v konfiguračním souboru aplikace – konstanta `PHISHING_WEBSITE_APACHE_SITES_DIR` – dojte k vytvoření nového konfiguračního souboru pro podvodnou stránku, který je určený pro webový server – ten dané podvodné stránce nastavuje konkrétní `DocumentRoot`, tedy adresář, kde je umístěna šablona (vzhled) podvodné stránky a další parametry požadované pro svázání stránky s aplikací Phishingator), přičemž vstupní pole formuláře jsou následující:
   * **název** – slouží k identifikaci v systému
   * **URL** – URL adresa, která bude doplňována do podvodných e-mailů místo proměnné `%url%` a tedy URL adresa, jejíž konkrétní A záznam musí být v DNS směrován na IP adresu webového serveru, kde běží systém Phishingator
-  * **šablona** – vzhled, který bude na dané podvodné stránce (přidání další šablony je popsáno v kapitole [Přidání nové šablony podvodné stránky](#244-pidn-nov-ablony-podvodn-strnky))
+  * **šablona** – vzhled, který bude na dané podvodné stránce (přidání další šablony je popsáno v kapitole [Přidání nové šablony podvodné stránky](#244-přidání-nové-šablony-podvodné-stránky))
   * **aktivovat podvodnou stránku na webovém serveru** – nastavení, zdali má dojít k aktivaci podvodné stránky na webovém serveru (v Apache), čímž bude umožněno podvodnou stránku využívat v kampaních (aktivace nových nebo deaktivace neaktivních/smazaných podvodných stránek probíhá automaticky do 5 min.)
 
 Po těchto krocích systém automaticky nad podvodnou stránkou (resp. konkrétní doménou/subdoménou) převezme kontrolu.
@@ -158,7 +158,7 @@ Informace o nové šabloně (především lokaci zdrojových souborů na webové
 
 Umožňuje prohlížet **seznam všech uživatelů** evidovaných ve Phishingatoru.
 
-Uživatelé se do Phishingatoru mohou přihlásit buď dobrovolně (průchodem přes SSO), případně tak, že je zaregistruje administrátor tím, že budou uvedeni mezi adresáty v některé z kampaní. Poslední možností je manuální přidání uživatele (viz podkapitola [Přidání nebo úprava uživatele](#251-pidn-nebo-prava-uivatele)).
+Uživatelé se do Phishingatoru mohou přihlásit buď dobrovolně (průchodem přes SSO), případně tak, že je zaregistruje administrátor tím, že budou uvedeni mezi adresáty v některé z kampaní. Poslední možností je manuální přidání uživatele (viz podkapitola [Přidání nebo úprava uživatele](#251-přidání-nebo-úprava-uživatele)).
 
 Mezi všemi uživateli lze vyhledávat (pozn. vyhledává se ve sloupci *e-mail*) a dále filtrovat. Seznam dále administrátorovi zobrazuje, kolik cvičných phishingových e-mailů každý z uživatelů obdržel, jeho případný limit a také to, zdali se přihlásil k odebírání cvičných phishingových zpráv a kdy konkrétně.
 
@@ -185,7 +185,7 @@ Formulář pro přidání nebo úpravu skupiny obsahuje následující vstupní 
 
 * **název** – slouží k identifikaci v systému
 * **popis** – nepovinný popis skupiny
-* **oprávnění** – oprávnění, které budou mít všichni uživatelé této skupiny (výběr mezi *uživatel*, *správce testů*, přičemž možnosti, která každá z těchto skupin nabízí, lze zjistit na základě přepnutí role – viz podkapitola [Změna role](#21-zmna-role))
+* **oprávnění** – oprávnění, které budou mít všichni uživatelé této skupiny (výběr mezi *uživatel*, *správce testů*, přičemž možnosti, která každá z těchto skupin nabízí, lze zjistit na základě přepnutí role – viz podkapitola [Změna role](#21-změna-role))
 * **zobrazené LDAP skupiny příjemců v kampaních** – seznam názvů LDAP skupin (oddělených znakem `;`), které budou *administrátorovi* či *správci testů* zobrazovány při výběrů příjemců kampaně
   * *Poznámka:*
     * neznamená to, že tvůrce kampaně nebude moct vybrat jiné příjemce (může vybrat, resp. manuálně zadat kohokoliv i z jiných LDAP skupin, akorát mu takové skupiny nebudou zobrazovány v dialogovém okně při výběrů příjemců)
