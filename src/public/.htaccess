@@ -1,0 +1,48 @@
+Options +FollowSymLinks
+RewriteEngine on
+
+# Shibboleth
+RewriteRule ^(Shibboleth.sso)($|/) - [L]
+
+### TODO: Odkomentovat
+# Presmerovani na HTTPS
+# RewriteCond %{HTTPS} !=on
+# RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+
+# Presmerovani u souboru security.txt z korene webu
+Redirect /security.txt /.well-known/security.txt
+
+# Prepis identifikatoru v URL sekcich
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^portal/(.*)/(.*)/(.*) /portal/index.php?section=$1&action=$2&id=$3 [L,QSA]
+
+# Prepis akci v URL sekcich
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^portal/(.*)/(.*) /portal/index.php?section=$1&action=$2 [L,QSA]
+
+# Prepis nazvu URL sekci
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^portal/(.*) /portal/index.php?section=$1 [L,QSA]
+
+# Prepis verejne stranky s indiciemi
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)/(.*) /index.php?section=$1&id=$2 [L,QSA]
+
+Options -Indexes
+
+ErrorDocument 400 "Error 400: Bad Request"
+ErrorDocument 401 "Error 401: Unauthorized"
+ErrorDocument 403 "Error 403: Forbidden"
+ErrorDocument 404 "Error 404: Not Found"
+ErrorDocument 405 "Error 405: Method Not Allowed"
+ErrorDocument 408 "Error 408: Request Timeout"
+ErrorDocument 500 "Error 500: Internal Server Error"
+ErrorDocument 502 "Error 502: Bad Gateway"
+ErrorDocument 504 "Error 504: Gateway Timeout"
+
+# Nezobrazovat u zaslanych cvicnych phishingovych e-mailu nazev PHP skriptu, ktery je odeslal
+php_flag mail.add_x_header Off

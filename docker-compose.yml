@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      args:
+        APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT}
+    #image: ${CI_REGISTRY_IMAGE}/phishingator_web
+    restart: always
+    container_name: phishingator_web_${ORG}
+    env_file:
+      - .env
+    volumes:
+      - ./src:/var/www/phishingator/
+      - ./docker/php/mail.ini:/usr/local/etc/php/conf.d/mail.ini
+      - ./docker/php/msmtprc:/etc/msmtprc
+      - ./templates:/var/www/phishingator/templates
+    ports:
+      - '8000:80'
+      #- '${IP}:${PORT}:80'
+    depends_on:
+      - database
+
+  database:
+    build: docker/database
+    #image: ${CI_REGISTRY_IMAGE}/phishingator_database
+    restart: always
+    container_name: phishingator_database_${ORG}
+    env_file:
+      - .env
+    volumes:
+      - ./phishingator-db-${ORG}:/var/lib/mysql/
+      - ./docker/database:/docker-entrypoint-initdb.d:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+
+#  phpmyadmin:
+#        image: phpmyadmin
+#    restart: always
+#    ports:
+#     - '8080:80'
+#    environment:
+#      - PMA_HOST=${DB_HOST}
+
+#  smtp:
+#    image: mailhog/mailhog
+#    ports:
+#      - '1025:1025'
+#      - '8025:8025'

@@ -1,0 +1,49 @@
+// PHISHING E-MAILS AND WEBSITES: INDICATIONS
+.indication {
+  padding: 0 0 0 .2rem;
+  text-decoration: none;
+  border-bottom: 2px solid #dc3545;
+  color: $black;
+
+  &:hover, &.active {
+    text-decoration: none;
+    font-weight: bold;
+    color: #dc3545;
+
+    .icons {
+      div {
+        &:first-of-type {
+          display: none;
+        }
+
+        &:last-of-type {
+          display: inline-block;
+        }
+      }
+    }
+  }
+
+  .icons {
+    display: inline-block;
+    transform: translateY(10px);
+    color: #dc3545;
+
+    &.top div {
+      transform: translateY(-5px);
+      background: #f1f1f1;
+    }
+
+    div {
+      background: $white;
+
+      &:last-of-type {
+        display: none;
+      }
+    }
+
+    .feather {
+      width: 22px;
+      height: 22px;
+    }
+  }
+}

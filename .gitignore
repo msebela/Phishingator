@@ -1,0 +1,6 @@
+.idea
+.env
+.env.test
+src/logs/*
+phishingator-db-*
+tests/*.phar

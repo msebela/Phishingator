@@ -1,0 +1,5 @@
+# m h  dom mon dow   command
+*/5 * * * * /usr/bin/php /var/www/phishingator/mailSender.php >> /var/www/phishingator/logs/mail.log
+*/2 * * * * /usr/bin/php /var/www/phishingator/notificationsSender.php >> /var/www/phishingator/logs/notifications.log
+0 3 * * * /usr/bin/php /var/www/phishingator/usersUpdater.php > /dev/null 2>&1
+*/2 * * * * /var/www/phishingator/apache-controller.cron.sh >> /var/www/phishingator/logs/websites.log

@@ -1,0 +1,1017 @@
+@import 'extensions/bootstrap-4.6.1/_functions.scss';
+@import 'extensions/bootstrap-4.6.1/_variables.scss';
+@import 'extensions/bootstrap-4.6.1/mixins/_breakpoints.scss';
+
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam:wght@400;600;700;800&display=swap');
+
+
+// ------------------------------- HOMEPAGE AND PHISHING PAGE STYLES -------------------------------
+
+
+// ---------------------------------------- COLORS SETTINGS ----------------------------------------
+
+// Images filepath directory
+$images-dir: '../img/';
+
+// Text color
+$text-color: $white;
+
+// Website main colors
+$primary-bg-color: #272B30;
+$primary-bg-color-darker: #343A40;
+$secondary-bg-color: #343A40;
+
+// <input> elements background color on hover
+$input-bg-hover: rgba(255, 255, 255, .1);
+
+// UI Colors
+$ui-red: #ED594A;
+$ui-yellow: #FDD800;
+$ui-green: #5AC05A;
+
+
+// --------------------------------------------- STYLE ---------------------------------------------
+
+html, body {
+  margin: 0;
+  position: relative;
+  font-family: 'Be Vietnam', sans-serif;
+  color: $text-color;
+
+  @include media-breakpoint-up(lg) {
+    height: calc(100% - 38px);
+  }
+
+  &.phishing-email-detail {
+    height: auto;
+  }
+}
+
+
+body {
+  background: $secondary-bg-color url($images-dir + 'footer-bg.svg') no-repeat left 108%;
+  background-size: 650px 290px;
+
+  @include media-breakpoint-down(md) {
+    background-position: left bottom;
+  }
+
+  // PHISHING PAGE - E-MAIL DETAIL
+  &.phishing-email-detail {
+    height: 100%;
+    font-size: .875rem;
+    margin-bottom: 1rem;
+    background-position: left bottom;
+
+    a.btn {
+      white-space: nowrap;
+    }
+
+    .mark-symbol {
+      height: auto;
+      display: inline-block;
+      position: relative;
+      transform: translateY(-35px);
+    }
+
+    // INDICATIONS
+    @import 'style-indications.scss';
+
+    .browser .indication.active {
+      padding: 0.5rem 0.5rem 0.5rem .3rem;
+    }
+
+    .card a {
+      text-decoration: none;
+      color: $black;
+    }
+
+    .card.active, .card:hover, .form-row.active {
+      background-color: rgba(237,89,74,1.0) !important;
+
+      a, a:hover {
+        color: $white;
+      }
+    }
+
+    .par-intro {
+      font-size: 1rem;
+    }
+
+    .status {
+      position: absolute;
+      right: -20px;
+      top: -25px;
+      font-size: 1rem;
+      color: #fff;
+      padding: 5px 10px 5px 5px;
+      text-transform: uppercase;
+      font-weight: bold;
+      border-radius: 10px;
+      transform: rotate(8deg);
+      z-index: 1;
+    }
+
+    @media only screen and (max-width: 480px) {
+      .status {
+        top: -35px;
+        left: 0;
+        right: unset;
+        transform: rotate(-4deg);
+      }
+    }
+  }
+}
+
+
+// LINKS
+a {
+  color: $text-color;
+  outline: none;
+
+  &:hover {
+    color: $text-color;
+  }
+}
+
+
+// HEADINGS
+h1 {
+  margin-bottom: 0;
+  text-transform: uppercase;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: .53px;
+
+  .feather {
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background: $secondary-bg-color;
+  }
+}
+
+.navbar-collapse, .swiper {
+  h2 {
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: .4px;
+
+    @include media-breakpoint-up(lg) {
+      margin: 0;
+    }
+  }
+
+  h3 {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: .95px;
+
+    @include media-breakpoint-down(xs) {
+      font-size: 26px;
+    }
+  }
+}
+
+
+// SEPARATOR
+hr {
+  width: 300px;
+  text-align: left;
+  margin: 30px 0;
+  border-top: 2px solid $text-color;
+
+  @include media-breakpoint-down(lg) {
+    width: 90%;
+  }
+
+  @include media-breakpoint-down(xs) {
+    margin: 15px 0;
+  }
+}
+
+
+// HEADER
+header {
+  height: 70px;
+  position: relative;
+  z-index: 1;
+  color: $white;
+  background: $primary-bg-color;
+
+  a, a:hover {
+    color: $white;
+  }
+
+  nav.navbar {
+    height: 100%;
+    position: relative;
+    box-shadow: 0 0 10px $primary-bg-color;
+  }
+
+  @include media-breakpoint-down(xs) {
+    .navbar-brand {
+      margin-right: 0;
+    }
+  }
+
+  @media (max-width: 390px) {
+    .logo-domain {
+      display: none;
+    }
+  }
+
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgb(255,255,255)' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+  }
+
+  @include media-breakpoint-down(md) {
+    #navigation {
+      width: 100%;
+      padding: 20px;
+      position: absolute;
+      top: 70px;
+      left: 0;
+      z-index: 1001;
+      opacity: .95;
+      box-shadow: 0 0 10px $primary-bg-color;
+      background: $primary-bg-color;
+    }
+  }
+
+  .nav-item {
+    margin-right: 40px;
+
+    @media (max-width: 1480px) {
+      margin-right: 30px;
+    }
+
+    @media (max-width: 1440px) {
+      margin-right: 15px;
+    }
+
+    @include media-breakpoint-down(lg) {
+      margin-right: 30px;
+    }
+
+    @include media-breakpoint-down(md) {
+      margin-right: 0;
+    }
+
+    .active {
+      font-weight: 800;
+    }
+
+    &.button {
+      .nav-link {
+        padding-left: 22px;
+        padding-right: 22px;
+        border: 1px solid $white;
+        border-radius: 20px;
+        color: #000;
+        background: $white;
+
+        &:hover {
+          color: $white;
+          background: $primary-bg-color-darker;
+        }
+      }
+    }
+  }
+
+  .navbar-button {
+    padding: .5rem 22px;
+    margin-right: 40px;
+    border: 1px solid $text-color;
+    border-radius: 20px;
+    text-decoration: none;
+
+    @include media-breakpoint-down(md) {
+      display: none;
+    }
+
+    &:hover {
+      background: $primary-bg-color-darker;
+    }
+  }
+
+  .btn-secondary {
+    height: 100%;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: .4px;
+    border-radius: 0;
+    border: $primary-bg-color;
+    background: $primary-bg-color-darker;
+
+    &:hover {
+      background: $primary-bg-color !important;
+    }
+  }
+}
+
+
+// SWIPER WRAPPER
+.swiper {
+  height: 100%;
+  position: relative;
+  z-index: 0 !important;
+
+  @media (max-height: 800px) {
+    overflow-y: scroll !important;
+  }
+}
+
+
+// BUTTONS
+.btn-primary {
+  width: 300px;
+  height: 50px;
+  line-height: 32px;
+  position: relative;
+  padding-left: 30px;
+  margin-top: 40px;
+  text-align: left;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  border-radius: 30px;
+  border: 1px solid $primary-bg-color;
+  background: $primary-bg-color;
+
+  @include media-breakpoint-down(xs) {
+    width: 100%;
+    max-width: 270px;
+    height: auto;
+    margin-top: 20px;
+  }
+
+  &:hover, &:focus, &:active {
+    color: $primary-bg-color;
+    border: 1px solid $white;
+    background: $white !important;
+  }
+
+  &.with-icon {
+    &:after {
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 16px;
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: url($images-dir + 'btn-play.svg') no-repeat top right;
+    }
+
+    &:hover:after {
+      background: url($images-dir + 'btn-play-dark.svg') no-repeat top right;
+    }
+  }
+}
+
+.btn-secondary {
+  background: $secondary-bg-color;
+
+  &:hover, &:focus, &:active {
+    background: $input-bg-hover !important;
+  }
+}
+
+
+
+// SWIPER SLIDES
+.swiper-slide {
+  margin-top: 50px;
+
+  @include media-breakpoint-up(xl) {
+    @media (min-height: 800px) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 0;
+
+      .row {
+        margin-bottom: 100px;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    margin-top: 20px;
+  }
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    position: relative;
+
+    @include media-breakpoint-down(md) {
+      flex-direction: column;
+    }
+  }
+
+  // LOGO
+  .logo {
+    position: absolute;
+    top: -120px;
+    left: -400px;
+
+    .feather {
+      width: 180px;
+      height: 180px;
+      position: relative;
+      top: 150px;
+      left: 170px;
+      padding: 20px;
+      border-radius: 50%;
+      background: $primary-bg-color;
+    }
+
+    @media (max-width: 1600px) {
+      top: -120px;
+      left: -330px;
+
+      .feather {
+        width: 150px;
+        height: 150px;
+      }
+    }
+
+    @media (max-width: 1450px) {
+      display: none;
+    }
+  }
+}
+
+
+// SLIDE TEXT
+.slide-text {
+  position: relative;
+
+  // INTRO SLIDE HEADING
+  .intro-heading {
+    margin: 0 0 20px 0;
+    font-size: 72px;
+    font-weight: 800;
+
+    @include media-breakpoint-down(lg) {
+      font-size: 60px;
+    }
+
+    @include media-breakpoint-down(md) {
+      font-size: 48px;
+      margin: 0;
+    }
+
+    @include media-breakpoint-down(xs) {
+      font-size: 40px;
+    }
+
+    @media (max-width: 370px) {
+      font-size: 22pt;
+    }
+
+    .feather {
+      width: 90px;
+      height: 90px;
+      padding: 10px;
+      border-radius: 50%;
+      background: $primary-bg-color;
+
+      @media (min-width: 1450px) {
+        display: none;
+      }
+
+      @include media-breakpoint-down(xs) {
+        width: 70px;
+        height: 70px;
+      }
+
+      @media (max-width: 360px) {
+        width: 50px;
+        height: 50px;
+      }
+    }
+  }
+
+  // INTRO SLIDE SUBHEADING
+  h4 {
+    margin-bottom: 1rem;
+    font-size: 30px;
+    font-weight: 700;
+
+    @include media-breakpoint-down(lg) {
+      font-size: 26px;
+    }
+
+    @include media-breakpoint-down(md) {
+      font-size: 24px;
+      text-align: right;
+    }
+
+    @include media-breakpoint-down(xs) {
+      font-size: 18px;
+    }
+  }
+
+  p {
+    font-size: 18px;
+
+    @include media-breakpoint-down(xs) {
+      font-size: 16px;
+    }
+
+    a {
+      text-decoration: underline;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+
+  .login-buttons {
+    @include media-breakpoint-down(md) {
+      text-align: right;
+    }
+
+    @include media-breakpoint-down(xs) {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .btn {
+      width: auto;
+      padding-right: 40px;
+
+      @include media-breakpoint-up(xl) {
+        padding-right: 60px;
+      }
+
+      @include media-breakpoint-up(sm) {
+        &:last-of-type {
+          margin-left: 1rem;
+        }
+      }
+    }
+  }
+}
+
+
+// SLIDE - PHISHING EXAMPLE WINDOW
+.slide-phishing-example {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  @include media-breakpoint-down(lg) {
+    margin-top: 50px;
+  }
+
+  // GUI WINDOW
+  .window {
+    font-size: 13pt;
+    position: relative;
+    color: $black;
+    border: 3px solid #f1f1f1;
+    border-radius: 10px;
+    background: #f1f1f1;
+
+    @include media-breakpoint-down(xs) {
+      font-size: 12pt;
+    }
+
+    &.browser {
+      width: 380px;
+      margin-bottom: 30px;
+
+      @include media-breakpoint-down(xs) {
+        min-width: 316px;
+        width: auto;
+      }
+
+      i .feather {
+        margin-bottom: 15px;
+      }
+    }
+
+    .column {
+      float: left;
+    }
+
+    .left {
+      width: 20%;
+    }
+
+    .right {
+      width: 10%;
+
+      div {
+        float: right;
+        margin-top: 4px;
+      }
+    }
+
+    .middle {
+      width: 70%;
+    }
+
+    .row {
+      margin: 0 10px 5px 10px;
+
+      &:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+    }
+
+    // WINDOW - LEFT DOTS
+    .dot {
+      display: inline-block;
+      height: 12px;
+      width: 12px;
+      margin-top: 4px;
+      border-radius: 50%;
+      background: #bbb;
+
+      &:nth-of-type(1) {
+        background: $ui-red;
+      }
+
+      &:nth-of-type(2) {
+        background: $ui-yellow;
+      }
+
+      &:nth-of-type(3) {
+        background: $ui-green;
+      }
+    }
+
+    // WINDOW - HEADER
+    .header {
+      text-align: center;
+      color: #666;
+    }
+
+    // WINDOW - RIGHT MENU
+    .bar {
+      width: 17px;
+      height: 3px;
+      background-color: #aaa;
+      margin: 3px 0;
+      display: block;
+    }
+
+    // WINDOW - CONTENT
+    .content {
+      padding: 20px;
+      background: $white;
+
+      @include media-breakpoint-down(sm) {
+        padding: 10px;
+      }
+
+      &.phishing-website-detail {
+        max-height: 350px;
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+
+        @include media-breakpoint-down(lg) {
+          img {
+            max-width: 100%;
+          }
+        }
+
+        .screenshot-shadow {
+          height: 50px;
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          -moz-box-shadow: inset 0 -500px 500px -500px $white;
+          -webkit-box-shadow: inset 0 -500px 500px -500px $white;
+          box-shadow: inset 0 -500px 500px -500px $white;
+        }
+      }
+
+      hr {
+        margin: 10px 0;
+        width: auto;
+        border-top: 1px solid #000;
+      }
+    }
+  }
+}
+
+
+// SWIPER - SLIDES PAGINATION BUTTONS
+.swiper-pagination-buttons {
+  width: 200px;
+  height: 56px;
+  padding: 6px;
+  position: absolute;
+  right: 150px;
+  bottom: 20px;
+  z-index: 1;
+  border-radius: 100px;
+  background: $primary-bg-color;
+
+  @include media-breakpoint-down(lg) {
+    right: 20px;
+  }
+
+  @include media-breakpoint-down(sm) {
+    width: 120px;
+  }
+
+  @include media-breakpoint-down(xs) {
+    bottom: 10px;
+  }
+
+  .btn-prev, .btn-next {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    position: relative;
+    border-radius: 50%;
+    border: 2px solid $text-color;
+
+    &:after {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 12px;
+      position: absolute;
+      top: calc(50% - 6px);
+      left: calc(50% - 4px);
+    }
+  }
+
+  .btn-prev:after {
+    background: url($images-dir + 'btn-prev.svg') no-repeat top right;
+  }
+
+  .btn-next {
+    float: right;
+
+    &:after {
+      background: url($images-dir + 'btn-next.svg') no-repeat top right;
+    }
+  }
+}
+
+
+// SWIPER - PAGINATION BULLETS
+.swiper-pagination-bullets {
+  display: inline-block;
+  width: auto !important;
+  height: 30px;
+  position: absolute;
+  left: 20px !important;
+  bottom: 30px !important;
+  border-radius: 100px;
+  opacity: 0.8;
+  background: $primary-bg-color;
+
+  @include media-breakpoint-up(lg) {
+    left: 50% !important;
+    transform: translateX(-50%);
+  }
+
+  @include media-breakpoint-down(xs) {
+    display: none;
+  }
+
+  &:before {
+    content: "";
+    width: 100px;
+    position: absolute;
+    top: 13px;
+    left: 15px;
+    z-index: 1;
+    border-top: 2px solid $text-color;
+  }
+
+  .swiper-pagination-bullet {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    margin: 4px 15px !important;
+    opacity: 1;
+    border: 2px solid $primary-bg-color;
+    background: $primary-bg-color;
+
+    &:before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      border-radius: 50%;
+      background: $text-color;
+    }
+
+    &:first-of-type {
+      margin-left: 5px !important;
+    }
+
+    &:last-of-type {
+      margin-right: 5px !important;
+    }
+  }
+
+  .swiper-pagination-bullet-active {
+    border: 2px solid $text-color;
+  }
+}
+
+
+// PHISHING - MARK SYMBOL
+.mark-symbol {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  border-radius: 50%;
+  cursor: pointer;
+
+  &:hover {
+    .desc {
+      display: block;
+      width: 240px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 10px 20px;
+      z-index: 1;
+      border-radius: 25px 0;
+      background: rgba(241, 241, 241, 0.9);
+
+      @include media-breakpoint-down(sm) {
+        right: 0;
+        left: unset;
+        border-radius: 0 25px;
+      }
+    }
+  }
+
+  .desc {
+    display: none;
+  }
+
+  p {
+    font-size: 14px;
+    font-weight: 400;
+
+    &:last-of-type {
+      margin-bottom: 10px;
+    }
+  }
+
+  strong {
+    display: inline-block;
+    width: 100%;
+    padding: 0 0 20px 40px;
+    font-size: 16px;
+
+    @include media-breakpoint-down(sm) {
+      padding: 0 40px 20px 0;
+    }
+  }
+
+  .circle {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    border-radius: 50%;
+
+    @include media-breakpoint-down(sm) {
+      right: 0;
+      left: unset;
+    }
+
+    &:first-of-type {
+      line-height: 38px;
+      color: $ui-red;
+      border: 2px solid $ui-red;
+      background: $white;
+    }
+
+    &:last-of-type {
+      line-height: 42px;
+      color: $ui-green;
+      border: 2px solid $ui-green;
+      background: rgba(255, 255, 255, 1);
+    }
+  }
+
+  &.symbol-1 {
+    top: 40px;
+    right: -15px;
+  }
+
+  &.symbol-2 {
+    top: 165px;
+    right: 40px;
+  }
+}
+
+
+// SLIDE - ABOUT
+.about-footer {
+  @include media-breakpoint-up(md) {
+    margin-top: 40px;
+  }
+
+  .about-buttons {
+    @include media-breakpoint-up(lg) {
+      display: flex;
+      align-items: center;
+    }
+
+    @include media-breakpoint-down(xs) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .btn {
+      width: auto;
+      padding-right: 40px;
+
+      @include media-breakpoint-up(xl) {
+        padding-right: 60px;
+      }
+
+      @include media-breakpoint-up(lg) {
+        margin-top: 0;
+      }
+
+      @include media-breakpoint-up(sm) {
+        &:last-of-type {
+          margin-left: 1rem;
+        }
+      }
+    }
+  }
+
+  // PARTNERS LOGOS
+  .logos-partners {
+    text-align: right;
+
+    @include media-breakpoint-down(md) {
+      margin-top: 40px;
+    }
+
+    a {
+      text-decoration: none;
+
+      img {
+        margin-left: 30px;
+        height: 80px;
+
+        @media (max-width: 1200px) {
+          height: 60px;
+        }
+
+        @media (max-width: 500px) {
+          margin-left: 0;
+        }
+
+        @media (max-width: 340px) {
+          height: 50px;
+        }
+      }
+
+      &:first-of-type img {
+        margin-left: 0;
+      }
+    }
+  }
+}
+
+.link-red {
+  font-weight: bold;
+  color: $ui-red;
+}
+
+.link-green {
+  font-weight: bold;
+  color: $ui-green;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
