@@ -75,7 +75,7 @@ Pokud **máte zájem o zprovoznění** Phishingatoru ve Vaší organizaci, **nap
 
 #### Demo aplikace
 
-Pokud nad službou váháte a chtěli byste si ji nejprve **nezávazně vyzkoušet**, můžete se do **ukázkové verze Phishingatoru** přihlásit na adrese **TODO**.
+Pokud nad službou váháte a chtěli byste si ji nejprve **nezávazně vyzkoušet**, můžete se do **ukázkové verze Phishingatoru** přihlásit přes stránku uvedenou níže v odkazech.
 
 V ukázkové verzi Phishingatoru jsou ve výchozím stavu k dispozici **práva administrátora** – celý systém si tak můžete proklikat včetně několika **testovacích phishingových kampaní**, reakcí uživatelů a i samotných podvodných e-mailů a podvodných stránek.
 
@@ -97,7 +97,7 @@ V ukázkové verzi Phishingatoru jsou ve výchozím stavu k dispozici **práva a
 Phishingator původně vznikl na ZČU jako výsledek bakalářské práce [Systém pro rozesílání cvičných phishingových zpráv](https://theses.cz/id/0kk18p/), jejímž autorem je Martin Šebela a vedoucím pak Aleš Padrta.
 
 
-#### Kontakt na vývojáře ####
+#### Kontakt na vývojáře
 
-phishingator@cesnet.cz  
-martin.sebela@cesnet.cz
+- phishingator@cesnet.cz
+- martin.sebela@cesnet.cz

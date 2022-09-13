@@ -52,12 +52,7 @@
       }
 
       // Odkaz na nápovědu.
-      if (PermissionsModel::getUserRole() == PERMISSION_TEST_MANAGER) {
-        $this->setHelpLink('');
-      }
-      else {
-        $this->setHelpLink('');
-      }
+      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#22-kampan%C4%9B');
     }
 
 

@@ -65,7 +65,7 @@
       }
 
       // Odkaz na nápovědu.
-      $this->setHelpLink('');
+      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#23-podvodn%C3%A9-e-maily-a-indicie');
     }
 
 

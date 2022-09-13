@@ -42,7 +42,7 @@
       }
 
       // Odkaz na nápovědu.
-      $this->setHelpLink('');
+      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#13-p%C5%99ijat%C3%A9-phishingov%C3%A9-e-maily');
     }
 
 

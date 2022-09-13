@@ -90,7 +90,7 @@
       $this->setViewData('chartVolunteersData', ($barChart['data']) ? $barChart['data'] : 0);
 
       // Odkaz na nápovědu.
-      $this->setHelpLink('');
+      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#2-pro-administr%C3%A1tory');
     }
 
 
@@ -130,7 +130,7 @@
       $this->setViewData('barChartLegendData', $barChart['data']);
 
       // Odkaz na nápovědu.
-      $this->setHelpLink('');
+      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#2-pro-administr%C3%A1tory');
     }
 
 
@@ -156,6 +156,6 @@
       $this->setViewData('chartDataUserEndAction', $model->getStatsForAllEndActions(null, $idUser));
 
       // Odkaz na nápovědu.
-      $this->setHelpLink('');
+      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#1-pro-u%C5%BEivatele');
     }
   }

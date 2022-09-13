@@ -2,8 +2,8 @@
 
 Uživatelská příručka je rozdělena na:
 
-1. [příručku pro běžné uživatele](#1-pro-uivatele) Phishingatoru,
-2. [příručku pro administrátory](#2-pro-administrtory), kteří budou ve Phishingatoru vytvářet nové phishingové kampaně, cvičné phishingové e-maily a podvodné stránky.
+1. [příručku pro běžné uživatele](#1-pro-uživatele) Phishingatoru,
+2. [příručku pro administrátory](#2-pro-administrátory), kteří budou ve Phishingatoru vytvářet nové phishingové kampaně, cvičné phishingové e-maily a podvodné stránky.
 
 ## 1 Pro uživatele
 
