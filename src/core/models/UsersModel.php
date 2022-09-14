@@ -58,15 +58,18 @@
         'email' => $this->email
       ];
 
-      /* Pokud dochází k registraci nového uživatele, je třeba mu vytvořit uživatelské jméno pro přihlášení. */
-      if (empty($this->dbRecordData['username'])) {
+      // Pokud dochází k registraci nového uživatele, je třeba mu vytvořit uživatelské jméno pro přihlášení.
+      if (empty($this->username)) {
         $this->username = get_email_part($this->email, 'username');
         $user['username'] = $this->username;
       }
+      else {
+        $user['username'] = $this->username;
+      }
 
-      /* Výjimka pro případ, kdy se registruje nový uživatel - v takovém případě
-         je do databáze nutné zapsat nikoliv NULL hodnoty, ale hodnoty nastavené
-         v configu aplikace během registrace uživatele. */
+      // Výjimka pro případ, kdy se registruje nový uživatel - v takovém případě
+      // je do databáze nutné zapsat nikoliv NULL hodnoty, ale hodnoty nastavené
+      // v configu aplikace během registrace uživatele.
       if ($this->recieveEmail !== NULL && $this->emailLimit !== NULL) {
         $user['recieve_email'] = $this->recieveEmail;
         $user['email_limit'] = $this->emailLimit;
@@ -304,32 +307,32 @@
 
         /* Získání dodatečných informací pro každý záznam pro výpis. */
         foreach ($result as $key => $user) {
-          /* Zjištění jména a příjmení uživatele z LDAP. */
+          // Zjištění jména a příjmení uživatele z LDAP.
           $result[$key]['person_name'] = $ldap->getUserCNByUsername($user['username']);
 
-          /* Informace o tom, zdali se uživatel registroval dobrovolně nebo administrátorem/správcem testů v rámci kampaně. */
+          // Informace o tom, zdali se uživatel registroval dobrovolně nebo administrátorem/správcem testů v rámci kampaně.
           $result[$key]['voluntary'] = ($user['id_by_user'] == null) ? 1 : 0;
           $result[$key]['voluntary_registration'] = ($user['id_by_user'] == null) ? 'dobrovolně' : 'z kampaně';
           $result[$key]['voluntary_registration_color'] = ($user['id_by_user'] == null) ? 'success' : 'secondary';
 
-          /* Informace o posledním přihlášení uživatele. */
+          // Informace o posledním přihlášení uživatele.
           $result[$key]['date_login_formatted'] = (!is_null($user['date_login'])) ? $user['date_login_formatted'] : 'zatím nikdy';
 
-          /* Zjištění barvy dle oprávnění uživatele. */
+          // Zjištění barvy dle oprávnění uživatele.
           $result[$key]['group_color'] = UserGroupsModel::getColorGroupRole($user['value']);
 
-          /* Zjištění počtu přijatých cvičných phishingů, které uživatel obdržel. */
+          // Zjištění počtu přijatých cvičných phishingů, které uživatel obdržel.
           $result[$key]['recieved_emails_count'] = RecievedEmailModel::getCountOfRecievedPhishingEmails($user['id_user']);
 
-          /* Informace o dobrovolnosti. */
+          // Informace o dobrovolnosti.
           $result[$key]['recieve_email_text'] = $user['recieve_email'] ? 'ano' : 'ne';
           $result[$key]['recieve_email_color'] = $user['recieve_email'] ? 'success' : 'secondary';
 
-          /* Zjištění úspěšnosti při odhalování phishingu včetně barevného zvýraznění. */
+          // Zjištění úspěšnosti při odhalování phishingu včetně barevného zvýraznění.
           $result[$key]['success_rate'] = ($result[$key]['recieved_emails_count'] > 0) ? StatsModel::getUserSuccessRate($user['id_user']) : 0;
           $result[$key]['success_rate_color'] = StatsModel::getUserSuccessRateColor(($result[$key]['recieved_emails_count'] > 0) ? $result[$key]['success_rate'] : null);
 
-          /* Informace o maximálním limitu cvičných e-mailů. */
+          // Informace o maximálním limitu cvičných e-mailů.
           $result[$key]['email_limit'] = (!is_null($user['email_limit'])) ? $user['email_limit'] : 0;
           $result[$key]['email_limit_formatted'] = (!is_null($user['email_limit'])) ? $user['email_limit'] : 'žádný';
         }
@@ -364,25 +367,25 @@
               ORDER BY phg_users.id_user DESC', $id);
 
       if ($user != null) {
-        /* Zjištění, zdali se uživatel registroval dobrovolně nebo administrátorem/správcem testů v rámci kampaně. */
+        // Zjištění, zdali se uživatel registroval dobrovolně nebo administrátorem/správcem testů v rámci kampaně.
         $user['voluntary_registration'] = ($user['id_by_user'] == null) ? 'dobrovolně' : 'z kampaně';
         $user['voluntary_registration_color'] = ($user['id_by_user'] == null) ? 'success' : 'secondary';
 
-        /* Informace o posledním přihlášení uživatele. */
+        // Informace o posledním přihlášení uživatele.
         $user['date_login'] = (!is_null($user['date_login'])) ? $user['date_login'] : 'zatím nikdy';
 
-        /* Zjištění počtu přijatých cvičných phishingů, které uživatel obdržel. */
+        // Zjištění počtu přijatých cvičných phishingů, které uživatel obdržel.
         $user['recieved_emails_count'] = RecievedEmailModel::getCountOfRecievedPhishingEmails($user['id_user']);
 
-        /* Informace o dobrovolnosti. */
+        // Informace o dobrovolnosti.
         $user['recieve_email_text'] = $user['recieve_email'] ? 'ano' : 'ne';
         $user['recieve_email_color'] = $user['recieve_email'] ? 'success' : 'secondary';
 
-        /* Zjištění úspěšnosti při odhalování phishingu včetně barevného zvýraznění. */
+        // Zjištění úspěšnosti při odhalování phishingu včetně barevného zvýraznění.
         $user['success_rate'] = ($user['recieved_emails_count'] > 0) ? StatsModel::getUserSuccessRate($user['id_user']) : 0;
         $user['success_rate_color'] = StatsModel::getUserSuccessRateColor(($user['recieved_emails_count'] > 0) ? $user['success_rate'] : null);
 
-        /* Informace o maximálním limitu cvičných e-mailů. */
+        // Informace o maximálním limitu cvičných e-mailů.
         $user['email_limit'] = (!is_null($user['email_limit'])) ? $user['email_limit'] : 'žádný';
       }
 
