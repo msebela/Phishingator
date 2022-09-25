@@ -142,7 +142,7 @@
     /**
      * Vrátí počet přihlášení konkrétního uživatele do systému.
      *
-     * @param $idUser                  ID uživatele
+     * @param int $idUser              ID uživatele
      * @return mixed                   Celkový počet přihlášení
      */
     private function getCountOfUserLogins($idUser) {

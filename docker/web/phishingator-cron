@@ -1,4 +1,5 @@
 # m h  dom mon dow   command
+*/1 * * * * /usr/bin/bash /root/backup-db.sh
 */5 * * * * /usr/bin/php /var/www/phishingator/mailSender.php >> /var/www/phishingator/logs/mail.log
 */2 * * * * /usr/bin/php /var/www/phishingator/notificationsSender.php >> /var/www/phishingator/logs/notifications.log
 0 3 * * * /usr/bin/php /var/www/phishingator/usersUpdater.php > /dev/null 2>&1

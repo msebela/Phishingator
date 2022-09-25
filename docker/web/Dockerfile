@@ -10,7 +10,7 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
 
 # Cron
 RUN apt-get update && apt-get -y install cron
-COPY docker/php/phishingator-cron /etc/cron.d/phishingator-cron
+COPY docker/web/phishingator-cron /etc/cron.d/phishingator-cron
 RUN chmod 0644 /etc/cron.d/phishingator-cron
 RUN crontab /etc/cron.d/phishingator-cron
 RUN cron
@@ -19,21 +19,21 @@ RUN cron
 RUN apt-get -y install libapache2-mod-shib
 
 # Apache
-COPY docker/php/phishingator.conf /etc/apache2/sites-enabled/000-default.conf
-COPY docker/php/security.conf /etc/apache2/conf-enabled/
+COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/000-default.conf
+COPY docker/web/security.conf /etc/apache2/conf-enabled/
 RUN a2enmod rewrite
 
 # LDAP
-COPY docker/php/ldap.conf /etc/ldap
+COPY docker/web/ldap.conf /etc/ldap
 
 # MSMTPRC
-COPY /docker/php/mail.ini /usr/local/etc/php/conf.d/mail.ini
-COPY /docker/php/msmtprc /etc/msmtprc
+COPY docker/web/mail.ini /usr/local/etc/php/conf.d/mail.ini
+COPY docker/web/msmtprc /etc/msmtprc
 
 # Phishingator
 WORKDIR $APACHE_DOCUMENT_ROOT
 
-COPY /src ../
+COPY src ../
 RUN chown -R www-data:www-data .
 
 RUN touch ../logs/log.log && chmod 777 ../logs/log.log

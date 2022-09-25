@@ -4,7 +4,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: docker/php/Dockerfile
+      dockerfile: docker/web/Dockerfile
       args:
         APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT}
     #image: ${CI_REGISTRY_IMAGE}/phishingator_web
@@ -14,9 +14,11 @@ services:
       - .env
     volumes:
       - ./src:/var/www/phishingator/
-      - ./docker/php/mail.ini:/usr/local/etc/php/conf.d/mail.ini
-      - ./docker/php/msmtprc:/etc/msmtprc
-      - ./templates:/var/www/phishingator/templates
+      - ./docker/web/mail.ini:/usr/local/etc/php/conf.d/mail.ini
+      - ./docker/web/msmtprc:/etc/msmtprc
+      - ./phishingator-data/${ORG}/logs:/var/www/phishingator/logs
+      - ./phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
+      - ./phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites
     ports:
       - '8000:80'
       #- '${IP}:${PORT}:80'
@@ -31,7 +33,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./phishingator-db-${ORG}:/var/lib/mysql/
+      - ./phishingator-data/${ORG}/database:/var/lib/mysql/
+      - ./phishingator-data/${ORG}/database-dumps:/phishingator-dumps
       - ./docker/database:/docker-entrypoint-initdb.d:ro
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
