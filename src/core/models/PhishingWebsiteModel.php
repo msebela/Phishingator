@@ -549,6 +549,7 @@
       $this->isURLEmpty();
       $this->isURLTooLong();
       $this->isURLValid();
+      $this->isURLValidDNSRecord();
 
       $this->isTemplateEmpty();
       $this->existTemplate();
@@ -613,6 +614,18 @@
     private function isURLValid() {
       if (!filter_var($this->url, FILTER_VALIDATE_URL)) {
         throw new UserError('URL adresa podvodné stránky je v nesprávném formátu.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali je u zadané (sub)domény v DNS nasměrován A záznam na instanci Phishingatoru.
+     *
+     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     */
+    private function isURLValidDNSRecord() {
+      if (gethostbyname($this->url) != $_SERVER['SERVER_ADDR']) {
+        throw new UserError('U zadané domény (popř. subdomény) není v DNS nasměrován záznam typu A na IP adresu serveru, kde běží Phishingator.', MSG_ERROR);
       }
     }
 

@@ -35,7 +35,7 @@ for FILENAME in *.conf.*; do
       then
         DOCUMENT_ROOT=`cat "$FILENAME" | grep 'DocumentRoot' | awk {'print $2'}`
 
-        #certbot --non-interactive --register-unsafely-without-email --webroot --installer apache -w "$SERVER_NAME" -d "$DOCUMENT_ROOT"
+        certbot --non-interactive --register-unsafely-without-email --webroot --installer apache -w "$SERVER_NAME" -d "$DOCUMENT_ROOT"
         echo 'certbot --non-interactive --register-unsafely-without-email --webroot --installer apache -w "$server_name" -d "$DOCUMENT_ROOT"'
       fi
 
