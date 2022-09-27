@@ -1,12 +1,18 @@
 <?php
-  use PHPUnit\Framework\TestCase;
 
-  require_once '../globalFunctions.php';
+namespace tests;
 
-  final class CredentialsTesterModelTest extends TestCase {
-    public function testTryLogin() {
-      $result = CredentialsTesterModel::tryLogin(TEST_USERNAME, TEST_PASSWORD);
+use CredentialsTesterModel;
+use PHPUnit\Framework\TestCase;
 
-      $this->assertTrue($result);
-    }
+require_once '../globalFunctions.php';
+
+final class CredentialsTesterModelTest extends TestCase
+{
+  public function testTryLogin()
+  {
+    $result = CredentialsTesterModel::tryLogin(TEST_USERNAME, TEST_PASSWORD);
+
+    $this->assertTrue($result);
   }
+}

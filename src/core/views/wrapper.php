@@ -2,10 +2,15 @@
 <html lang="cs">
   <head>
     <meta charset="utf-8">
+
     <title><?= $html_title ?></title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="<?= WEB_HTML_BASE_TITLE ?> je systém pro rozesílání cvičných phishingových zpráv, jehož cílem je naučit uživatele odhalovat reálný phishing.">
     <meta name="author" content="Martin Šebela">
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+
     <link href="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.1/bootstrap.min.css" rel="stylesheet">
     <link href="/style.css" rel="stylesheet">
   </head>

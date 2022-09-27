@@ -9,25 +9,25 @@ RewriteRule ^(Shibboleth.sso)($|/) - [L]
 # RewriteCond %{HTTPS} !=on
 # RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
 
-# Presmerovani u souboru security.txt z korene webu
+# Redirect to security.txt file from root
 Redirect /security.txt /.well-known/security.txt
 
-# Prepis identifikatoru v URL sekcich
+# Rule: ID
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^portal/(.*)/(.*)/(.*) /portal/index.php?section=$1&action=$2&id=$3 [L,QSA]
 
-# Prepis akci v URL sekcich
+# Rule: Action name
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^portal/(.*)/(.*) /portal/index.php?section=$1&action=$2 [L,QSA]
 
-# Prepis nazvu URL sekci
+# Rule: Section name
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^portal/(.*) /portal/index.php?section=$1 [L,QSA]
 
-# Prepis verejne stranky s indiciemi
+# Rule: Public website - Page about phishing signs
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)/(.*) /index.php?section=$1&id=$2 [L,QSA]
@@ -44,5 +44,5 @@ ErrorDocument 500 "Error 500: Internal Server Error"
 ErrorDocument 502 "Error 502: Bad Gateway"
 ErrorDocument 504 "Error 504: Gateway Timeout"
 
-# Nezobrazovat u zaslanych cvicnych phishingovych e-mailu nazev PHP skriptu, ktery je odeslal
+# Hide script name in sent emails
 php_flag mail.add_x_header Off

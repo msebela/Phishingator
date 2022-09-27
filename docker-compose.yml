@@ -18,10 +18,13 @@ services:
       - ./docker/web/msmtprc:/etc/msmtprc
       - ./phishingator-data/${ORG}/logs:/var/www/phishingator/logs
       - ./phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
-      - ./phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites
+      - ./phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
+      - ./phishingator-data/${ORG}/websites-templates/certs:/etc/letsencrypt/
     ports:
       - '8000:80'
+      - '443:443'
       #- '${IP}:${PORT}:80'
+      #- '${IP}:${PORT}:443'
     depends_on:
       - database
 

@@ -3,54 +3,54 @@
 # CRON path
 export PATH='/usr/bin:/bin:/usr/sbin/'
 
-phishingator_sites_config='/var/www/phishingator/templates/sites-config/'
-apache_sites_dir='/etc/apache2/sites-available/'
+PHISHINGATOR_SITES_CONFIG='/var/www/phishingator/templates/sites-config/'
+APACHE_SITES_DIR='/etc/apache2/sites-available/'
 
-cd "$phishingator_sites_config"
+cd "$PHISHINGATOR_SITES_CONFIG"
 
 i=0
 
-for filename in *.conf.*; do
-    [ -e "$filename" ] || continue
+for FILENAME in *.conf.*; do
+    [ -e "$FILENAME" ] || continue
 
-    server_name=`cat "$filename" | grep 'ServerName' | awk {'print $2'}`
+    SERVER_NAME=`cat "$FILENAME" | grep 'ServerName' | awk {'print $2'}`
 
-    # Deaktivace podvodne stranky v Apache
-    if [ "$filename" == *".conf.delete"* ]
+    # Deactivate fraudulent website in Apache
+    if [ "$FILENAME" == *".conf.delete"* ]
     then
-      a2dissite "$server_name"
-      echo "a2dissite "$server_name""
+      a2dissite "$SERVER_NAME"
+      echo "a2dissite "$SERVER_NAME""
 
-      rm "$phishingator_sites_config/$filename"
-      echo "rm \"$phishingator_sites_config/$filename\""
+      rm "$PHISHINGATOR_SITES_CONFIG/$FILENAME"
+      echo "rm \"$PHISHINGATOR_SITES_CONFIG/$FILENAME\""
     fi
 
-    # Aktivace podvodne stranky v Apache
-    if [ "$filename" == *".conf.new"* ]
+    # Activate fraudulent website in Apache
+    if [ "$FILENAME" == *".conf.new"* ]
     then
-      cp "$filename" "$apache_sites_dir/$server_name.conf"
-      echo "cp \"$filename\" \"$apache_sites_dir/$server_name.conf\""
+      cp "$FILENAME" "$APACHE_SITES_DIR/$SERVER_NAME.conf"
+      echo "cp \"$FILENAME\" \"$APACHE_SITES_DIR/$SERVER_NAME.conf\""
 
-      if grep -q "<VirtualHost \*:443>" "$filename"
+      if grep -q "<VirtualHost \*:443>" "$FILENAME"
       then
-        document_root=`cat "$filename" | grep 'DocumentRoot' | awk {'print $2'}`
+        DOCUMENT_ROOT=`cat "$FILENAME" | grep 'DocumentRoot' | awk {'print $2'}`
 
-        #certbot --non-interactive --register-unsafely-without-email --webroot --installer apache -w "$server_name" -d "$document_root"
-        echo 'certbot --non-interactive --register-unsafely-without-email --webroot --installer apache -w "$server_name" -d "$document_root"'
+        #certbot --non-interactive --register-unsafely-without-email --webroot --installer apache -w "$SERVER_NAME" -d "$DOCUMENT_ROOT"
+        echo 'certbot --non-interactive --register-unsafely-without-email --webroot --installer apache -w "$server_name" -d "$DOCUMENT_ROOT"'
       fi
 
-      a2ensite "$server_name"
-      echo "a2ensite \"$server_name\""
+      a2ensite "$SERVER_NAME"
+      echo "a2ensite \"$SERVER_NAME\""
 
-      mv "$phishingator_sites_config/$filename" "$phishingator_sites_config/$server_name.conf"
-      echo "mv \"$phishingator_sites_config/$filename\" \"$phishingator_sites_config/$server_name.conf\""
+      mv "$PHISHINGATOR_SITES_CONFIG/$FILENAME" "$PHISHINGATOR_SITES_CONFIG/$SERVER_NAME.conf"
+      echo "mv \"$PHISHINGATOR_SITES_CONFIG/$FILENAME\" \"$PHISHINGATOR_SITES_CONFIG/$SERVER_NAME.conf\""
     fi
 
     ((i=i+1))
     printf "\n\n"
 done
 
-# Pokud doslo k nejakym zmenam, provest reload Apache
+# Reload Apache if something has changed
 if [ "$i" -gt 0 ]
 then
   systemctl reload apache2

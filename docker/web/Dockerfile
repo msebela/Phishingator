@@ -23,6 +23,9 @@ COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/000-default.conf
 COPY docker/web/security.conf /etc/apache2/conf-enabled/
 RUN a2enmod rewrite
 
+# Certbot
+RUN apt-get -y install certbot
+
 # LDAP
 COPY docker/web/ldap.conf /etc/ldap
 

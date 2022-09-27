@@ -3,4 +3,4 @@
 .env.test
 src/logs
 phishingator-data
-tests/*.phar
+src/tests/*.phar

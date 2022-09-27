@@ -11,7 +11,7 @@ fi
 
 CONTAINER_NAME="phishingator_database_$ORG"
 
-BACKUP_FILE="../phishingator-data/$ORG/database-dumps/$1"
+BACKUP_FILE="phishingator-data/$ORG/database-dumps/$1"
 
 read -r -p "Are you sure you want to restore Phishingator database from file: '$BACKUP_FILE'? [y/Y] " response
 

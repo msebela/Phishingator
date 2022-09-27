@@ -15,6 +15,8 @@
 
   <title>Phishingator · Cvičný phishing na českých univerzitách</title>
 
+  <link rel="icon" type="image/png" href="/favicon.png">
+
   <link rel="stylesheet" href="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.1/bootstrap.min.css">
   <link rel="stylesheet" href="/style-intro.css">
 </head>
