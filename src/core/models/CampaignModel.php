@@ -305,10 +305,6 @@
         }
       }
 
-      if (empty($idCampaigns)) {
-        return -1;
-      }
-
       return $idCampaigns;
     }
 

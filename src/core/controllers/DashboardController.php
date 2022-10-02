@@ -113,7 +113,7 @@
       $this->setViewData('countCampaignsText', $model->getStatsText($countCampaigns, 'campaignsCount'));
 
       // Počet odeslaných e-mailů.
-      $countSentEmails = EmailSenderModel::getCountOfSentEmailsInCampaign($campaigns);
+      $countSentEmails = (count($campaigns) > 0) ? EmailSenderModel::getCountOfSentEmailsInCampaign($campaigns) : 0;
 
       $this->setViewData('countSentEmails', get_formatted_number($countSentEmails));
       $this->setViewData('countSentEmailsText', $model->getStatsText($countSentEmails, 'sentEmails'));

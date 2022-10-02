@@ -11,7 +11,7 @@ Administrátor si ve Phishingatoru jednoduše vytvoří **cvičný phishingový 
 
 Pokud uživatel do cvičné phishingové stránky předá své **přihlašovací údaje**, je mu obratem zobrazena informační stránka s původně odeslaným phishingem, a to včetně **vyznačených indicií**, na základě kterých bylo možné podvod rozpoznat. Uživatel se tak má šanci ihned **poučit** a zjistit, jak mohl daný phishing rozpoznat tak, aby podobnému nebo dokonce skutečnému phishingu příště odolal. Stejné indicie jsou zobrazeny i všem ostatním uživatelům po ukončení školení.
 
-Phishingator byl navržen jako co nejvíce **intuitivní a automatizovaný systém** tak, aby jeho používání nevyžadovalo téměř **žádné technické znalosti**. Součástí systému je vedení jak **globální**, tak **osobní statistiky** u každého z uživatelů, a také vedení **podrobné statistiky** u každé phishingové kampaně. Phishingator lze jednoduše napojit na již **existující SSO** (např. *Shibboleth*).
+Phishingator byl navržen jako co nejvíce **intuitivní a automatizovaný systém** tak, aby jeho používání nevyžadovalo téměř **žádné technické znalosti**. Součástí systému je vedení jak **globální**, tak **osobní statistiky** u každého z uživatelů, a také vedení **podrobné statistiky** u každé phishingové kampaně. Phishingator lze jednoduše napojit na již **existující SSO** (např. *OIDC*).
 
 
 
