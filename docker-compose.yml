@@ -44,7 +44,7 @@ services:
       - MYSQL_DATABASE=${DB_DATABASE}
 
 #  phpmyadmin:
-#        image: phpmyadmin
+#    image: phpmyadmin
 #    restart: always
 #    ports:
 #     - '8080:80'
