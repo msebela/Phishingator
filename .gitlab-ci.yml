@@ -12,7 +12,7 @@ build:
   image: martinkylian/ci
   script:
     - export $(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | xargs)
-    - echo "$CI_DEPLOY_PASSWORD" | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - docker-compose build --pull
     - docker-compose push
     - docker logout $CI_REGISTRY
