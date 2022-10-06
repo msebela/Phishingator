@@ -7,11 +7,9 @@ services:
       dockerfile: docker/web/Dockerfile
       args:
         APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT}
-    #image: ${CI_REGISTRY_IMAGE}/phishingator_web
+    image: ${CI_REGISTRY_IMAGE}/phishingator_web:${CI_COMMIT_REF_SLUG}
     restart: always
     container_name: phishingator_web_${ORG}
-    env_file:
-      - .env
     volumes:
       - ./src:/var/www/phishingator/
       - ./docker/web/mail.ini:/usr/local/etc/php/conf.d/mail.ini
@@ -20,21 +18,29 @@ services:
       - ./phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
       - ./phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
       - ./phishingator-data/${ORG}/websites-templates/certs:/etc/letsencrypt/
-    ports:
-      - '8000:80'
-      - '443:443'
-      #- '${IP}:${PORT}:80'
-      #- '${IP}:${PORT}:443'
     depends_on:
       - database
+    networks:
+      - traefik
+      - backend
+    labels:
+      - traefik.docker.network=traefik
+      - traefik.enable=true
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host(`$HOST`)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls=true
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.entrypoints=websecure
+      - traefik.port=80
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.priority=50
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.middlewares=sslheader
+      - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
+
+
 
   database:
     build: docker/database
-    #image: ${CI_REGISTRY_IMAGE}/phishingator_database
+    image: ${CI_REGISTRY_IMAGE}/phishingator_database:${CI_COMMIT_REF_SLUG}
     restart: always
     container_name: phishingator_database_${ORG}
-    env_file:
-      - .env
     volumes:
       - ./phishingator-data/${ORG}/database:/var/lib/mysql/
       - ./phishingator-data/${ORG}/database-dumps:/phishingator-dumps
@@ -42,6 +48,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE}
+    networks:
+      - backend
 
 #  phpmyadmin:
 #    image: phpmyadmin
@@ -56,3 +64,11 @@ services:
 #    ports:
 #      - '1025:1025'
 #      - '8025:8025'
+
+networks:
+  backend:
+  redis:
+  traefik:
+    external:
+      name: traefik
+

@@ -1,0 +1,18 @@
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
+
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: martinkylian/ci
+  script:
+    - export $(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | xargs)
+    - echo "$CI_DEPLOY_PASSWORD" | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
+    - docker-compose build --pull
+    - docker-compose push
+    - docker logout $CI_REGISTRY
