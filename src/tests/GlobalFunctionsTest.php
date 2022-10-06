@@ -6,10 +6,8 @@ use PHPUnit\Framework\TestCase;
 
 require_once '../globalFunctions.php';
 
-final class GlobalFunctionsTest extends TestCase
-{
-  public function testGetEmailPartUsername(): void
-  {
+final class GlobalFunctionsTest extends TestCase {
+  public function testGetEmailPartUsername(): void {
     $input = 'martin.sebela@cesnet.cz';
 
     $result = get_email_part($input, 'username');
@@ -17,8 +15,7 @@ final class GlobalFunctionsTest extends TestCase
     $this->assertSame('martin.sebela', $result);
   }
 
-  public function testGetEmailPartDomain(): void
-  {
+  public function testGetEmailPartDomain(): void {
     $input = 'martin.sebela@cesnet.cz';
 
     $result = get_email_part($input, 'domain');
@@ -26,8 +23,7 @@ final class GlobalFunctionsTest extends TestCase
     $this->assertSame('cesnet.cz', $result);
   }
 
-  public function testGetEmailParts(): void
-  {
+  public function testGetEmailParts(): void {
     $input = 'martin.sebela@cesnet.cz';
 
     $parts = get_email_part($input);
@@ -36,8 +32,7 @@ final class GlobalFunctionsTest extends TestCase
     $this->assertSame('cesnet.cz', $parts[1]);
   }
 
-  public function testGetEmailPartsFail(): void
-  {
+  public function testGetEmailPartsFail(): void {
     $input = 'martin.sebela-cesnet.cz';
 
     $result = get_email_part($input);
@@ -45,8 +40,7 @@ final class GlobalFunctionsTest extends TestCase
     $this->assertNull($result);
   }
 
-  public function testGetProtocolFromUrl(): void
-  {
+  public function testGetProtocolFromUrl(): void {
     $input = 'https://www.phishingator.cz';
 
     $result = get_protocol_from_url($input);
@@ -54,8 +48,7 @@ final class GlobalFunctionsTest extends TestCase
     $this->assertSame('https', $result);
   }
 
-  public function testGetHostnameFromUrl(): void
-  {
+  public function testGetHostnameFromUrl(): void {
     $input = 'https://phishingator.cesnet.cz';
 
     $result = get_hostname_from_url($input);
@@ -63,8 +56,7 @@ final class GlobalFunctionsTest extends TestCase
     $this->assertSame('phishingator.cesnet.cz', $result);
   }
 
-  public function testGetDomainFromUrl(): void
-  {
+  public function testGetDomainFromUrl(): void {
     $input = 'https://phishingator.cesnet.cz';
 
     $result = get_domain_from_url($input);
@@ -72,8 +64,7 @@ final class GlobalFunctionsTest extends TestCase
     $this->assertSame('cesnet.cz', $result);
   }
 
-  public function testNumberFromString(): void
-  {
+  public function testNumberFromString(): void {
     $input = '256';
 
     $result = get_number_from_get_string($input);
@@ -81,8 +72,7 @@ final class GlobalFunctionsTest extends TestCase
     $this->assertSame(256, $result);
   }
 
-  public function testGetFormattedNumber(): void
-  {
+  public function testGetFormattedNumber(): void {
     $input = 1024256;
 
     $result = get_formatted_number($input);
@@ -90,8 +80,7 @@ final class GlobalFunctionsTest extends TestCase
     $this->assertSame('1 024 256', $result);
   }
 
-  public function testInsertNonBreakingSpaces(): void
-  {
+  public function testInsertNonBreakingSpaces(): void {
     $input = 'Lorem ipsum 1 024.';
 
     $result = insert_nonbreaking_spaces($input);

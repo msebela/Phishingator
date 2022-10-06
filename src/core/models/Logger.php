@@ -78,16 +78,16 @@
       $time = date(LOGGER_DATE_FORMAT);
       $level = str_pad($level, 5, ' ');
 
-      /* Soubor, ve kterém dochází k nějaké akci. */
+      // Soubor, ve kterém dochází k nějaké akci.
       if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['REQUEST_URI'])) {
         $filepath = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
       }
       else {
-        /* Pokud se soubor nepodařilo zjistit, je to pravděpodobně CRON... */
+        // Pokud se soubor nepodařilo zjistit, je to pravděpodobně CRON...
         $filepath = '';
       }
 
-      /* Přidání informace o užvateli, jsou-li k dispozici. */
+      // Přidání informace o užvateli, jsou-li k dispozici.
       if (!empty(PermissionsModel::getUserId())) {
         $user = '[' . PermissionsModel::getUserName() . ' (' . PermissionsModel::getUserId() . ')]';
       }
@@ -95,7 +95,7 @@
         $user = '';
       }
 
-      /* Data (nepovinný parametr). */
+      // Data (nepovinný parametr).
       if ($data != null) {
         $data = '[' . json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ']';
       }

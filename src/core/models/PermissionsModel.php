@@ -78,7 +78,7 @@
       if ($username == null) {
         Logger::error('Při přihlašování se nepodařilo načíst uživatelské jméno uživatele z SSO.');
 
-        header('Location: ' . WEB_URL);
+        echo 'Failed to retrieve username from SSO!';
         exit();
       }
 
