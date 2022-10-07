@@ -39,7 +39,7 @@ WORKDIR $APACHE_DOCUMENT_ROOT
 COPY src ../
 RUN chown -R www-data:www-data .
 
-RUN touch ../logs/log.log && chmod 777 ../logs/log.log
+RUN mkdir ../logs && touch ../logs/log.log && chmod 777 ../logs/log.log
 RUN mkdir ../temp && chmod 777 ../temp
 RUN chmod 777 ../templates/sites-config
 RUN chmod +x ../verify-credentials.kerberos.sh
