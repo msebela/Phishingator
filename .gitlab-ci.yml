@@ -13,7 +13,7 @@ build:
   environment:
     name: $CI_COMMIT_REF_SLUG
   script:
-    - . <(printenv CONFIG | grep -v '^#\|^$\|^\s+$')
+    - . <(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | sed 's/^/export /')
     - env
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - docker-compose build --pull
