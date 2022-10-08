@@ -37,7 +37,9 @@ services:
 
 
   database:
-    build: docker/database
+    build:
+      context: .
+      dockerfile: docker/database/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/phishingator_database:${CI_COMMIT_REF_SLUG}
     restart: always
     container_name: phishingator_database_${ORG}
