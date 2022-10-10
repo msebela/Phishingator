@@ -25,6 +25,7 @@ deploy:
   stage: deploy
   image: martinkylian/ci
   before_script:
+    - . <(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | sed 's/^/export /')
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   after_script:
     - docker logout $CI_REGISTRY
