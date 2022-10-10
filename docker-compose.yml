@@ -48,6 +48,7 @@ services:
       - PASSWORD_LEVEL_ANONYMIZATION
       - PHISHING_WEBSITE_SERVER_ADMIN
       - CSRF_KEY
+      - APACHE_DOCUMENT_ROOT
     depends_on:
       - database
     networks:
