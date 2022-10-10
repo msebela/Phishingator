@@ -62,6 +62,7 @@ services:
       - traefik.port=80
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.priority=50
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.middlewares=sslheader
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls.certresolver=leresolver
       - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
 
 
