@@ -16,6 +16,7 @@ services:
       - /data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
       - /data/${ORG}/websites-templates/certs:/etc/letsencrypt/
     environment:
+      - DOCKER_REMOTE_USER      
       - ORG
       - ORG_DOMAIN
       - WEB_URL
