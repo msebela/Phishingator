@@ -101,7 +101,6 @@ services:
 
 networks:
   backend:
-  redis:
   traefik:
     external:
       name: traefik
