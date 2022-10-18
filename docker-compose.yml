@@ -36,6 +36,7 @@ services:
       - OIDC_METADATA_URL
       - OIDC_CLIENT_ID
       - OIDC_CLIENT_SECRET
+      - OIDC_IDP_FILTER
       - OIDC_CRYPTO_PASSPHRASE
       - SMTP_HOST
       - SMTP_PORT
