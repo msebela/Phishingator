@@ -1,0 +1,50 @@
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
+
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: martinkylian/ci
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+  script:
+    - . <(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | sed 's/^/export /')
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+    - docker-compose build --pull
+    - docker-compose push
+    - docker logout $CI_REGISTRY
+
+
+deploy:
+  stage: deploy
+  image: martinkylian/ci
+  before_script:
+    - . <(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | sed 's/^/export /')
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+  after_script:
+    - docker logout $CI_REGISTRY
+  script:
+    - docker-compose pull
+    - docker-compose up -d --no-build --force-recreate
+  variables:
+    COMPOSE_PROJECT_NAME: $CI_COMMIT_REF_SLUG
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+    url: ${WEB_URL}
+    on_stop: stop
+
+stop:
+  stage: deploy
+  when: manual
+  image: martinkylian/ci
+  script:
+    - docker-compose down
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+    action: stop

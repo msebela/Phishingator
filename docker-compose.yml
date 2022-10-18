@@ -7,41 +7,84 @@ services:
       dockerfile: docker/web/Dockerfile
       args:
         APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT}
-    #image: ${CI_REGISTRY_IMAGE}/phishingator_web
+    image: ${CI_REGISTRY_IMAGE}/phishingator_web:${CI_COMMIT_REF_SLUG}
     restart: always
     container_name: phishingator_web_${ORG}
-    env_file:
-      - .env
     volumes:
-      - ./src:/var/www/phishingator/
-      - ./docker/web/mail.ini:/usr/local/etc/php/conf.d/mail.ini
-      - ./docker/web/msmtprc:/etc/msmtprc
-      - ./phishingator-data/${ORG}/logs:/var/www/phishingator/logs
-      - ./phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
-      - ./phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
-      - ./phishingator-data/${ORG}/websites-templates/certs:/etc/letsencrypt/
-    ports:
-      - '8000:80'
-      - '443:443'
-      #- '${IP}:${PORT}:80'
-      #- '${IP}:${PORT}:443'
+      - /data/${ORG}/logs:/var/www/phishingator/logs
+      - /data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
+      - /data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
+      - /data/${ORG}/websites-templates/certs:/etc/letsencrypt/
+    environment:
+      - DOCKER_REMOTE_USER      
+      - ORG
+      - ORG_DOMAIN
+      - WEB_URL
+      - DB_USERNAME
+      - DB_PASSWORD
+      - DB_DATABASE
+      - LDAP_HOSTNAME
+      - LDAP_USERNAME
+      - LDAP_PASSWORD
+      - LDAP_BASE_DN
+      - LDAP_USERS_DN
+      - LDAP_USER_ATTR_EMAIL
+      - LDAP_GROUPS_DN
+      - LDAP_GROUPS_ATTR_MEMBER
+      - LDAP_DEPARTMENTS_DN
+      - LDAP_ROOT_DEPARTMENTS_FILTER_DN
+      - OIDC_METADATA_URL
+      - OIDC_CLIENT_ID
+      - OIDC_CLIENT_SECRET
+      - OIDC_IDP_FILTER
+      - OIDC_CRYPTO_PASSPHRASE
+      - SMTP_HOST
+      - SMTP_PORT
+      - SMTP_TLS
+      - SMTP_USERNAME
+      - SMTP_PASSWORD
+      - TEST_USERNAME
+      - TEST_PASSWORD
+      - NOTIFICATION_SENDER
+      - AUTHENTICATION_TYPE
+      - PASSWORD_LEVEL_ANONYMIZATION
+      - PHISHING_WEBSITE_SERVER_ADMIN
+      - CSRF_KEY
+      - APACHE_DOCUMENT_ROOT
     depends_on:
       - database
+    networks:
+      - traefik
+      - backend
+    labels:
+      - traefik.docker.network=traefik
+      - traefik.enable=true
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host(`$HOST`)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls=true
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.entrypoints=websecure
+      - traefik.port=80
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.priority=50
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.middlewares=sslheader
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls.certresolver=leresolver
+      - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
+
+
 
   database:
-    build: docker/database
-    #image: ${CI_REGISTRY_IMAGE}/phishingator_database
+    build:
+      context: .
+      dockerfile: docker/database/Dockerfile
+    image: ${CI_REGISTRY_IMAGE}/phishingator_database:${CI_COMMIT_REF_SLUG}
     restart: always
     container_name: phishingator_database_${ORG}
-    env_file:
-      - .env
     volumes:
-      - ./phishingator-data/${ORG}/database:/var/lib/mysql/
-      - ./phishingator-data/${ORG}/database-dumps:/phishingator-dumps
-      - ./docker/database:/docker-entrypoint-initdb.d:ro
+      - /data/${ORG}/database:/var/lib/mysql/
+      - /data/${ORG}/database-dumps:/phishingator-dumps
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE}
+    networks:
+      - backend
 
 #  phpmyadmin:
 #    image: phpmyadmin
@@ -56,3 +99,10 @@ services:
 #    ports:
 #      - '1025:1025'
 #      - '8025:8025'
+
+networks:
+  backend:
+  traefik:
+    external:
+      name: traefik
+
