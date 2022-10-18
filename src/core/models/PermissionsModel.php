@@ -283,9 +283,11 @@
      * Odhlásí právě přihlášeného uživatele ze systému.
      */
     public static function logout() {
+      session_destroy();
+
       unset($_SESSION['user']);
 
-      header('Location: ' . WEB_URL . '/Shibboleth.sso/Logout');
+      header('Location: ' . WEB_URL);
       exit();
     }
 
