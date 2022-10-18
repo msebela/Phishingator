@@ -31,7 +31,7 @@ deploy:
     - docker logout $CI_REGISTRY
   script:
     - docker-compose pull
-    - docker-compose up -d --no-build
+    - docker-compose up -d --no-build --force-recreate
   variables:
     COMPOSE_PROJECT_NAME: $CI_COMMIT_REF_SLUG
   environment:
