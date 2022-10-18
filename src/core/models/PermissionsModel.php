@@ -37,8 +37,10 @@
       else {
         Logger::error('Při registraci se nepodařilo načíst e-mail uživatele z LDAP.', $username);
 
+        var_dump($_SERVER);
+
         // Pokud se nepodaří načíst e-mail z LDAP, přesměrovat uživatele na úvodní stránku systému.
-        header('Location: ' . WEB_URL);
+        //header('Location: ' . WEB_URL);
         exit();
       }
     }
