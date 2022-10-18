@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+      args:
+        APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT}
+    restart: always
+    container_name: phishingator_web_${ORG}
+    env_file:
+      - .env
+    volumes:
+      - ./src:/var/www/phishingator/
+      - ./docker/web/mail.ini:/usr/local/etc/php/conf.d/mail.ini
+      - ./docker/web/msmtprc:/etc/msmtprc
+      - ./phishingator-data/${ORG}/logs:/var/www/phishingator/logs
+      - ./phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
+      - ./phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
+      - ./phishingator-data/${ORG}/websites-templates/certs:/etc/letsencrypt/
+    ports:
+      - '8000:80'
+      - '443:443'
+    depends_on:
+      - database
+
+  database:
+    build: docker/database
+    restart: always
+    container_name: phishingator_database_${ORG}
+    env_file:
+      - .env
+    volumes:
+      - ./phishingator-data/${ORG}/database:/var/lib/mysql/
+      - ./phishingator-data/${ORG}/database-dumps:/phishingator-dumps
+      - ./docker/database:/docker-entrypoint-initdb.d:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+     - '8080:80'
+    environment:
+      - PMA_HOST=${DB_HOST}
+
+#  smtp:
+#    image: mailhog/mailhog
+#    ports:
+#      - '1025:1025'
+#      - '8025:8025'

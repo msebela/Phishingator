@@ -16,17 +16,17 @@
       $newUser = new UsersModel();
       $ldap = new LdapModel();
 
-      // Získání e-mailu uživatele z LDAP.
-      $newUser->email = $ldap->getEmailByUsername($username);
+      // Získání uživatelského jména uživatele z LDAP.
+      $newUser->username = $ldap->getUsernameByEmail($username);
       $ldap->close();
 
       // Pokud se podařilo z LDAP získat e-mail, dojde k registraci nového uživatele.
-      if (!empty($newUser->email) && filter_var($newUser->email, FILTER_VALIDATE_EMAIL)) {
+      if (!empty($newUser->username) && filter_var($username, FILTER_VALIDATE_EMAIL)) {
         Logger::info('Dobrovolná registrace nového uživatele.', $username);
 
         $newUser->dbTableName = 'phg_users';
 
-        $newUser->username = $username;
+        $newUser->email = $username;
         $newUser->idUserGroup = NEW_USER_DEFAULT_GROUP_ID;
         $newUser->recieveEmail = NEW_USER_PARTICIPATION;
         $newUser->emailLimit = NEW_USER_PARTICIPATION_EMAILS_LIMIT;
@@ -36,8 +36,6 @@
       }
       else {
         Logger::error('Při registraci se nepodařilo načíst e-mail uživatele z LDAP.', $username);
-
-        var_dump($_SERVER);
 
         // Pokud se nepodaří načíst e-mail z LDAP, přesměrovat uživatele na úvodní stránku systému.
         //header('Location: ' . WEB_URL);
@@ -84,7 +82,7 @@
         exit();
       }
 
-      $user = UsersModel::getUserByUsername($username);
+      $user = UsersModel::getUserByEmail($username);
 
       // Pokud je již uživatel registrován...
       if (!empty($user)) {

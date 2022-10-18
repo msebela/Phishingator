@@ -125,10 +125,14 @@
      */
     public static function getUserByEmail($email) {
       return Database::querySingle('
-              SELECT `id_user`, `id_user_group`, `url`, `username`, `email`, `recieve_email`, `email_limit`
+              SELECT `id_user`, phg_users.id_user_group, `url`, `username`, `email`, `recieve_email`, `email_limit`, `value` AS `role`
               FROM `phg_users`
+              JOIN `phg_users_groups`
+              ON phg_users.id_user_group = phg_users_groups.id_user_group
+              JOIN `phg_users_roles`
+              ON phg_users_groups.role = phg_users_roles.id_user_role
               WHERE `email` = ?
-              AND `visible` = 1
+              AND phg_users.visible = 1
       ', $email);
     }
 

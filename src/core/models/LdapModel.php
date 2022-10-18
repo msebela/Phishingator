@@ -158,6 +158,27 @@
 
 
     /**
+     * Vrátí uživatelské jméno na základě e-mailu uživatele.
+     *
+     * @param string $email            E-mail uživatele
+     * @return string|null             Uživatelské jméno nebo NULL
+     */
+    public function getUsernameByEmail($email) {
+      $username = null;
+
+      if (!empty($email)) {
+        $info = $this->getDataByFilter(LDAP_USERS_DN, 'mail=' . $email);
+
+        if (isset($info[0]['uid'][0])) {
+          $username = $info[0]['uid'][0];
+        }
+      }
+
+      return $username;
+    }
+
+
+    /**
      * Vrátí e-mail uživatele (první v pořadí) v závislosti na jeho uživatelském jménu z LDAP.
      *
      * @param string $username         Uživatelské jméno
