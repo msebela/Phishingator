@@ -107,6 +107,7 @@
     </a>
   </div>
 
+  <?php if ($countRecievedEmails > 0): ?>
   <div class="card bg-light text-center">
     <div class="card-body">
       <h4 class="card-title mb-0">
@@ -115,6 +116,8 @@
       </h4>
     </div>
   </div>
+  <?php endif; ?>
+
   <?php endif; ?>
 </div>
 
