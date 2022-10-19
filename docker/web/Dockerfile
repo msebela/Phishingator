@@ -26,6 +26,10 @@ RUN a2enmod rewrite
 # Certbot
 RUN apt-get -y install certbot
 
+# SSMTP
+RUN apt-get -y install ssmtp
+COPY docker/web/ssmtp.conf /etc/ssmtp/ssmtp.conf
+
 # LDAP
 COPY docker/web/ldap.conf /etc/ldap
 
