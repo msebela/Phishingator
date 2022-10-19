@@ -102,6 +102,7 @@ services:
 
 networks:
   backend:
+    external: true
   traefik:
     external:
       name: traefik
