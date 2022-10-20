@@ -1,6 +1,6 @@
 <?php
-  require $_SERVER['DOCUMENT_ROOT'] . '../config.php';
-  require $_SERVER['DOCUMENT_ROOT'] . '../globalFunctions.php';
+  require $_SERVER['DOCUMENT_ROOT'] . '/../config.php';
+  require $_SERVER['DOCUMENT_ROOT'] . '/../globalFunctions.php';
 
   init_locales();
 
