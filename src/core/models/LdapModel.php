@@ -146,7 +146,7 @@
         $attribute = substr($dn, strlen($attributeName), $attributeSeparatorPos - strlen($attributeName));
       }
       // např. uid=uzivatel
-      else if ($attributePos !== false && $attributeSeparatorPos === false) {
+      elseif ($attributePos !== false && $attributeSeparatorPos === false) {
         $attribute = substr($dn, strlen($attributeName));
       }
       else {

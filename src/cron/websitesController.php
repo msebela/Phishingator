@@ -25,9 +25,13 @@
   $files = scandir(PHISHING_WEBSITE_APACHE_SITES_DIR);
   $changes = false;
 
+  $configFiles = 0;
+
   foreach ($files as $file) {
-    if (strpos($file, '.conf.') !== false) {
+    if (strpos($file, '.conf') !== false) {
       echo $file . "\n";
+
+      $configFiles++;
 
       $filepath = PHISHING_WEBSITE_APACHE_SITES_DIR . $file;
 
@@ -59,12 +63,23 @@
         }
 
         // Deaktivace podvodné stránky v Apache.
-        if (strpos($file, '.conf.delete') !== false) {
+        elseif (strpos($file, '.conf.delete') !== false) {
           exec('a2dissite ' . $serverName);
           unlink($filepath);
 
           echo 'a2dissite ' . $serverName . "\n";
           echo 'unlink(' . $filepath . ')' . "\n";
+
+          $changes = true;
+        }
+
+        // Aktivace již z dřívějška existující podvodné stránky v Apache.
+        elseif (!file_exists(APACHE_CONF_SITES_DIR . $file)) {
+          copy($filepath, APACHE_CONF_SITES_DIR . $serverName . '.conf');
+          echo 'copy(' . $filepath . ', ' . APACHE_CONF_SITES_DIR . $serverName . '.conf)' . "\n";
+
+          exec('a2ensite ' . $serverName);
+          echo 'a2ensite ' . $serverName . "\n";
 
           $changes = true;
         }
