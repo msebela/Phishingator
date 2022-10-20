@@ -47,4 +47,5 @@ RUN mkdir ../logs && touch ../logs/log.log && chmod 777 ../logs/log.log
 RUN mkdir ../temp && chmod 777 ../temp
 RUN mkdir ../templates/sites-config && chmod 777 ../templates/sites-config
 RUN chmod +x ../verify-credentials.kerberos.sh
-RUN cron
+
+CMD cron
