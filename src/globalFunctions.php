@@ -24,6 +24,15 @@
 
 
   /**
+   * Upraví nastavení PHP dle požadované lokalizace.
+   */
+  function init_locales() {
+    date_default_timezone_set(PHP_TIME_ZONE);
+    mb_internal_encoding(PHP_MULTIBYTE_ENCODING);
+  }
+
+
+  /**
    * Nastaví zabezpečené HTTP hlavičky.
    */
   function init_http_security_headers() {

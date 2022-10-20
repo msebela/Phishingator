@@ -8,10 +8,9 @@
 
   spl_autoload_register('autoload_functions');
 
+  init_locales();
   init_secure_session_start();
   init_http_security_headers();
-
-  mb_internal_encoding(PHP_MULTIBYTE_ENCODING);
 
   Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
 

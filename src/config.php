@@ -1,5 +1,8 @@
 <?php
-  /* --- PHP MULTIBYTE KÓDOVÁNÍ --- */
+  /* --- NASTAVENÍ PHP DLE LOKALIZACE --- */
+  /** Časová zóna, kde běží instance Phishingatoru. */
+  define('PHP_TIME_ZONE', 'Europe/Prague');
+
   /** Multibyte kódování pro PHP funkce pracující s řetězci. */
   define('PHP_MULTIBYTE_ENCODING', 'utf-8');
 
