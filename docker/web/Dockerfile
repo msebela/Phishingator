@@ -1,5 +1,6 @@
 FROM php:7.4-apache
 
+ENV TZ="Europe/Prague"
 ARG APACHE_DOCUMENT_ROOT
 
 # PHP
