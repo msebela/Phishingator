@@ -34,13 +34,13 @@
       $serverName = preg_match_in_file($filepath, '/ServerName (.*)/');
       $serverNameWithProtocol = strpos($serverName, 'http') !== 0 ? 'http://' . $serverName : $serverName;
 
-      if (filter_var($serverName, FILTER_VALIDATE_URL)) {
+      if (filter_var($serverNameWithProtocol, FILTER_VALIDATE_URL)) {
         // Aktivace podvodné stránky v Apache.
         if (strpos($file, '.conf.new') !== false) {
           $documenRoot = preg_match_in_file($filepath, '/DocumentRoot (.*)/');
           $https = preg_match_in_file($filepath, '/(<VirtualHost \*:443>)/');
 
-          copy($filepath, APACHE_SITES_DIR . $serverName . '.conf');
+          copy($filepath, APACHE_CONF_SITES_DIR . $serverName . '.conf');
           echo 'copy(' . $filepath . ', ' . APACHE_CONF_SITES_DIR . $serverName . '.conf)' . "\n";
 
           if (!empty($https) && !empty($documenRoot)) {
