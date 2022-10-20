@@ -73,7 +73,7 @@
   }
 
   if ($changes) {
-    exec('systemctl reload apache2');
+    exec('apachectl graceful');
 
-    echo 'systemctl reload apache2' . "\n";
+    echo 'apachectl graceful' . "\n";
   }
