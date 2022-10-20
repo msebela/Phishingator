@@ -13,7 +13,7 @@ services:
     volumes:
       - /data/${ORG}/logs:/var/www/phishingator/logs
       - /data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
-      - /data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites
+      - /data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
       - /data/${ORG}/websites-templates/certs:/etc/letsencrypt/
     environment:
       - DOCKER_REMOTE_USER      

@@ -30,7 +30,7 @@
     <div class="custom-control custom-checkbox my-1 mr-sm-2">
       <input type="checkbox" class="custom-control-input" id="<?= $formPrefix ?>active" name="<?= $formPrefix ?>active"<?= (($inputsValues['active']) ? ' checked' : ''); ?>>
       <label class="custom-control-label" for="<?= $formPrefix ?>active">Aktivovat podvodnou stránku na webovém serveru (do 5 min.)</label>
-      <small class="form-text text-muted">Změna proběhne do 5&nbsp;minut. Předpokladem je, aby byl u&nbsp;domény (popř. subdomény) v&nbsp;DNS nasměrován záznam typu <code>A</code> na IP adresu serveru, kde běží Phishingator. Po aktivaci budou moci podvodnou stránku využívat ve svých phishingových kampaních i&nbsp;<span class="badge badge-warning">správci testů</span>.</small>
+      <small class="form-text text-muted">Změna proběhne do 5&nbsp;minut. Předpokladem je, aby byl u&nbsp;domény (popř. subdomény) v&nbsp;DNS nasměrován záznam typu A na IP adresu serveru, kde běží Phishingator. Po aktivaci budou moci podvodnou stránku využívat ve svých phishingových kampaních i&nbsp;<span class="badge badge-warning">správci testů</span>.</small>
     </div>
   </div>
 

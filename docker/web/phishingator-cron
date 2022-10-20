@@ -1,3 +1,5 @@
+PATH=/usr/bin:/bin:/usr/sbin/
+
 # m h  dom mon dow   command
 */5 * * * * /usr/local/bin/php /var/www/phishingator/cron/mailSender.php >> /var/www/phishingator/logs/mail.log
 */2 * * * * /usr/local/bin/php /var/www/phishingator/cron/notificationsSender.php >> /var/www/phishingator/logs/notifications.log
