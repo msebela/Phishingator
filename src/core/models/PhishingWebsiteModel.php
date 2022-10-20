@@ -624,7 +624,7 @@
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     private function isURLValidDNSRecord() {
-      if (gethostbyname($this->url) != $_SERVER['SERVER_ADDR']) {
+      if (gethostbyname(get_hostname_from_url($this->url)) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
         throw new UserError('U zadané domény (popř. subdomény) není v DNS nasměrován záznam typu A na IP adresu serveru, kde běží Phishingator.', MSG_ERROR);
       }
     }
