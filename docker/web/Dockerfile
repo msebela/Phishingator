@@ -48,4 +48,4 @@ RUN mkdir ../temp && chmod 777 ../temp
 RUN mkdir ../templates/sites-config && chmod 777 ../templates/sites-config
 RUN chmod +x ../verify-credentials.kerberos.sh
 
-CMD cron
+CMD ["cron", "-f"]
