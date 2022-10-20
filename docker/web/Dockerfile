@@ -14,7 +14,7 @@ RUN apt-get update && apt-get -y install cron
 COPY docker/web/phishingator-cron /etc/cron.d/phishingator-cron
 RUN chmod 0644 /etc/cron.d/phishingator-cron
 RUN crontab /etc/cron.d/phishingator-cron
-RUN cron
+RUN /etc/init.d/cron start
 
 # OIDC
 RUN apt-get -y install libapache2-mod-auth-openidc
