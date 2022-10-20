@@ -14,6 +14,7 @@ RUN apt-get update && apt-get -y install cron
 COPY docker/web/phishingator-cron /etc/cron.d/phishingator-cron
 RUN chmod 0644 /etc/cron.d/phishingator-cron
 RUN crontab /etc/cron.d/phishingator-cron
+RUN touch /var/log/cron.log
 
 # OIDC
 RUN apt-get -y install libapache2-mod-auth-openidc
@@ -48,4 +49,4 @@ RUN mkdir ../temp && chmod 777 ../temp
 RUN mkdir ../templates/sites-config && chmod 777 ../templates/sites-config
 RUN chmod +x ../verify-credentials.kerberos.sh
 
-CMD ["cron", "-f"]
+CMD cron && /usr/sbin/apache2ctl -D FOREGROUND
