@@ -1,6 +1,5 @@
 .idea
 .env
 .env.test
-src/logs
 phishingator-data
 src/tests/*.phar
