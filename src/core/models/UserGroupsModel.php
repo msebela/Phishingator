@@ -46,21 +46,21 @@
     public function load($data) {
       parent::load($data);
 
-      /* Odstranění vícenásobných oddělovačů ze seznamu povolených LDAP skupin. */
+      // Odstranění vícenásobných oddělovačů ze seznamu povolených LDAP skupin.
       $this->ldapGroups = preg_replace(
         '/' . LDAP_GROUPS_DELIMITER . LDAP_GROUPS_DELIMITER . '+/',
         LDAP_GROUPS_DELIMITER,
         $this->ldapGroups
       );
 
-      /* Odstranění přebytečných oddělovačů z konce a začátku seznamu povolených LDAP skupin. */
+      // Odstranění přebytečných oddělovačů z konce a začátku seznamu povolených LDAP skupin.
       $this->ldapGroups = trim(
         $this->ldapGroups, LDAP_GROUPS_DELIMITER
       );
 
-      /* Jestliže se jedná o rodičovskou skupinu, nastavit hodnotu rodiče na -1,
-         abychom se vyhnuli následným kontrolám, které se vztahují na nově
-         vkládané skupiny (tedy na skupiny, které mají nějakého rodiče). */
+      // Jestliže se jedná o rodičovskou skupinu, nastavit hodnotu rodiče na -1,
+      // abychom se vyhnuli následným kontrolám, které se vztahují na nově
+      // vkládané skupiny (tedy na skupiny, které mají nějakého rodiče).
       if (isset($this->dbRecordData)) {
         $this->idParentGroup = $this->dbRecordData['id_parent_group'];
       }
@@ -82,14 +82,14 @@
         'ldap_groups' => $this->ldapGroups
       ];
 
-      /* Pokud se nejedná o některou z rodičovských skupin, ukládat i další údaje. */
+      // Pokud se nejedná o některou z rodičovských skupin, ukládat i další údaje.
       if ($this->idParentGroup !== NULL) {
         $group['id_parent_group'] = $this->role;
         $group['role'] = $this->role;
 
         $role = $this->getRole($this->role);
 
-        /* Pokud není zvoleno oprávnění "administrátor" nebo "správce testů", nemá smysl uvažovat LDAP skupiny. */
+        // Pokud není zvoleno oprávnění "administrátor" nebo "správce testů", nemá smysl uvažovat LDAP skupiny.
         if ($role['value'] == PERMISSION_USER) {
           $group['ldap_groups'] = '';
         }
@@ -132,7 +132,7 @@
               WHERE `visible` = 1
       ');
 
-      /* Zjištění dalších údajů nutných pro výpis do seznamu. */
+      // Zjištění dalších údajů nutných pro výpis do seznamu.
       foreach ($result as $key => $group) {
         $result[$key]['role_color'] = self::getColorGroupRole($group['value']);
         $result[$key]['count_users'] = self::getCountOfUsersInGroup($group['id_user_group']);
@@ -201,7 +201,7 @@
       $query = 'SELECT `id_user_role`, `name`, `value`
                 FROM `phg_users_roles`';
 
-      /* Nezahrnovat do výsledků oprávnění administrátora. */
+      // Nezahrnovat do výsledků oprávnění administrátora.
       if ($noAdminRole) {
         $query .= ' WHERE `value` != ' . PERMISSION_ADMIN;
       }
