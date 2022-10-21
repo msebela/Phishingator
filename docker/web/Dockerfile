@@ -49,8 +49,6 @@ WORKDIR $APACHE_DOCUMENT_ROOT
 COPY src ../
 RUN chown -R www-data:www-data .
 
-RUN touch ../logs/log.log && chmod 777 ../logs/log.log
-RUN mkdir -p ../temp && chmod 777 ../temp
-RUN chmod 777 ../templates/sites-config
+RUN mkdir ../temp && chmod 777 ../temp
 
 CMD /set-apache-envs.sh && cron && /usr/sbin/apache2ctl -D FOREGROUND
