@@ -20,8 +20,12 @@ RUN touch /var/log/cron.log
 RUN apt-get -y install libapache2-mod-auth-openidc
 
 # Apache
-COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/000-default.conf
+COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/phishingator.conf
 COPY docker/web/security.conf /etc/apache2/conf-enabled/
+
+RUN apt-get -y install gettext
+RUN envsubst < "/etc/apache2/sites-enabled/phishingator.conf" > "/etc/apache2/sites-enabled/000-default.conf"
+
 RUN a2enmod rewrite
 
 # Certbot
