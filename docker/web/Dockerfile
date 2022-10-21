@@ -24,6 +24,7 @@ COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/phishingator.conf
 COPY docker/web/security.conf /etc/apache2/conf-enabled/
 
 RUN apt-get -y install gettext
+RUN apt-get -y install source
 RUN source ~/.bashrc && envsubst < "/etc/apache2/sites-enabled/phishingator.conf" > "/etc/apache2/sites-enabled/000-default.conf"
 
 RUN a2enmod rewrite
