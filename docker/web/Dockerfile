@@ -24,8 +24,8 @@ COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/phishingator.conf
 COPY docker/web/security.conf /etc/apache2/conf-enabled/
 
 RUN apt-get -y install gettext
-RUN apt-get -y install source
-RUN source ~/.bashrc && envsubst < "/etc/apache2/sites-enabled/phishingator.conf" > "/etc/apache2/sites-enabled/000-default.conf"
+COPY docker/web/set-apache-envs.sh /set-apache-envs.sh
+RUN chmod +x /set-apache-envs.sh
 
 RUN a2enmod rewrite
 
@@ -52,6 +52,5 @@ RUN chown -R www-data:www-data .
 RUN mkdir ../logs && touch ../logs/log.log && chmod 777 ../logs/log.log
 RUN mkdir ../temp && chmod 777 ../temp
 RUN mkdir ../templates/sites-config && chmod 777 ../templates/sites-config
-RUN chmod +x ../verify-credentials.kerberos.sh
 
-CMD cron && /usr/sbin/apache2ctl -D FOREGROUND
+CMD /set-apache-envs.sh && cron && /usr/sbin/apache2ctl -D FOREGROUND
