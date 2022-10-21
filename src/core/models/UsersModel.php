@@ -471,7 +471,7 @@
         $usernames = [];
 
         foreach ($data as $record) {
-          $usernames[] = $record['username'];
+          $usernames[] = $record['email'];
         }
 
         return $usernames;

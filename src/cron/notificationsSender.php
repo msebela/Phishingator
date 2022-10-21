@@ -4,9 +4,9 @@
 
   require $_SERVER['DOCUMENT_ROOT'] . '/base.php';
 
-  require $_SERVER['DOCUMENT_ROOT'] . '../phpmailer/src/Exception.php';
-  require $_SERVER['DOCUMENT_ROOT'] . '../phpmailer/src/PHPMailer.php';
-  require $_SERVER['DOCUMENT_ROOT'] . '../phpmailer/src/SMTP.php';
+  require $_SERVER['DOCUMENT_ROOT'] . '/../phpmailer/src/Exception.php';
+  require $_SERVER['DOCUMENT_ROOT'] . '/../phpmailer/src/PHPMailer.php';
+  require $_SERVER['DOCUMENT_ROOT'] . '/../phpmailer/src/SMTP.php';
 
   Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
 

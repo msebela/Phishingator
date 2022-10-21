@@ -38,7 +38,7 @@
         <li class="nav-item">
           <p class="nav-link text-white">
             <span data-feather="user"></span>
-            <?= $_SESSION['user']['username'] ?> <span class="d-none d-sm-inline text-light">(<?= $userRoleText ?>)</span>
+            <?= get_email_part($_SESSION['user']['email'], 'username') ?> <span class="d-none d-sm-inline text-light">(<?= $userRoleText ?>)</span>
           </p>
         </li>
         <?php if ($userPermission <= PERMISSION_TEST_MANAGER): ?>

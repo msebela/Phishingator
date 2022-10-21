@@ -466,8 +466,8 @@
           $username = get_email_part($recipient['email'], 'username');
           $domain = get_email_part($recipient['email'], 'domain');
 
-          /* Pokud se nepodaří nalézt e-mail dobrovolníka v LDAPu, nezobrazovat jej mezi dobrovolníky. */
-          if ($ldap->getEmailByUsername($username) == null) {
+          // Pokud se nepodaří nalézt uživatelské jméno dobrovolníka v LDAPu, nezobrazovat jej mezi dobrovolníky.
+          if ($ldap->getUsernameByEmail($recipient['email']) == null) {
             unset($result[$key]);
             continue;
           }
@@ -480,7 +480,7 @@
 
           /* Určení barvy uživatele na základě předpřipravených skupin. */
           $result[$key]['color'] = UserGroupsModel::getColorGroupRoleByUsername(
-            $username, ['admin' => $adminUsers, 'testmanager' => $testManagerUsers]
+            $recipient['email'], ['admin' => $adminUsers, 'testmanager' => $testManagerUsers]
           );
         }
 
@@ -541,7 +541,7 @@
 
             /* Určení barvy uživatele na základě předpřipravených skupin. */
             $usersInGroup[$key]['color'] = UserGroupsModel::getColorGroupRoleByUsername(
-              $username, ['admin' => $adminUsers, 'testmanager' => $testManagerUsers]
+              $user, ['admin' => $adminUsers, 'testmanager' => $testManagerUsers]
             );
           }
 
@@ -610,20 +610,22 @@
       $username = get_email_part($email, 'username');
 
       if (!empty($username)) {
-        $user = UsersModel::getUserByUsername($username);
-        $idUser = $user['id_user'];
+        $user = UsersModel::getUserByEmail($email);
+        $idUser = $user['id_user'] ?? null;
 
-        /* Pokud uživatel neexistuje, je nutné ho založit v databázi
-           a teprve poté jej přidat jako příjemce do dané tabulky. */
-        if (empty($idUser)) {
+        // Pokud uživatel neexistuje, je nutné ho založit v databázi
+        // a teprve poté jej přidat jako příjemce do dané tabulky.
+        if ($idUser == null) {
           $newUser = new UsersModel();
           $ldap = new LdapModel();
 
-          /* Získání e-mailu uživatele z LDAP. */
-          $newUser->email = $ldap->getEmailByUsername($username);
+          $newUser->email = $email;
 
-          /* Pokud se podařilo z LDAPu získat e-mail, dojde k nucené registraci nového uživatele. */
-          if (!empty($newUser->email)) {
+          // Získání uživatelského jména uživatele z LDAP.
+          $newUser->username = $ldap->getUsernameByEmail($email);
+
+          // Pokud se podařilo z LDAPu získat uživatelské jméno, dojde k nucené registraci nového uživatele.
+          if (!empty($newUser->email) && !empty($newUser->username)) {
             Logger::info('Registrace nového uživatele v rámci kampaně.', $username);
 
             $newUser->dbTableName = 'phg_users';
@@ -641,9 +643,9 @@
           }
         }
 
-        /* Znovu ověření existence ID uživatele pro případ, že by se
-           nepodařilo založit nového uživatele v databázi. */
-        if (!empty($idUser)) {
+        // Znovu ověření existence ID uživatele pro případ, že by se
+        // nepodařilo založit nového uživatele v databázi.
+        if ($idUser != null) {
           $recipient = [
             'id_campaign' => $idCampaign,
             'id_user' => $idUser,
@@ -670,10 +672,8 @@
      * @param string $email            E-mail příjemce
      */
     public function unsignRecipient($idCampaign, $email) {
-      $username = get_email_part($email, 'username');
-
-      if (!empty($username)) {
-        $user = UsersModel::getUserByUsername($username);
+      if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $user = UsersModel::getUserByEmail($email);
 
         $unsignRecipient = [
           'id_campaign' => $idCampaign,

@@ -81,7 +81,7 @@
         $results = ldap_search($this->ldapConnection, $ldapDn . ',' . LDAP_BASE_DN, $filter);
         $countRecords = ldap_count_entries($this->ldapConnection, $results);
 
-        if ($countRecords == 1) {
+        if ($countRecords >= 1) {
           $data = ldap_get_entries($this->ldapConnection, $results);
         }
       }

@@ -25,14 +25,8 @@
   $files = scandir(PHISHING_WEBSITE_APACHE_SITES_DIR);
   $changes = false;
 
-  $configFiles = 0;
-
   foreach ($files as $file) {
     if (strpos($file, '.conf') !== false) {
-      echo $file . "\n";
-
-      $configFiles++;
-
       $filepath = PHISHING_WEBSITE_APACHE_SITES_DIR . $file;
 
       $serverName = preg_match_in_file($filepath, '/ServerName (.*)/');
@@ -45,6 +39,7 @@
           $https = preg_match_in_file($filepath, '/(<VirtualHost \*:443>)/');
 
           copy($filepath, APACHE_CONF_SITES_DIR . $serverName . '.conf');
+
           echo 'copy(' . $filepath . ', ' . APACHE_CONF_SITES_DIR . $serverName . '.conf)' . "\n";
 
           if (!empty($https) && !empty($documenRoot)) {
@@ -76,9 +71,9 @@
         // Aktivace již z dřívějška existující podvodné stránky v Apache.
         elseif (!file_exists(APACHE_CONF_SITES_DIR . $file)) {
           copy($filepath, APACHE_CONF_SITES_DIR . $serverName . '.conf');
-          echo 'copy(' . $filepath . ', ' . APACHE_CONF_SITES_DIR . $serverName . '.conf)' . "\n";
-
           exec('a2ensite ' . $serverName);
+
+          echo 'copy(' . $filepath . ', ' . APACHE_CONF_SITES_DIR . $serverName . '.conf)' . "\n";
           echo 'a2ensite ' . $serverName . "\n";
 
           $changes = true;

@@ -7,35 +7,34 @@
    */
   class PermissionsModel {
     /**
-     * Registruje do systému nového uživatele na základě jeho uživatelského jména,
-     * které se před samotnou registrací ověří v LDAPu.
+     * Registruje do systému nového uživatele na základě jeho identity získané z SSO,
      *
-     * @param string $username         Uživatelské jméno
+     * @param string $identity         Identita uživatele
      */
-    private function register($username) {
+    private function register($identity) {
       $newUser = new UsersModel();
       $ldap = new LdapModel();
 
       // Získání uživatelského jména uživatele z LDAP.
-      $newUser->username = $ldap->getUsernameByEmail($username);
+      $newUser->username = $ldap->getUsernameByEmail($identity);
       $ldap->close();
 
-      // Pokud se podařilo z LDAP získat e-mail, dojde k registraci nového uživatele.
-      if (!empty($newUser->username) && filter_var($username, FILTER_VALIDATE_EMAIL)) {
-        Logger::info('Dobrovolná registrace nového uživatele.', $username);
+      // Pokud se podařilo z LDAP získat uživatelské jméno, dojde k registraci nového uživatele.
+      if (!empty($newUser->username) && filter_var($identity, FILTER_VALIDATE_EMAIL)) {
+        Logger::info('Dobrovolná registrace nového uživatele.', $identity);
 
         $newUser->dbTableName = 'phg_users';
 
-        $newUser->email = $username;
+        $newUser->email = $identity;
         $newUser->idUserGroup = NEW_USER_DEFAULT_GROUP_ID;
         $newUser->recieveEmail = NEW_USER_PARTICIPATION;
         $newUser->emailLimit = NEW_USER_PARTICIPATION_EMAILS_LIMIT;
 
         $newUser->insertUser();
-        $this->login($username);
+        $this->login($identity);
       }
       else {
-        Logger::error('Při registraci se nepodařilo načíst e-mail uživatele z LDAP.', $username);
+        Logger::error('Při registraci se nepodařilo načíst e-mail uživatele z LDAP.', $identity);
 
         // Pokud se nepodaří načíst e-mail z LDAP, přesměrovat uživatele na úvodní stránku systému.
         //header('Location: ' . WEB_URL);
@@ -69,25 +68,25 @@
      * (tedy typicky po automatické registraci), dojde k přesměrování do sekce, kde si lze navolit účast
      * v programu.
      *
-     * @param string $username         Uživatelské jméno
+     * @param string $identity         Identita uživatele
      */
-    public function login($username) {
-      $username = $this->getRemoteUser($username);
+    public function login($identity) {
+      $identity = $this->getRemoteUser($identity);
 
-      // Ověření, zdali uživatelské jméno není prázdné, tzn. zdali SSO něco předalo.
-      if ($username == null) {
+      // Ověření, zdali získaná identita není prázdná, tzn. zdali SSO něco předalo.
+      if ($identity == null) {
         Logger::error('Při přihlašování se nepodařilo načíst uživatelské jméno uživatele z SSO.');
 
         echo 'Failed to retrieve username from SSO!';
         exit();
       }
 
-      $user = UsersModel::getUserByEmail($username);
+      $user = UsersModel::getUserByEmail($identity);
 
       // Pokud je již uživatel registrován...
       if (!empty($user)) {
         $_SESSION['user']['id'] = $user['id_user'];
-        $_SESSION['user']['username'] = $user['username'];
+        $_SESSION['user']['email'] = $user['email'];
 
         // Nejvyšší oprávnění, které si může uživatel v systému vybrat (v rámci změny role).
         $_SESSION['user']['permission'] = $user['role'];
@@ -115,7 +114,7 @@
         }
       }
       else {
-        $this->register($username);
+        $this->register($identity);
       }
     }
 
@@ -312,8 +311,8 @@
      * @return string|null                Uživatelské jméno uživatele nebo NULL
      */
     public static function getUserName() {
-      if (isset($_SESSION['user']['username'])) {
-        return $_SESSION['user']['username'];
+      if (isset($_SESSION['user']['email'])) {
+        return $_SESSION['user']['email'];
       }
 
       return null;
