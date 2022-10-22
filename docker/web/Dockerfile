@@ -40,6 +40,7 @@ COPY docker/web/ssmtp.conf /etc/ssmtp/ssmtp.conf
 COPY docker/web/ldap.conf /etc/ldap
 
 # MSMTPRC
+RUN apt-get -y install msmtp
 COPY docker/web/mail.ini /usr/local/etc/php/conf.d/mail.ini
 COPY docker/web/msmtprc /etc/msmtprc
 

@@ -1,4 +1,6 @@
 <?php
+  ini_set('display_errors', 0);
+
   session_start();
 
   // Začlenění nutných souborů (vůči adresáři templates/websites/nazev-podvodne-stranky/).
