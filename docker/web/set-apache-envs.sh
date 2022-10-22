@@ -1,5 +1,7 @@
 #!/bin/bash
 
+printenv >> /etc/environment
+
 touch $APACHE_DOCUMENT_ROOT/../logs/log.log
 chmod 777 $APACHE_DOCUMENT_ROOT/../logs/log.log
 chmod 777 $APACHE_DOCUMENT_ROOT/../templates/sites-config
