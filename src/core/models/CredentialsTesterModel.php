@@ -86,7 +86,7 @@
      */
     private static function tryLdapLogin() {
       $ldap = new LdapModel(false);
-      $validCreds = $ldap->connect('cn=' . self::$username . ',' . LDAP_USERS_DN . ',' . LDAP_BASE_DN, self::$password);
+      $validCreds = $ldap->connect('uid=' . self::$username . ',' . LDAP_USERS_DN . ',' . LDAP_BASE_DN, self::$password);
       $ldap->close();
 
       return $validCreds;
