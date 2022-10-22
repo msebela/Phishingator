@@ -38,7 +38,10 @@
     public static function getClientIp() {
       $ipAddress = null;
 
-      if (getenv('HTTP_CLIENT_IP')) {
+      if (getenv('HTTP_X_FORWARDED_FOR')) {
+        $ipAddress = getenv('HTTP_X_FORWARDED_FOR');
+      }
+      elseif (getenv('HTTP_CLIENT_IP')) {
         $ipAddress = getenv('HTTP_CLIENT_IP');
       }
       elseif (getenv('HTTP_X_FORWARDED')) {
