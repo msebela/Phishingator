@@ -44,8 +44,5 @@ COPY docker/web/msmtprc /etc/msmtprc
 WORKDIR $APACHE_DOCUMENT_ROOT
 COPY src ../
 RUN mkdir ../temp && chown www-data ../temp
-RUN touch $APACHE_DOCUMENT_ROOT/../logs/log.log
-RUN chown www-data $APACHE_DOCUMENT_ROOT/../logs/log.log
-RUN chown www-data $APACHE_DOCUMENT_ROOT/../templates/sites-config
 
 CMD /set-envs.sh && cron && /usr/sbin/apache2ctl -D FOREGROUND
