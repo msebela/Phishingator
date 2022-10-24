@@ -93,7 +93,7 @@
         'id_notification_type' => $notificationType
       ];
 
-      /* Pokud se e-mail podařilo úspěšně odeslat, uložit do databáze datum odeslání. */
+      // Pokud se e-mail podařilo úspěšně odeslat, uložit do databáze datum odeslání.
       if ($result == 1) {
         Logger::info('Úspěšné odeslání e-mailu s notifikací.', $record);
 
@@ -137,28 +137,32 @@
     private function sendNewCampaignsNotifications($mailer) {
       $campaignModel = new CampaignModel();
 
-      /* Zjištění nově přidaných kampaní. */
+      // Zjištění nově přidaných kampaní.
       $campaigns = $this->getNewAddedCampaigns();
 
-      /* Získání seznamu příjemců (administrátoři). */
+      // Získání seznamu příjemců (administrátoři).
       $recipients = UsersModel::getUsersByPermission(PERMISSION_ADMIN);
 
       foreach ($campaigns as $campaign) {
         foreach ($recipients as $recipient) {
-          /* Ověření, zdali už nedošlo k odeslání notifikace o vytvoření kampaně stejnému uživateli někdy dříve. */
+          // Ověření, zdali už nedošlo k odeslání notifikace o vytvoření kampaně stejnému uživateli někdy dříve.
           if ($this->isEmailSent($campaign['id_campaign'], $recipient['id_user'], 1) == true) {
             continue;
           }
 
-          /* Získání detailních informací o právě přidané kampani. */
+          // Získání detailních informací o právě přidané kampani.
           $campaignDetail = $campaignModel->getCampaignDetail($campaign['id_campaign']);
 
-          /* Předmět a obsah notifikace. */
+          // Organizace, ve které k vytvoření phishingové kampaně došlo.
+          $campaignOrg = getenv('ORG') . ' (' . getenv('ORG_DOMAIN') . ')';
+
+          // Předmět a obsah notifikace.
           $notificationSubject = 'Nová phishingová kampaň [' . $campaign['id_campaign'] . ']';
 
           $notificationBody = 'Automatická notifikace systému ' . WEB_HTML_BASE_TITLE . "\n" .
             '-------------------------------------------' . "\n\n" .
             'V systému došlo k vytvoření nové kampaně:' . "\n\n" .
+            'Organizace:               ' . $campaignOrg . "\n" .
             'Název:                    ' . $campaignDetail['name'] . "\n" .
             'Přidáno:                  ' . $campaign['date_added'] . "\n" .
             'Přidal:                   ' . $campaignDetail['username'] . "\n\n" .
@@ -172,14 +176,14 @@
             'Detaily vytvořené kampaně jsou k dispozici po přihlášení na URL adrese:' . "\n" .
             WEB_URL . '/portal/campaigns/' . ACT_EDIT . '/' . $campaign['id_campaign'];
 
-          /* Poslání e-mailu. */
+          // Poslání e-mailu.
           $mailResult = $this->sendEmail($mailer, $recipient['email'], $notificationSubject, $notificationBody);
 
-          /* Uložení záznamu o tom, zda se e-mail podařilo odeslat. */
+          // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
           $mailResult = ($mailResult) ? 1 : 0;
           $this->logSentEmail($campaign['id_campaign'], $recipient['id_user'], 1, $mailResult);
 
-          /* Vyčištění pro další iteraci. */
+          // Vyčištění pro další iteraci.
           $mailer->clearAddresses();
         }
       }
@@ -199,30 +203,34 @@
         $campaignModel = new CampaignModel();
         $statsModel = new StatsModel();
 
-        /* Počet odeslaných e-mailů. */
+        // Počet odeslaných e-mailů.
         $countSentMails = 0;
 
-        /* Zjištění kampaní, které ke včerejšímu dni vypršely. */
+        // Zjištění kampaní, které ke včerejšímu dni vypršely.
         $campaigns = $this->getEndCampaigns();
 
-        /* NOTIFIKACE TVŮRCŮM KAMPANĚ */
+        // NOTIFIKACE TVŮRCŮM KAMPANĚ
 
         foreach ($campaigns as $campaign) {
           echo '<h1>KAMPAŇ ' . $campaign['id_campaign'] . '</h1>' . "\n";
           
-          /* Získání detailních informací o končící kampani. */
+          // Získání detailních informací o končící kampani.
           $campaignDetail = $campaignModel->getCampaignDetail($campaign['id_campaign']);
 
-          /* Získání výsledků kampaně. */
+          // Získání výsledků kampaně.
           $campaignStats = $statsModel->getStatsForAllEndActions($campaign['id_campaign'], null, true);
 
-          /* Předmět notifikace. */
+          // Organizace, ve které k vytvoření phishingové kampaně došlo.
+          $campaignOrg = getenv('ORG') . ' (' . getenv('ORG_DOMAIN') . ')';
+
+          // Předmět notifikace.
           $notificationSubject = 'Phishingová kampaň ukončena';
 
-          /* Obsah notifikace. */
+          // Obsah notifikace.
           $notificationBody = 'Automatická notifikace systému ' . WEB_HTML_BASE_TITLE . "\n" .
             '-------------------------------------------' . "\n\n" .
             'V systému došlo k ukončení platnosti kampaně:' . "\n\n" .
+            'Organizace:               ' . $campaignOrg . "\n" .
             'Název:                    ' . $campaignDetail['name'] . "\n" .
             'Přidáno:                  ' . $campaign['date_added'] . "\n" .
             'Přidal:                   ' . $campaignDetail['username'] . "\n\n" .
@@ -235,33 +243,33 @@
             '-------------------------------------------' . "\n\n" .
             'Konečné reakce příjemců byly následující:' . "\n\n";
 
-          /* Vložení reakcí příjemců do obsahu notifikace. */
+          // Vložení reakcí příjemců do obsahu notifikace.
           foreach ($statsModel->legend as $key => $legend) {
-            /* Zarovnání hodnoty v obsahu notifikace. */
+            // Zarovnání hodnoty v obsahu notifikace.
             $value = str_pad($campaignStats[$key], 25 - mb_strlen($legend), ' ', STR_PAD_LEFT);
             $notificationBody .= $legend . ': ' . $value . "\n";
           }
 
-          /* Patička notifikace. */
+          // Patička notifikace.
           $notificationBody .= "\n" . '-------------------------------------------' . "\n\n" .
             'Detaily ukončené kampaně jsou k dispozici po přihlášení na URL adrese:' . "\n" .
             WEB_URL . '/portal/campaigns/' . ACT_STATS . '/' . $campaign['id_campaign'];
 
-          /* Notifikaci odešleme jen tehdy, pokud je tvůrce kampaně správce testů (pokud je administátor, tak to řeší další část kódu). */
+          // Notifikaci odešleme jen tehdy, pokud je tvůrce kampaně správce testů (pokud je administátor, tak to řeší další část kódu).
           if (UsersModel::getUserRole($campaign['id_by_user']) == PERMISSION_TEST_MANAGER) {
-            /* Ověření, zdali už nedošlo k odeslání notifikace o ukončení kampaně někdy dříve. */
+            // Ověření, zdali už nedošlo k odeslání notifikace o ukončení kampaně někdy dříve.
             if ($this->isEmailSent($campaign['id_campaign'], $campaign['id_by_user'], 2) == false) {
-              /* Poslání e-mailu tvůrci kampaně. */
+              // Poslání e-mailu tvůrci kampaně.
               $mailResult = $this->sendEmail($mailer, $campaign['email'], $notificationSubject, $notificationBody);
 
-              /* Uložení záznamu o tom, zda se e-mail podařilo odeslat. */
+              // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
               $mailResult = ($mailResult) ? 1 : 0;
               $this->logSentEmail($campaign['id_campaign'], $campaign['id_by_user'], 2, $mailResult);
 
-              /* Vyčištění pro další iteraci. */
+              // Vyčištění pro další iteraci.
               $mailer->clearAddresses();
 
-              /* Uspání skriptu po odeslání určitého množství e-mailů. */
+              // Uspání skriptu po odeslání určitého množství e-mailů.
               $countSentMails = $this->sleepSender($countSentMails);
             }
             
@@ -272,51 +280,51 @@
           }
 
 
-          /* KOPIE O UKONČENÍ KAMPANĚ ADMINISTRÁTORŮM */
+          // KOPIE O UKONČENÍ KAMPANĚ ADMINISTRÁTORŮM
 
-          /* Získání seznamu příjemců (administrátoři). */
+          // Získání seznamu příjemců (administrátoři).
           $adminRecipients = UsersModel::getUsersByPermission(PERMISSION_ADMIN);
 
-          /* Zaslání kopie u ukončení kampaně administrátorům. */
+          // Zaslání kopie u ukončení kampaně administrátorům.
           foreach ($adminRecipients as $recipient) {
-            /* Ověření, zdali už nedošlo k odeslání notifikace o ukončení kampaně někdy dříve. */
+            // Ověření, zdali už nedošlo k odeslání notifikace o ukončení kampaně někdy dříve.
             if ($this->isEmailSent($campaign['id_campaign'], $recipient['id_user'], 2) == true) {
               continue;
             }
 
-            /* Předmět notifikace pro administrátory (přidáno ID kampaně). */
+            // Předmět notifikace pro administrátory (přidáno ID kampaně).
             $notificationSubject = 'Phishingová kampaň ukončena [' . $campaign['id_campaign'] . ']';
 
-            /* Poslání e-mailu. */
+            // Poslání e-mailu.
             $mailResult = $this->sendEmail($mailer, $recipient['email'], $notificationSubject, $notificationBody);
 
-            /* Uložení záznamu o tom, zda se e-mail podařilo odeslat. */
+            // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
             $mailResult = ($mailResult) ? 1 : 0;
             $this->logSentEmail($campaign['id_campaign'], $recipient['id_user'], 2, $mailResult);
 
-            /* Vyčištění pro další iteraci. */
+            // Vyčištění pro další iteraci.
             $mailer->clearAddresses();
 
-            /* Uspání skriptu po odeslání určitého množství e-mailů. */
+            // Uspání skriptu po odeslání určitého množství e-mailů.
             $countSentMails = $this->sleepSender($countSentMails);
           }
 
 
-          /* ZPĚTNÁ VAZBA PRO PŘÍJEMCE KAMPANĚ */
+          // ZPĚTNÁ VAZBA PRO PŘÍJEMCE KAMPANĚ
 
-          /* Získání příjemců kampaně. */
+          // Získání příjemců kampaně.
           $recipients = CampaignModel::getCampaignRecipients($campaign['id_campaign']);
 
           foreach ($recipients as $recipient) {
-            /* Získání detailnějších informací o příjemci. */
+            // Získání detailnějších informací o příjemci.
             $user = UsersModel::getUserByEmail($recipient);
 
-            /* Ověření, zdali už nedošlo k odeslání notifikace o účasti v kampani někdy dříve. */
+            // Ověření, zdali už nedošlo k odeslání notifikace o účasti v kampani někdy dříve.
             if ($this->isEmailSent($campaign['id_campaign'], $user['id_user'], 3) == true) {
               continue;
             }
 
-            /* Získání reakce příjemce na phishingovou kampaň. */
+            // Získání reakce příjemce na phishingovou kampaň.
             $user['reaction'] = CampaignModel::getUserReaction($campaign['id_campaign'], $user['id_user']);
 
             // Úprava znění notifikace podle reakce příjemce - pokud uživatel (ne)vyplnil platné přihlašovací údaje.
@@ -327,10 +335,10 @@
               $notificationReaction = '';
             }
 
-            /* Zjištění uživatelského URL klíče pro informační stránku. */
+            // Zjištění uživatelského URL klíče pro informační stránku.
             $code = WebsitePrependerModel::makeWebsiteUrl($campaign['id_campaign'], $user['url']);
 
-            /* Zjištění času a data odeslání podvodného e-mailu konkrétnímu uživateli. */
+            // Zjištění času a data odeslání podvodného e-mailu konkrétnímu uživateli.
             $mailSent = Database::querySingle('
               SELECT `date_sent`,
               DATE_FORMAT(date_sent, "%e. %c. %Y") AS `date_sent_formatted`,
@@ -341,7 +349,7 @@
               AND `id_user` = ?
              ', [$campaign['id_campaign'], $campaignDetail['id_email'], $user['id_user']]);
 
-            /* Předmět a obsah notifikace. */
+            // Předmět a obsah notifikace.
             $notificationSubject = 'Cvičný phishing z ' . $mailSent['date_sent_formatted'];
             $notificationBody =
               'Automatická notifikace systému ' . WEB_HTML_BASE_TITLE . "\n" .
@@ -353,7 +361,7 @@
               'E-mail včetně indicií pro jeho rozpoznání si můžete prohlédnout zde:' . "\n" .
               WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $code . "\n\n\n";
 
-            /* Pokud je uživatel dobrovolník... */
+            // Pokud je uživatel dobrovolník...
             if ($user['recieve_email'] == 1) {
               $notificationBody .=
                 'Děkujeme, že máte zájem vzdělávat se v oblasti phishingu.' . "\n\n" .
@@ -362,7 +370,7 @@
                 WEB_URL;
             }
             else {
-              /* Pokud uživatel není dobrovolník... */
+              // Pokud uživatel není dobrovolník...
               $notificationBody .=
                 'Cílem bylo ukázat Vám, čeho jsou útočníci schopni a jak podvodný e-mail' . "\n" .
                 '(phishing) rozpoznat. Chcete-li podobné cvičné podvodné zprávy dostávat' . "\n" .
@@ -381,26 +389,26 @@
               'Jeho cílem nebylo nachytat Vás, ale zvýšit povědomí o této bezpečnostní hrozbě.';
             }
 
-            /* Testovací výpisy. */
+            // Testovací výpisy.
             echo '<pre>' . "\n";
             echo '<b>To:</b> ' . $recipient . "\n";
             echo '<b>Subject:</b> ' . $notificationSubject . "\n\n";
             echo $notificationBody . "\n\n";
             echo '</pre>' . "\n";
 
-            /* Poslání e-mailu. */
+            // Poslání e-mailu.
             $mailResult = $this->sendEmail($mailer, $recipient, $notificationSubject, $notificationBody);
 
-            /* Uložení záznamu o tom, zda se e-mail podařilo odeslat. */
+            // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
             $mailResult = ($mailResult) ? 1 : 0;
             $this->logSentEmail($campaign['id_campaign'], $user['id_user'], 3, $mailResult);
 
             echo '<hr>' . "\n\n";
 
-            /* Vyčištění pro další iteraci. */
+            // Vyčištění pro další iteraci.
             $mailer->clearAddresses();
 
-            /* Uspání skriptu po odeslání určitého množství e-mailů. */
+            // Uspání skriptu po odeslání určitého množství e-mailů.
             $countSentMails = $this->sleepSender($countSentMails);
           }
         }
@@ -414,13 +422,13 @@
      * @throws \PHPMailer\PHPMailer\Exception
      */
     public function startSendingNotifications() {
-      /* Získání nové instance PHPMailer. */
+      // Získání nové instance PHPMailer.
       $mailer = EmailSenderModel::getPHPMailerInstance();
 
-      /* Poslání notifikací o nových phishingových kampaních. */
+      // Poslání notifikací o nových phishingových kampaních.
       $this->sendNewCampaignsNotifications($mailer);
 
-      /* Poslání notifikací o dokončených phishingových kampaních. */
+      // Poslání notifikací o dokončených phishingových kampaních.
       $this->sendEndCampaignsNotifications($mailer);
     }
   }

@@ -25,7 +25,6 @@ COPY docker/web/security.conf /etc/apache2/conf-enabled/
 
 RUN apt-get -y install gettext
 COPY docker/web/set-envs.sh /set-envs.sh
-RUN chmod +x /set-envs.sh
 
 RUN a2enmod rewrite
 
@@ -35,16 +34,14 @@ RUN apt-get -y install certbot
 # LDAP
 COPY docker/web/ldap.conf /etc/ldap
 
-# MSMTPRC
+# MSMTP
 RUN apt-get -y install msmtp
 COPY docker/web/mail.ini /usr/local/etc/php/conf.d/mail.ini
 COPY docker/web/msmtprc /etc/msmtprc
 
 # Phishingator
 WORKDIR $APACHE_DOCUMENT_ROOT
-
 COPY src ../
-RUN chown -R www-data:www-data .
 RUN mkdir ../temp && chown www-data ../temp
 
 CMD /set-envs.sh && cron && /usr/sbin/apache2ctl -D FOREGROUND
