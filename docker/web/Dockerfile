@@ -32,6 +32,10 @@ RUN a2enmod rewrite
 # Certbot
 RUN apt-get -y install certbot
 
+# SSMTP
+RUN apt-get -y install ssmtp
+COPY docker/web/ssmtp.conf /etc/ssmtp/ssmtp.conf
+
 # LDAP
 COPY docker/web/ldap.conf /etc/ldap
 
@@ -42,7 +46,9 @@ COPY docker/web/msmtprc /etc/msmtprc
 
 # Phishingator
 WORKDIR $APACHE_DOCUMENT_ROOT
+
 COPY src ../
+RUN chown -R www-data:www-data .
 RUN mkdir ../temp && chown www-data ../temp
 
 CMD /set-envs.sh && cron && /usr/sbin/apache2ctl -D FOREGROUND
