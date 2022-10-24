@@ -162,7 +162,7 @@
           $notificationBody = 'Automatická notifikace systému ' . WEB_HTML_BASE_TITLE . "\n" .
             '-------------------------------------------' . "\n\n" .
             'V systému došlo k vytvoření nové kampaně:' . "\n\n" .
-            'Organizace:               ' . $campaignOrg . "\n" .
+            'Organizace:               ' . $campaignOrg . "\n\n" .
             'Název:                    ' . $campaignDetail['name'] . "\n" .
             'Přidáno:                  ' . $campaign['date_added'] . "\n" .
             'Přidal:                   ' . $campaignDetail['username'] . "\n\n" .
@@ -230,7 +230,7 @@
           $notificationBody = 'Automatická notifikace systému ' . WEB_HTML_BASE_TITLE . "\n" .
             '-------------------------------------------' . "\n\n" .
             'V systému došlo k ukončení platnosti kampaně:' . "\n\n" .
-            'Organizace:               ' . $campaignOrg . "\n" .
+            'Organizace:               ' . $campaignOrg . "\n\n" .
             'Název:                    ' . $campaignDetail['name'] . "\n" .
             'Přidáno:                  ' . $campaign['date_added'] . "\n" .
             'Přidal:                   ' . $campaignDetail['username'] . "\n\n" .
@@ -377,9 +377,7 @@
                 'pravidelně, zapojte se do projektu ' . WEB_HTML_BASE_TITLE . '. Pomůže Vám lépe' . "\n" .
                 'poznat skutečné phishingové útoky s falešnými fakturami, falešnými' . "\n" .
                 'přihlašovacími formuláři apod. a budete vědět, na co se v e-mailu' . "\n" .
-                'zaměřit a podle čeho rozpoznat typický phishing.' . "\n\n" .
-                'Popis systému a návod jak se přihlásit k odběru phishingových zpráv je' . "\n" .
-                'na stránkách uživatelské podpory.';
+                'zaměřit a podle čeho rozpoznat typický phishing.';
             }
 
             if (isset($testManager) && $testManager != null) {
@@ -389,7 +387,7 @@
               'Jeho cílem nebylo nachytat Vás, ale zvýšit povědomí o této bezpečnostní hrozbě.';
             }
 
-            // Testovací výpisy.
+            // Testovací HTML výpisy.
             echo '<pre>' . "\n";
             echo '<b>To:</b> ' . $recipient . "\n";
             echo '<b>Subject:</b> ' . $notificationSubject . "\n\n";

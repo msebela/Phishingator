@@ -187,7 +187,7 @@
     public static function getPHPMailerInstance() {
       $mailer = new PHPMailer;
 
-      if (getenv('SMTP_HOST')) {
+      if (!empty(getenv('SMTP_HOST')) && !empty(getenv('SMTP_PORT'))) {
         $mailer->isSMTP();
 
         $mailer->Host = getenv('SMTP_HOST');
