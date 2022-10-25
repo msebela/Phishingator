@@ -193,7 +193,7 @@
 
                 <input type="hidden" name="<?= ACT_STATS_REPORT_PHISH ?>" value="<?= $data['id_captured_data'] ?>">
 
-                <div class="text-success<?php if ($data['reported'] == 0): ?> user-phishing-report<?php endif; ?>" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel nahlásil pokus o&nbsp;cvičný phishing<br>(např. na helpdesk, lokálnímu správci, &hellip;)">
+                <div class="text-success<?php if ($data['reported'] == 0): ?> user-phishing-report<?php endif; ?>" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel nahlásil pokus o&nbsp;cvičný phishing<br>(např. na helpdesk, správci IT, &hellip;)">
                   <button type="submit" class="border-0 bg-transparent" onclick="if (!confirm('Opravdu chcete u uživatele upravit nastavení o nahlášení cvičného phishingu?')) return false;">
                     <span data-feather="message-circle" class="text-purple"></span>
                   </button>
@@ -272,7 +272,7 @@
           <?php endif; ?>
         </td>
         <td data-sort="<?= $data['visit_datetime'] ?>"><?= $data['visit_datetime_formatted'] ?></td>
-        <td><?= $data['ip'] ?></td>
+        <td class="identity"><?= $data['ip'] ?></td>
         <td class="mw-40-rem text-truncate">
           <small class="cursor-help" title="<?= $data['browser_fingerprint'] ?>" data-toggle="tooltip" data-placement="left">
             <?= $data['browser_fingerprint'] ?>

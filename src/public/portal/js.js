@@ -7,14 +7,14 @@ $(function () {
 });
 
 function setButtonLink(selectObj, btnLink, defaultLink) {
-  var link = '/portal/phishing-' + defaultLink;
-  var id = selectObj.options[selectObj.selectedIndex].value;
+  let link = '/portal/phishing-' + defaultLink;
+  let id = selectObj.options[selectObj.selectedIndex].value;
 
   document.querySelector(btnLink).href = ((id > 0) ? link + '/preview/' + id : link);
 }
 
 function checkSameCheckboxes(mail, checkedState) {
-  var sameCheckboxes = document.querySelectorAll('.modal-body input[value="' + mail + '"]');
+  let sameCheckboxes = document.querySelectorAll('.modal-body input[value="' + mail + '"]');
 
   sameCheckboxes.forEach(function(checkbox) {
     checkbox.checked = checkedState;
@@ -22,22 +22,22 @@ function checkSameCheckboxes(mail, checkedState) {
 }
 
 function insertEmails(textareaSelector) {
-  var recipientsSeparator = "\n";
-  var textareaRecipients = $(textareaSelector).val().split(recipientsSeparator);
+  let recipientsSeparator = "\n";
+  let textareaRecipients = $(textareaSelector).val().split(recipientsSeparator);
 
   textareaRecipients.forEach(function(recipient) {
-    var index = textareaRecipients.indexOf("");
+    let index = textareaRecipients.indexOf("");
 
     if (index !== -1) {
       textareaRecipients.splice(index, 1);
     }
   });
 
-  var uncheckedCheckboxes = document.querySelectorAll('.modal-body input[type=checkbox]');
-  var checkedCheckboxes = document.querySelectorAll('.modal-body input[type=checkbox]:checked');
+  let uncheckedCheckboxes = document.querySelectorAll('.modal-body input[type=checkbox]');
+  let checkedCheckboxes = document.querySelectorAll('.modal-body input[type=checkbox]:checked');
 
   uncheckedCheckboxes.forEach(function(recipient) {
-    var index = textareaRecipients.indexOf(recipient.value);
+    let index = textareaRecipients.indexOf(recipient.value);
 
     if (index !== -1) {
       textareaRecipients.splice(index, 1);
@@ -54,15 +54,15 @@ function insertEmails(textareaSelector) {
 }
 
 function getCountOfEmails(emailsList, countLabel) {
-  var list = document.querySelector(emailsList);
-  var count = document.querySelector(countLabel);
+  let list = document.querySelector(emailsList);
+  let count = document.querySelector(countLabel);
 
   count.innerHTML = ((list.value.length > 0) ? list.value.match(/\S+@\S+/g).length : 0);
 }
 
 function markCheckboxes(cover) {
-  var checkBoxes = $(cover + ' input[type=checkbox]');
-  checkBoxes.prop('checked', !checkBoxes.prop('checked'));
+  let checkboxes = $(cover + ' input[type=checkbox]');
+  checkboxes.prop('checked', !checkboxes.prop('checked'));
 }
 
 function replaceVariable(selector, variable) {
@@ -72,13 +72,13 @@ function replaceVariable(selector, variable) {
 }
 
 $('#phishing-email-variables code').on('click', function() {
-  var input = $('#phishing-email-body');
-  var insertedVariable = $(this).attr('data-var');
+  let input = $('#phishing-email-body');
+  let insertedVariable = $(this).attr('data-var');
 
-  var cursorPos = input.prop('selectionStart');
-  var v = input.val();
-  var textBefore = v.substring(0, cursorPos);
-  var textAfter  = v.substring(cursorPos, v.length);
+  let cursorPos = input.prop('selectionStart');
+  let v = input.val();
+  let textBefore = v.substring(0, cursorPos);
+  let textAfter  = v.substring(cursorPos, v.length);
 
   input.val(textBefore + insertedVariable + textAfter);
 
@@ -92,7 +92,7 @@ function setSelectionRange(input, selectionStart, selectionEnd) {
     input.setSelectionRange(selectionStart, selectionEnd);
   }
   else if (input.createTextRange) {
-    var range = input.createTextRange();
+    let range = input.createTextRange();
     range.collapse(true);
     range.moveEnd('character', selectionEnd);
     range.moveStart('character', selectionStart);
