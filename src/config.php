@@ -216,7 +216,7 @@
 
   /* --- SPECIÁLNÍ E-MAILOVÁ HLAVIČKA --- */
   /** Identifikátor speciální hlavičky, která se vkládá ke každému odeslanému e-mailu. */
-  define('PHISHING_EMAIL_HEADER_ID', 'X-' . substr_replace('CESNET-Phishingator', '.', mt_rand(0, 16), 0));
+  define('PHISHING_EMAIL_HEADER_ID', 'X-CESNET-Phishingator');
 
   /** Hodnota zobrazená u speciální hlavičky. */
   define('PHISHING_EMAIL_HEADER_VALUE', WEB_URL . '/.well-known/security.txt');

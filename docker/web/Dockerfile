@@ -24,7 +24,7 @@ COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/phishingator.conf
 COPY docker/web/security.conf /etc/apache2/conf-enabled/
 
 RUN apt-get -y install gettext
-COPY docker/web/set-envs.sh /set-envs.sh
+COPY docker/web/entrypoint.sh /entrypoint.sh
 
 RUN a2enmod rewrite
 
@@ -42,6 +42,5 @@ COPY docker/web/msmtprc /etc/msmtprc.template
 # Phishingator
 WORKDIR $APACHE_DOCUMENT_ROOT
 COPY src ../
-RUN mkdir ../temp && chown www-data ../temp
 
-CMD /set-envs.sh && cron && /usr/sbin/apache2ctl -D FOREGROUND
+ENTRYPOINT "/entrypoint.sh"
