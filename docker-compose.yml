@@ -70,8 +70,6 @@ services:
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls.certresolver=leresolver
       - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
 
-
-
   database:
     build:
       context: .
@@ -88,23 +86,8 @@ services:
     networks:
       - backend
 
-#  phpmyadmin:
-#    image: phpmyadmin
-#    restart: always
-#    ports:
-#     - '8080:80'
-#    environment:
-#      - PMA_HOST=${DB_HOST}
-
-#  smtp:
-#    image: mailhog/mailhog
-#    ports:
-#      - '1025:1025'
-#      - '8025:8025'
-
 networks:
   backend:
   traefik:
     external:
       name: traefik
-

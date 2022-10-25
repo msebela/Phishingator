@@ -49,8 +49,8 @@ services:
     environment:
       - PMA_HOST=${DB_HOST}
 
-#  smtp:
-#    image: mailhog/mailhog
-#    ports:
-#      - '1025:1025'
-#      - '8025:8025'
+  smtp:
+    image: mailhog/mailhog
+    ports:
+      - '25:25'
+      - '8025:8025'
