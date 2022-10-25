@@ -198,7 +198,7 @@
      * @throws \PHPMailer\PHPMailer\Exception
      */
     private function sendEndCampaignsNotifications($mailer) {
-      /* Zjišťování vypršelých kampaní se bude provádět pouze v konkrétní čas. */
+      // Zjišťování vypršelých kampaní se bude provádět pouze v konkrétní čas.
       if (date('H') >= 9 && date('H') <= 10) {
         $campaignModel = new CampaignModel();
         $statsModel = new StatsModel();

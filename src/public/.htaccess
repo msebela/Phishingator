@@ -1,13 +1,9 @@
 Options +FollowSymLinks
 RewriteEngine on
 
-# Shibboleth
-RewriteRule ^(Shibboleth.sso)($|/) - [L]
-
-### TODO: Odkomentovat
-# Presmerovani na HTTPS
-# RewriteCond %{HTTPS} !=on
-# RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+# HTTPS redirect
+RewriteCond %{HTTPS} !=on
+RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
 
 # Redirect to security.txt file from root
 Redirect /security.txt /.well-known/security.txt

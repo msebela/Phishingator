@@ -244,8 +244,9 @@
       $originalWebsite = new PhishingWebsiteModel();
       $originalWebsite = $originalWebsite->getPhishingWebsite($id);
 
-      // Pokud byla změněna URL adresa (stačí protokol), je nutné deaktivovat VirtualHost s původní URL adresou.
-      if ($originalWebsite['url'] != $this->url) {
+      // Pokud byla změněna URL adresa (stačí protokol) nebo šablona podvodné stránky,
+      // je nutné deaktivovat původní a vytvořit nový VirtualHost.
+      if ($originalWebsite['url'] != $this->url || $originalWebsite['id_template'] != $this->idTemplate) {
         // Deaktivace původního VirtualHost.
         $this->deactivateConfFile(get_hostname_from_url($originalWebsite['url']));
 
