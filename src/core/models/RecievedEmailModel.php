@@ -119,6 +119,7 @@
               JOIN `phg_campaigns`
               ON phg_sent_emails.id_campaign = phg_campaigns.id_campaign
               WHERE `id_user` = ?
+              AND phg_sent_emails.date_sent IS NOT NULL
               AND phg_campaigns.visible = 1
       ', $idUser);
     }
