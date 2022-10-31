@@ -140,7 +140,7 @@
           <div class="modal-body">
 
             <?php if ($recipientsVolunteers != null): ?>
-            <div class="container-fluid">
+            <div class="container-fluid pb-3 mb-3 border-bottom">
               <div class="row">
                 <div class="col-md-8">
                   <h6>Dobrovolně registrovaní příjemci</h6>
@@ -167,16 +167,11 @@
               </div>
             </div>
 
-            <hr>
             <?php endif; ?>
 
-            <?php $i = 0; foreach ($recipientsLdapGroups as $groupName => $group): $i++; ?>
+            <?php foreach ($recipientsLdapGroups as $groupName => $group): ?>
 
-            <?php if ($i > 1): ?>
-            <hr>
-            <?php endif; ?>
-
-            <div class="container-fluid">
+            <div class="container-fluid pb-3 mb-3 border-bottom">
               <div class="row">
                 <div class="col-md-8">
                   <h6>LDAP: <?= $groupName ?></h6>
@@ -203,9 +198,16 @@
             </div>
             <?php endforeach; ?>
 
-            <?php if ($recipientsVolunteers == null && count($recipientsLdapGroups) == 0): ?>
-            Administrátorem nebyly nastaveny žádné skupiny.
-            <?php endif; ?>
+            <div class="container-fluid pb-3 mb-3">
+              <?php if ($recipientsVolunteers == null && count($recipientsLdapGroups) == 0): ?>
+              Administrátorem nebyly nastaveny žádné skupiny.
+              <?php else: ?>
+              <button type="button" class="btn btn-outline-secondary btn-sm float-right" data-toggle="button" aria-pressed="false" onclick="markCheckboxes('')">
+                <span data-feather="users"></span>
+                Vybrat všechny skupiny
+              </button>
+              <?php endif; ?>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">

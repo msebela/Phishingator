@@ -10,12 +10,9 @@
         <th scope="col" class="data-sort">Přidáno</th>
         <th scope="col" class="min-90-px">Přidal</th>
         <th scope="col">Předmět</th>
-        <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
         <th scope="col" colspan="2">Znaků phishingu</th>
+        <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
         <th scope="col" colspan="3" class="disable-sort"></th>
-        <?php else: ?>
-        <th scope="col">Znaků phishingu</th>
-        <th scope="col" class="disable-sort"></th>
         <?php endif; ?>
       </tr>
     </thead>
@@ -45,7 +42,7 @@
         </td>
         <td><?= $email['subject'] ?></td>
         <td>
-          <span class="badge badge-<?= $email['indications_color'] ?>">
+          <span class="badge badge-<?= $email['indications_color'] ?> cursor-help" title="Počet indicií pro rozpoznání phishingu přidaných k e-mailu">
             <?= $email['indications_sum'] ?>
           </span>
         </td>
