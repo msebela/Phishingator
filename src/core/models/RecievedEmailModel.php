@@ -30,6 +30,7 @@
               ON phg_campaigns.id_website = phg_websites.id_website
               WHERE phg_sent_emails.id_email = ?
               AND phg_sent_emails.id_user = ?
+              AND phg_sent_emails.date_sent IS NOT NULL
               AND phg_emails.visible = 1
               AND phg_campaigns.visible = 1
       ', [$idEmail, $idUser]);
@@ -54,6 +55,7 @@
               JOIN `phg_campaigns`
               ON phg_sent_emails.id_campaign = phg_campaigns.id_campaign
               WHERE phg_sent_emails.id_user = ?
+              AND phg_sent_emails.date_sent IS NOT NULL
               AND phg_emails.visible = 1
               AND phg_campaigns.visible = 1
               ORDER BY `id_event` DESC';
@@ -88,6 +90,7 @@
                 JOIN `phg_websites`
                 ON phg_campaigns.id_website = phg_websites.id_website 
                 WHERE phg_sent_emails.id_user = ?
+                AND phg_sent_emails.date_sent IS NOT NULL
                 AND phg_emails.visible = 1
                 AND phg_campaigns.visible = 1
                 ORDER BY `id_event` DESC', $idUser);
