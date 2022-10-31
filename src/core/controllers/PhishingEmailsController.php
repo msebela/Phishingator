@@ -352,6 +352,15 @@
       $this->setTitle('Podvodné e-maily');
       $this->setView('list-phishing-emails');
 
-      $this->setViewData('phishingEmails', $model->getPhishingEmails());
+      $phishingEmails = $model->getPhishingEmails();
+
+      foreach ($phishingEmails as &$email) {
+        $countIndications = EmailIndicationsModel::getCountEmailIndications($email['id_email']);
+
+        $email['indications_sum'] = ($countIndications == 0) ? 'žádný' : $countIndications;
+        $email['indications_color'] = EmailIndicationsModel::getColorByCountIndications($countIndications);
+      }
+
+      $this->setViewData('phishingEmails', $phishingEmails);
     }
   }

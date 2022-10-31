@@ -116,7 +116,7 @@
         $result[$key]['url'] = mb_substr($website['url'], mb_strlen($urlProtocol));
 
         $result[$key]['active_text'] = ($website['active']) ? 'ano' : 'ne';
-        $result[$key]['active_color'] = ($website['active']) ? 'success' : 'danger';
+        $result[$key]['active_color'] = ($website['active']) ? MSG_CSS_SUCCESS : MSG_CSS_ERROR;
       }
 
       return $result;
@@ -340,12 +340,16 @@
      * @return string                  Název CSS třídy.
      */
     public static function getColorURLProtocol($urlProtocol) {
+      $color = MSG_CSS_WARNING;
+
       if ($urlProtocol == 'https') {
-        return 'success';
+        $color = MSG_CSS_SUCCESS;
       }
-      else {
-        return 'danger';
+      elseif ($urlProtocol == 'http') {
+        $color = MSG_CSS_ERROR;
       }
+
+      return $color;
     }
 
 

@@ -15,4 +15,4 @@
     </div>
   </div>
 </div>
-<p>V této sekci si lze prohlédnout jakýkoliv z&nbsp;cvičných phishingových e-mailů, který byl doručen do e-mailové schránky uživatele. U&nbsp;každého e-mailu jsou navíc k&nbsp;dispozici indicie, na základě kterých bylo možné phishing rozpoznat. Podrobnější informace jsou k&nbsp;dispozici v&nbsp;dostupné <a href="<?= $helpLink ?>" target="_blank">nápovědě</a>.</p>
+<p>V této sekci si lze prohlédnout jakýkoliv z&nbsp;cvičných phishingových e-mailů, který byl doručen do e-mailové schránky uživatele. U&nbsp;každého e-mailu jsou navíc k&nbsp;dispozici indicie, na základě kterých bylo možné phishing rozpoznat. Podrobnější informace jsou k&nbsp;dispozici v&nbsp;<a href="<?= $helpLink ?>" target="_blank">nápovědě</a>.</p>

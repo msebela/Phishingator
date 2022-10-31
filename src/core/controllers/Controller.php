@@ -197,11 +197,11 @@
     private function getMessageColorByType($type) {
       switch ($type) {
         case MSG_ERROR:
-          return 'danger';
+          return MSG_CSS_ERROR;
         case MSG_SUCCESS:
-          return 'success';
+          return MSG_CSS_SUCCESS;
         default:
-          return 'secondary';
+          return MSG_CSS_DEFAULT;
       }
     }
 

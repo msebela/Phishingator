@@ -19,4 +19,4 @@
     </div>
   </div>
 </div>
-<p>Tato sekce slouží k&nbsp;ručnímu přidávání nových a&nbsp;správě dosud přidaných uživatelů. Ve standardním režimu systém přidává nové uživatele automaticky v&nbsp;rámci <a href="/portal/campaigns">kampaní</a> (resp. na základě vyplněných příjemců), popř. dobrovolným přihlášením uživatele přes přihlašovací stránku tohoto systému. Podrobnější informace jsou k&nbsp;dispozici v&nbsp;dostupné <a href="<?= $helpLink ?>" target="_blank">nápovědě</a>.</p>
+<p>Tato sekce slouží k&nbsp;ručnímu přidávání nových a&nbsp;správě dosud přidaných uživatelů. Ve standardním režimu systém přidává nové uživatele automaticky v&nbsp;rámci <a href="/portal/campaigns">kampaní</a> (resp. na základě vyplněných příjemců), popř. dobrovolným přihlášením uživatele přes přihlašovací stránku tohoto systému. Podrobnější informace jsou k&nbsp;dispozici v&nbsp;<a href="<?= $helpLink ?>" target="_blank">nápovědě</a>.</p>

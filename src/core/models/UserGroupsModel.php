@@ -323,11 +323,11 @@
     public static function getColorGroupRole($role) {
       switch ($role) {
         case PERMISSION_ADMIN:
-          return 'danger';
+          return MSG_CSS_ERROR;
         case PERMISSION_TEST_MANAGER:
-          return 'warning';
+          return MSG_CSS_WARNING;
         case PERMISSION_USER:
-          return 'success';
+          return MSG_CSS_SUCCESS;
       }
 
       return null;

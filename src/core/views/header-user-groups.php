@@ -19,4 +19,4 @@
     </div>
   </div>
 </div>
-<p>Tato sekce slouží k&nbsp;přidávání nových a&nbsp;správě dosud přidaných uživatelských skupin, na základě kterých <a href="/portal/users">uživatelé</a> získávají oprávnění v&nbsp;systému. Základní skupiny nelze odstranit. Podrobnější informace jsou k&nbsp;dispozici v&nbsp;dostupné <a href="<?= $helpLink ?>" target="_blank">nápovědě</a>.</p>
+<p>Tato sekce slouží k&nbsp;přidávání nových a&nbsp;správě dosud přidaných uživatelských skupin, na základě kterých <a href="/portal/users">uživatelé</a> získávají oprávnění v&nbsp;systému. Základní skupiny nelze odstranit. Podrobnější informace jsou k&nbsp;dispozici v&nbsp;<a href="<?= $helpLink ?>" target="_blank">nápovědě</a>.</p>

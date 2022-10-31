@@ -940,17 +940,17 @@
       $date = strtotime($date);
 
       if ($dateSinceOrTo == 'date-since') {
-        return ($date >= $today) ? 'success' : 'secondary';
+        return ($date >= $today) ? MSG_CSS_SUCCESS : MSG_CSS_DEFAULT;
       }
       elseif ($dateSinceOrTo == 'date-to') {
         if ($date > $today) {
-          return 'success';
+          return MSG_CSS_SUCCESS;
         }
         elseif ($date == $today) {
-          return 'warning';
+          return MSG_CSS_WARNING;
         }
         else {
-          return 'secondary';
+          return MSG_CSS_DEFAULT;
         }
       }
 

@@ -646,16 +646,16 @@
     public static function getUserSuccessRateColor($value) {
       if ($value !== null) {
         if ($value >= 90) {
-          return 'success';
+          return MSG_CSS_SUCCESS;
         }
         elseif ($value >= 50) {
-          return 'warning';
+          return MSG_CSS_WARNING;
         }
 
-        return 'danger';
+        return MSG_CSS_ERROR;
       }
 
-      return 'secondary';
+      return MSG_CSS_DEFAULT;
     }
 
 

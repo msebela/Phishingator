@@ -402,17 +402,29 @@
 
 
 
-  /* --- KÓDY HLÁŠEK --- */
-  /* Názvy hlášek a jejich přiřazení k Exception->getCode() používaných ve zdrojovém kódu. */
+  /* --- TYPY A CSS TŘÍDY SYSTÉMOVÝCH HLÁŠENÍ --- */
+  /* Názvy hlášení a jejich přiřazení k Exception->getCode() používaných ve zdrojovém kódu. */
 
-  /** Chyba. */
+  /** Typ: error */
   define('MSG_ERROR', 1);
 
-  /** Úspěch. */
+  /** CSS třída: error */
+  define('MSG_CSS_ERROR', 'danger');
+
+  /** Typ: success */
   define('MSG_SUCCESS', 2);
 
-  /** Varování. */
+  /** CSS třída: success */
+  define('MSG_CSS_SUCCESS', 'success');
+
+  /** Typ: warning */
   define('MSG_WARNING', 3);
+
+  /** CSS třída: warning */
+  define('MSG_CSS_WARNING', 'warning');
+
+  /** CSS třída: default */
+  define('MSG_CSS_DEFAULT', 'secondary');
 
 
 

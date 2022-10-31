@@ -49,7 +49,7 @@
     /**
      * Připraví novou indicii pro podvodný e-mail v závislosti na vyplněných datech a vrátí ji formou pole.
      *
-     * @return array                   Pole obsahující data o indicii.
+     * @return array                   Pole obsahující data o indicii
      */
     private function makeEmailIndication() {
       return [
@@ -65,7 +65,7 @@
      * Uloží do instance a zároveň vrátí (z databáze) informace o zvolené indicii.
      *
      * @param int $id                  ID indicie
-     * @return array                   Pole obsahující informace o indicii.
+     * @return array                   Pole obsahující informace o indicii
      */
     public function getEmailIndication($id) {
       $this->dbRecordData = Database::querySingle('
@@ -82,8 +82,8 @@
     /**
      * Vrátí seznam všech indicií přidaných ke konkrétnímu cvičnému podvodnému e-mailu.
      *
-     * @param int $idEmail             ID podvodného e-mailu.
-     * @return mixed                   Pole indicií s informacemi o každé z nich.
+     * @param int $idEmail             ID podvodného e-mailu
+     * @return mixed                   Pole indicií s informacemi o každé z nich
      */
     public static function getEmailIndications($idEmail) {
       return Database::queryMulti('
@@ -97,10 +97,48 @@
 
 
     /**
+     * Vrátí počet indicií přidaných ke konkrétnímu cvičnému podvodnému e-mailu.
+     *
+     * @param int $idEmail             ID podvodného e-mailu
+     * @return int                     Počet indicií
+     */
+    public static function getCountEmailIndications($idEmail) {
+      return Database::queryCount('
+              SELECT COUNT(*)
+              FROM `phg_emails_indications`
+              WHERE `id_email` = ?
+              AND `visible` = 1
+      ', $idEmail);
+    }
+
+
+    /**
+     * Vrátí název CSS třídy v závislosti na počtu indicií.
+     *
+     * @param int $sumIndications      Počet indicií u e-mailu
+     * @return string|null             Název CSS třídy
+     */
+    public static function getColorByCountIndications($sumIndications) {
+      $color = MSG_CSS_ERROR;
+
+      if (is_numeric($sumIndications)) {
+        if ($sumIndications > 2) {
+          $color = MSG_CSS_SUCCESS;
+        }
+        elseif ($sumIndications > 0) {
+          $color = MSG_CSS_WARNING;
+        }
+      }
+
+      return $color;
+    }
+
+
+    /**
      * Ověří, zdali již v databázi pro daný e-mail existuje konkrétní indicie.
      *
-     * @param int $idEmail             ID podvodného e-mailu.
-     * @param string $expression       Výraz představující indicii.
+     * @param int $idEmail             ID podvodného e-mailu
+     * @param string $expression       Výraz představující indicii
      * @param int $idIndication        ID indicie (nepovinný parametr) pro vyloučení právě upravované indicie.
      * @return mixed                   0 pokud indicie v databázi zatím neexistuje, jinak 1.
      */

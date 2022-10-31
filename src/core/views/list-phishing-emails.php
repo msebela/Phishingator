@@ -11,9 +11,10 @@
         <th scope="col" class="min-90-px">Přidal</th>
         <th scope="col">Předmět</th>
         <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
-        <th scope="col" colspan="2" class="disable-sort">Znaky phishingu</th>
-        <th scope="col" colspan="2" class="disable-sort"></th>
+        <th scope="col" colspan="2">Znaků phishingu</th>
+        <th scope="col" colspan="3" class="disable-sort"></th>
         <?php else: ?>
+        <th scope="col">Znaků phishingu</th>
         <th scope="col" class="disable-sort"></th>
         <?php endif; ?>
       </tr>
@@ -43,8 +44,13 @@
           <?php endif; ?>
         </td>
         <td><?= $email['subject'] ?></td>
+        <td>
+          <span class="badge badge-<?= $email['indications_color'] ?>">
+            <?= $email['indications_sum'] ?>
+          </span>
+        </td>
         <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
-        <td class="td-btn pr-0">
+        <td class="td-btn">
           <a href="/portal/<?= $urlSection . '/' . ACT_INDICATIONS . '/' . $email['id_email'] ?>" class="btn btn-info btn-sm mb-2 mb-xl-0" role="button">
             <span data-feather="key"></span>
             Nastavit indicie

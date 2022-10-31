@@ -317,7 +317,7 @@
           // Informace o tom, zdali se uživatel registroval dobrovolně nebo administrátorem/správcem testů v rámci kampaně.
           $result[$key]['voluntary'] = ($user['id_by_user'] == null) ? 1 : 0;
           $result[$key]['voluntary_registration'] = ($user['id_by_user'] == null) ? 'dobrovolně' : 'z kampaně';
-          $result[$key]['voluntary_registration_color'] = ($user['id_by_user'] == null) ? 'success' : 'secondary';
+          $result[$key]['voluntary_registration_color'] = ($user['id_by_user'] == null) ? MSG_CSS_SUCCESS : MSG_CSS_DEFAULT;
 
           // Informace o posledním přihlášení uživatele.
           $result[$key]['date_login_formatted'] = (!is_null($user['date_login'])) ? $user['date_login_formatted'] : 'zatím nikdy';
@@ -330,7 +330,7 @@
 
           // Informace o dobrovolnosti.
           $result[$key]['recieve_email_text'] = $user['recieve_email'] ? 'ano' : 'ne';
-          $result[$key]['recieve_email_color'] = $user['recieve_email'] ? 'success' : 'secondary';
+          $result[$key]['recieve_email_color'] = $user['recieve_email'] ? MSG_CSS_SUCCESS : MSG_CSS_DEFAULT;
 
           // Zjištění úspěšnosti při odhalování phishingu včetně barevného zvýraznění.
           $result[$key]['success_rate'] = ($result[$key]['recieved_emails_count'] > 0) ? StatsModel::getUserSuccessRate($user['id_user']) : 0;
@@ -373,7 +373,7 @@
       if ($user != null) {
         // Zjištění, zdali se uživatel registroval dobrovolně nebo administrátorem/správcem testů v rámci kampaně.
         $user['voluntary_registration'] = ($user['id_by_user'] == null) ? 'dobrovolně' : 'z kampaně';
-        $user['voluntary_registration_color'] = ($user['id_by_user'] == null) ? 'success' : 'secondary';
+        $user['voluntary_registration_color'] = ($user['id_by_user'] == null) ? MSG_CSS_SUCCESS : MSG_CSS_DEFAULT;
 
         // Informace o posledním přihlášení uživatele.
         $user['date_login'] = (!is_null($user['date_login'])) ? $user['date_login'] : 'zatím nikdy';
@@ -383,7 +383,7 @@
 
         // Informace o dobrovolnosti.
         $user['recieve_email_text'] = $user['recieve_email'] ? 'ano' : 'ne';
-        $user['recieve_email_color'] = $user['recieve_email'] ? 'success' : 'secondary';
+        $user['recieve_email_color'] = $user['recieve_email'] ? MSG_CSS_SUCCESS : MSG_CSS_DEFAULT;
 
         // Zjištění úspěšnosti při odhalování phishingu včetně barevného zvýraznění.
         $user['success_rate'] = ($user['recieved_emails_count'] > 0) ? StatsModel::getUserSuccessRate($user['id_user']) : 0;

@@ -19,4 +19,4 @@
     </div>
   </div>
 </div>
-<p>Tato sekce slouží k&nbsp;vytváření nových a&nbsp;správě dosud vytvořených kampaní. Každá z&nbsp;kampaní je svázána se zvoleným <a href="/portal/phishing-emails">podvodným e-mailem</a> a&nbsp;<a href="/portal/phishing-websites">podvodnou webovou stránkou</a>, na kterou se příjemce e-mailu dostane právě z&nbsp;obsahu tohoto e-mailu (pokud bude následovat odkazy v&nbsp;něm uvedené). Podrobnější informace jsou k&nbsp;dispozici v&nbsp;dostupné <a href="<?= $helpLink ?>" target="_blank">nápovědě</a>.</p>
+<p>Tato sekce slouží k&nbsp;vytváření nových a&nbsp;správě dosud vytvořených kampaní. Každá z&nbsp;kampaní je svázána se zvoleným <a href="/portal/phishing-emails">podvodným e-mailem</a> a&nbsp;<a href="/portal/phishing-websites">podvodnou webovou stránkou</a>, na kterou se příjemce e-mailu dostane právě z&nbsp;obsahu tohoto e-mailu (pokud bude následovat odkazy v&nbsp;něm uvedené). Podrobnější informace jsou k&nbsp;dispozici v&nbsp;<a href="<?= $helpLink ?>" target="_blank">nápovědě</a>.</p>
