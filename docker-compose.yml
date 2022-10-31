@@ -60,7 +60,7 @@ services:
     labels:
       - traefik.docker.network=traefik
       - traefik.enable=true
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host(`$HOST`)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host($HOST)
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls=true
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.entrypoints=websecure
       - traefik.port=80
