@@ -21,7 +21,6 @@ services:
       - ORG_DOMAIN
       - WEB_URL
       - HOST
-      - HOST2
       - DB_USERNAME
       - DB_PASSWORD
       - DB_DATABASE
