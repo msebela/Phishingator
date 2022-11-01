@@ -427,7 +427,9 @@
             'PHISHINGATOR_DOCUMENT_ROOT', 'PHISHINGATOR_WEBSITE_PREPENDER'
           ];
 
-          $port = (get_protocol_from_url($this->url) == 'https') ? 443 : 80;
+          // Při neexistenci proxy...
+          // $port = (get_protocol_from_url($this->url) == 'https') ? 443 : 80;
+          $port = 80;
 
           /** @var array        Hodnoty za proměnné pro šablonu konfiguračního souboru podvodné stránky */
           $values = [
