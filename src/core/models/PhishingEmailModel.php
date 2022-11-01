@@ -151,7 +151,9 @@
 
 
     /**
-     * Vloží do databáze nový podvodný e-mail.
+     * Vloží do databáze nový podvodný e-mail a v případě úspěchu vrátí jeho ID.
+     *
+     * @return int                     ID nově vloženého podvodného e-mailu
      */
     public function insertPhishingEmail() {
       $email = $this->makePhishingEmail();
@@ -162,6 +164,8 @@
       Logger::info('Vkládání nového podvodného e-mailu.', $email);
 
       Database::insert($this->dbTableName, $email);
+
+      return Database::getLastInsertId();
     }
 
 

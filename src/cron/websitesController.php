@@ -35,22 +35,11 @@
       if (filter_var($serverNameWithProtocol, FILTER_VALIDATE_URL)) {
         // Aktivace podvodné stránky v Apache.
         if (strpos($file, '.conf.new') !== false) {
-          $documenRoot = preg_match_in_file($filepath, '/DocumentRoot (.*)/');
-          $https = preg_match_in_file($filepath, '/(<VirtualHost \*:443>)/');
-
           copy($filepath, APACHE_CONF_SITES_DIR . $serverName . '.conf');
+          exec('a2ensite ' . $serverName);
+          rename($filepath, PHISHING_WEBSITE_APACHE_SITES_DIR . $serverName . '.conf');
 
           echo 'copy(' . $filepath . ', ' . APACHE_CONF_SITES_DIR . $serverName . '.conf)' . "\n";
-
-          if (!empty($https) && !empty($documenRoot)) {
-            exec('certbot --non-interactive --register-unsafely-without-email --webroot --installer apache -w "' . $serverName . '" -d "' . $documenRoot . '"');
-
-            echo 'exec(certbot --non-interactive --register-unsafely-without-email --webroot --installer apache -w "' . $serverName . '" -d "' . $documenRoot . '")' . "\n";
-          }
-
-          exec('a2ensite ' . $serverName);
-          rename(PHISHING_WEBSITE_APACHE_SITES_DIR . $file, PHISHING_WEBSITE_APACHE_SITES_DIR . $serverName . '.conf');
-
           echo 'a2ensite ' . $serverName . "\n";
           echo 'rename(' . $filepath . ', ' . PHISHING_WEBSITE_APACHE_SITES_DIR . $serverName . '.conf' . ')' . "\n";
 

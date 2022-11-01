@@ -28,9 +28,6 @@ COPY docker/web/entrypoint.sh /entrypoint.sh
 
 RUN a2enmod rewrite
 
-# Certbot
-RUN apt-get -y install certbot
-
 # LDAP
 COPY docker/web/ldap.conf /etc/ldap
 

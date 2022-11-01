@@ -89,10 +89,10 @@
           $model->load($_POST);
 
           $model->validateData();
-          $model->insertPhishingEmail();
+          $idEmail = $model->insertPhishingEmail();
 
           $this->addMessage(MSG_SUCCESS, 'Přidání proběhlo úspěšně.');
-          $this->redirect($this->urlSection);
+          $this->redirect($this->urlSection . '/' . ACT_INDICATIONS . '/' . $idEmail);
         }
         catch (UserError $error) {
           $this->addMessage($error->getCode(), $error->getMessage());
@@ -225,7 +225,7 @@
       }
       // Úprava existující indicie.
       elseif (isset($_POST[$modelIndication->formPrefix . ACT_EDIT])) {
-        /* Změna prefixu formuláře kvůli více formulářům na jedné stránce. */
+        // Změna prefixu formuláře kvůli více formulářům na jedné stránce.
         $modelIndication->formPrefix = $modelIndication->formPrefix . ACT_EDIT . '-';
 
         $indication = $modelIndication->getEmailIndication(
