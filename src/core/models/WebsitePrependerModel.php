@@ -365,11 +365,11 @@
 
             $this->displayMessage = true;
 
-            // Při překročení nastaveného limitu přesměrovat na zvolenou URL.
+            // Při překročení nastaveného limitu přesměrovat na stránku s informací o absolvování praktického phishingového testu.
             if ($_SESSION[$sessionName] >= $countMaxSends) {
               unset($_SESSION[$sessionName]);
 
-              header('Location: ' . $onsubmitAction['url']);
+              header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
               exit();
             }
           }

@@ -11,10 +11,11 @@
   </head>
 
   <body class="text-center">
-    <?php if ($message): ?>
-    <p>Invalid username or password!</p>
-    <?php endif; ?>
     <form method="post" class="form-wrapper">
+      <?php if ($message): ?>
+      <div role="alert" class="alert alert-danger w-100 mb-5">Invalid username or password!</div>
+      <?php endif; ?>
+
       <h1 class="h3 mb-3 font-weight-normal">Přihlášení</h1>
       <p class="text-muted">Pro pokračování je nutno se přihlásit.</p>
 
