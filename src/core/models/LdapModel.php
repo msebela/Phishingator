@@ -101,10 +101,11 @@
      *
      * @param string $username         Uživatelské jméno, u něhož se má získat hodnota atributu
      * @param string $attributeName    Název atributu v LDAP
+     * @param int $maxRecords          Maximální počet vrácených záznamů [nepovinné]
      * @return mixed|null              Hodnota uložená u atributu v LDAP
      */
-    private function getAttributeValue($username, $attributeName) {
-      $value = null;
+    private function getAttributeValue($username, $attributeName, $maxRecords = 1) {
+      $attrValue = null;
       $attributeUid = 'uid';
 
       $username = $this->getAttributeFromDN($attributeUid, $username);
@@ -112,17 +113,22 @@
       if (!empty($username)) {
         $info = $this->getDataByFilter(LDAP_USERS_DN, $attributeUid . '=' . $username);
 
-        if (isset($info['count'])) {
-          for ($i = 0; $i < $info['count']; $i++) {
-            $value = $info[$i][$attributeName][0];
+        if (isset($info['count']) && $info['count'] > 0) {
+          for ($i = 0; $i < $info[0][$attributeName]['count']; $i++) {
+            $value = $info[0][$attributeName][$i];
 
-            // Omezeno na získání prvního záznamu.
-            break;
+            if ($maxRecords == 1) {
+              $attrValue = $value;
+              break;
+            }
+            else {
+              $attrValue[] = $value;
+            }
           }
         }
       }
 
-      return $value;
+      return $attrValue;
     }
 
 
@@ -192,6 +198,27 @@
       }
 
       return $email;
+    }
+
+
+    /**
+     * Vrátí všechny e-maily uživatele v závislosti na jeho uživatelském jménu z LDAP.
+     *
+     * @param string $username         Uživatelské jméno
+     * @return string|null             Všechny e-maily uživatele nebo NULL
+     */
+    public function getEmailsByUsername($username) {
+      $emails = [];
+
+      if (!empty($username)) {
+        $emails = $this->getAttributeValue($username, 'mail', null);
+      }
+
+      if (!is_array($emails)) {
+        $emails = [$emails];
+      }
+
+      return $emails;
     }
 
 

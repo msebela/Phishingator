@@ -7,36 +7,36 @@
    */
   class PermissionsModel {
     /**
-     * Registruje do systému nového uživatele na základě jeho identity získané z SSO,
+     * Registruje do systému nového uživatele na základě jeho identity získané z SSO.
      *
      * @param string $identity         Identita uživatele
      */
     private function register($identity) {
-      $newUser = new UsersModel();
-      $ldap = new LdapModel();
+      $registrated = false;
+      $user = new UsersModel();
 
-      // Získání uživatelského jména uživatele z LDAP.
-      $newUser->username = $ldap->getUsernameByEmail($identity);
-      $ldap->close();
-
-      // Pokud se podařilo z LDAP získat uživatelské jméno, dojde k registraci nového uživatele.
-      if (!empty($newUser->username) && filter_var($identity, FILTER_VALIDATE_EMAIL)) {
+      // Identita (e-mail) získaná z SSO.
+      if (filter_var($identity, FILTER_VALIDATE_EMAIL)) {
         Logger::info('Dobrovolná registrace nového uživatele.', $identity);
 
-        $newUser->dbTableName = 'phg_users';
+        $user->dbTableName = 'phg_users';
 
-        $newUser->email = $identity;
-        $newUser->idUserGroup = NEW_USER_DEFAULT_GROUP_ID;
-        $newUser->recieveEmail = NEW_USER_PARTICIPATION;
-        $newUser->emailLimit = NEW_USER_PARTICIPATION_EMAILS_LIMIT;
+        $user->email = $identity;
+        $user->idUserGroup = NEW_USER_DEFAULT_GROUP_ID;
+        $user->recieveEmail = NEW_USER_PARTICIPATION;
+        $user->emailLimit = NEW_USER_PARTICIPATION_EMAILS_LIMIT;
 
-        $newUser->insertUser();
-        $this->login($identity);
+        $registrated = $user->insertUser();
+
+        if ($registrated) {
+          $this->login($identity);
+        }
       }
-      else {
-        Logger::error('Při registraci se nepodařilo načíst e-mail uživatele z LDAP.', $identity);
 
-        // Pokud se nepodaří načíst e-mail z LDAP, přesměrovat uživatele na úvodní stránku systému.
+      if (!$registrated) {
+        Logger::error('Při registraci se nepodařilo načíst informace o uživateli z LDAP.', $identity);
+
+        // Pokud se nepodaří načíst informace o uživateli z LDAP, přesměrovat uživatele na úvodní stránku systému.
         //header('Location: ' . WEB_URL);
         exit();
       }
@@ -45,9 +45,9 @@
 
     /**
      * Vrátí jednu konkrétní identitu (při existenci více identit) uživatele z SSO,
-     * díky které bude uživatel v aplikaci identifikován.
+     * na základě které bude uživatel identifikován.
      *
-     * @param string $identity         Identita/identity uživatel získané ze SSO
+     * @param string $identity         Identita/identity uživatele získané z SSO
      * @return string|null             Identita, kterou bude aplikace používat pro identifikaci daného uživatele
      */
     private function getRemoteUser($identity) {
@@ -75,7 +75,7 @@
 
       // Ověření, zdali získaná identita není prázdná, tzn. zdali SSO něco předalo.
       if ($identity == null) {
-        Logger::error('Při přihlašování se nepodařilo načíst uživatelské jméno uživatele z SSO.');
+        Logger::error('Při přihlašování se nepodařilo získat identitu uživatele z SSO.');
 
         echo 'Failed to retrieve username from SSO!';
         exit();

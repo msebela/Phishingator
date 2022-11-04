@@ -123,12 +123,12 @@
         Logger::info('Úspěšné odeslání e-mailu.', $record);
 
         $record['date_sent'] = date('Y-m-d H:i:s');
+
+        Database::insert('phg_sent_emails', $record);
       }
       else {
         Logger::error('Neúspěšné odeslání e-mailu.', $record);
       }
-
-      Database::insert('phg_sent_emails', $record);
     }
 
 

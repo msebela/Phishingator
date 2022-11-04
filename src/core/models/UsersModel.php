@@ -53,19 +53,15 @@
      * @return array                   Pole obsahující data o uživateli.
      */
     private function makeUser() {
+      $ldap = new LdapModel();
+
       $user = [
         'id_user_group' => $this->idUserGroup,
         'email' => $this->email
       ];
 
-      // Pokud dochází k registraci nového uživatele, je třeba mu vytvořit uživatelské jméno pro přihlášení.
-      if (empty($this->username)) {
-        $this->username = get_email_part($this->email, 'username');
-        $user['username'] = $this->username;
-      }
-      else {
-        $user['username'] = $this->username;
-      }
+      // Získání uživatelského jména z LDAP.
+      $user['username'] = $ldap->getUsernameByEmail($this->email);
 
       // Výjimka pro případ, kdy se registruje nový uživatel - v takovém případě
       // je do databáze nutné zapsat nikoliv NULL hodnoty, ale hodnoty nastavené
@@ -74,6 +70,8 @@
         $user['recieve_email'] = $this->recieveEmail;
         $user['email_limit'] = $this->emailLimit;
       }
+
+      $ldap->close();
 
       return $user;
     }
@@ -500,9 +498,9 @@
     /**
      * Změní zvolenému uživateli skupinu na jinou.
      *
-     * @param int $idUser            ID uživatele
-     * @param int $idGroup           ID skupiny
-     * @return mixed                 Výsledek změny
+     * @param int $idUser              ID uživatele
+     * @param int $idGroup             ID skupiny
+     * @return mixed                   Výsledek změny
      */
     public static function changeUserGroup($idUser, $idGroup) {
       Logger::info(
@@ -522,8 +520,8 @@
     /**
      * Vrátí informaci o tom, zdali je zvolený řetězec používaný jiným uživatelem.
      *
-     * @param string $url            Řetězec k identifikaci uživatele na podvodných stránkách.
-     * @return mixed                 1 pokud je již používán, jinak 0.
+     * @param string $url              Řetězec k identifikaci uživatele na podvodných stránkách.
+     * @return mixed                   1 pokud je již používán, jinak 0.
      */
     private function existUserUrl($url) {
       return Database::queryCount('
@@ -537,7 +535,7 @@
     /**
      * Vygeneruje náhodný řetězec.
      *
-     * @return string                Vygenerovaný náhodný řetězec
+     * @return string                  Vygenerovaný náhodný řetězec
      */
     private function generateRandomString() {
       return bin2hex(openssl_random_pseudo_bytes(USER_ID_WEBSITE_LENGTH / 2));
@@ -548,7 +546,7 @@
      * Vrátí unikátní náhodný řetězec, který slouží k identifikaci uživatele na podvodných stránkách
      * a žádný jiný uživatel jej zatím nevyužívá.
      *
-     * @return string                 Vygenerovaný náhodný řetězec
+     * @return string                  Vygenerovaný náhodný řetězec
      */
     public function generateUserUrl() {
       $this->url = $this->generateRandomString();
@@ -563,19 +561,36 @@
 
     /**
      * Vloží do databáze nového uživatele.
+     *
+     * @return bool                    TRUE, pokud došlo k úspěšnému vložení uživatele do databáze, jinak FALSE
+     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     public function insertUser() {
+      $registrated = false;
+      $ldap = new LdapModel();
+
       $user = $this->makeUser();
 
-      $this->isEmailUnique();
+      // Získání preferovaného e-mailu (pro případ aliasů) uživatele z LDAP.
+      $user['email'] = $ldap->getEmailByUsername($user['username']);
 
-      $user['url'] = $this->generateUserUrl();
-      $user['id_by_user'] = PermissionsModel::getUserId();
-      $user['date_added'] = date('Y-m-d H:i:s');
+      // Pokud se podařilo získat informace o uživateli z LDAP, vytvořit záznam v databázi.
+      if (!empty($user['username']) && filter_var($user['email'], FILTER_VALIDATE_EMAIL)) {
+        $this->isEmailUnique();
 
-      Logger::info('Vkládání nového uživatele.', $user);
+        $user['url'] = $this->generateUserUrl();
+        $user['id_by_user'] = PermissionsModel::getUserId();
+        $user['date_added'] = date('Y-m-d H:i:s');
 
-      Database::insert($this->dbTableName, $user);
+        Logger::info('Vkládání nového uživatele.', $user);
+
+        Database::insert($this->dbTableName, $user);
+        $registrated = true;
+      }
+
+      $ldap->close();
+
+      return $registrated;
     }
 
 
@@ -686,7 +701,6 @@
       $this->isEmailEmpty();
       $this->isEmailTooLong();
       $this->isEmailValid();
-      $this->isEmailNameSameAsUsername();
       $this->isEmailInAllowedDomain();
       $this->existsEmailInLdap();
 
@@ -732,20 +746,6 @@
 
 
     /**
-     * Ověří, zdali se shoduje jméno uživatele e-mailu se jménem uživatele do tohoto systému (platí pouze pro úpravu
-     * existujícího uživatele).
-     *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
-     */
-    private function isEmailNameSameAsUsername() {
-      if (!empty($this->dbRecordData['username'])
-          && $this->dbRecordData['username'] != get_email_part($this->email, 'username')) {
-        throw new UserError('E-mail uživatele není shodný s uživatelským jménem uživatele!', MSG_ERROR);
-      }
-    }
-
-
-    /**
      * Ověří, zdali zadaný e-mail uživatele vede na povolenou doménu.
      *
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
@@ -758,15 +758,21 @@
 
 
     /**
-     * Ověří, zdali zadaný e-mail opravdu existuje v databázi LDAP.
+     * Ověří, zdali zadaný e-mail (včetně možných aliasů) opravdu pro daného uživatele existuje v LDAP.
      *
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     private function existsEmailInLdap() {
       $ldap = new LdapModel();
 
-      if (empty($ldap->getEmailByUsername(get_email_part($this->email, 'username')))) {
-        throw new UserError('E-mail uživatele neexistuje.', MSG_ERROR);
+      $username = $this->dbRecordData['username'] ?? '';
+
+      if (empty($username)) {
+        $username = $ldap->getUsernameByEmail($this->email);
+      }
+
+      if (!in_array($this->email, $ldap->getEmailsByUsername($username))) {
+        throw new UserError('Zadaný e-mail neexistuje nebo není s tímto uživatele svázán.', MSG_ERROR);
       }
 
       $ldap->close();
@@ -780,7 +786,12 @@
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     private function isEmailUnique($id = null) {
-      $user = $this->getUserByUsername(get_email_part($this->email, 'username'));
+      $ldap = new LdapModel();
+
+      $username = $ldap->getUsernameByEmail($this->email);
+      $user = $this->getUserByUsername($username);
+
+      $ldap->close();
 
       if (!empty($user) && ($id != $user['id_user'] || $id == null)) {
         throw new UserError('Toto uživatelské jméno již používá jiný uživatel.', MSG_ERROR);
