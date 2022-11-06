@@ -45,7 +45,7 @@ function insertEmails(textareaSelector) {
   });
 
   checkedCheckboxes.forEach(function(recipient) {
-    if (textareaRecipients.includes(recipient.value) === false) {
+    if (textareaRecipients.includes(recipient.value) === false && recipient.value.match(/\S+@\S+/g)) {
       textareaRecipients.push(recipient.value);
     }
   });
@@ -60,7 +60,11 @@ function getCountOfEmails(emailsList, countLabel) {
   count.innerHTML = ((list.value.length > 0) ? list.value.match(/\S+@\S+/g).length : 0);
 }
 
-function markCheckboxes(cover) {
+function markCheckboxes(cover = '') {
+  if (cover && $(cover).hasClass('d-none')) {
+    $(cover).toggleClass('d-none');
+  }
+
   let checkboxes = $(cover + ' input[type=checkbox]');
   checkboxes.prop('checked', !checkboxes.prop('checked'));
 }

@@ -143,15 +143,19 @@
             <div class="container-fluid pb-3 mb-3 border-bottom">
               <div class="row">
                 <div class="col-md-8">
-                  <h6>Dobrovolně registrovaní příjemci</h6>
+                  <h6>
+                    <label>
+                      <input type="checkbox" onclick="markCheckboxes('#cover-volunteers')">
+                      Dobrovolně registrovaní příjemci
+                    </label>
+                  </h6>
                 </div>
 
                 <div class="col-md-8 text-right">
                   <button type="button" class="btn btn-outline-secondary btn-sm" onclick="$('#cover-volunteers').toggleClass('d-none')">
                     <span data-feather="user-check"></span>
-                    Konkretizovat
+                    Seznam příjemců
                   </button>
-                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="markCheckboxes('#cover-volunteers')">Vybrat všechny</button>
                 </div>
               </div>
 
@@ -174,24 +178,28 @@
             <div class="container-fluid pb-3 mb-3 border-bottom">
               <div class="row">
                 <div class="col-md-8">
-                  <h6>LDAP: <?= $groupName ?></h6>
+                  <h6>
+                    <label>
+                      <input type="checkbox" onclick="markCheckboxes('#group-<?= $groupName ?>')">
+                      LDAP: <?= $groupName ?>
+                    </label>
+                  </h6>
                 </div>
 
                 <div class="col-md-8 text-right">
-                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="$('#<?= $groupName ?>').toggleClass('d-none')">
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="$('#group-<?= $groupName ?>').toggleClass('d-none')">
                     <span data-feather="user-check"></span>
-                    Konkretizovat
+                    Seznam příjemců
                   </button>
-                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="markCheckboxes('#<?= $groupName ?>')">Vybrat všechny</button>
                 </div>
               </div>
 
-              <div id="<?= $groupName ?>" class="d-none">
+              <div id="group-<?= $groupName ?>" class="d-none">
                 <div class="d-flex flex-row flex-wrap justify-content-between mt-2">
                   <?php foreach ($group as $user): ?>
-                    <label class="recipients-list-email text-truncate">
-                      <input type="checkbox" name="<?= $user['email'] ?>" value="<?= $user['email'] ?>" onclick="checkSameCheckboxes(this.value, this.checked)"<?php if ($user['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($user['color'])) ? '<span class="badge badge-' . $user['color'] . '">' . $user['username'] . '</span>@' . $user['domain'] : $user['email']); ?>
-                    </label>
+                  <label class="recipients-list-email text-truncate">
+                    <input type="checkbox" name="<?= $user['email'] ?>" value="<?= $user['email'] ?>" onclick="checkSameCheckboxes(this.value, this.checked)"<?php if ($user['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($user['color'])) ? '<span class="badge badge-' . $user['color'] . '">' . $user['username'] . '</span>@' . $user['domain'] : $user['email']); ?>
+                  </label>
                   <?php endforeach; ?>
                 </div>
               </div>
@@ -202,9 +210,9 @@
               <?php if ($recipientsVolunteers == null && count($recipientsLdapGroups) == 0): ?>
               Administrátorem nebyly nastaveny žádné skupiny.
               <?php else: ?>
-              <button type="button" class="btn btn-outline-secondary btn-sm float-right" data-toggle="button" aria-pressed="false" onclick="markCheckboxes('')">
+              <button type="button" class="btn btn-outline-secondary btn-sm float-right" onclick="markCheckboxes()">
                 <span data-feather="users"></span>
-                Vybrat všechny skupiny
+                Vybrat všechny příjemce
               </button>
               <?php endif; ?>
             </div>
