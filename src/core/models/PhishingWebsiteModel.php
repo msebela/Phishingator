@@ -71,7 +71,7 @@
               AND `visible` = 1
       ', $id);
 
-      $this->dbRecordData['status'] = $this->getPhishingWebsiteStatus(get_hostname_from_url($this->dbRecordData['url']));
+      $this->dbRecordData['status'] = $this->getPhishingWebsiteStatus($this->dbRecordData['url']);
 
       return $this->dbRecordData;
     }
@@ -120,7 +120,7 @@
         $result[$key]['active_text'] = ($website['active']) ? 'ano' : 'ne';
         $result[$key]['active_color'] = ($website['active']) ? MSG_CSS_SUCCESS : MSG_CSS_ERROR;
 
-        $result[$key]['status'] = self::getPhishingWebsiteStatus(get_hostname_from_url($website['url']));
+        $result[$key]['status'] = self::getPhishingWebsiteStatus($website['url']);
       }
 
       return $result;
@@ -566,9 +566,10 @@
      */
     private static function getPhishingWebsiteStatus($url) {
       $status = 0;
+      $url = get_hostname_from_url($url);
 
       // U podvodné domény chybí v DNS záznam typu A směrovaný na Phishingator.
-      if (gethostbyname(get_hostname_from_url($url)) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
+      if (gethostbyname($url) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
         $status = 2;
       }
       // Chybí záznam o doméně v proxy Phishingatoru.
