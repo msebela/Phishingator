@@ -170,7 +170,7 @@ header {
   }
 
   td {
-    &:nth-last-child(2), .td-btn {
+    &:nth-last-child(2), &.td-btn {
       white-space: nowrap;
       width: 1px;
       padding-right: 0;

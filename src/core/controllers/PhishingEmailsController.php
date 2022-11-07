@@ -357,7 +357,7 @@
       foreach ($phishingEmails as &$email) {
         $countIndications = EmailIndicationsModel::getCountEmailIndications($email['id_email']);
 
-        $email['indications_sum'] = ($countIndications == 0) ? 'žádný' : $countIndications;
+        $email['indications_sum'] = $countIndications;
         $email['indications_color'] = EmailIndicationsModel::getColorByCountIndications($countIndications);
       }
 

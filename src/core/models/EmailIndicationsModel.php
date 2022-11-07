@@ -123,7 +123,7 @@
 
       if (is_numeric($sumIndications)) {
         if ($sumIndications > 2) {
-          $color = MSG_CSS_SUCCESS;
+          $color = 'light';
         }
         elseif ($sumIndications > 0) {
           $color = MSG_CSS_WARNING;
