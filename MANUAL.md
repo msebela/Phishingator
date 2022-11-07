@@ -1,11 +1,17 @@
 # Phishingator – Uživatelská příručka
 
-Uživatelská příručka je rozdělena na:
+## O aplikaci
 
-1. [příručku pro běžné uživatele](#1-pro-uživatele) Phishingatoru,
-2. [příručku pro administrátory](#2-pro-administrátory), kteří budou ve Phishingatoru vytvářet nové phishingové kampaně, cvičné phishingové e-maily a podvodné stránky.
+Phishingator je webová aplikace, jejímž cílem je provádět **praktické školení uživatelů** v oblasti **phishingu a sociálního inženýrství**, a to odesíláním cvičných phishingových e-mailů, které obsahují typické znaky phishingu (podvodného jednání). Podrobnější popis aplikace je uveden v souboru [README.md](README.md).
 
-## 1 Pro uživatele
+Phishingator původně vznikl na [Západočeské univerzitě v Plzni](https://www.zcu.cz) (ZČU) v roce 2019, a to jako výsledek bakalářské práce [Systém pro rozesílání cvičných phishingových zpráv](https://theses.cz/id/0kk18p/), jejímž autorem je Martin Šebela a vedoucím pak Aleš Padrta. Phishingator byl následně dále rozvíjen v [Centru informatizace a výpočetní techniky](https://civ.zcu.cz) na ZČU.
+
+Samotná uživatelská příručka je rozdělena na:
+
+1. [příručku pro běžné uživatele](#1-příručka-pro-uživatele) Phishingatoru,
+2. [příručku pro administrátory](#2-příručka-pro-administrátory), kteří budou ve Phishingatoru vytvářet nové phishingové kampaně, cvičné phishingové e-maily a podvodné stránky.
+
+## 1 Příručka pro uživatele
 
 
 ### 1.1 Úvodní stránka
@@ -23,7 +29,7 @@ Uživatel si po přihlášení do systému může zvolit, zdali chce **dobrovoln
 V této sekci má uživatel možnost si **detailně prohlédnout seznam všech cvičných phishingových e-mailů**, které mu byly v minulosti doručeny. U každého e-mailu navíc vidí i **svou reakci**, tedy to, jakým způsobem na konkrétní e-mail reagoval (například zdali navštívil podvodnou stránku přístupnou z tohoto e-mailu a zadal do formuláře platné přihlašovací údaje apod.) či nereagoval. U podvodného e-mailu je vždy vytvořen i **seznam indicií** (vyznačené pasáže v textu s popisem, co konkrétně vyvolává podezření), na základě kterých může uživatel **zpětně zjistit, zdali postupoval správně** nebo čeho by si měl do **budoucna všímat**.
 
 
-## 2 Pro administrátory
+## 2 Příručka pro administrátory
 
 *Administrátor* je nejvyšší oprávnění, které je ve Phishingatoru k dispozici. Obvykle má toto oprávnění zaměstnanec CERT/CSIRT týmu.
 

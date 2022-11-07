@@ -50,19 +50,19 @@ Phishingator **Vám můžeme nasadit** a pomoct s jeho **ovládáním a nastaven
 **Možnosti konzultací**, **správy systému** ze strany CESNETu a **školení** pak ukazuje následující _tabulka_:
 
 
-|                                               | Samostatný provoz | Phishingator+ | Phishingator++ | Phishingator Gold |
-|-----------------------------------------------|:-----------------:|:-------------:|:--------------:|:-----------------:|
-| Dostupnost zdrojových kódů                    |     &#10003;      |   &#10003;    |    &#10003;    |     &#10003;      |
-| Instanci provozuje CESNET                     |                   |   &#10003;    |    &#10003;    |     &#10003;      |
-|                                               |                   |               |                |                   |
-| Konzultace technických problémů               |     &#10003;      |   &#10003;    |    &#10003;    |     &#10003;      |
-| Konzultace s napojením na autentizační systém |                   |   &#10003;    |    &#10003;    |     &#10003;      |
-| Vytvoření nových podvodných stránek __*__     |                   |   &#10003;    |    &#10003;    |     &#10003;      |
-| Příprava phishingových kampaní __*__          |                   |               |    &#10003;    |     &#10003;      |
-| Plánování testování uživatelů                 |                   |               |                |     &#10003;      |
-|                                               |                   |               |                |                   |
-| Školení administrátorů systému                |                   |   &#10003;    |    &#10003;    |     &#10003;      |
-| Školení uživatelů                             |                   |               |    &#10003;    |     &#10003;      |
+|                                               | Samostatný provoz | Standardní služba Phishingator | Phishingator Gold |
+|-----------------------------------------------|:-----------------:|:------------------------------:|:-----------------:|
+| Dostupnost zdrojových kódů                    |     &#10003;      |            &#10003;            |     &#10003;      |
+| Instanci provozuje CESNET                     |                   |            &#10003;            |     &#10003;      |
+|                                               |                   |                                |                   |
+| Konzultace technických problémů               |     &#10003;      |            &#10003;            |     &#10003;      |
+| Konzultace s napojením na autentizační systém |                   |            &#10003;            |     &#10003;      |
+| Vytvoření nových podvodných stránek __*__     |                   |            &#10003;            |     &#10003;      |
+| Příprava phishingových kampaní __*__          |                   |                                |     &#10003;      |
+| Plánování testování uživatelů                 |                   |                                |     &#10003;      |
+|                                               |                   |                                |                   |
+| Školení administrátorů systému                |                   |            &#10003;            |     &#10003;      |
+| Školení uživatelů                             |                   |                                |     &#10003;      |
 
 __*__ _Počet limitován dle dohody._
 
@@ -88,13 +88,13 @@ V ukázkové verzi Phishingatoru jsou ve výchozím stavu k dispozici **práva a
 - Demo Phishingatoru – **TODO**
 - [Zdrojové kódy Phishingatoru](/src)
 - [Uživatelská příručka](MANUAL.md)
-- [Ukázkové screenshoty aplikace](/doc)
+- [Ukázkové screenshoty aplikace](SCREENSHOTS.md)
 
 
 
 ### O aplikaci
 
-Phishingator původně vznikl na ZČU jako výsledek bakalářské práce [Systém pro rozesílání cvičných phishingových zpráv](https://theses.cz/id/0kk18p/), jejímž autorem je Martin Šebela a vedoucím pak Aleš Padrta.
+Phishingator původně vznikl na [Západočeské univerzitě v Plzni](https://www.zcu.cz) (ZČU) v roce 2019, a to jako výsledek bakalářské práce [Systém pro rozesílání cvičných phishingových zpráv](https://theses.cz/id/0kk18p/), jejímž autorem je Martin Šebela a vedoucím pak Aleš Padrta. Phishingator byl následně dále rozvíjen v [Centru informatizace a výpočetní techniky](https://civ.zcu.cz) na ZČU.
 
 
 #### Kontakt na vývojáře
