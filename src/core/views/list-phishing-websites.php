@@ -39,12 +39,22 @@
           </span><?= $website['url'] ?>
         </td>
         <td>
+          <?php if ($website['status'] == 1): ?>
+          <span class="badge badge-warning">
+            nedokončené směrování
+          </span>
+          <?php elseif ($website['status'] == 2): ?>
+          <span class="badge badge-danger">
+            chybné DNS
+          </span>
+          <?php else: ?>
           <span class="badge badge-<?= $website['active_color'] ?>">
             <?= $website['active_text'] ?>
           </span>
+          <?php endif; ?>
         </td>
         <td>
-          <?php if ($website['active']): ?>
+          <?php if ($website['active'] && $website['status'] == 0): ?>
           <a href="/portal/<?= $urlSection . '/' . ACT_PREVIEW . '/' . $website['id_website'] ?>" target="_blank" class="btn btn-info btn-sm" role="button">
             <span data-feather="eye"></span>
             Náhled

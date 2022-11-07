@@ -1,5 +1,31 @@
 <hr>
 
+<?php if ($action == ACT_EDIT && $phishingWebsite['status'] == 2): ?>
+<div class="alert alert-with-icon alert-danger" role="alert">
+  <div class="alert-icon pr-1">
+    <span data-feather="alert-triangle"></span>
+  </div>
+  <div>
+    <h4 class="alert-heading">Chybné DNS</h4>
+    Doména, na které by měla být hostována podvodná stránka, není směrována na IP adresu serveru, kde běží Phishingator.
+  </div>
+</div>
+
+<hr>
+<?php elseif ($action == ACT_EDIT && $phishingWebsite['status'] == 1): ?>
+<div class="alert alert-with-icon alert-warning" role="alert">
+  <div class="alert-icon pr-1">
+    <span data-feather="alert-triangle"></span>
+  </div>
+  <div>
+    <h4 class="alert-heading">Nedokončené přesměrování</h4>
+    Doména, na níž bude hostovaná podvodná strána, je správně směrována na IP adresu Phishingatoru, ještě je ovšem nutné aktivovat interní směrování domény v&nbsp;proxy Phishingatoru.
+  </div>
+</div>
+
+<hr>
+<?php endif; ?>
+
 <form method="post" action="/portal/<?= $urlSection . '/' . $action . (($action == ACT_EDIT) ? '/' . $phishingWebsite['id_website'] : ''); ?>">
   <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 

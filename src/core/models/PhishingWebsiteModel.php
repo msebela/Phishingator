@@ -71,6 +71,8 @@
               AND `visible` = 1
       ', $id);
 
+      $this->dbRecordData['status'] = $this->getPhishingWebsiteStatus(get_hostname_from_url($this->dbRecordData['url']));
+
       return $this->dbRecordData;
     }
 
@@ -117,6 +119,8 @@
 
         $result[$key]['active_text'] = ($website['active']) ? 'ano' : 'ne';
         $result[$key]['active_color'] = ($website['active']) ? MSG_CSS_SUCCESS : MSG_CSS_ERROR;
+
+        $result[$key]['status'] = self::getPhishingWebsiteStatus(get_hostname_from_url($website['url']));
       }
 
       return $result;
@@ -133,7 +137,7 @@
     public static function getActivePhishingWebsites($year = []) {
       $yearQuery = (!is_array($year) && is_numeric($year)) ? 'AND YEAR(`date_added`) = ?' : '';
 
-      return Database::queryMulti('
+      $result = Database::queryMulti('
               SELECT `id_website`, `name`, `url`
               FROM `phg_websites`
               WHERE `active` = 1
@@ -141,6 +145,16 @@
               ' . $yearQuery . '
               ORDER BY `id_website` DESC
       ', $year);
+
+      foreach ($result as &$record) {
+        $record['status'] = self::getPhishingWebsiteStatus($record['url']);
+
+        if ($record['status'] != 0) {
+          unset($record);
+        }
+      }
+
+      return $result;
     }
 
 
@@ -541,6 +555,44 @@
       }
 
       return $previewLink;
+    }
+
+
+    /**
+     * Vrátí aktuální stav přesměrování podvodné domény na server, kde běží instance Phishingatoru.
+     *
+     * @param string $url              URL adresa podvodné stránky (bez protokolu)
+     * @return int                     Aktuální stav
+     */
+    private static function getPhishingWebsiteStatus($url) {
+      $status = 0;
+
+      // U podvodné domény chybí v DNS záznam typu A směrovaný na Phishingator.
+      if (gethostbyname(get_hostname_from_url($url)) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
+        $status = 2;
+      }
+      // Chybí záznam o doméně v proxy Phishingatoru.
+      elseif (!in_array($url, self::getRegistredDomains())) {
+        $status = 1;
+      }
+
+      return $status;
+    }
+
+
+    /**
+     * Vrátí pole domén, které již byly interně zaregistrovány v proměnných prostředí proxy Phishingatoru.
+     *
+     * @return array|false|string[]    Pole obsahující názvy (sub)domén
+     */
+    public static function getRegistredDomains() {
+      $registredDomains = [];
+
+      if (getenv('HOST') !== null) {
+        $registredDomains = explode(',', str_replace('`', '', getenv('HOST')));
+      }
+
+      return $registredDomains;
     }
 
 

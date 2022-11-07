@@ -97,14 +97,14 @@
             <ul class="nav flex-column mb-2">
               <li class="nav-item">
                 <a href="#" class="nav-link">
-                  <span data-feather="anchor" class="align-text-bottom"></span>
+                  <span class="align-text-bottom" data-feather="anchor"></span>
                   Jak poznat phishing
                 </a>
               </li>
               <?php if ($userRole <= PERMISSION_TEST_MANAGER): ?>
               <li class="nav-item">
                 <a href="#" class="nav-link">
-                  <span data-feather="file-text" class="align-text-bottom"></span>
+                  <span class="align-text-bottom" data-feather="file-text"></span>
                   Zásady cvičného phishingu
                 </a>
               </li>
