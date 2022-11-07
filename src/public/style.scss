@@ -112,6 +112,14 @@ header {
       color: #727272;
     }
   }
+
+  .sidebar-heading {
+    font-size: .75rem;
+
+    a {
+      color: $secondary;
+    }
+  }
 }
 
 
@@ -192,7 +200,7 @@ header {
 }
 
 .minw-10-rem {
-  min-width: 10rem;
+  min-width: 10.1rem;
 }
 
 .maxw-20-rem {

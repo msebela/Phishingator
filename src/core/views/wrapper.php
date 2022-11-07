@@ -86,6 +86,30 @@
               </li>
               <?php endforeach; ?>
             </ul>
+
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+              <span>Nápověda</span>
+              <a href="https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md" target="_blank" aria-label="Nápověda">
+                <span data-feather="help-circle" class="align-text-bottom"></span>
+              </a>
+            </h6>
+
+            <ul class="nav flex-column mb-2">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <span data-feather="anchor" class="align-text-bottom"></span>
+                  Jak poznat phishing
+                </a>
+              </li>
+              <?php if ($userRole <= PERMISSION_TEST_MANAGER): ?>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <span data-feather="file-text" class="align-text-bottom"></span>
+                  Zásady cvičného phishingu
+                </a>
+              </li>
+              <?php endif; ?>
+            </ul>
           </div>
         </nav>
 
