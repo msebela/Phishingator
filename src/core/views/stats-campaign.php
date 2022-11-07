@@ -235,12 +235,12 @@
     <thead>
       <tr>
         <th class="order-by-desc">#</th>
-        <th colspan="2" class="min-90-px">Uživatel</th>
+        <th colspan="2" class="minw-5-rem">Uživatel</th>
         <th>Akce</th>
         <th class="data-sort datetime">Datum a&nbsp;čas</th>
         <th>IP adresa</th>
         <th>User agent</th>
-        <th class="min-220-px">HTTP POST data v&nbsp;JSON</th>
+        <th>HTTP POST data v&nbsp;JSON</th>
       </tr>
     </thead>
     <tbody>
@@ -273,12 +273,12 @@
         </td>
         <td data-sort="<?= $data['visit_datetime'] ?>"><?= $data['visit_datetime_formatted'] ?></td>
         <td class="identity"><?= $data['ip'] ?></td>
-        <td class="mw-40-rem text-truncate">
+        <td class="maxw-40-rem text-truncate">
           <small class="cursor-help" title="<?= $data['browser_fingerprint'] ?>" data-toggle="tooltip" data-placement="left">
             <?= $data['browser_fingerprint'] ?>
           </small>
         </td>
-        <td class="mw-20-rem text-truncate identity">
+        <td class="maxw-20-rem text-truncate identity">
           <?php if (!empty($data['data_json'])): ?>
           <code class="cursor-help" title="<?= $data['data_json'] ?>" data-toggle="tooltip" data-placement="left">
             <?= $data['data_json'] ?>

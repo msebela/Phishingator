@@ -8,13 +8,13 @@
         <th scope="col" class="order-by-desc">#</th>
         <th scope="col">Název</th>
         <th scope="col" class="data-sort">Přidáno</th>
-        <th scope="col" class="min-90-px">Přidal</th>
+        <th scope="col" class="minw-5-rem">Přidal</th>
         <th scope="col" colspan="2">E-mail</th>
-        <th scope="col">Podvodná stránka</th>
+        <th scope="col" class="minw-10-rem">Podvodná stránka</th>
         <th scope="col" class="minw-110-px">Příjemců</th>
         <th scope="col" class="data-sort minw-110-px">Aktivní od</th>
         <th scope="col" class="data-sort minw-110-px">Aktivní do</th>
-        <th scope="col">RT kampaně</th>
+        <th scope="col" class="minw-8-rem">RT kampaně</th>
         <th scope="col" colspan="3" class="disable-sort"></th>
       </tr>
     </thead>

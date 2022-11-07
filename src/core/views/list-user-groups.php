@@ -24,7 +24,7 @@
           </span>
         </td>
         <td><?= $group['description'] ?></td>
-        <td class="mw-20-rem text-truncate">
+        <td class="maxw-20-rem text-truncate">
           <?= ((!empty($group['ldap_groups'])) ? '<code>' . $group['ldap_groups'] . '</code>' : ''); ?>
         </td>
         <td><?= $group['count_users'] ?></td>

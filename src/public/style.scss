@@ -183,29 +183,29 @@ header {
   }
 }
 
-.mw-20-rem {
-  max-width: 18rem;
-}
-
-.mw-40-rem {
-  max-width: 40rem;
+.minw-5-rem {
+  min-width: 5rem;
 }
 
 .minw-8-rem {
   min-width: 8rem;
 }
 
+.minw-10-rem {
+  min-width: 10rem;
+}
+
+.maxw-20-rem {
+  max-width: 20rem;
+}
+
+.maxw-40-rem {
+  max-width: 40rem;
+}
+
 .w-50-px {
   min-width: 50px !important;
   width: 50px !important;
-}
-
-.min-90-px {
-  min-width: 90px;
-}
-
-.min-220-px {
-  min-width: 220px;
 }
 
 .tooltip-inner {

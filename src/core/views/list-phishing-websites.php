@@ -8,9 +8,9 @@
         <th scope="col" class="order-by-desc">#</th>
         <th scope="col">Název</th>
         <th scope="col" class="data-sort">Přidáno</th>
-        <th scope="col" class="min-90-px">Přidal</th>
-        <th scope="col">URL</th>
-        <th scope="col" class="min-90-px">Aktivní</th>
+        <th scope="col" class="minw-5-rem">Přidal</th>
+        <th scope="col" class="minw-10-rem">URL</th>
+        <th scope="col" class="minw-5-rem">Aktivní</th>
         <th scope="col" colspan="3" class="disable-sort"></th>
       </tr>
     </thead>

@@ -8,7 +8,7 @@
         <th scope="col" class="order-by-desc">#</th>
         <th scope="col">Název</th>
         <th scope="col" class="data-sort">Přidáno</th>
-        <th scope="col" class="min-90-px">Přidal</th>
+        <th scope="col" class="minw-5-rem">Přidal</th>
         <th scope="col">Předmět</th>
         <th scope="col" colspan="2">Znaků phishingu</th>
         <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
