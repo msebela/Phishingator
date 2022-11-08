@@ -146,11 +146,11 @@
               ORDER BY `id_website` DESC
       ', $year);
 
-      foreach ($result as $key => $record) {
-        $record[$key]['status'] = self::getPhishingWebsiteStatus($record[$key]['url']);
+      foreach ($result as $key => $website) {
+        $result[$key]['status'] = self::getPhishingWebsiteStatus($result[$key]['url']);
 
-        if ($record[$key]['status'] != 0) {
-          unset($record[$key]);
+        if ($result[$key]['status'] != 0) {
+          unset($result[$key]);
         }
       }
 
