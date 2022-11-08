@@ -82,7 +82,7 @@
               AND `date_sent` IS NOT NULL
       ', [$idCampaign, $idUser]);
 
-      return ($result > 0) ? true : false;
+      return $result > 0;
     }
 
 
@@ -237,7 +237,7 @@
      */
     private function sendEmail($mailer, $senderEmail, $senderName, $recipientEmail, $subject, $body) {
       $mailer->setFrom($senderEmail, $senderName);
-      $mailer->addAddress($recipientEmail, '');
+      $mailer->addAddress($recipientEmail);
 
       $mailer->Subject = $subject;
       $mailer->Body = $body;
@@ -274,7 +274,7 @@
           $user = UsersModel::getUserByEmail($recipient);
 
           /* Ověření, zdali už nedošlo v rámci kampaně k odeslání e-mailu stejnému uživateli někdy dříve. */
-          if ($this->isEmailSent($campaign['id_campaign'], $user['id_user']) == true) {
+          if ($this->isEmailSent($campaign['id_campaign'], $user['id_user'])) {
             continue;
           }
 

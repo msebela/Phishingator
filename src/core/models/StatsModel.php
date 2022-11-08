@@ -225,17 +225,16 @@
         $args = [];
       }
 
-      /** @var array    Seznam akcí, které uživatelé provedli. */
+      // Seznam akcí, které uživatelé provedli.
       $dataUserActions = Database::queryMulti($query, $args);
 
-      /** @var int      Počet akcí, kdy uživatelé na podvodné stránce nějak reagovali (něco udělali, stačí přístup). */
+      // Počet akcí, kdy uživatelé na podvodné stránce nějak reagovali (něco udělali, stačí přístup).
       $countActionsWithReaction = 0;
 
       if (isset($allCampaigns)) {
-        /** @var array    Pole kampaní (ID kampaně jako index pole) s tím, že v každé kampani jsou
-         *                uloženy jako indexy ID uživatelů a jako hodnoty těchto indexů ID jejich nejhorší akce,
-         *                kterou v kampani udělali.
-         */
+        // Pole kampaní (ID kampaně jako index pole) s tím, že v každé kampani jsou
+        // uloženy jako indexy ID uživatelů a jako hodnoty těchto indexů ID jejich nejhorší akce,
+        // kterou v kampani udělali.
         $theWorstUserActionInCampaigns = [];
 
         foreach ($dataUserActions as $action) {
@@ -556,8 +555,6 @@
       $ldap = new LdapModel();
       $allDepartments = $ldap->getDepartments();
       $ldap->close();
-
-      $yearQuery = (!is_array($year) && is_numeric($year)) ? ' AND YEAR(`date_added`) = ?' : '';
 
       // Zjištění dobrovolníků.
       $volunteers = Database::queryMulti('SELECT `email` FROM `phg_users` WHERE `recieve_email` = 1 AND `visible` = 1');

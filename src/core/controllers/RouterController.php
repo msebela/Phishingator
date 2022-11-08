@@ -100,6 +100,8 @@
       else {
         $this->redirect(null, 1);
       }
+
+      return null;
     }
 
 

@@ -145,9 +145,8 @@
      */
     function getClassAttributeName($inputName) {
       $variableName = str_replace('-', '', ucwords($inputName, '-'));
-      $variableName = lcfirst($variableName);
 
-      return $variableName;
+      return lcfirst($variableName);
     }
 
 

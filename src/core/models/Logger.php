@@ -114,7 +114,7 @@
      * Pořadí úrovní zpráv je následující: DEBUG < INFO < WARNING < ERROR
      *
      * @param string $level            Úroveň zprávy
-     * @return int                     TRUE pokud je povoleno zprávu zapsat do protokolu, jinak FALSE.
+     * @return bool                    TRUE pokud je povoleno zprávu zapsat do protokolu, jinak FALSE.
      */
     private static function checkLevel($level) {
       $levelsOrder = [Logger::DEBUG, Logger::INFO, Logger::WARNING, Logger::ERROR];

@@ -18,7 +18,6 @@ services:
       - ./phishingator-data/${ORG}/logs:/var/www/phishingator/logs
       - ./phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
       - ./phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
-      - ./phishingator-data/${ORG}/websites-templates/certs:/etc/letsencrypt/
     ports:
       - '8000:80'
       - '443:443'
@@ -40,6 +39,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE}
+    ports:
+      - '3306:3306'
 
   phpmyadmin:
     image: phpmyadmin

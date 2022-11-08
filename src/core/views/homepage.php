@@ -235,7 +235,7 @@
         <?php for ($i = 1; $i <= count($barChartLegend); $i++): ?>
         {
           label: '<?= $barChartLegend[$i] ?>',
-          data: [<?= isset($barChartLegendData[$i]) ? $barChartLegendData[$i] : 0 ?>],
+          data: [<?= $barChartLegendData[$i] ?? 0 ?>],
           backgroundColor: '#<?= $barChartLegendColors[$i] ?>'
         },
         <?php endfor; ?>

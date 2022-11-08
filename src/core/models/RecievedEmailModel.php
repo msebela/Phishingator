@@ -97,7 +97,7 @@
 
       if ($result != null) {
         foreach ($result as $key => $record) {
-          $urlProtocol = get_protocol_from_url($result[$key]['url']);
+          $urlProtocol = get_protocol_from_url($record['url']);
 
           $result[$key]['url_protocol'] = $urlProtocol;
           $result[$key]['url_protocol_color'] = PhishingWebsiteModel::getColorURLProtocol($urlProtocol);

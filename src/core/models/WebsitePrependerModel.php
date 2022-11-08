@@ -98,7 +98,7 @@
             $firstChar = mb_substr($value, 0, 1);
             $lastChar = mb_substr($value, -1, 1);
 
-            /** @var int     Počet opakování zástupného znaku v hesle ("-2" označuje první a poslední znak). */
+            // Počet opakování zástupného znaku v hesle ("-2" označuje první a poslední znak).
             $countRepeatChar = mb_strlen($value) - 2 * mb_strlen(PASSWORD_CHAR_ANONYMIZATION);
 
             $inputs[$inputName] = $firstChar . str_repeat(PASSWORD_CHAR_ANONYMIZATION, $countRepeatChar) . $lastChar;
@@ -131,17 +131,15 @@
     private function getPost($capturedInputs) {
       $postData = [];
 
-      /* Získá konkrétní data z $_POST a uloží je do pomocného pole. */
+      // Získá konkrétní data z $_POST a uloží je do pomocného pole.
       foreach ($capturedInputs as $input) {
         if (isset($_POST[$input])) {
           $postData[$input] = $_POST[$input];
         }
       }
 
-      /* Anonymizace hesel v pomocném poli. */
-      $postData = $this->anonymizePasswords($postData, PASSWORD_LEVEL_ANONYMIZATION);
-
-      return $postData;
+      // Anonymizace hesel.
+      return $this->anonymizePasswords($postData, PASSWORD_LEVEL_ANONYMIZATION);
     }
 
 
@@ -166,7 +164,7 @@
       ];
 
       if (!empty($_POST)) {
-        $record['id_action'] = (($credentialsResult == true) ? CAMPAIGN_VALID_CREDENTIALS_ID : CAMPAIGN_INVALID_CREDENTIALS_ID);
+        $record['id_action'] = ($credentialsResult ? CAMPAIGN_VALID_CREDENTIALS_ID : CAMPAIGN_INVALID_CREDENTIALS_ID);
         $record['data_json'] = json_encode(
           $this->getPost(['username', 'password']), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
         );
@@ -420,7 +418,7 @@
       );
 
       // V databázi neexistuje ticket k přístupu na náhled podvodné stránky.
-      if (empty($user) || $previewAccess == false) {
+      if (empty($user) || !$previewAccess) {
         $args[] = self::getClientIp();
         Logger::warning('Snaha o nepovolený přístup na náhled podvodné stránky (podvržení neplatných parametrů).', $args);
 

@@ -394,7 +394,7 @@
      */
     public static function personalizePhishingEmail($phishingEmail, $user, $includeIndications = true, $markVariables = false) {
       /* Dodání seznamu indicií - musí být jako první, jinak jej přebijí následující metody. */
-      if ($includeIndications != false) {
+      if ($includeIndications) {
         /* Získání indicií. */
         if (is_array($includeIndications)) {
           $emailIndications = $includeIndications;
@@ -429,10 +429,10 @@
         /* Vložení příjemce. */
         $phishingEmail['recipient_email'] = $user['email'];
 
-        if ($includeIndications == true) {
+        if ($includeIndications) {
           /* Personalizace těla e-mailu. */
           $phishingEmail['body'] = self::personalizeEmailBody(
-            ['id' => $user['id_user']], $phishingEmail['body'], (isset($phishingEmail['url']) ? $phishingEmail['url'] : null)
+            ['id' => $user['id_user']], $phishingEmail['body'], ($phishingEmail['url'] ?? null)
           );
         }
 
@@ -445,7 +445,7 @@
       }
 
       /* Vyznačení proměnných v těle e-mailu. */
-      if ($markVariables == true) {
+      if ($markVariables) {
         $phishingEmail['body'] = self::markVariablesInEmailBody($phishingEmail['body']);
       }
 

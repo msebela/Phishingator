@@ -221,7 +221,7 @@
         $firstIndex = 1;
 
         /* Zápis připravených dat do CSV souboru. */
-        foreach ($data['csvData'] as $idRow => $row) {
+        foreach ($data['csvData'] as $row) {
           $csvLineData = [];
 
           /* První sloupec bude vždy ID záznamu. */

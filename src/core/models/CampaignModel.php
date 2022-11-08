@@ -299,7 +299,7 @@
       ', $userPermission);
 
       /* Ověření, zdali má uživatel k dané kampani přístup v rámci uživatelské skupiny, do které je zařazen. */
-      foreach ($result as $key => $campaign) {
+      foreach ($result as $campaign) {
         if (!($userPermission != PERMISSION_ADMIN && $campaign['id_user_group'] != $user['id_user_group'])) {
           $idCampaigns[] = $campaign['id_campaign'];
         }
@@ -432,7 +432,7 @@
         $recipientsString .= $recipient['email'] . EMAILS_SEPARATOR;
       }
 
-      return ($returnString == false) ? $recipientsArray : $recipientsString;
+      return !$returnString ? $recipientsArray : $recipientsString;
     }
 
 
@@ -775,7 +775,7 @@
       if (isset($data['reported'])) {
         $lastValue = ($data['reported'] == 1) ? 0 : 1;
 
-        $result = Database::update(
+        Database::update(
           'phg_captured_data',
           ['reported' => $lastValue],
           'WHERE `id_captured_data` = ?',
@@ -965,7 +965,7 @@
      * @return bool                    TRUE pokud je ve správném formátu, jinak FALSE.
      */
     private function isTimeValid($time) {
-      return ((preg_match("/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/", $time) === 1) ? true : false);
+      return preg_match("/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/", $time) === 1;
     }
 
 
@@ -1238,7 +1238,7 @@
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     private function isRecipientsValid() {
-      $allowedDomains = PermissionsModel::getUserEmailRestrictions();
+      //$allowedDomains = PermissionsModel::getUserEmailRestrictions();
       //$allowedDomainsArray = explode(LDAP_GROUPS_DELIMITER, $allowedDomains);
 
       foreach ($this->recipients as $email) {

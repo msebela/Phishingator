@@ -421,8 +421,6 @@
      * @return mixed                   Počet dobrovolníků
      */
     public static function getCountOfVolunteers($year = null) {
-      $countVolunteers = 0;
-
       if ($year != null && is_numeric($year)) {
         $volunteers = Database::queryMulti('
                 SELECT DISTINCT email

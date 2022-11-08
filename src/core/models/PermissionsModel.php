@@ -10,6 +10,7 @@
      * Registruje do systému nového uživatele na základě jeho identity získané z SSO.
      *
      * @param string $identity         Identita uživatele
+     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele
      */
     private function register($identity) {
       $registrated = false;
@@ -69,6 +70,7 @@
      * v programu.
      *
      * @param string $identity         Identita uživatele
+     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele
      */
     public function login($identity) {
       $identity = $this->getRemoteUser($identity);
@@ -306,7 +308,7 @@
 
 
     /**
-     * Vrátí uživatelské jméno právě přihlášeného uživatele.
+     * Vrátí identitu právě přihlášeného uživatele.
      *
      * @return string|null                Uživatelské jméno uživatele nebo NULL
      */

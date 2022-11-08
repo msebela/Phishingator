@@ -34,6 +34,7 @@
      */
     public function connect($username = null, $password = null) {
       $connected = false;
+      $ldapBind = false;
 
       $this->ldapConnection = ldap_connect(LDAP_HOSTNAME . (!empty(LDAP_PORT) ? ':' . LDAP_PORT : ''));
 

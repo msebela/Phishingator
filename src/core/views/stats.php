@@ -199,7 +199,7 @@
         <?php for ($i = 1; $i <= count($barChartLegend); $i++): ?>
         {
           label: '<?= ${"barChartLegend$year"}[$i] ?>',
-          data: [<?= isset(${"barChartLegendData$year"}[$i]) ? ${"barChartLegendData$year"}[$i] : 0 ?>],
+          data: [<?= ${"barChartLegendData$year"}[$i] ?? 0 ?>],
           backgroundColor: '#<?= $barChartLegendColors[$i] ?>'
         },
         <?php endfor; ?>

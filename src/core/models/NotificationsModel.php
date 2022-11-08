@@ -27,7 +27,7 @@
               AND `date_sent` IS NOT NULL
       ', [$idCampaign, $idUser, $notificationType]);
 
-      return ($result > 0) ? true : false;
+      return $result > 0;
     }
 
 
@@ -37,7 +37,7 @@
      * @return mixed                   Pole obsahující informace o nově přidaných kampaní.
      */
     private function getNewAddedCampaigns() {
-      $result = Database::queryMulti('
+      return Database::queryMulti('
               SELECT `id_campaign`,
               `username`,
               DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y (%k:%i)") AS `date_added`
@@ -47,8 +47,6 @@
               WHERE DATE(phg_campaigns.date_added) = CURDATE()
               AND phg_campaigns.visible = 1
       ');
-
-      return $result;
     }
 
 
@@ -59,7 +57,7 @@
      *                                 které ke včerejšímu dni vypršely.
      */
     private function getEndCampaigns() {
-      $result = Database::queryMulti('
+      return Database::queryMulti('
               SELECT `id_campaign`, phg_campaigns.id_by_user, `active_to`,
               `username`, `email`,
               DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y (%k:%i)") AS `date_added`,
@@ -70,8 +68,6 @@
               WHERE `active_to` = DATE_ADD(CURDATE(), INTERVAL -1 DAY)
               AND phg_campaigns.visible = 1
       ');
-
-      return $result;
     }
 
 
@@ -119,7 +115,7 @@
      */
     private function sendEmail($mailer, $recipientEmail, $subject, $body) {
       $mailer->setFrom(NOTIFICATION_SENDER, WEB_HTML_BASE_TITLE);
-      $mailer->addAddress($recipientEmail, '');
+      $mailer->addAddress($recipientEmail);
 
       $mailer->Subject = WEB_HTML_BASE_TITLE . ' · ' . $subject;
       $mailer->Body = $body;
@@ -146,7 +142,7 @@
       foreach ($campaigns as $campaign) {
         foreach ($recipients as $recipient) {
           // Ověření, zdali už nedošlo k odeslání notifikace o vytvoření kampaně stejnému uživateli někdy dříve.
-          if ($this->isEmailSent($campaign['id_campaign'], $recipient['id_user'], 1) == true) {
+          if ($this->isEmailSent($campaign['id_campaign'], $recipient['id_user'], 1)) {
             continue;
           }
 
@@ -258,7 +254,7 @@
           // Notifikaci odešleme jen tehdy, pokud je tvůrce kampaně správce testů (pokud je administátor, tak to řeší další část kódu).
           if (UsersModel::getUserRole($campaign['id_by_user']) == PERMISSION_TEST_MANAGER) {
             // Ověření, zdali už nedošlo k odeslání notifikace o ukončení kampaně někdy dříve.
-            if ($this->isEmailSent($campaign['id_campaign'], $campaign['id_by_user'], 2) == false) {
+            if (!$this->isEmailSent($campaign['id_campaign'], $campaign['id_by_user'], 2)) {
               // Poslání e-mailu tvůrci kampaně.
               $mailResult = $this->sendEmail($mailer, $campaign['email'], $notificationSubject, $notificationBody);
 
@@ -288,7 +284,7 @@
           // Zaslání kopie u ukončení kampaně administrátorům.
           foreach ($adminRecipients as $recipient) {
             // Ověření, zdali už nedošlo k odeslání notifikace o ukončení kampaně někdy dříve.
-            if ($this->isEmailSent($campaign['id_campaign'], $recipient['id_user'], 2) == true) {
+            if ($this->isEmailSent($campaign['id_campaign'], $recipient['id_user'], 2)) {
               continue;
             }
 
@@ -320,7 +316,7 @@
             $user = UsersModel::getUserByEmail($recipient);
 
             // Ověření, zdali už nedošlo k odeslání notifikace o účasti v kampani někdy dříve.
-            if ($this->isEmailSent($campaign['id_campaign'], $user['id_user'], 3) == true) {
+            if ($this->isEmailSent($campaign['id_campaign'], $user['id_user'], 3)) {
               continue;
             }
 

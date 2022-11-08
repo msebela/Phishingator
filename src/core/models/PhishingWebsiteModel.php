@@ -147,7 +147,7 @@
       ', $year);
 
       foreach ($result as $key => $website) {
-        $result[$key]['status'] = self::getPhishingWebsiteStatus($result[$key]['url']);
+        $result[$key]['status'] = self::getPhishingWebsiteStatus($website['url']);
 
         if ($result[$key]['status'] != 0) {
           unset($result[$key]);
@@ -435,7 +435,7 @@
         $template = $this->getPhishingWebsiteTemplate($this->idTemplate);
 
         if ($template) {
-          /** @var array        Proměnné, které se budou v šabloně konfiguračního souboru nahrazovat */
+          // Proměnné, které se budou v šabloně konfiguračního souboru nahrazovat.
           $variables = [
             'PHISHINGATOR_SERVER_PORT', 'PHISHINGATOR_SERVER_NAME', 'PHISHINGATOR_SERVER_ADMIN',
             'PHISHINGATOR_DOCUMENT_ROOT', 'PHISHINGATOR_WEBSITE_PREPENDER'
@@ -445,7 +445,7 @@
           // $port = (get_protocol_from_url($this->url) == 'https') ? 443 : 80;
           $port = 80;
 
-          /** @var array        Hodnoty za proměnné pro šablonu konfiguračního souboru podvodné stránky */
+          // Hodnoty za proměnné pro šablonu konfiguračního souboru podvodné stránky.
           $values = [
             $port, get_hostname_from_url($this->url), PHISHING_WEBSITE_SERVER_ADMIN,
             $template['server_dir'], PHISHING_WEBSITE_PREPENDER
@@ -582,7 +582,7 @@
 
 
     /**
-     * Vrátí pole domén, které již byly interně zaregistrovány v proměnných prostředí proxy Phishingatoru.
+     * Vrátí pole domén, které již byly interně zaregistrovány v proxy Phishingatoru.
      *
      * @return array|false|string[]    Pole obsahující názvy (sub)domén
      */
