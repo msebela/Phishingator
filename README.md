@@ -18,7 +18,7 @@ Phishingator byl navržen jako co nejvíce **intuitivní a automatizovaný syst�
 ### Klíčové vlastnosti
 
 - **Vytvoření cvičné phishingové kampaně** (školení)
-  - Jednoduchý formulář s vyplněním _"komu, kdy, v kolik, jaký phishing a jaká phishingová stránka"_
+  - Jednoduchý formulář s vyplněním *"komu, kdy, v kolik, jaký phishing a jaká phishingová stránka"*
   - Způsob vkládání příjemců
     - Dobrovolná registrace uživatelů přihlášením do Phishingatoru
     - Výběr administrátorem systému
@@ -45,39 +45,34 @@ Phishingator byl navržen jako co nejvíce **intuitivní a automatizovaný syst�
 
 ### Způsob nasazení
 
-Phishingator **Vám můžeme nasadit** a pomoct s jeho **ovládáním a nastavením**, případně za Vás **můžeme realizovat** i cvičné **phishingové kampaně**, nebo si můžete Phishingator **nasadit sami** díky dostupným zdrojovým kódům. Všechny nabízené verze Phishingatoru obsahují stejné funkce (žádná z verzí není ochuzena).
+Phishingator **Vám můžeme nasadit** a pomoct s jeho **ovládáním a prvotním nastavením**, nebo si můžete Phishingator **nasadit sami** díky dostupným zdrojovým kódům. Pokud si Phishingator necháte nasadit od nás, budou v systému **předpřipravené** i cvičné podvodné e-maily a podvodné šablony podvodných stránek (včetně **zakoupených domén**).
 
-**Možnosti konzultací**, **správy systému** ze strany CESNETu a **školení** pak ukazuje následující _tabulka_:
+**Možnosti konzultací**, **správy systému** ze strany CESNETu a **školení** pak ukazuje následující tabulka:
 
 
-|                                               | Samostatný provoz | Standardní služba Phishingator | Phishingator Gold |
-|-----------------------------------------------|:-----------------:|:------------------------------:|:-----------------:|
-| Dostupnost zdrojových kódů                    |     &#10003;      |            &#10003;            |     &#10003;      |
-| Instanci provozuje CESNET                     |                   |            &#10003;            |     &#10003;      |
-|                                               |                   |                                |                   |
-| Konzultace technických problémů               |     &#10003;      |            &#10003;            |     &#10003;      |
-| Konzultace s napojením na autentizační systém |                   |            &#10003;            |     &#10003;      |
-| Vytvoření nových podvodných stránek __*__     |                   |            &#10003;            |     &#10003;      |
-| Příprava phishingových kampaní __*__          |                   |                                |     &#10003;      |
-| Plánování testování uživatelů                 |                   |                                |     &#10003;      |
-|                                               |                   |                                |                   |
-| Školení administrátorů systému                |                   |            &#10003;            |     &#10003;      |
-| Školení uživatelů                             |                   |                                |     &#10003;      |
-
-__*__ _Počet limitován dle dohody._
+|                                                | Samostatný provoz | Standardní služba Phishingator |
+|------------------------------------------------|:-----------------:|:------------------------------:|
+| Dostupnost zdrojových kódů                     |     &#10003;      |            &#10003;            |
+| Instanci provozuje CESNET                      |                   |            &#10003;            |
+| Konzultace technických problémů                |     &#10003;      |            &#10003;            |
+| Konzultace s napojením na autentizační systém  |                   |            &#10003;            |
+| Vytvoření nových podvodných e-mailů (3&times;) |                   |            &#10003;            |
+| Vytvoření nových podvodných stránek (3&times;) |                   |            &#10003;            |
+| Příprava vzorové phishingové kampaně           |                   |            &#10003;            |
+| Úvodní školení administrátorů systému          |                   |            &#10003;            |
 
 
 
 ### Mám zájem o službu
 
-Pokud **máte zájem o zprovoznění** Phishingatoru ve Vaší organizaci, **napište nám**, prosím, na e-mail _phishingator@cesnet.cz_. Následně spolu domluvíme **technické detaily** a **způsob nasazení** Phishingatoru.
+Pokud **máte zájem o zprovoznění** Phishingatoru ve Vaší organizaci, **napište nám**, prosím, na e-mail *phishingator@cesnet.cz*. Následně spolu domluvíme **technické detaily** a **způsob nasazení** Phishingatoru.
 
 
 #### Demo aplikace
 
 Pokud nad službou váháte a chtěli byste si ji nejprve **nezávazně vyzkoušet**, můžete se do **ukázkové verze Phishingatoru** přihlásit přes stránku uvedenou níže v odkazech.
 
-V ukázkové verzi Phishingatoru jsou ve výchozím stavu k dispozici **práva administrátora** – celý systém si tak můžete proklikat včetně několika **testovacích phishingových kampaní**, reakcí uživatelů a i samotných podvodných e-mailů a podvodných stránek.
+V ukázkové verzi Phishingatoru jsou ve výchozím stavu k dispozici **práva administrátora** – celý systém si tak můžete proklikat včetně několika **testovacích phishingových kampaní**, reakcí uživatelů a i samotných podvodných e-mailů a podvodných stránek. Přihlášení je pomocí služby *eduID*.
 
 *Pozn.:* Demo z praktických důvodů **neumožňuje odesílat e-maily**.
 
@@ -85,7 +80,7 @@ V ukázkové verzi Phishingatoru jsou ve výchozím stavu k dispozici **práva a
 
 ### Odkazy
 
-- Demo Phishingatoru – **TODO**
+- [Demo Phishingatoru](https://phishingator.cypherfix.cz)
 - [Zdrojové kódy Phishingatoru](/src)
 - [Uživatelská příručka](MANUAL.md)
 - [Ukázkové screenshoty aplikace](SCREENSHOTS.md)

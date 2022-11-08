@@ -105,7 +105,7 @@
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <span class="align-text-bottom" data-feather="file-text"></span>
-                  Zásady cvičného phishingu
+                  Zásady přípravy phishingu
                 </a>
               </li>
               <?php endif; ?>
