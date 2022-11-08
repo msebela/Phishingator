@@ -340,15 +340,10 @@
             exit();
           }
           elseif ($campaign['id_onsubmit'] == 3) {
-            // Přesměrování na konkrétní adresu.
-            header('Location: ' . $onsubmitAction['url']);
-            exit();
-          }
-          elseif ($campaign['id_onsubmit'] == 4) {
             // Neustálé zobrazování chybové zprávy.
             $this->displayMessage = true;
           }
-          elseif ($campaign['id_onsubmit'] == 5) {
+          elseif ($campaign['id_onsubmit'] == 4) {
             // Po druhém zadání přihlašovacích údajů provést přesměrování.
             $countMaxSends = 2;
             $sessionName = 'phishingMessage-' . $args['id_campaign'];

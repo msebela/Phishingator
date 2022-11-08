@@ -1248,11 +1248,11 @@
           throw new UserError('Záznam "' . $email . '" zadaný v seznamu příjemců je v nesprávném formátu.', MSG_ERROR);
         }
 
-        /*
         if (mb_substr($email, -mb_strlen(EMAILS_ALLOWED_DOMAIN)) !== EMAILS_ALLOWED_DOMAIN) {
           throw new UserError('Záznam "' . $email . '" zadaný v seznamu příjemců vede na nepovolenou doménu.', MSG_ERROR);
         }
 
+        /*
         if (!empty($allowedDomains)) {
           if ($this->strposa('@' . getEmailPart($email, 'domain'), $allowedDomainsArray) === false) {
             throw new UserError('Záznam "' . $email . '" zadaný v seznamu příjemců vede na doménu, která není v rámci oprávnění povolena.', MSG_ERROR);
@@ -1269,7 +1269,8 @@
           if ($this->strposa('@' . getEmailPart($ldapEmail, 'domain'), $allowedDomainsArray) === false) {
             throw new UserError('Záznam "' . $email . '" zadaný v seznamu příjemců vede na doménu, která není v rámci oprávnění povolena.', MSG_ERROR);
           }
-        }*/
+        }
+        */
       }
     }
 

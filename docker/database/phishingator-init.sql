@@ -36,7 +36,7 @@ INSERT INTO `phg_campaigns_onsubmit` (`id_onsubmit`, `name`, `url`, `visible`) V
 (1, 'Bez reakce', NULL, 1),
 (2, 'Zobrazit stránku s indiciemi, podle kterých bylo možné phishing rozpoznat', NULL, 1),
 (3, 'Zobrazit chybovou hlášku o nesprávných přihlašovacích údajích', NULL, 1),
-(5, 'Nechat uživatele dvakrát zadat přihlašovací údaje a po druhém zadání přesměrovat na stránku  s indiciemi, podle kterých bylo možné phishing rozpoznat', NULL, 1);
+(4, 'Nechat uživatele dvakrát zadat přihlašovací údaje a po druhém zadání přesměrovat na stránku  s indiciemi, podle kterých bylo možné phishing rozpoznat', NULL, 1);
 
 CREATE TABLE `phg_campaigns_recipients` (
   `id_recipient` int(10) UNSIGNED NOT NULL,
@@ -332,7 +332,7 @@ ALTER TABLE `phg_campaigns`
   MODIFY `id_campaign` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `phg_campaigns_onsubmit`
-  MODIFY `id_onsubmit` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_onsubmit` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 ALTER TABLE `phg_campaigns_recipients`
   MODIFY `id_recipient` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
