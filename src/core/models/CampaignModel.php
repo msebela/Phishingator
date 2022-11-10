@@ -1258,7 +1258,7 @@
             throw new UserError('Záznam "' . $email . '" zadaný v seznamu příjemců vede na doménu, která není v rámci oprávnění povolena.', MSG_ERROR);
           }
 
-          // PRIDANO KONTROLA MAILU VUCI LDAPU
+          // Kontrola e-mailu vůči LDAP.
           $ldap = new LdapModel();
           $username = getEmailPart($email, 'username');
 

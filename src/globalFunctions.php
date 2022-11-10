@@ -135,7 +135,10 @@
 
     if ($domain != null) {
       $hostNames = explode('.', $domain);
-      $secondLevelDomain = $hostNames[count($hostNames) - 2] . '.' . $hostNames[count($hostNames) - 1];
+
+      if (count($hostNames) >= 2) {
+        $secondLevelDomain = $hostNames[count($hostNames) - 2] . '.' . $hostNames[count($hostNames) - 1];
+      }
     }
 
     return $secondLevelDomain;

@@ -1,5 +1,19 @@
 <hr>
 
+<?php if ($action == ACT_EDIT && $phishingEmail['dns_mx_record'] == 0): ?>
+<div class="alert alert-with-icon alert-warning" role="alert">
+  <div class="alert-icon pr-1">
+    <span data-feather="alert-triangle"></span>
+  </div>
+  <div>
+    <h4 class="alert-heading">Chybějící DNS záznam</h4>
+    Doména, která je použita&nbsp;v e-mailu odesílatele, nemá v&nbsp;DNS správně směrován MX záznam na Phishingator. E-mail tak ve phishingové kampani nebude poštovním serverem s&nbsp;největší pravděpodobností odeslán.
+  </div>
+</div>
+
+<hr>
+<?php endif; ?>
+
 <form method="post" action="/portal/<?= $urlSection . '/' . $action . (($action == ACT_EDIT) ? '/' . $phishingEmail['id_email'] : ''); ?>">
   <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
