@@ -86,14 +86,28 @@
               ' . $whereFilter
       , $id);
 
-      $mxRecords = [];
-
-      // Kontrola MX záznamu u domény odesílatele.
-      if (isset($this->dbRecordData['sender_email']) && getmxrr(get_domain_from_url('https://' . get_email_part($this->dbRecordData['sender_email'], 'domain')), $mxRecords)) {
-        $this->dbRecordData['dns_mx_record'] = in_array('phishingator.' . get_domain_from_url(WEB_URL), $mxRecords);
-      }
+      $this->dbRecordData['dns_mx_record'] = $this->checkEmailDomainDNS($this->dbRecordData['sender_email']);
 
       return $this->dbRecordData;
+    }
+
+
+    /**
+     * Ověří, zdali je v DNS správně směrován MX záznam u domény, která je uvedená v adrese odesílatele,
+     * a to na server, kde běží Phishingator.
+     *
+     * @param string $email            E-mail
+     * @return bool                    TRUE pokud je MX záznam správně směrován, jinak FALSE
+     */
+    private function checkEmailDomainDNS($email) {
+      $mxRecords = [];
+      $result = false;
+
+      if (filter_var($email, FILTER_VALIDATE_EMAIL) && getmxrr(get_domain_from_url('https://' . get_email_part($email, 'domain')), $mxRecords)) {
+        $result = in_array('phishingator.' . get_domain_from_url(WEB_URL), $mxRecords);
+      }
+
+      return $result;
     }
 
 
