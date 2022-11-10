@@ -90,7 +90,7 @@
 
       // Kontrola MX záznamu u domény odesílatele.
       if (isset($this->dbRecordData['sender_email']) && getmxrr(get_email_part($this->dbRecordData['sender_email'], 'domain'), $mxRecords)) {
-        $this->dbRecordData['dns_mx_record'] = in_array('phishingator.' . WEB_URL, $mxRecords);
+        $this->dbRecordData['dns_mx_record'] = in_array('phishingator.' . get_domain_from_url(WEB_URL), $mxRecords);
       }
 
       return $this->dbRecordData;
