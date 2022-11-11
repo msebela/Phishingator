@@ -32,7 +32,8 @@
         'user-groups' => 'UserGroupsController',
         'stats' => 'StatsController',
         'my-participation' => 'ParticipationController',
-        'recieved-phishing-emails' => 'RecievedEmailsController'
+        'recieved-phishing-emails' => 'RecievedEmailsController',
+        'help' => 'HelpController'
       ];
     }
 

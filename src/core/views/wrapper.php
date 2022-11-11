@@ -96,14 +96,14 @@
 
             <ul class="nav flex-column mb-2">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="/portal/help/about-phishing" class="nav-link<?php if (isset($_GET['section']) && $_GET['section'] == 'help' && isset($_GET['action']) && $_GET['action'] == 'about-phishing') echo ' active'; ?>">
                   <span class="align-text-bottom" data-feather="anchor"></span>
                   Jak poznat phishing
                 </a>
               </li>
               <?php if ($userRole <= PERMISSION_TEST_MANAGER): ?>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="/portal/help/principles-phishing" class="nav-link<?php if (isset($_GET['section']) && $_GET['section'] == 'help' && isset($_GET['action']) && $_GET['action'] == 'principles-phishing') echo ' active'; ?>">
                   <span class="align-text-bottom" data-feather="file-text"></span>
                   Zásady přípravy phishingu
                 </a>

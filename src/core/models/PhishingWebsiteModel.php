@@ -128,7 +128,7 @@
 
 
     /**
-     * Vrátí z databáze seznam podvodných webových stránek, které jsou dostupné (aktivní)
+     * Vrátí z databáze seznam podvodných webových stránek, které jsou skutečně dostupné
      * pro ostatní uživatele (případně v konkrétním roce).
      *
      * @param int $year                Zkoumaný rok [nepovinné]
