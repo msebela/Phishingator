@@ -1,0 +1,161 @@
+<?php
+  /**
+   * Třída zpracovává uživatelský vstup úvodní stránky, na základě kterého volá
+   * odpovídající metody, přičemž svůj výstup předává další vrstvě pro výpis.
+   *
+   * @author Martin Šebela
+   */
+  class DashboardController extends Controller {
+    /**
+     * Zpracuje vstup z URL adresy a na základě toho zavolá odpovídající metodu.
+     *
+     * @param array $arguments         Uživatelský vstup.
+     */
+    public function process($arguments) {
+      $this->setTitle('Úvodní stránka');
+      $this->setView('homepage');
+
+      $model = new StatsModel();
+
+      // Získání legendy a barev pro grafy.
+      $this->setViewData('chartLegend', $model->getLegendAsString('"'));
+      $this->setViewData('chartColors', $model->getColorsAsString('"'));
+
+      // Zjištění role uživatele a na základě zjištěné role zavolání metod pro vypsání konkrétních grafů.
+      $userRole = PermissionsModel::getUserRole();
+
+      if ($userRole == PERMISSION_ADMIN) {
+        $this->setStatsAdminData($model);
+      }
+      elseif ($userRole == PERMISSION_TEST_MANAGER) {
+        $this->setStatsTestManagerData($model);
+      }
+      elseif ($userRole == PERMISSION_USER) {
+        $this->setStatsUserData($model);
+      }
+    }
+
+
+    /**
+     * Vypíše statistiku a grafy pro nejvyšší administrátorské oprávnění.
+     *
+     * @param StatsModel $model        Instance třídy
+     */
+    private function setStatsAdminData($model) {
+      // Počet běžících kampaní.
+      $countCampaigns = count(CampaignModel::getActiveCampaigns());
+
+      $this->setViewData('countCampaigns', get_formatted_number($countCampaigns));
+      $this->setViewData('countCampaignsText', $model->getStatsText($countCampaigns, 'campaignsCount'));
+
+      // Počet zaregistrovaných příjemců.
+      $countUsers = UsersModel::getCountOfActiveUsers();
+
+      $this->setViewData('countUsers', get_formatted_number($countUsers));
+      $this->setViewData('countUsersText', $model->getStatsText($countUsers, 'recipientsCount'));
+
+      // Počet dobrovolníků.
+      $countVolunteers = UsersModel::getCountOfVolunteers();
+
+      $this->setViewData('countVolunteers', get_formatted_number($countVolunteers));
+      $this->setViewData('countVolunteersText', $model->getStatsText($countVolunteers, 'volunteersCount'));
+
+      // Počet odeslaných e-mailů.
+      $countSentEmails = EmailSenderModel::getCountOfSentEmails();
+
+      $this->setViewData('countSentEmails', get_formatted_number($countSentEmails));
+      $this->setViewData('countSentEmailsText', $model->getStatsText($countSentEmails, 'sentEmails'));
+
+      // Počet běžících podvodných stránek.
+      $countPhishingWebsites = count(PhishingWebsiteModel::getActivePhishingWebsites());
+
+      $this->setViewData('countPhishingWebsites', get_formatted_number($countPhishingWebsites));
+      $this->setViewData('countPhishingWebsitesText', $model->getStatsText($countPhishingWebsites, 'websitesCount'));
+
+      // Data pro koláčový graf (konečné akce uživatelů).
+      $this->setViewData('chartDataUserEndAction', $model->getStatsForAllEndActions());
+
+      // Data a legenda pro sloupcový graf o konečných akcích uživatelů dle skupin.
+      $barChart = $model->getStatsForAllEndActionsByGroups();
+
+      $this->setViewData('barChartLegend', $model->legend);
+      $this->setViewData('barChartLegendColors', $model->colors);
+      $this->setViewData('barChartLegendDesc', $barChart['legend']);
+      $this->setViewData('barChartLegendData', $barChart['data']);
+
+      // Data a legenda pro sloupcový graf obsahující informace o dobrovolnících dle skupin.
+      $barChart = $model->getVolunteersStats();
+
+      $this->setViewData('chartVolunteers', $barChart['legend']);
+      $this->setViewData('chartVolunteersData', ($barChart['data']) ? $barChart['data'] : 0);
+
+      // Odkaz na nápovědu.
+      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#2-pro-administr%C3%A1tory');
+    }
+
+
+    /**
+     * Vypíše statistiku a grafy pro uživatelské oprávnění správce testů.
+     *
+     * @param StatsModel $model        Instance třídy
+     */
+    private function setStatsTestManagerData($model) {
+      // Zjištění ID přihlášeného uživatele pro konkretizování statistiky a grafů.
+      $idUser = PermissionsModel::getUserId();
+
+      // Relevantní kampaně, ke kterým se bude zjišťovat statistika.
+      $campaigns = CampaignModel::getIdCampaignsInUserGroup($idUser);
+
+      // Počet běžících kampaní.
+      $countCampaigns = count($campaigns);
+
+      $this->setViewData('countCampaigns', get_formatted_number($countCampaigns));
+      $this->setViewData('countCampaignsText', $model->getStatsText($countCampaigns, 'campaignsCount'));
+
+      // Počet odeslaných e-mailů.
+      $countSentEmails = (count($campaigns) > 0) ? EmailSenderModel::getCountOfSentEmailsInCampaign($campaigns) : 0;
+
+      $this->setViewData('countSentEmails', get_formatted_number($countSentEmails));
+      $this->setViewData('countSentEmailsText', $model->getStatsText($countSentEmails, 'sentEmails'));
+
+      // Data pro koláčový graf (konečné akce uživatelů).
+      $this->setViewData('chartDataUserEndAction', $model->getStatsForAllEndActions($campaigns));
+
+      // Data a legenda pro sloupcový graf o konečných akcích uživatelů dle skupin.
+      $barChart = $model->getStatsForAllEndActionsByGroups($campaigns);
+
+      $this->setViewData('barChartLegend', $model->legend);
+      $this->setViewData('barChartLegendColors', $model->colors);
+      $this->setViewData('barChartLegendDesc', $barChart['legend']);
+      $this->setViewData('barChartLegendData', $barChart['data']);
+
+      // Odkaz na nápovědu.
+      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#2-pro-administr%C3%A1tory');
+    }
+
+
+    /**
+     * Vypíše statistiku a grafy pro nejnižší oprávnění, tzn. pro uživatele.
+     *
+     * @param StatsModel $model        Instance třídy
+     */
+    private function setStatsUserData($model) {
+      // Zjištění ID přihlášeného uživatele pro konkretizování statistiky a grafů.
+      $idUser = PermissionsModel::getUserId();
+
+      // Počet přijatých e-mailů.
+      $countRecievedEmails = EmailSenderModel::getCountOfRecievedEmails($idUser);
+
+      $this->setViewData('countRecievedEmails', get_formatted_number($countRecievedEmails));
+      $this->setViewData('countRecievedEmailsText', $model->getStatsText($countRecievedEmails, 'recievedEmails'));
+
+      // Úspěšnost v odhalování phishingu.
+      $this->setViewData('countSuccessRate', $model->getUserSuccessRate($idUser));
+
+      // Data pro koláčový graf (konečná akce uživatele).
+      $this->setViewData('chartDataUserEndAction', $model->getStatsForAllEndActions(null, $idUser));
+
+      // Odkaz na nápovědu.
+      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#1-pro-u%C5%BEivatele');
+    }
+  }
