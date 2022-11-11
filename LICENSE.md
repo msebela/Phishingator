@@ -1,4 +1,4 @@
-# Phishingator:
+# Phishingator
 
 
 ## MIT License
@@ -6,12 +6,12 @@
 Copyright (C) 2019–2022, Martin Šebela (msebela@phishingator.cz), University of West Bohemia in Pilsen <https://www.zcu.cz>
 
 
-### About notice:
+### About notice
 
 Phishingator was created at the University of West Bohemia in Pilsen <https://www.zcu.cz> in 2019 as a result of the bachelor thesis "Phishing Training System", whose author is Martin Šebela and supervisor is Aleš Padrta. Subsequently, it was further developed at the Centre for Informatization and Computing <https://civ.zcu.cz> at University of West Bohemia in Pilsen.
 
 
-### Permission notice:
+### Permission notice
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -20,7 +20,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# Third party software notices:
+# Third party software notices
 
 Phishingator uses, incorporates or may be acompanied by Open Source Software (OSS). Licensee must fully agree and comply with license terms of these components or must not use these components. Insofar as the applicable license terms specify an obligation to publish, the copyright notices and license texts referring to the OSS components used are shown below:
 

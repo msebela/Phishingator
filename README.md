@@ -84,6 +84,7 @@ V ukázkové verzi Phishingatoru jsou ve výchozím stavu k dispozici **práva a
 - [Zdrojové kódy Phishingatoru](/src)
 - [Uživatelská příručka](MANUAL.md)
 - [Ukázkové screenshoty aplikace](SCREENSHOTS.md)
+- [Licence](LICENSE.md)
 
 
 
