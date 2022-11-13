@@ -1,6 +1,6 @@
 <?php
   /**
-   * Třída zpracovává uživatelský vstup úvodní stránky, na základě kterého volá
+   * Třída zpracovává uživatelský vstup stránky s nápovědou, na základě kterého volá
    * odpovídající metody, přičemž svůj výstup předává další vrstvě pro výpis.
    *
    * @author Martin Šebela

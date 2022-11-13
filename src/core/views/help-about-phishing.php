@@ -11,7 +11,10 @@
 <p>Phishing <i>[fišing]</i> je <strong>podvodný e-mail</strong>, který uživatele láká na <strong>něco neuvěřitelného</strong>, nebo se mu snaží nějakým způsobem <strong>vyhrožovat</strong> či <strong>napodobovat</strong> jinou známou <strong>instituci/osobu</strong> a&nbsp;jejím jménem uživatele <strong>o&nbsp;něco žádat</strong>.</p>
 <p>Útočníci phishingové e-maily rozesílají v&nbsp;<strong>obrovském množství</strong>, přičemž jejich <strong>cílem je poškodit uživatele</strong> (a&nbsp;často i&nbsp;instituci, se kterou je e-mail spojen). Z&nbsp;uživatelů se snaží typicky <strong>získat přihlašovací</strong> či jiné <strong>důvěrné údaje</strong>, například <strong>číslo platební karty</strong>, a&nbsp;to skrze podvodné stránky.</p>
 <p><strong>Uživatelé</strong> si často bohužel tuto <strong>hrozbu nepřipouští</strong> nebo dokonce o&nbsp;ní <strong>vůbec neví</strong>, a&nbsp;<strong>nahrávají tak útočníkům</strong>.</p>
-<p>Kromě phishingu se ovšem začíná rozmáhat i&nbsp;tzv. <strong>vishing</strong> (podvodné telefonáty) a&nbsp;<strong>smishing</strong> (podvodné SMS).</p>
+
+<div class="alert alert-info" role="alert">
+  Kromě phishingu se začíná rozmáhat i&nbsp;tzv. <strong>vishing</strong> (podvodné telefonáty) a&nbsp;<strong>smishing</strong> (podvodné zprávy a&nbsp;SMS).
+</div>
 
 <div class="slide-phishing-example">
   <div class="window">
