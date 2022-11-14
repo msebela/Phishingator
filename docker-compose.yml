@@ -59,11 +59,11 @@ services:
     labels:
       - traefik.docker.network=traefik
       - traefik.enable=true
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host($HOST)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host(`$WEB_HOST`)
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls=true
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.entrypoints=websecure
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-webhttp.rule=Host($HOST)
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-webhttp.entrypoints=web
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.rule=Host($FRAUDULENT_HOSTS)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.entrypoints=web
       - traefik.port=80
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.priority=50
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.middlewares=sslheader
