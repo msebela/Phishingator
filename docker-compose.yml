@@ -18,8 +18,9 @@ services:
       - DOCKER_REMOTE_USER      
       - ORG
       - ORG_DOMAIN
+      - WEB_HOST
       - WEB_URL
-      - HOST
+      - FRAUDULENT_HOSTS
       - DB_USERNAME
       - DB_PASSWORD
       - DB_DATABASE
@@ -59,7 +60,7 @@ services:
     labels:
       - traefik.docker.network=traefik
       - traefik.enable=true
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host(`$WEB_HOST`)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host(`$WEB_HOST`,$FRAUDULENT_HOSTS)
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls=true
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.entrypoints=websecure
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.rule=Host($FRAUDULENT_HOSTS)
