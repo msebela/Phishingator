@@ -589,8 +589,8 @@
     public static function getRegistredDomains() {
       $registredDomains = [];
 
-      if (getenv('HOST') !== null) {
-        $registredDomains = explode(',', str_replace('`', '', getenv('HOST')));
+      if (getenv('FRAUDULENT_HOSTS') !== null) {
+        $registredDomains = explode(',', str_replace('`', '', getenv('FRAUDULENT_HOSTS')));
       }
 
       return $registredDomains;
