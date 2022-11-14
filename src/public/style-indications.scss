@@ -1,3 +1,5 @@
+@import 'style-variables.scss';
+
 // PHISHING E-MAILS AND WEBSITES: INDICATIONS
 .indication {
   padding: 0 0 0 .2rem;
@@ -44,6 +46,142 @@
     .feather {
       width: 22px;
       height: 22px;
+    }
+  }
+}
+
+// GUI WINDOW
+.window {
+  font-size: 13pt;
+  position: relative;
+  color: $black;
+  border: 3px solid #f1f1f1;
+  border-radius: 10px;
+  background: #f1f1f1;
+
+  @include media-breakpoint-down(xs) {
+    font-size: 12pt;
+  }
+
+  &.browser {
+    width: 380px;
+    margin-bottom: 30px;
+
+    @include media-breakpoint-down(xs) {
+      min-width: 316px;
+      width: auto;
+    }
+
+    i .feather {
+      margin-bottom: 15px;
+    }
+  }
+
+  .column {
+    float: left;
+  }
+
+  .left {
+    width: 20%;
+  }
+
+  .right {
+    width: 10%;
+
+    div {
+      float: right;
+      margin-top: 4px;
+    }
+  }
+
+  .middle {
+    width: 70%;
+  }
+
+  .row {
+    margin: 0 10px 5px 10px;
+
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  }
+
+  // WINDOW - LEFT DOTS
+  .dot {
+    display: inline-block;
+    height: 12px;
+    width: 12px;
+    margin-top: 4px;
+    border-radius: 50%;
+    background: #bbb;
+
+    &:nth-of-type(1) {
+      background: $ui-red;
+    }
+
+    &:nth-of-type(2) {
+      background: $ui-yellow;
+    }
+
+    &:nth-of-type(3) {
+      background: $ui-green;
+    }
+  }
+
+  // WINDOW - HEADER
+  .header {
+    text-align: center;
+    color: #666;
+  }
+
+  // WINDOW - RIGHT MENU
+  .bar {
+    width: 17px;
+    height: 3px;
+    background-color: #aaa;
+    margin: 3px 0;
+    display: block;
+  }
+
+  // WINDOW - CONTENT
+  .content {
+    padding: 20px;
+    background: $white;
+
+    @include media-breakpoint-down(sm) {
+      padding: 10px;
+    }
+
+    &.phishing-website-detail {
+      max-height: 350px;
+      position: relative;
+      overflow: hidden;
+      padding: 0;
+
+      @include media-breakpoint-down(lg) {
+        img {
+          max-width: 100%;
+        }
+      }
+
+      .screenshot-shadow {
+        height: 50px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        -moz-box-shadow: inset 0 -500px 500px -500px $white;
+        -webkit-box-shadow: inset 0 -500px 500px -500px $white;
+        box-shadow: inset 0 -500px 500px -500px $white;
+      }
+    }
+
+    hr {
+      margin: 10px 0;
+      width: auto;
+      border-top: 1px solid #000;
     }
   }
 }

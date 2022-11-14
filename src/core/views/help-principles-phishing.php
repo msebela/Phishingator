@@ -8,20 +8,20 @@
   </div>
 </div>
 
-<p>Podobně jako při psaní běžného e-mailu je nutné i&nbsp;při <strong>vytváření cvičného podvodného e-mailu</strong> pamatovat na určité <strong>zásady</strong>. Cílem je vždy sestavit cvičný podvodný e-mail, který uživatele <strong>naučí odhalovat typické znaky</strong> a&nbsp;techniky používané ve <strong>phishingových e-mailech</strong>.</p>
+<p>Podobně jako při psaní běžného e-mailu je nutné i&nbsp;při <strong>vytváření cvičného podvodného e-mailu</strong> pamatovat na určité <strong>zásady</strong>. Cílem je vždy sestavit cvičný podvodný e-mail, který uživatele <strong>naučí odhalovat</strong> a&nbsp;zaměřovat se na <strong>typické znaky a&nbsp;techniky</strong> používané ve <strong>phishingových e-mailech</strong>.</p>
 
 <h4 class="pb-2 mb-3 border-bottom">Znaky phishingu</h4>
 <p>Každý cvičný podvodný e-mail by měl především obsahovat <strong>charakteristické znaky phishingu</strong>, které lze nalézt i&nbsp;v&nbsp;<strong>reálném phishingovém e-mailu</strong>. Je vhodné, aby se ve cvičném phishingovém e-mailu vyskytly <strong>alespoň tři indicie</strong>, na základě kterých bylo možné <strong>podvod rozpoznat</strong>, typicky:</p>
 <ul>
   <li><strong>podvržená adresa</strong> odesílatele,</li>
   <li><strong>odkaz na podvodnou stránku,</strong></li>
-  <li>podle <strong>obsahu</strong> v e-mailu:
+  <li>podle <strong>obsahu</strong> v&nbsp;e-mailu:
     <ul>
-      <li><strong>použitý jazyk</strong> (strojová čeština, neočekávaně anglicky psaný e-mail o&nbsp;mzdovém lístku),</li>
-      <li><strong>relevantnost</strong> sdělení (obsah, který by měl být určen někomu jinému),</li>
-      <li><strong>časový nátlak</strong> na uživatele (nutnost obratem reagovat &ndash; kliknout na podvodný odkaz),</li>
-      <li><strong>hrozba ztráty, příležitosti</strong> (o&nbsp;co uživatel přijde &ndash; např. zablokování účtu, odměny zdarma),</li>
-      <li><strong>vydávání se za autoritou</strong> (motivace na zprávu reagovat &ndash; např. vydávání se za administrátora serveru).</li>
+      <li><strong>použitý jazyk</strong> <span class="text-secondary">(strojová čeština, česká banka píše anglicky)</span>,</li>
+      <li><strong>relevantnost</strong> sdělení <span class="text-secondary">(obsah, který by měl být určen někomu jinému)</span>,</li>
+      <li><strong>časový nátlak</strong> na uživatele <span class="text-secondary">(nutnost obratem reagovat &ndash; kliknout na podvodný odkaz)</span>,</li>
+      <li><strong>hrozba ztráty, příležitosti</strong> <span class="text-secondary">(o&nbsp;co uživatel přijde &ndash; např. zablokování účtu, odměny zdarma)</span>,</li>
+      <li><strong>vydávání se za autoritou</strong> <span class="text-secondary">(motivace na zprávu reagovat &ndash; např. vydávání se za administrátora serveru)</span>.</li>
     </ul>
   </li>
 </ul>
@@ -44,7 +44,7 @@
 </div>
 
 <h4 class="pb-2 mb-3 border-bottom">Náměty</h4>
-Mezi <strong>vhodná témata</strong> pro cvičné podvodné e-maily například patří:
+<p>Mezi <strong>vhodná témata</strong> pro cvičné podvodné e-maily například patří:</p>
 <ul>
   <li><strong>různé notifikace</strong> &ndash; vypršení hesla, žádost o&nbsp;sdílení dokumentu, kontrola použití účtu z&nbsp;jiné lokality apod.,</li>
   <li><strong>kontrola nebo potvrzení</strong> údajů,</li>

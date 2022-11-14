@@ -42,6 +42,15 @@
     private function setUserHelp() {
       $this->setView('help-about-phishing');
 
+      // Personalizovaná data pro příklad phishingového e-mailu.
+      $phishing = [
+        'recipient' => PermissionsModel::getUserName(),
+        'org' => strtoupper(getenv('ORG')),
+        'orgDomain' => getenv('ORG_DOMAIN')
+      ];
+
+      $this->setViewData('phishing', $phishing);
+
       // Odkaz na nápovědu.
       $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#1-pro-u%C5%BEivatele');
     }
