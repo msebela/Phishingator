@@ -26,7 +26,7 @@
 <div class="row d-flex justify-content-center text-center mt-4">
   <div class="col-md-3 mb-4 mb-md-0">
     <p class="h4 font-weight-bolder">
-      <span class="badge-pill badge-dark py-1">něco zdarma</span>
+      <span class="badge-pill badge-dark py-1">Něco zdarma</span>
     </p>
     <p>
       Zbohatnu?<br>
@@ -39,12 +39,12 @@
       <strong>Znám ho?</strong>
     </p>
     <p class="h3 font-weight-bolder">
-      <span class="badge-pill badge-dark py-1">odesílatel</span>
+      <span class="badge-pill badge-dark py-1">Odesílatel</span>
     </p>
   </div>
   <div class="col-md-4 mb-4 mb-md-0">
     <p class="h3 font-weight-bolder">
-      <span class="badge-pill badge-dark py-1">odkazy v e-mailu</span>
+      <span class="badge-pill badge-dark py-1">Odkazy v e-mailu</span>
     </p>
     <p>
       Kam vedou? <strong>Znám tu adresu?</strong><br>
@@ -54,7 +54,7 @@
   <div class="col-md-3 mb-4 mb-md-0">
     <p>Proč mi vyhrožují?</p>
     <p class="h4 font-weight-bolder">
-      <span class="badge-pill badge-dark py-1">vyhrožování</span>
+      <span class="badge-pill badge-dark py-1">Vyhrožování</span>
     </p>
     <p>
       <strong>My se známe?</strong>
@@ -73,7 +73,7 @@
       <li><strong>relevantnost</strong> sdělení <span class="text-secondary">(obsah, který by měl být určen někomu jinému nebo jej posílá nekompetentní osoba &ndash; např. uklízečka posílá směrnici)</span>,</li>
       <li><strong>časový nátlak</strong> na uživatele <span class="text-secondary">(nutnost obratem reagovat &ndash; kliknout na podvodný odkaz)</span>,</li>
       <li><strong>hrozba ztráty, příležitosti</strong> <span class="text-secondary">(o&nbsp;co uživatel přijde &ndash; např. zablokování účtu, odměny zdarma)</span>,</li>
-      <li><strong>vydávání se za autoritou</strong> <span class="text-secondary">(motivace na zprávu reagovat &ndash; např. vydávání se za administrátora serveru, za ředitele organizace)</span>.</li>
+      <li><strong>vydávání se za autoritu</strong> <span class="text-secondary">(motivace na zprávu reagovat &ndash; např. vydávání se za administrátora serveru, za ředitele organizace)</span>.</li>
     </ul>
   </li>
 </ol>

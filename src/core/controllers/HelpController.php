@@ -40,6 +40,7 @@
      * Vypíše obsah nápovědy určenou pro běžné uživatele.
      */
     private function setUserHelp() {
+      $this->setTitle('Jak poznat phishing');
       $this->setView('help-about-phishing');
 
       // Personalizovaná data pro příklad phishingového e-mailu.
@@ -60,6 +61,7 @@
      * Vypíše obsah nápovědy určenou pro administátory, kteří budou připravovat phishingové kampaně.
      */
     private function setAdminHelp() {
+      $this->setTitle('Jak připravit phishing');
       $this->setView('help-principles-phishing');
 
       // Odkaz na nápovědu.
