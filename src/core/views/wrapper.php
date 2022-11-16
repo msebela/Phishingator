@@ -105,7 +105,7 @@
               <li class="nav-item">
                 <a href="/portal/help/principles-phishing" class="nav-link<?php if (isset($_GET['section']) && $_GET['section'] == 'help' && isset($_GET['action']) && $_GET['action'] == 'principles-phishing') echo ' active'; ?>">
                   <span class="align-text-bottom" data-feather="file-text"></span>
-                  Zásady přípravy phishingu
+                  Jak připravit phishing
                 </a>
               </li>
               <?php endif; ?>
