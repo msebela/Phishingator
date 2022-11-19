@@ -64,7 +64,6 @@
         $this->processList($model);
       }
 
-      // Odkaz na nápovědu.
       $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#23-podvodn%C3%A9-e-maily-a-indicie');
     }
 
@@ -352,15 +351,16 @@
       $this->setTitle('Podvodné e-maily');
       $this->setView('list-phishing-emails');
 
-      $phishingEmails = $model->getPhishingEmails();
+      $records = $model->getPhishingEmails();
 
-      foreach ($phishingEmails as &$email) {
+      foreach ($records as &$email) {
         $countIndications = EmailIndicationsModel::getCountEmailIndications($email['id_email']);
 
         $email['indications_sum'] = $countIndications;
         $email['indications_color'] = EmailIndicationsModel::getColorByCountIndications($countIndications);
       }
 
-      $this->setViewData('phishingEmails', $phishingEmails);
+      $this->setViewData('phishingEmails', $records);
+      $this->setViewData('countRecordsText', self::getTableFooter(count($records)));
     }
   }

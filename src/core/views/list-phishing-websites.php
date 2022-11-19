@@ -39,13 +39,9 @@
           </span><?= $website['url'] ?>
         </td>
         <td>
-          <?php if ($website['status'] == 1): ?>
-          <span class="badge badge-warning">
-            nedokončené směrování
-          </span>
-          <?php elseif ($website['status'] == 2): ?>
-          <span class="badge badge-danger">
-            chybné DNS
+          <?php if ($website['status'] != 0): ?>
+          <span class="badge badge-<?= $website['status_color'] ?>">
+            <?= $website['status_text'] ?>
           </span>
           <?php else: ?>
           <span class="badge badge-<?= $website['active_color'] ?>">
@@ -83,7 +79,7 @@
     <tfoot>
       <tr>
         <td colspan="9" class="font-italic">
-          Celkem <?= count($phishingWebsites) ?> záznamů.
+          <?= $countRecordsText ?>
         </td>
       </tr>
     </tfoot>
@@ -92,5 +88,5 @@
 <?php else: ?>
 <hr>
 
-<p class="font-italic">Žádné záznamy.</p>
+<p class="font-italic"><?= $countRecordsText ?></p>
 <?php endif; ?>

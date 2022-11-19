@@ -42,7 +42,7 @@
     <tfoot>
       <tr>
         <td colspan="7" class="font-italic">
-          Celkem <?= count($phishingEmails) ?> záznamů.
+          <?= $countRecordsText ?>
         </td>
       </tr>
     </tfoot>

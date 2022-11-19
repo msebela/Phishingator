@@ -70,26 +70,26 @@
 <?php if (count($emailIndications) > 0): ?>
 <hr>
 
-<h4>Přehled indicií k&nbsp;této zprávě</h4>
-<?php for ($i = 0; $i < count($emailIndications); $i++): ?>
-<form method="post" action="/portal/<?= $urlSection . '/' . ACT_INDICATIONS . '/' . $phishingEmail['id_email'] ?>" id="indication-<?= $emailIndications[$i]['id_indication'] ?>-text" onmouseover="markIndication(<?= $emailIndications[$i]['id_indication'] ?>)" onmouseout="markIndication(<?= $emailIndications[$i]['id_indication'] ?>)">
+<h4>Indicie (<?= count($emailIndications) ?>) k&nbsp;rozpoznání tohoto phishingu</h4>
+<?php foreach ($emailIndications as $i => $indication): $i++; ?>
+<form method="post" action="/portal/<?= $urlSection . '/' . ACT_INDICATIONS . '/' . $phishingEmail['id_email'] ?>" id="indication-<?= $indication['id_indication'] ?>-text" onmouseover="markIndication(<?= $indication['id_indication'] ?>)" onmouseout="markIndication(<?= $indication['id_indication'] ?>)">
   <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
-  <input type="hidden" name="<?= $formPrefix . ACT_EDIT ?>-id" value="<?= $emailIndications[$i]['id_indication'] ?>">
+  <input type="hidden" name="<?= $formPrefix . ACT_EDIT ?>-id" value="<?= $indication['id_indication'] ?>">
 
   <div class="form-row">
     <div class="form-group col-lg-3">
-      <label for="<?= $formPrefix ?>expression-<?= ($i + 1) ?>">Indicie (podezřelý řetězec)</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>expression-<?= ($i + 1) ?>" name="<?= $formPrefix . ACT_EDIT ?>-expression" maxlength="<?= $inputsMaxLengths['expression'] ?>" value="<?= $emailIndications[$i]['expression'] ?>" required>
+      <label for="<?= $formPrefix ?>expression-<?= $i ?>">Indicie (podezřelý řetězec)</label>
+      <input type="text" class="form-control" id="<?= $formPrefix ?>expression-<?= $i ?>" name="<?= $formPrefix . ACT_EDIT ?>-expression" maxlength="<?= $inputsMaxLengths['expression'] ?>" value="<?= $indication['expression'] ?>" required>
     </div>
 
     <div class="form-group col-lg-3">
-      <label for="<?= $formPrefix ?>title-<?= ($i + 1) ?>">Nadpis</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>title-<?= ($i + 1) ?>" name="<?= $formPrefix . ACT_EDIT ?>-title" maxlength="<?= $inputsMaxLengths['title'] ?>" value="<?= $emailIndications[$i]['title'] ?>" required>
+      <label for="<?= $formPrefix ?>title-<?= $i ?>">Nadpis</label>
+      <input type="text" class="form-control" id="<?= $formPrefix ?>title-<?= $i ?>" name="<?= $formPrefix . ACT_EDIT ?>-title" maxlength="<?= $inputsMaxLengths['title'] ?>" value="<?= $indication['title'] ?>" required>
     </div>
 
     <div class="form-group col-lg-7">
-      <label for="<?= $formPrefix ?>description-<?= ($i + 1) ?>">Popis (nepovinné)</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>description-<?= ($i + 1) ?>" name="<?= $formPrefix . ACT_EDIT ?>-description" maxlength="<?= $inputsMaxLengths['description'] ?>" value="<?= $emailIndications[$i]['description'] ?>">
+      <label for="<?= $formPrefix ?>description-<?= $i ?>">Popis (nepovinné)</label>
+      <input type="text" class="form-control" id="<?= $formPrefix ?>description-<?= $i ?>" name="<?= $formPrefix . ACT_EDIT ?>-description" maxlength="<?= $inputsMaxLengths['description'] ?>" value="<?= $indication['description'] ?>">
     </div>
 
     <div class="form-group col-lg-3 text-right">
@@ -107,5 +107,5 @@
     </div>
   </div>
 </form>
-<?php endfor; ?>
+<?php endforeach; ?>
 <?php endif; ?>

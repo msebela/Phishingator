@@ -48,7 +48,6 @@
         $this->processList($model);
       }
 
-      // Odkaz na nápovědu.
       $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#25-u%C5%BEivatel%C3%A9');
     }
 
@@ -190,6 +189,9 @@
       $this->setTitle('Podvodné stránky');
       $this->setView('list-phishing-websites');
 
-      $this->setViewData('phishingWebsites', $model->getPhishingWebsites());
+      $records = $model->getPhishingWebsites();
+
+      $this->setViewData('phishingWebsites', $records);
+      $this->setViewData('countRecordsText', self::getTableFooter(count($records)));
     }
   }

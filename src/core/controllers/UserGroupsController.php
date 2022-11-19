@@ -45,7 +45,6 @@
         $this->processList($model);
       }
 
-      // Odkaz na nápovědu.
       $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#26-u%C5%BEivatelsk%C3%A9-skupiny');
     }
 
@@ -154,6 +153,9 @@
       $this->setTitle('Uživatelské skupiny');
       $this->setView('list-user-groups');
 
-      $this->setViewData('groups', $model->getUserGroups());
+      $records = $model->getUserGroups();
+
+      $this->setViewData('groups', $records);
+      $this->setViewData('countRecordsText', self::getTableFooter(count($records)));
     }
   }

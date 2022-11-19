@@ -121,6 +121,15 @@
         $result[$key]['active_color'] = ($website['active']) ? MSG_CSS_SUCCESS : MSG_CSS_ERROR;
 
         $result[$key]['status'] = self::getPhishingWebsiteStatus($website['url']);
+
+        if ($result[$key]['status'] == 1) {
+          $result[$key]['status_text'] = 'nedokončené směrování';
+          $result[$key]['status_color'] = MSG_CSS_WARNING;
+        }
+        elseif ($result[$key]['status'] == 2) {
+          $result[$key]['status_text'] = 'chybné DNS';
+          $result[$key]['status_color'] = MSG_CSS_ERROR;
+        }
       }
 
       return $result;

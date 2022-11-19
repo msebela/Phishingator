@@ -25,7 +25,6 @@
       // Získání dat pro roční statistiky.
       $this->setStatsData();
 
-      // Odkaz na nápovědu.
       $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#2-pro-administr%C3%A1tory');
     }
 

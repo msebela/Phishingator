@@ -84,14 +84,14 @@
     <span data-feather="coffee"></span>
   </div>
   <div>
-    Snažte se vyhnout automatickému a&nbsp;<strong>zbrklému klikání na odkazy</strong> nebo <strong>neznámé přílohy</strong> a&nbsp;vždy si <strong>nechte čas na promyšlenou</strong> a&nbsp;dejte si radši kafe &ndash; i&nbsp;za předpokladu, že odesílatel píše, abyste jednali rychle. Nezapomeňte, že s rozpoznáním phishingu od legitimního e-mailu Vám mohou <strong>pomoci i&nbsp;kolegové</strong> nebo se <strong>poraďte s&nbsp;pracovníky IT oddělení</strong>.
+    Snažte se vyhnout automatickému a&nbsp;<strong>zbrklému klikání na odkazy</strong> nebo <strong>neznámé přílohy</strong> a&nbsp;vždy si <strong>nechte čas na promyšlenou</strong> a&nbsp;dejte si radši kafe &ndash; i&nbsp;za předpokladu, že odesílatel píše, abyste jednali rychle. Nezapomeňte, že s&nbsp;rozpoznáním phishingu od legitimního e-mailu Vám mohou <strong>pomoci i&nbsp;kolegové</strong> nebo se <strong>poraďte s&nbsp;pracovníky IT oddělení</strong>.
   </div>
 </div>
 
 <h4 class="pb-2 mb-3 border-bottom">Příklad phishingu</h4>
 <p>Konkrétní indicie pro rozpoznání phishingu ukazuje následující <strong>příklad podvodného e-mailu</strong>:</p>
 
-<div class="container slide-phishing-example">
+<div class="container">
   <div class="window">
     <div class="row">
       <div class="column left">
@@ -139,19 +139,22 @@
     </div>
   </div>
 </div>
+
 <hr>
+
 <div class="container card-columns text-dark">
-  <div id="indication-1-text" class="card bg-light cursor-pointer" onmouseover="markIndication(1)" onmouseout="markIndication(1)">
-    <a href="#indication-1" class="anchor-link">
+  <?php foreach ($_phishingIndications as $i => $indication): $i++; ?>
+  <div id="indication-<?= $i ?>-text" class="card bg-light cursor-pointer" onmouseover="markIndication(<?= $i ?>)" onmouseout="markIndication(<?= $i ?>)">
+    <a href="#indication-<?= $i ?>" class="anchor-link">
       <div class="card-body">
         <h5 class="card-title">
-          <span class="badge badge-pill badge-dark">1.&nbsp;indicie</span>
-          E-mail odesílatele
+          <span class="badge badge-pill badge-dark"><?= $i ?>.&nbsp;indicie</span>
+          <?= $indication[0] ?>
         </h5>
-        <p class="card-text">E-mail odesílatele nemá s&nbsp;organizací <?= $phishing['org'] ?> nic společného, byť se útočník snažil, aby byl v&nbsp;adrese odesílatele uveden její název.</p>
+        <p class="card-text"><?= $indication[1] ?></p>
 
         <div class="clearfix">
-          <button type="button" id="indication-1-btn" class="btn btn-sm btn-info float-right" onclick="markIndication(1)">
+          <button type="button" id="indication-<?= $i ?>-btn" class="btn btn-sm btn-info float-right" onclick="markIndication(<?= $i ?>)">
             <span data-feather="chevron-up"></span>
             <span>Označit</span>
           </button>
@@ -159,77 +162,5 @@
       </div>
     </a>
   </div>
-  <div id="indication-2-text" class="card bg-light cursor-pointer" onmouseover="markIndication(2)" onmouseout="markIndication(2)">
-    <a href="#indication-2" class="anchor-link">
-      <div class="card-body">
-        <h5 class="card-title">
-          <span class="badge badge-pill badge-dark">2.&nbsp;indicie</span>
-          Podezřelá URL
-        </h5>
-        <p class="card-text">Nejedná se o&nbsp;oficiální adresu organizace <?= $phishing['org'] ?>, ale o&nbsp;snahu útočníka napodobit její název falešnou doménou <span class="text-monospace">web<?= $phishing['orgDomain'] ?></span>.</p>
-        <p class="card-text">Celý odkaz navíc začíná zastaralým a&nbsp;nezabezpečeným protokolem HTTP místo bezpečného HTTPS.</p>
-
-        <div class="clearfix">
-          <button type="button" id="indication-2-btn" class="btn btn-sm btn-info float-right" onclick="markIndication(2)">
-            <span data-feather="chevron-up"></span>
-            <span>Označit</span>
-          </button>
-        </div>
-      </div>
-    </a>
-  </div>
-  <div id="indication-3-text" class="card bg-light cursor-pointer" onmouseover="markIndication(3)" onmouseout="markIndication(3)">
-    <a href="#indication-3" class="anchor-link">
-      <div class="card-body">
-        <h5 class="card-title">
-          <span class="badge badge-pill badge-dark">3.&nbsp;indicie</span>
-          Časový nátlak
-        </h5>
-        <p class="card-text">Útočník se snaží donutit uživatele k&nbsp;okamžité akci &ndash; kliknout na podvodný odkaz pod hrozbou nezískání odměn.</p>
-
-        <div class="clearfix">
-          <button type="button" id="indication-3-btn" class="btn btn-sm btn-info float-right" onclick="markIndication(3)">
-            <span data-feather="chevron-up"></span>
-            <span>Označit</span>
-          </button>
-        </div>
-      </div>
-    </a>
-  </div>
-  <div id="indication-4-text" class="card bg-light cursor-pointer" onmouseover="markIndication(4)" onmouseout="markIndication(4)">
-    <a href="#indication-4" class="anchor-link">
-      <div class="card-body">
-        <h5 class="card-title">
-          <span class="badge badge-pill badge-dark">4.&nbsp;indicie</span>
-          Hrozba ztrátou
-        </h5>
-        <p class="card-text">Útočník se snaží vyhrožovat, aby uživatele motivoval k&nbsp;okamžité akci bez přemýšlení.</p>
-
-        <div class="clearfix">
-          <button type="button" id="indication-4-btn" class="btn btn-sm btn-info float-right" onclick="markIndication(4)">
-            <span data-feather="chevron-up"></span>
-            <span>Označit</span>
-          </button>
-        </div>
-      </div>
-    </a>
-  </div>
-  <div id="indication-5-text" class="card bg-light cursor-pointer" onmouseover="markIndication(5)" onmouseout="markIndication(5)">
-    <a href="#indication-5" class="anchor-link">
-      <div class="card-body">
-        <h5 class="card-title">
-          <span class="badge badge-pill badge-dark">5.&nbsp;indicie</span>
-          Vydávání se za autoritou
-        </h5>
-        <p class="card-text">Útočník se vydává za autoritu, aby byl podvodný e-mail více důvěryhodný a&nbsp;pocitově důležitější a&nbsp;motivoval uživatele k&nbsp;akci.</p>
-
-        <div class="clearfix">
-          <button type="button" id="indication-5-btn" class="btn btn-sm btn-info float-right" onclick="markIndication(5)">
-            <span data-feather="chevron-up"></span>
-            <span>Označit</span>
-          </button>
-        </div>
-      </div>
-    </a>
-  </div>
+  <?php endforeach; ?>
 </div>

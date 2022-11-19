@@ -50,9 +50,33 @@
         'orgDomain' => getenv('ORG_DOMAIN')
       ];
 
-      $this->setViewData('phishing', $phishing);
+      // Seznam indicií pro příklad phishingového e-mailu.
+      $phishingIndications = [
+        [
+          'E-mail odesílatele',
+          'E-mail odesílatele nemá s&nbsp;organizací ' . $phishing['org'] . ' nic společného, byť se útočník snažil, aby byl v&nbsp;adrese odesílatele uveden její název.'
+        ],
+        [
+          'Podezřelá URL',
+          'Nejedná se o&nbsp;oficiální adresu organizace ' . $phishing['org'] . ', ale o&nbsp;snahu útočníka napodobit její název falešnou doménou <span class="text-monospace">web' . $phishing['orgDomain'] . '</span>.</p><p class="card-text">Celý odkaz navíc začíná zastaralým a&nbsp;nezabezpečeným protokolem HTTP místo bezpečného HTTPS.'
+        ],
+        [
+          'Časový nátlak',
+          'Útočník se snaží donutit uživatele k&nbsp;okamžité akci &ndash; kliknout na podvodný odkaz pod hrozbou nezískání odměn.'
+        ],
+        [
+          'Hrozba ztrátou',
+          'Útočník se snaží vyhrožovat, aby uživatele motivoval k&nbsp;okamžité akci bez přemýšlení.'
+        ],
+        [
+          'Vydávání se za autoritou',
+          'Útočník se vydává za autoritu, aby byl podvodný e-mail více důvěryhodný a&nbsp;pocitově důležitější a&nbsp;motivoval uživatele k&nbsp;akci.'
+        ]
+      ];
 
-      // Odkaz na nápovědu.
+      $this->setViewData('phishing', $phishing);
+      $this->setViewData('phishingIndications', $phishingIndications);
+
       $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#1-pro-u%C5%BEivatele');
     }
 
@@ -64,7 +88,6 @@
       $this->setTitle('Jak připravit phishing');
       $this->setView('help-principles-phishing');
 
-      // Odkaz na nápovědu.
       $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#2-pro-administr%C3%A1tory');
     }
   }

@@ -34,7 +34,6 @@
         $this->processParticipation($model, $formData);
       }
 
-      // Odkaz na nápovědu.
       $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#1-pro-u%C5%BEivatele');
     }
 

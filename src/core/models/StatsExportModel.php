@@ -21,9 +21,9 @@
       $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-konecne-akce';
       $csvData = CampaignModel::getUsersEndActionInCampaign($id);
 
-      /* Informace o datech pro CSV export. */
-      $csvHeader = ['id_line', 'username', 'email', 'action', 'reported'];
-      $csvDataIndexes = ['username', 'used_email', 'name', 'reported'];
+      // Informace o datech pro CSV export.
+      $csvHeader = ['id_line', 'username', 'group', 'email', 'action', 'reported'];
+      $csvDataIndexes = ['username', 'used_email', 'used_group', 'name', 'reported'];
 
       $data = [
         'csvFilename' => $csvFilename,

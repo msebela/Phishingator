@@ -99,7 +99,7 @@
     <tfoot>
       <tr>
         <td colspan="14" class="font-italic">
-          Celkem <?= count($campaigns) ?> záznamů.
+          <?= $countRecordsText ?>
         </td>
       </tr>
     </tfoot>
@@ -108,5 +108,5 @@
 <?php else: ?>
 <hr>
 
-<p class="font-italic">Žádné záznamy.</p>
+<p class="font-italic"><?= $countRecordsText ?></p>
 <?php endif; ?>

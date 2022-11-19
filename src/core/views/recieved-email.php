@@ -80,18 +80,18 @@
 <hr>
 
 <div class="container card-columns">
-  <?php for ($i = 0; $i < count($email['indications']); $i++): ?>
-  <div id="indication-<?= $email['indications'][$i]['id_indication'] ?>-text" class="card bg-light cursor-pointer" onmouseover="markIndication(<?= $email['indications'][$i]['id_indication'] ?>)" onmouseout="markIndication(<?= $email['indications'][$i]['id_indication'] ?>)">
-    <a href="#indication-<?= $email['indications'][$i]['id_indication'] ?>" class="anchor-link">
+  <?php foreach ($email['indications'] as $i => $indication): ?>
+  <div id="indication-<?= $indication['id_indication'] ?>-text" class="card bg-light cursor-pointer" onmouseover="markIndication(<?= $indication['id_indication'] ?>)" onmouseout="markIndication(<?= $indication['id_indication'] ?>)">
+    <a href="#indication-<?= $indication['id_indication'] ?>" class="anchor-link">
       <div class="card-body">
         <h5 class="card-title">
           <span class="badge badge-pill badge-dark"><?= ($i + 1) ?>.&nbsp;indicie</span>
-          <?= $email['indications'][$i]['title'] ?>
+          <?= $indication['title'] ?>
         </h5>
-        <p class="card-text"><?= $email['indications'][$i]['description'] ?></p>
+        <p class="card-text"><?= $indication['description'] ?></p>
 
         <div class="clearfix">
-          <button type="button" id="indication-<?= $email['indications'][$i]['id_indication'] ?>-btn" class="btn btn-sm btn-info float-right" onclick="markIndication(<?= $email['indications'][$i]['id_indication'] ?>)">
+          <button type="button" id="indication-<?= $indication['id_indication'] ?>-btn" class="btn btn-sm btn-info float-right" onclick="markIndication(<?= $indication['id_indication'] ?>)">
             <span data-feather="chevron-up"></span>
             <span>Označit</span>
           </button>
@@ -99,6 +99,6 @@
       </div>
     </a>
   </div>
-  <?php endfor; ?>
+  <?php endforeach; ?>
 </div>
 <?php endif; ?>

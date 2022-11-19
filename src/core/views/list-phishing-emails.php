@@ -84,7 +84,7 @@
     <tfoot>
       <tr>
         <td colspan="9" class="font-italic">
-          Celkem <?= count($phishingEmails) ?> záznamů.
+          <?= $countRecordsText ?>
         </td>
       </tr>
     </tfoot>
@@ -93,5 +93,5 @@
 <?php else: ?>
 <hr>
 
-<p class="font-italic">Žádné záznamy.</p>
+<p class="font-italic"><?= $countRecordsText ?></p>
 <?php endif; ?>

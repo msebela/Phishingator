@@ -60,7 +60,7 @@
     <tfoot>
       <tr>
         <td colspan="8" class="font-italic">
-          Celkem <?= count($groups) ?> záznamů.
+          <?= $countRecordsText ?>
         </td>
       </tr>
     </tfoot>

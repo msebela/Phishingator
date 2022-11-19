@@ -321,6 +321,33 @@
 
 
     /**
+     * Vrátí popisek pro patičku tabulky se seznamem záznamů.
+     *
+     * @param int $countRecords        Počet záznamů
+     * @return string                  Popisek pro patičku tabulky
+     */
+    public function getTableFooter($countRecords) {
+      $text = 'Žádné záznamy';
+
+      if ($countRecords > 0) {
+        $text = 'Celkem ' . $countRecords . ' ';
+
+        if ($countRecords == 1) {
+          $text .= 'záznam';
+        }
+        elseif ($countRecords >= 2 && $countRecords <= 4) {
+          $text .= 'záznamy';
+        }
+        else {
+          $text .= 'záznamů';
+        }
+      }
+
+      return $text . '.';
+    }
+
+
+    /**
      * Ověří, zdali má uživatel dostatečné oprávnění ke vstupu do dané sekce.
      *
      * @param int $minPermission       Hodnota uživatelova oprávnění

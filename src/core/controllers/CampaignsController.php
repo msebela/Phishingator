@@ -51,7 +51,6 @@
         $this->processList($model);
       }
 
-      // Odkaz na nápovědu.
       $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#22-kampan%C4%9B');
     }
 
@@ -337,6 +336,9 @@
       $this->setTitle('Kampaně');
       $this->setView('list-campaigns');
 
-      $this->setViewData('campaigns', $model->getCampaigns());
+      $records = $model->getCampaigns();
+
+      $this->setViewData('campaigns', $records);
+      $this->setViewData('countRecordsText', self::getTableFooter(count($records)));
     }
   }

@@ -41,7 +41,6 @@
         $this->processList($model);
       }
 
-      // Odkaz na nápovědu.
       $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#13-p%C5%99ijat%C3%A9-phishingov%C3%A9-e-maily');
     }
 
@@ -56,15 +55,16 @@
       $this->setView('list-recieved-emails');
 
       // Získání všech e-mailů, které byly uživateli odeslány.
-      $recievedEmails = $model->getRecievedPhishingEmails($this->user['id_user']);
+      $records = $model->getRecievedPhishingEmails($this->user['id_user']);
 
       // Personalizace a dodatečné úpravy každého z e-mailů.
-      foreach ($recievedEmails as $key => $email) {
-        $recievedEmails[$key]['sender_name'] = self::escapeOutput($email['sender_name']);
-        $recievedEmails[$key] = PhishingEmailModel::personalizePhishingEmail($recievedEmails[$key], $this->user, false);
+      foreach ($records as $key => $email) {
+        $records[$key]['sender_name'] = self::escapeOutput($email['sender_name']);
+        $records[$key] = PhishingEmailModel::personalizePhishingEmail($records[$key], $this->user, false);
       }
 
-      $this->setViewData('phishingEmails', $recievedEmails);
+      $this->setViewData('phishingEmails', $records);
+      $this->setViewData('countRecordsText', self::getTableFooter(count($records)));
     }
 
 
