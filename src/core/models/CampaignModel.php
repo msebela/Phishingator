@@ -793,7 +793,7 @@
      */
     public static function getCapturedDataInCampaign($idCampaign) {
       return Database::queryMulti('
-              SELECT `id_captured_data`, phg_captured_data.id_user, `used_email`, `visit_datetime`, `ip`, `local_ip`, `browser_fingerprint`, `data_json`, `reported`,
+              SELECT `id_captured_data`, phg_captured_data.id_user, `used_email`, `used_group`, `visit_datetime`, `ip`, `local_ip`, `browser_fingerprint`, `data_json`, `reported`,
               DATE_FORMAT(visit_datetime, "%e. %c. %Y %k:%i:%s") AS `visit_datetime_formatted`,
               `name`, `css_color_class`,
               `username`
@@ -818,12 +818,12 @@
     public static function getUsersEndActionInCampaign($idCampaign) {
       return Database::queryMulti('
               SELECT
-              worstAct.id_user, worstAct.id_captured_data, worstAct.used_email, worstAct.id_action, worstAct.reported,
+              worstAct.id_user, worstAct.id_captured_data, worstAct.used_email, worstAct.used_group, worstAct.id_action, worstAct.reported,
               phg_captured_data_actions.name,
               `username`
               FROM `phg_captured_data_actions`
               JOIN 
-                (SELECT MAX(id_captured_data) AS `id_captured_data`, `id_user`, `used_email`, MAX(phg_captured_data.id_action) AS `id_action`, MAX(reported) AS `reported`
+                (SELECT MAX(id_captured_data) AS `id_captured_data`, `id_user`, `used_email`, `used_group`, MAX(phg_captured_data.id_action) AS `id_action`, MAX(reported) AS `reported`
                  FROM `phg_captured_data`
                  WHERE `id_campaign` = ?
                  GROUP BY `id_user`) worstAct

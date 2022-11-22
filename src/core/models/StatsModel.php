@@ -310,7 +310,7 @@
       if ($idCampaign != null && !is_array($idCampaign)) {
         // Zjištění statistiky pro konkrétní kampaň.
         $query = '
-          SELECT `id_user`, MAX(`id_action`) AS `id_action`, `used_email`
+          SELECT `id_user`, MAX(`id_action`) AS `id_action`, `used_email`, `used_group`
           FROM `phg_captured_data`
           WHERE `id_campaign` = ?
           GROUP BY `id_user`';
@@ -320,7 +320,7 @@
         // Zjištění statistiky pru určité množství kampaní.
         $cols = str_repeat(' OR `id_campaign` = ?', count($idCampaign) - 1);
         $query = '
-          SELECT DISTINCT `id_user`, `id_campaign`, `id_action`, `used_email`
+          SELECT DISTINCT `id_user`, `id_campaign`, `id_action`, `used_email`, `used_group`
           FROM `phg_captured_data`
           WHERE `id_campaign` = ?' . $cols . '
           ORDER BY `id_action` DESC';
@@ -329,7 +329,7 @@
       else {
         // Zjištění celkové statistiky (pro všechny nesmazané kampaně).
         $query = '
-          SELECT DISTINCT `id_user`, phg_campaigns.id_campaign, `id_action`, `used_email`
+          SELECT DISTINCT `id_user`, phg_campaigns.id_campaign, `id_action`, `used_email`, `used_group`
           FROM `phg_captured_data`
           JOIN `phg_campaigns`
           ON phg_campaigns.id_campaign = phg_captured_data.id_campaign
@@ -369,30 +369,41 @@
      */
     private function processDataForAllEndActionsByGroupsInAllCampaigns($capturedData, $allDepartments, $percentage = false) {
       $data = [];
-      $usersActionsInCampaigns = [];
+      $usersResponses = [];
 
-      /* Zjištění nejhorší akce, kterou mohl uživatel v každé z kampaní udělat a její uložení do pomocného pole. */
+      // Zjištění nejhorší akce, kterou mohl uživatel v každé z kampaní udělat a její uložení do pomocného pole.
       foreach ($capturedData as $record) {
         $campaign = $record['id_campaign'];
-        $email = $record['used_email'];
+        $recipientEmail = $record['used_email'];
+        $recipientDepartment = $record['used_group'];
 
-        /* Pokud záznam o daném uživateli v poli ještě neexistuje, vytvoříme jej. */
-        if (!isset($usersActionsInCampaigns[$campaign][$email])) {
-          $usersActionsInCampaigns[$campaign][$email] = $record['id_action'];
+        // Pokud záznam o reakci daného uživatele v poli ještě neexistuje, vytvořit jej.
+        if (!isset($usersResponses[$campaign][$recipientEmail])) {
+          $usersResponses[$campaign][$recipientEmail] = [
+            'department' => $recipientDepartment,
+            'response' => $record['id_action']
+          ];
         }
-        /* Pokud je další akce uživatele ve stejné kampani horší, než některá
-           z předchozích iterací tohoto cyklu, použijeme tu horší. */
-        elseif ($record['id_action'] > $usersActionsInCampaigns[$campaign][$email]) {
-          $usersActionsInCampaigns[$campaign][$email] = $record['id_action'];
+        // Pokud je další reakce uživatele ve stejné kampani horší, než ta z předchozích iterací, použít tu horší.
+        elseif ($record['id_action'] > $usersResponses[$campaign][$recipientEmail]) {
+          $usersResponses[$campaign][$recipientEmail] = [
+            'department' => $recipientDepartment,
+            'response' => $record['id_action']
+          ];
         }
       }
 
-      /* Ze všech zjištěných provedených akcí v každé kampani vytvoříme souhrn všech provedených akcí pro
-         každou ze skupin. */
-      foreach ($usersActionsInCampaigns as $actionsInCampaign) {
-        foreach ($actionsInCampaign as $recipientEmail => $idAction) {
-          // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.
-          $domain = $this->getUserDepartment($recipientEmail, $allDepartments);
+      // Ze všech zjištěných provedených akcí v každé kampani vytvořit souhrn
+      // všech provedených akcí pro každou ze skupin.
+      foreach ($usersResponses as $campaignResponses) {
+        foreach ($campaignResponses as $recipientEmail => $record) {
+          if (CAMPAIGN_STATS_AGGREGATION == 2) {
+            // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.
+            $domain = $this->getUserDepartment($recipientEmail, $allDepartments);
+          }
+          else {
+            $domain = $record['department'];
+          }
 
           // Pro každou novou skupinu vynulování počtu akcí, které mohli uživatelé udělat.
           if (!isset($data[$domain])) {
@@ -400,20 +411,20 @@
           }
 
           // Inkrementace konkrétní akce v právě procházené skupině.
-          $data[$domain][$idAction] += 1;
+          $data[$domain][$record['response']] += 1;
         }
       }
 
-      /* Přepočítání všech hodnot, pokud se má jednat o sloupcový graf v procentech. */
+      // Přepočítání všech hodnot, pokud se má jednat o sloupcový graf v procentech.
       if ($percentage) {
-        foreach ($data as $groupKey => $group) {
+        foreach ($data as $groupKey => $recipientDepartment) {
           $suma = 0;
 
-          foreach ($group as $action) {
+          foreach ($recipientDepartment as $action) {
             $suma += $action;
           }
 
-          foreach ($group as $actionKey => $action) {
+          foreach ($recipientDepartment as $actionKey => $action) {
             $data[$groupKey][$actionKey] = round($action * 100 / $suma);
           }
         }
@@ -436,16 +447,21 @@
       // Vytvoření skupin na základě subdomén e-mailů (resp. domén nižších řádů)
       // a zjištění zaznamenaných akcí v rámci těchto skupin.
       foreach ($capturedData as $recipient) {
-        // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.
-        $domain = $this->getUserDepartment($recipient['used_email'], $allDepartments);
+        if (CAMPAIGN_STATS_AGGREGATION == 2) {
+          // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.
+          $department = $this->getUserDepartment($recipient['used_email'], $allDepartments);
+        }
+        else {
+          $department = $recipient['used_group'];
+        }
 
         // Pro každou novou skupinu vynulování počtu akcí, které uživatelé mohli udělat.
-        if (!isset($data[$domain])) {
-          $data[$domain] = $this->getEmptyArrayCountActions();
+        if (!isset($data[$department])) {
+          $data[$department] = $this->getEmptyArrayCountActions();
         }
 
         // Inkrementace konkrétní akce v právě procházené skupině (pokud je známa konkrétní kampaň).
-        $data[$domain][$recipient['id_action']] += 1;
+        $data[$department][$recipient['id_action']] += 1;
       }
 
       return $data;
@@ -468,7 +484,7 @@
       foreach ($data as $groupKey => $groupActions) {
         $legend .= '"' . mb_strtoupper($groupKey) . '", ';
 
-        /* Procházení akcí u každé skupiny. */
+        // Procházení akcí u každé skupiny.
         foreach ($groupActions as $actionKey => $count) {
           if (!isset($formattedData[$actionKey])) {
             $formattedData[$actionKey] = [];
@@ -552,16 +568,18 @@
       $formattedData = '';
 
       // Zjištění fakult, kateder a oddělení z LDAP.
-      $ldap = new LdapModel();
-      $allDepartments = $ldap->getDepartments();
-      $ldap->close();
+      if (CAMPAIGN_STATS_AGGREGATION == 2) {
+        $ldap = new LdapModel();
+        $allDepartments = $ldap->getDepartments();
+        $ldap->close();
+      }
 
       // Zjištění dobrovolníků.
-      $volunteers = Database::queryMulti('SELECT `email` FROM `phg_users` WHERE `recieve_email` = 1 AND `visible` = 1');
+      $volunteers = Database::queryMulti('SELECT `email`, `primary_group` FROM `phg_users` WHERE `recieve_email` = 1 AND `visible` = 1');
 
       if (!empty($year)) {
         $volunteers = Database::queryMulti(
-          'SELECT DISTINCT email
+          'SELECT DISTINCT email, `primary_group`
                 FROM `phg_users`
                 LEFT JOIN `phg_users_participation_log`
                 ON phg_users.id_user = phg_users_participation_log.id_user
@@ -574,8 +592,13 @@
 
       // Zjištění skupin a počet dobrovolníků v každé z nich.
       foreach ($volunteers as $recipient) {
-        // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.
-        $domain = $this->getUserDepartment($recipient['email'], $allDepartments);
+        if (CAMPAIGN_STATS_AGGREGATION == 2) {
+          // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.
+          $domain = $this->getUserDepartment($recipient['email'], $allDepartments);
+        }
+        else {
+          $domain = $recipient['primary_group'];
+        }
 
         if (!isset($data[$domain])) {
           $data[$domain] = 1;

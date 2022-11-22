@@ -4,9 +4,20 @@
   <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
   <?php if ($action == ACT_EDIT && !empty($name)): ?>
-  <div class="form-group">
-    <label for="<?= $formPrefix ?>name">Jméno a&nbsp;příjmení</label>
-    <input type="text" id="<?= $formPrefix ?>name" class="form-control-plaintext" value="<?= $name ?>" readonly>
+  <div class="row mb-2">
+    <div class="col-md">
+      <div class="form-group">
+        <label for="<?= $formPrefix ?>name">Jméno a&nbsp;příjmení</label>
+        <input type="text" id="<?= $formPrefix ?>name" class="form-control-plaintext" value="<?= $name ?>" readonly>
+      </div>
+    </div>
+
+    <div class="col-md">
+      <div class="form-group">
+        <label for="<?= $formPrefix ?>group">Primární skupina/oddělení</label>
+        <input type="text" id="<?= $formPrefix ?>group" class="form-control-plaintext" value="<?= $user['primary_group'] ?>" readonly>
+      </div>
+    </div>
   </div>
   <?php endif; ?>
 

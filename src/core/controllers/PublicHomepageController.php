@@ -55,7 +55,7 @@
       $campaignModel = new CampaignModel();
       $campaign = $campaignModel->getCampaign($idCampaign);
 
-      // Získání informaci o uživateli (příjemci).
+      // Získání informací o uživateli (příjemci).
       $user = UsersModel::getUserByURL($idUser);
 
       // Kontrola existence záznamu.
@@ -118,8 +118,9 @@
       $record = [
         'id_campaign' => $idCampaign,
         'id_user' => $user['id_user'],
-        'id_action' => 4,
+        'id_action' => 4, // TODO
         'used_email' => $user['email'],
+        'used_group' => $user['primary_group'],
         'visit_datetime' => date('Y-m-d H:i:s'),
         'ip' => WebsitePrependerModel::getClientIp(),
         'local_ip' => WebsitePrependerModel::getClientLocalIp(),

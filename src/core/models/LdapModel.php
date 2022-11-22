@@ -102,10 +102,10 @@
      *
      * @param string $username         Uživatelské jméno, u něhož se má získat hodnota atributu
      * @param string $attributeName    Název atributu v LDAP
-     * @param int $maxRecords          Maximální počet vrácených záznamů [nepovinné]
+     * @param int $onlyFirstRecord     Omezení počtu vrácených záznamů [nepovinné]
      * @return mixed|null              Hodnota uložená u atributu v LDAP
      */
-    private function getAttributeValue($username, $attributeName, $maxRecords = 1) {
+    private function getAttributeValue($username, $attributeName, $onlyFirstRecord = 1) {
       $attrValue = null;
       $attributeUid = 'uid';
 
@@ -118,7 +118,7 @@
           for ($i = 0; $i < $info[0][$attributeName]['count']; $i++) {
             $value = $info[0][$attributeName][$i];
 
-            if ($maxRecords == 1) {
+            if ($onlyFirstRecord) {
               $attrValue = $value;
               break;
             }
@@ -186,13 +186,38 @@
 
 
     /**
+     * Vrátí primární skupinu uživatele v závislosti na jeho uživatelském jménu z LDAP.
+     *
+     * @param string $username         Uživatelské jméno
+     * @return string|null             Primární skupina uživatele nebo NULL
+     */
+    public function getPrimaryGroupByUsername($username) {
+      $group = null;
+
+      if (!empty($username)) {
+        $group = $this->getAttributeValue($username, LDAP_USER_ATTR_PRIMARY_GROUP, null);
+
+        // Pokud je uživatel ve více skupinách...
+        if (is_array($group)) {
+          $group = end($group);
+        }
+
+        $parts = ldap_explode_dn($group, 1);
+        $group = ($parts[0]) ?? '';
+      }
+
+      return $group;
+    }
+
+
+    /**
      * Vrátí e-mail uživatele (první v pořadí) v závislosti na jeho uživatelském jménu z LDAP.
      *
      * @param string $username         Uživatelské jméno
      * @return string|null             E-mail uživatele nebo NULL
      */
     public function getEmailByUsername($username) {
-      $email = '';
+      $email = null;
 
       if (!empty($username)) {
         $email = $this->getAttributeValue($username, LDAP_USER_ATTR_EMAIL);

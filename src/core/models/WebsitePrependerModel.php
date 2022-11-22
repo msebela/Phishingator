@@ -149,14 +149,16 @@
      * @param int $idCampaign          ID kampaně
      * @param int $idUser              ID uživatele
      * @param string $email            E-mail uživatele
+     * @param string $group            Skupina uživatele
      * @param int $credentialsResult   1 pokud byly zadány platné přihlašovací údaje, jinak 0.
      */
-    private function logCapturedData($idCampaign, $idUser, $email, $credentialsResult) {
+    private function logCapturedData($idCampaign, $idUser, $email, $group, $credentialsResult) {
       $record = [
         'id_campaign' => $idCampaign,
         'id_user' => $idUser,
         'id_action' => CAMPAIGN_VISIT_FRAUDULENT_PAGE_ID,
         'used_email' => $email,
+        'used_group' => $group,
         'visit_datetime' => date('Y-m-d H:i:s'),
         'ip' => self::getClientIp(),
         'local_ip' => self::getClientLocalIp(),
@@ -328,7 +330,7 @@
 
         // Uložení získaných dat.
         $credentialsResult = $this->areCredentialsValid($_POST['username'] ?? '', $_POST['password'] ?? '');
-        $this->logCapturedData($args['id_campaign'], $user['id_user'], $user['email'], $credentialsResult);
+        $this->logCapturedData($args['id_campaign'], $user['id_user'], $user['email'], $user['primary_group'], $credentialsResult);
 
         // Vykonání akce, která se stane po odeslání formuláře.
         if (!empty($_POST)) {

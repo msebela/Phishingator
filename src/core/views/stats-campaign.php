@@ -185,7 +185,7 @@
               <?php endif; ?>
             </td>
             <td>
-              <small><?= strtoupper(StatsModel::removeAllFromEmailExceptSubdomains($data['used_email'])) ?></small>
+              <small><?= strtoupper((CAMPAIGN_STATS_AGGREGATION == 2) ? StatsModel::removeAllFromEmailExceptSubdomains($data['used_email']) : $data['used_group']) ?></small>
             </td>
             <td>
               <form method="post" action="/portal/<?= $urlSection . '/' . ACT_STATS . '/' . $campaign['id_campaign'] ?>">
@@ -261,7 +261,7 @@
           <?php endif; ?>
         </td>
         <td>
-          <small><?= strtoupper(StatsModel::removeAllFromEmailExceptSubdomains($data['used_email'])) ?></small>
+          <small><?= strtoupper((CAMPAIGN_STATS_AGGREGATION == 2) ? StatsModel::removeAllFromEmailExceptSubdomains($data['used_email']) : $data['used_group']) ?></small>
         </td>
         <td>
           <span class="badge badge-<?= $data['css_color_class'] ?>"><?= $data['name'] ?></span>

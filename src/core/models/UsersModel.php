@@ -60,8 +60,9 @@
         'email' => $this->email
       ];
 
-      // Získání uživatelského jména z LDAP.
+      // Získání uživatelského jména a primární skupiny z LDAP.
       $user['username'] = $ldap->getUsernameByEmail($this->email);
+      $user['primary_group'] = $ldap->getPrimaryGroupByUsername($user['username']);
 
       // Výjimka pro případ, kdy se registruje nový uživatel - v takovém případě
       // je do databáze nutné zapsat nikoliv NULL hodnoty, ale hodnoty nastavené
@@ -85,7 +86,7 @@
      */
     public function getUser($id) {
       $this->dbRecordData = Database::querySingle('
-              SELECT `id_user`, `id_user_group`, `url`, `username`, `email`
+              SELECT `id_user`, `id_user_group`, `url`, `username`, `email`, `primary_group`
               FROM `phg_users`
               WHERE `id_user` = ?
               AND `visible` = 1
@@ -123,7 +124,7 @@
      */
     public static function getUserByEmail($email) {
       return Database::querySingle('
-              SELECT `id_user`, phg_users.id_user_group, `url`, `username`, `email`, `recieve_email`, `email_limit`, `value` AS `role`
+              SELECT `id_user`, phg_users.id_user_group, `url`, `username`, `email`, `primary_group`, `recieve_email`, `email_limit`, `value` AS `role`
               FROM `phg_users`
               JOIN `phg_users_groups`
               ON phg_users.id_user_group = phg_users_groups.id_user_group
@@ -143,7 +144,7 @@
      */
     public static function getUserByUrl($url) {
       return Database::querySingle('
-              SELECT `id_user`, `id_user_group`, `url`, `username`, `email`
+              SELECT `id_user`, `id_user_group`, `url`, `username`, `email`, `primary_group`
               FROM `phg_users`
               WHERE `url` = ?
               AND `visible` = 1
@@ -615,15 +616,15 @@
 
 
     /**
-     * Aktualizuje e-mail u všech aktivních uživatelů v databázi na základě dat v LDAP. Pokud se e-mail v LDAP
-     * nepodaří dohledat, dojde k automatické deaktivaci uživatele v databázi.
+     * Aktualizuje e-mail a členství ve skupině u všech aktivních uživatelů v databázi na základě dat v LDAP.
+     * Pokud se e-mail v LDAP nepodaří dohledat, dojde k automatické deaktivaci uživatele v databázi.
      */
     public static function synchronizeUsers() {
       $ldapModel = new LdapModel(false);
 
       if ($ldapModel->connect()) {
         // Získání seznamu všech aktivních uživatelů.
-        $users = Database::queryMulti('SELECT `id_user`, `username`, `email` FROM `phg_users` WHERE `visible` = 1');
+        $users = Database::queryMulti('SELECT `id_user`, `username`, `email`, `primary_group` FROM `phg_users` WHERE `visible` = 1');
 
         foreach ($users as $user) {
           // Zjištění aktuálního e-mailu uživatele z LDAP.
@@ -643,16 +644,34 @@
                 [$user['id_user'], $user['email'], $ldapEmail]
               );
             }
-          } // Pokud se e-mail z LDAP neshoduje s tím, který je v databázi, provést aktualizaci.
-          elseif ($user['id_user'] != null && $user['email'] != $ldapEmail) {
-            Database::update(
-              'phg_users', ['email' => $ldapEmail], 'WHERE `id_user` = ?', $user['id_user']
-            );
+          }
+          elseif ($user['id_user'] != null) {
+            // Pokud se e-mail z LDAP neshoduje s tím, který je v databázi, provést aktualizaci.
+            if ($user['email'] != $ldapEmail) {
+              Database::update(
+                'phg_users', ['email' => $ldapEmail], 'WHERE `id_user` = ?', $user['id_user']
+              );
 
-            Logger::info(
-              'Aktualizace e-mailu uživatele v databázi na základě dat v LDAP.',
-              [$user['id_user'], $user['email'], $ldapEmail]
-            );
+              Logger::info(
+                'Aktualizace e-mailu uživatele v databázi na základě dat v LDAP.',
+                [$user['id_user'], $user['email'], $ldapEmail]
+              );
+            }
+
+            // Zjištění aktuálního členství uživatele ve skupinách z LDAP.
+            $ldapGroup = $ldapModel->getPrimaryGroupByUsername($user['username']);
+
+            // Pokud se členství ve skupině z LDAP neshoduje s tím, které je v databázi, provést aktualizaci.
+            if ($user['primary_group'] != $ldapGroup) {
+              Database::update(
+                'phg_users', ['primary_group' => $ldapGroup], 'WHERE `id_user` = ?', $user['id_user']
+              );
+
+              Logger::info(
+                'Aktualizace členství uživatele ve skupině v databázi na základě dat v LDAP.',
+                [$user['id_user'], $user['primary_group'], $ldapGroup]
+              );
+            }
           }
 
         }

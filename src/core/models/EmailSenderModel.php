@@ -165,13 +165,15 @@
      * @param int $idCampaign          ID kampaně
      * @param int $idUser              ID uživatele
      * @param string $usedEmail        E-mail uživatele použitý v kampani
+     * @param string $usedGroup        Skupina, která uživateli během kampaně náleží
      */
-    private function insertNoReactionRecord($idCampaign, $idUser, $usedEmail) {
+    private function insertNoReactionRecord($idCampaign, $idUser, $usedEmail, $usedGroup) {
       $record = [
         'id_campaign' => $idCampaign,
         'id_user' => $idUser,
         'id_action' => CAMPAIGN_NO_REACTION_ID,
-        'used_email' => $usedEmail
+        'used_email' => $usedEmail,
+        'used_group' => $usedGroup
       ];
 
       Database::insert('phg_captured_data', $record);
@@ -309,37 +311,37 @@
 
 
 
-          /* Poslání e-mailu. */
+          // Poslání e-mailu.
           $mailResult = $this->sendEmail(
             $mailer,
             $campaign['sender_email'], $campaign['sender_name'], $recipient,
             $campaign['subject'], $campaign['body_personalized']
           );
 
-          /* Uložení záznamu o tom, zda se e-mail podařilo odeslat a případná dekrementace uživatelova omezení. */
+          // Uložení záznamu o tom, zda se e-mail podařilo odeslat a případná dekrementace uživatelova omezení.
           if ($mailResult) {
-            /* Pokud se e-mail podařilo úspěšně odeslat. */
+            // Pokud se e-mail podařilo úspěšně odeslat.
             $this->logSentEmail($campaign['id_campaign'], $campaign['id_email'], $user['id_user'], 1);
             $this->decrementUserEmailLimit($user['id_user']);
 
             echo '<p><b style="color: green;">E-mail odeslan!</b></p>' . "\n";
           }
           else {
-            /* Pokud se e-mail nepodařilo odeslat. */
+            // Pokud se e-mail nepodařilo odeslat.
             $this->logSentEmail($campaign['id_campaign'], $campaign['id_email'], $user['id_user'], 0);
 
             echo '<p><b style="color: red;">E-mail se nepodarilo odeslat:</b></p>' . $mailer->ErrorInfo . "\n";
           }
 
-          /* Vložení záznamu do databáze o tom, že uživatel zatím na kampaň nereagoval. */
-          $this->insertNoReactionRecord($campaign['id_campaign'], $user['id_user'], $recipient);
+          // Vložení záznamu do databáze o tom, že uživatel zatím na kampaň nereagoval.
+          $this->insertNoReactionRecord($campaign['id_campaign'], $user['id_user'], $recipient, $user['primary_group']);
 
           echo '<hr>' . "\n";
 
-          /* Vyčištění pro další iteraci. */
+          // Vyčištění pro další iteraci.
           $mailer->clearAddresses();
 
-          /* Uspání skriptu po odeslání určitého množství e-mailů. */
+          // Uspání skriptu po odeslání určitého množství e-mailů.
           $countSentMails = $this->sleepSender($countSentMails);
         }
       }

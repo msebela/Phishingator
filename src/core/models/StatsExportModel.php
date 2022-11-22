@@ -18,7 +18,7 @@
     public static function exportEndActions($id, $filepath = null) {
       Logger::info('Žádost o export dat (konečné akce uživatelů) u kampaně.', $id);
 
-      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-konecne-akce';
+      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-end-actions';
       $csvData = CampaignModel::getUsersEndActionInCampaign($id);
 
       // Informace o datech pro CSV export.
@@ -49,14 +49,14 @@
     public static function exportCountUsersActions($id, $filepath = null) {
       Logger::info('Žádost o export dat (počet jednotlivých akcí každého uživatele) u kampaně.', $id);
 
-      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-pocet-akci';
+      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-count-users-actions';
       $csvData = [];
 
       $statsModel = new StatsModel();
       $actions = $statsModel->getEmptyArrayCountActions();
 
       $result = Database::queryMulti('
-              SELECT phg_users.id_user, `name`, `username`, `used_email` AS `email`, phg_captured_data.id_action, `reported`
+              SELECT phg_users.id_user, `name`, `username`, `used_email` AS `email`, `used_group`, phg_captured_data.id_action, `reported`
               FROM `phg_captured_data`
               JOIN `phg_captured_data_actions`
               ON phg_captured_data.id_action = phg_captured_data_actions.id_action
@@ -67,17 +67,18 @@
       ', $id);
 
       if (!empty($result) && !empty($actions)) {
-        /* Příprava dat z databáze do struktury, která se bude zapisovat do CSV. */
+        // Příprava dat z databáze do struktury, která se bude zapisovat do CSV.
         foreach ($result as $record) {
           if (!isset($csvData[$record['id_user']])) {
             $csvData[$record['id_user']] = [
               'username' => $record['username'],
               'email' => $record['email'],
+              'group' => $record['used_group'],
               'reported' => $record['reported']
             ];
 
-            /* Místo multidimenzionálního pole změníme pole akcí na další prvky
-               původního pole (kvůli následným názvům indexů v poli). */
+            // Místo multidimenzionálního pole změníme pole akcí na další prvky
+            // původního pole (kvůli následným názvům indexů v poli).
             foreach ($actions as $idAction => $action) {
               $csvData[$record['id_user']]['action-' . $idAction] = 0;
             }
@@ -91,12 +92,12 @@
         }
       }
 
-      /* Informace o datech pro CSV export. */
+      // Informace o datech pro CSV export.
       $csvHeader = [
-        'id_line', 'username', 'email',
+        'id_line', 'username', 'email', 'group',
         'count_page_visited', 'count_invalid_credentials', 'count_valid_credentials', 'reported'
       ];
-      $csvDataIndexes = ['username', 'email', 'action-2', 'action-3', 'action-4', 'reported'];
+      $csvDataIndexes = ['username', 'email', 'group', 'action-2', 'action-3', 'action-4', 'reported'];
 
       $data = [
         'csvFilename' => $csvFilename,
@@ -122,15 +123,15 @@
     public static function exportAllCapturedData($id, $filepath = null) {
       Logger::info('Žádost o export všech zaznamenaných dat u kampaně.', $id);
 
-      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-vsechny-akce';
+      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-all-actions';
       $csvData = CampaignModel::getCapturedDataInCampaign($id);
 
-      /* Informace o datech pro CSV export. */
+      // Informace o datech pro CSV export.
       $csvHeader = [
-        'id_line', 'username', 'email', 'action', 'action_datetime', 'reported', 'ip', 'user_agent', 'http_post_data_json'
+        'id_line', 'username', 'email', 'group', 'action', 'action_datetime', 'reported', 'ip', 'user_agent', 'http_post_data_json'
       ];
       $csvDataIndexes = [
-        'username', 'used_email', 'name', 'visit_datetime', 'reported', 'ip', 'browser_fingerprint', 'data_json'
+        'username', 'used_email', 'used_group', 'name', 'visit_datetime', 'reported', 'ip', 'browser_fingerprint', 'data_json'
       ];
 
       $data = [
@@ -161,12 +162,12 @@
       $files = [];
 
       if ($zip->open($zipFilepath, ZipArchive::CREATE) === true) {
-        /* Získání jednotlivých souborů do archivu. */
+        // Získání jednotlivých souborů do archivu.
         $files[] = self::exportEndActions($idCampaign, $filepath);
         $files[] = self::exportAllCapturedData($idCampaign, $filepath);
         $files[] = self::exportCountUsersActions($idCampaign, $filepath);
 
-        /* Vložení všech souborů do archivu. */
+        // Vložení všech souborů do archivu.
         foreach ($files as $file) {
           if (!empty($file)) {
             $zip->addFile($file, basename($file));
@@ -175,14 +176,14 @@
 
         $zip->close();
 
-        /* Vrácení archivu se soubory ke stažení uživateli. */
+        // Vrácení archivu se soubory ke stažení uživateli.
         header('Content-Type: application/zip');
         header('Content-Disposition: attachment; filename="' . basename($zipFilepath) . '"');
         header('Content-Length: ' . filesize($zipFilepath));
 
         readfile($zipFilepath);
 
-        /* Smazání souborů z dočasného adresáře. */
+        // Smazání souborů z dočasného adresáře.
         $files[] = $zipFilepath;
 
         foreach ($files as $file) {
@@ -209,10 +210,10 @@
      */
     private static function exportToCSV($data, $newFilepath = null) {
       if (!empty($data) && count($data) == 4) {
-        /* Vytvoření CSV souboru, hlavičky a její zápis do souboru. */
+        // Vytvoření CSV souboru, hlavičky a její zápis do souboru.
         $csvFilename = $data['csvFilename'] . '-' . date('Y-m-d') . '.csv';
 
-        /* Vytvářet soubor v paměti nebo v konkrétním adresáři na webovém serveru... */
+        // Vytvářet soubor v paměti nebo v konkrétním adresáři na webovém serveru...
         $filepath = (($newFilepath == null) ? 'php://memory' : $newFilepath . $csvFilename);
 
         $csvFile = fopen($filepath, 'w');
@@ -220,16 +221,16 @@
 
         $firstIndex = 1;
 
-        /* Zápis připravených dat do CSV souboru. */
+        // Zápis připravených dat do CSV souboru.
         foreach ($data['csvData'] as $row) {
           $csvLineData = [];
 
-          /* První sloupec bude vždy ID záznamu. */
+          // První sloupec bude vždy ID záznamu.
           $csvLineData[] = $firstIndex;
           $firstIndex++;
 
-          /* Příprava zapisovaných dat na základě názvů předaných indexů (aby byla data
-             ve správném pořadí vůči hlavičce CSV souboru). */
+          // Příprava zapisovaných dat na základě názvů předaných indexů
+          // (aby byla data ve správném pořadí vůči hlavičce CSV souboru).
           foreach ($data['csvDataIndexes'] as $dataIndex) {
             $csvLineData[] = $row[$dataIndex];
           }
@@ -239,7 +240,7 @@
 
         fseek($csvFile, 0);
 
-        /* Vrácení CSV souboru uživateli ke stažení. */
+        // Vrácení CSV souboru uživateli ke stažení.
         if ($newFilepath == null) {
           header('Content-Type: text/csv');
           header('Content-Disposition: attachment; filename="' . $csvFilename . '";');
@@ -247,7 +248,7 @@
 
         fpassthru($csvFile);
 
-        if ($newFilepath == false) {
+        if (!$newFilepath) {
           exit();
         }
         else {

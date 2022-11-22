@@ -48,6 +48,9 @@
   /** Název atributu v LDAP, ze kterého lze získat e-mail uživatele. */
   define('LDAP_USER_ATTR_EMAIL', (getenv('LDAP_USER_ATTR_EMAIL')) ? getenv('LDAP_USER_ATTR_EMAIL') : 'mail');
 
+  /** Název atributu v LDAP, ze kterého lze získat členství uživatele v primární skupině (např. mateřské oddělení). */
+  define('LDAP_USER_ATTR_PRIMARY_GROUP', (getenv('LDAP_USER_ATTR_PRIMARY_GROUP')) ? getenv('LDAP_USER_ATTR_PRIMARY_GROUP') : 'memberof');
+
   /** Cesta k seznamu uživatelských skupin v LDAP. */
   define('LDAP_GROUPS_DN', (getenv('LDAP_GROUPS_DN')) ? getenv('LDAP_GROUPS_DN') : 'ou=Groups');
 
@@ -219,7 +222,7 @@
   define('PHISHING_EMAIL_HEADER_ID', 'X-CESNET-Phishingator');
 
   /** Hodnota zobrazená u speciální hlavičky. */
-  define('PHISHING_EMAIL_HEADER_VALUE', WEB_URL . '/.well-known/security.txt');
+  define('PHISHING_EMAIL_HEADER_VALUE', 'https://phishingator.cesnet.cz/.well-known/security.txt');
 
 
 
@@ -270,6 +273,16 @@
 
   /** Název souboru (včetně přípony), v němž je uložen screenshot (ve formátu PNG a o šířce 800 px) podvodné stránky. */
   define('PHISHING_WEBSITE_SCREENSHOT_FILENAME', 'thumbnail.png');
+
+
+
+  /* --- STATISTIKY V KAMPANÍCH --- */
+  /** Způsob agregace statistiky v kampaních – na základě:
+   *  - 1 = podle LDAP skupiny uživatele (výchozí)
+   *  - 2 = subdomény v e-mailu uživatele
+   */
+  define('CAMPAIGN_STATS_AGGREGATION', (getenv('CAMPAIGN_STATS_AGGREGATION')) ? getenv('CAMPAIGN_STATS_AGGREGATION') : 1);
+
 
 
   /* --- STRÁNKOVÁNÍ --- */
