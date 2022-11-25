@@ -188,22 +188,41 @@
     /**
      * Vrátí primární skupinu uživatele v závislosti na jeho uživatelském jménu z LDAP.
      *
-     * @param string $username         Uživatelské jméno
-     * @return string|null             Primární skupina uživatele nebo NULL
+     * @param string $username            Uživatelské jméno
+     * @param bool $preferAdminLdapGroups TRUE, pokud mají být preferovány skupiny definované
+     *                                    u administrátorského oprávnění (výchozí) [nepovinné]
+     * @return string                     Primární skupina uživatele nebo NULL
      */
-    public function getPrimaryGroupByUsername($username) {
-      $group = null;
+    public function getPrimaryGroupByUsername($username, $preferAdminLdapGroups = true) {
+      $found = false;
+      $group = '';
 
       if (!empty($username)) {
         $group = $this->getAttributeValue($username, LDAP_USER_ATTR_PRIMARY_GROUP, null);
 
-        // Pokud je uživatel ve více skupinách...
+        // Pokud je uživatel členem několika skupin...
         if (is_array($group)) {
-          $group = end($group);
+          if ($preferAdminLdapGroups) {
+            foreach ($group as $item) {
+              $item = $this->getDnPart($item, 0);
+
+              if (UserGroupsModel::existsAdminGroup($item)) {
+                $found = true;
+                $group = $item;
+
+                break;
+              }
+            }
+          }
+
+          if (!$preferAdminLdapGroups || !$found) {
+            $group = end($group);
+          }
         }
 
-        $parts = ldap_explode_dn($group, 1);
-        $group = ($parts[0]) ?? '';
+        if (!$found) {
+          $group = $this->getDnPart($group, 0);
+        }
       }
 
       return $group;
@@ -339,5 +358,19 @@
       }
 
       return $departments;
+    }
+
+
+    /**
+     * Vrátí zvolenou část z DN řetězce.
+     *
+     * @param string $dnString         DN řetězec
+     * @param int $index               Index požadované části
+     * @return string                  Požadovaná část
+     */
+    private function getDnPart($dnString, $index) {
+      $parts = ldap_explode_dn($dnString, 1);
+
+      return ($parts[$index]) ?? '';
     }
   }

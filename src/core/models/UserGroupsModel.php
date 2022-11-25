@@ -267,19 +267,19 @@
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     public function deleteUserGroup($id) {
-      /* Ověření, zdali se uživatel nepokouší smazat rodičovskou (tj. základní) skupinu. */
+      // Ověření, zdali se uživatel nepokouší smazat rodičovskou (tj. základní) skupinu.
       if ($this->isGroupParent($id) != 0) {
         Logger::warning('Snaha o smazání rodičovské, uživatelské skupiny.', $id);
 
         throw new UserError('Záznam vybraný ke smazání neexistuje.', MSG_ERROR);
       }
 
-      /* Ověření, zdali je mazaná skupina prázdná. */
+      // Ověření, zdali je mazaná skupina prázdná.
       if ($this->getCountOfUsersInGroup($id) != 0) {
-        /* Zjištění uživatelů, kteří jsou v dané skupině. */
+        // Zjištění uživatelů, kteří jsou v dané skupině.
         $users = UsersModel::getUsersByGroup($id);
 
-        /* Zjištění rodičovské skupiny u každého uživatele a přeřazení uživatele do dané skupiny. */
+        // Zjištění rodičovské skupiny u každého uživatele a přeřazení uživatele do dané skupiny.
         foreach ($users as $user) {
           $group = $this->getParentGroup($user['id_user_group']);
 
@@ -289,7 +289,7 @@
         }
       }
 
-      /* Znovu dodatečné ověření, jestli opravdu došlo k přesunu všech uživatelů. */
+      // Znovu dodatečné ověření, jestli opravdu došlo k přesunu všech uživatelů.
       if ($this->getCountOfUsersInGroup($id) == 0) {
         $result = Database::update(
           'phg_users_groups',
@@ -311,6 +311,28 @@
       }
 
       Logger::info('Smazání existující uživatelské skupiny.', $id);
+    }
+
+
+    /**
+     * Ověří, zdali je daná skupina v seznamu LDAP skupin u administrátorského oprávnění.
+     *
+     * @param string $group            Uživatelská skupina
+     * @return bool                    TRUE, pokud byla skupina v seznamu nalezena, jinak FALSE
+     */
+    public static function existsAdminGroup($group) {
+      $found = false;
+
+      $adminGroups = Database::querySingle('SELECT `ldap_groups` FROM `phg_users_groups` WHERE `id_user_group` = 1');
+      $adminGroups = explode(LDAP_GROUPS_DELIMITER, $adminGroups['ldap_groups']);
+
+      foreach ($adminGroups as $adminGroup) {
+        if ($adminGroup == $group) {
+          $found = true;
+        }
+      }
+
+      return $found;
     }
 
 

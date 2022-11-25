@@ -278,7 +278,7 @@
 
   /* --- STATISTIKY V KAMPANÍCH --- */
   /** Způsob agregace statistiky v kampaních – na základě:
-   *  - 1 = podle LDAP skupiny uživatele (výchozí)
+   *  - 1 = LDAP skupiny uživatele (výchozí)
    *  - 2 = subdomény v e-mailu uživatele
    */
   define('CAMPAIGN_STATS_AGGREGATION', (getenv('CAMPAIGN_STATS_AGGREGATION')) ? getenv('CAMPAIGN_STATS_AGGREGATION') : 1);
