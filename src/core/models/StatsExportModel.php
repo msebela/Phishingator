@@ -22,7 +22,7 @@
       $csvData = CampaignModel::getUsersEndActionInCampaign($id);
 
       // Informace o datech pro CSV export.
-      $csvHeader = ['id_line', 'username', 'group', 'email', 'action', 'reported'];
+      $csvHeader = ['id_line', 'username', 'email', 'group', 'action', 'reported'];
       $csvDataIndexes = ['username', 'used_email', 'used_group', 'name', 'reported'];
 
       $data = [

@@ -452,7 +452,7 @@
       tooltips: {mode: 'index', intersect: false},
       maintainAspectRatio: true,
       plugins: {
-        legend: {position: '<?= ((count(explode(',', $barChartLegendDesc)) > 2) ? 'bottom' : 'right') ?>'}
+        legend: {position: '<?= ((count(explode(',', $barChartLegendDesc)) > 1) ? 'bottom' : 'right') ?>'}
       },
       scales: {
         x: {

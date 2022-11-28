@@ -140,7 +140,7 @@
   </div>
 
   <div class="chart-wrapper-vertical">
-    <h3>Dobrovolníci dle pracovišť</h3>
+    <h3>Dobrovolníci dle skupiny</h3>
     <canvas class="my-4" id="chart-volunteers"></canvas>
   </div>
 

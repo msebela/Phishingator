@@ -7,7 +7,7 @@ ARG APACHE_DOCUMENT_ROOT
 RUN docker-php-ext-install pdo_mysql mysqli
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions ldap imap
+    install-php-extensions ldap imap zip
 
 # Cron
 RUN apt-get update && apt-get -y install cron

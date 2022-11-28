@@ -371,7 +371,7 @@ ALTER TABLE `phg_users`
   MODIFY `id_user` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `phg_users_groups`
-  MODIFY `id_user_group` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_user_group` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 ALTER TABLE `phg_users_login_log`
   MODIFY `id_record` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
@@ -389,7 +389,7 @@ ALTER TABLE `phg_websites_preview`
   MODIFY `id_preview` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `phg_websites_templates`
-  MODIFY `id_website_template` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_website_template` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 
 ALTER TABLE `phg_campaigns`
