@@ -123,7 +123,6 @@
         'used_group' => $user['primary_group'],
         'visit_datetime' => date('Y-m-d H:i:s'),
         'ip' => WebsitePrependerModel::getClientIp(),
-        'local_ip' => WebsitePrependerModel::getClientLocalIp(),
         'browser_fingerprint' => $_SERVER['HTTP_USER_AGENT']
       ];
 

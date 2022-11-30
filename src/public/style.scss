@@ -168,7 +168,7 @@ header {
       min-width: 105px;
 
       &.datetime {
-        min-width: 165px;
+        min-width: 167px;
       }
     }
 
@@ -201,6 +201,10 @@ header {
 
 .minw-10-rem {
   min-width: 10.1rem;
+}
+
+.minw-15-rem {
+  min-width: 15rem;
 }
 
 .maxw-20-rem {

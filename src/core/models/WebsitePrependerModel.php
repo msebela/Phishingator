@@ -33,12 +33,15 @@
     /**
      * Vrátí IP adresu uživatele.
      *
-     * @return string|null             IP adresa uživatele.
+     * @return string|null             IP adresa uživatele
      */
     public static function getClientIp() {
       $ipAddress = null;
 
-      if (getenv('HTTP_X_FORWARDED_FOR')) {
+      if (getenv('REMOTE_ADDR')) {
+        $ipAddress = getenv('REMOTE_ADDR');
+      }
+      elseif (getenv('HTTP_X_FORWARDED_FOR')) {
         $ipAddress = getenv('HTTP_X_FORWARDED_FOR');
       }
       elseif (getenv('HTTP_CLIENT_IP')) {
@@ -53,27 +56,9 @@
       elseif (getenv('HTTP_FORWARDED')) {
         $ipAddress = getenv('HTTP_FORWARDED');
       }
-      elseif (getenv('REMOTE_ADDR')) {
-        $ipAddress = getenv('REMOTE_ADDR');
-      }
 
-      return $ipAddress;
-    }
-
-
-    /**
-     * Pokusí se zjistit a vrátí lokální IP adresu uživatele.
-     *
-     * @return null|string             Lokální IP adresa uživatele.
-     */
-    public static function getClientLocalIp() {
-      $ipAddress = '';
-
-      if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-        $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
-      }
-      elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+      if (!filter_var($ipAddress, FILTER_VALIDATE_IP)) {
+        $ipAddress = null;
       }
 
       return $ipAddress;
@@ -93,7 +78,7 @@
         if (empty($value)) continue;
 
         if ($inputName == 'password') {
-          /* Volba "between" - anonymizovat vše vyjma prvního a posledního znaku (počet znaků hesla zachovat). */
+          // Volba "between" - anonymizovat vše vyjma prvního a posledního znaku (počet znaků hesla zachovat).
           if ($anonymLevel == 'between' && mb_strlen($value) >= 3) {
             $firstChar = mb_substr($value, 0, 1);
             $lastChar = mb_substr($value, -1, 1);
@@ -103,12 +88,12 @@
 
             $inputs[$inputName] = $firstChar . str_repeat(PASSWORD_CHAR_ANONYMIZATION, $countRepeatChar) . $lastChar;
           }
-          /* Volba "full" - anonymizovat vše, zachovat pouze počet znaků původního hesla. */
+          // Volba "full" - anonymizovat vše, zachovat pouze počet znaků původního hesla.
           elseif ($anonymLevel == 'full') {
             $inputs[$inputName] = str_repeat(PASSWORD_CHAR_ANONYMIZATION, mb_strlen($value));
           }
-          /* Volba "between3stars" - anonymizovat vše vyjma prvního a posledního znaku, ostatní znaky budou nahrazeny
-             3 hvězdičkami, tzn. délka hesla bude vždy 5 znaků (i když bude zadáno kratší heslo). */
+          // Volba "between3stars" - anonymizovat vše vyjma prvního a posledního znaku, ostatní znaky budou nahrazeny
+          // 3 hvězdičkami, tzn. délka hesla bude vždy 5 znaků (i když bude zadáno kratší heslo).
           elseif ($anonymLevel == 'between3stars') {
             $firstChar = mb_substr($value, 0, 1);
             $lastChar = mb_substr($value, -1, 1);
@@ -161,7 +146,6 @@
         'used_group' => $group,
         'visit_datetime' => date('Y-m-d H:i:s'),
         'ip' => self::getClientIp(),
-        'local_ip' => self::getClientLocalIp(),
         'browser_fingerprint' => $_SERVER['HTTP_USER_AGENT']
       ];
 
@@ -187,8 +171,8 @@
       $validCreds = false;
 
       if (!empty($username) && !empty($password)) {
-        /* Pokud uživatelské jméno obsahuje jiné, než alfanumerické znaky, tak to určitě není uživatelské jméno
-           používané v tomto univerzitním prostředí a nemá smysl jej ani ověřovat (i z bezpečnostního hlediska). */
+        // Pokud uživatelské jméno obsahuje jiné, než alfanumerické znaky, tak to pravděpodobně není uživatelské jméno
+        // používané v organizaci a nemá smysl jej ani ověřovat (i z bezpečnostního hlediska).
         if (!ctype_alnum($username)) {
           Logger::warning('Snaha o použití uživatelského jména, které neobsahuje pouze alfanumerické znaky.', $username);
 
@@ -261,16 +245,16 @@
               LIMIT 10
       ', [$idCampaign, $idUser]);
 
-      /* Pokud je počet požadavků u dané kampaně od jednoho uživatele větší než... */
+      // Pokud je počet požadavků u dané kampaně od jednoho uživatele větší než...
       if (count($requests) >= 10) {
-        /* Zjistí se první záznam a poslední záznam aktivity. */
+        // Zjistí se první záznam a poslední záznam aktivity.
         $latest_activity = $requests[0]['visit_datetime'];
         $latest_nineth_activity = $requests[count($requests) - 1]['visit_datetime'];
 
-        /* Pokud mezi záznamy neuplynul dostatečný čas... */
+        // Pokud mezi záznamy neuplynul dostatečný čas...
         if (strtotime('+20 seconds', strtotime($latest_nineth_activity)) >= strtotime($latest_activity)
           && strtotime('+60 seconds', strtotime($latest_activity)) >= strtotime(date('Y-m-d H:i:s'))) {
-          /* Dočasné přesměrování - nemožnost přistoupit zpět na podvodnou stránku po určitou dobu. */
+          // Dočasné přesměrování - nemožnost přistoupit zpět na podvodnou stránku po určitou dobu.
 
           Logger::warning(
             'Zablokování nadlimitního počtu požadavků uživatele na podvodné stránce.',

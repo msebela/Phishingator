@@ -278,7 +278,7 @@
             <?= $data['browser_fingerprint'] ?>
           </small>
         </td>
-        <td class="maxw-20-rem text-truncate identity">
+        <td class="minw-15-rem maxw-20-rem text-truncate identity">
           <?php if (!empty($data['data_json'])): ?>
           <code class="cursor-help" title="<?= $data['data_json'] ?>" data-toggle="tooltip" data-placement="left">
             <?= $data['data_json'] ?>

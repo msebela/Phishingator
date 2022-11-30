@@ -72,7 +72,6 @@ CREATE TABLE `phg_captured_data` (
   `used_group` varchar(64) COLLATE utf8mb3_czech_ci NOT NULL,
   `visit_datetime` datetime DEFAULT NULL,
   `ip` varchar(45) COLLATE utf8mb3_czech_ci DEFAULT NULL,
-  `local_ip` varchar(45) COLLATE utf8mb3_czech_ci DEFAULT NULL,
   `browser_fingerprint` varchar(1024) COLLATE utf8mb3_czech_ci DEFAULT NULL,
   `data_json` mediumtext COLLATE utf8mb3_czech_ci DEFAULT NULL,
   `reported` tinyint(1) UNSIGNED NOT NULL DEFAULT 0
@@ -100,7 +99,6 @@ CREATE TABLE `phg_captured_data_end` (
   `used_group` varchar(64) COLLATE utf8mb3_czech_ci NOT NULL,
   `visit_datetime` datetime DEFAULT NULL,
   `ip` varchar(45) COLLATE utf8mb3_czech_ci DEFAULT NULL,
-  `local_ip` varchar(45) COLLATE utf8mb3_czech_ci DEFAULT NULL,
   `browser_fingerprint` varchar(1024) COLLATE utf8mb3_czech_ci DEFAULT NULL,
   `data_json` mediumtext COLLATE utf8mb3_czech_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_czech_ci;
@@ -182,8 +180,7 @@ CREATE TABLE `phg_users_login_log` (
   `id_record` int(10) UNSIGNED NOT NULL,
   `id_user` mediumint(8) UNSIGNED NOT NULL,
   `login_datetime` datetime NOT NULL,
-  `ip` varchar(45) COLLATE utf8mb3_czech_ci NOT NULL,
-  `local_ip` varchar(45) COLLATE utf8mb3_czech_ci DEFAULT NULL
+  `ip` varchar(45) COLLATE utf8mb3_czech_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_czech_ci;
 
 CREATE TABLE `phg_users_participation_log` (

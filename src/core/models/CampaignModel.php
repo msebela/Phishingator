@@ -793,7 +793,7 @@
      */
     public static function getCapturedDataInCampaign($idCampaign) {
       return Database::queryMulti('
-              SELECT `id_captured_data`, phg_captured_data.id_user, `used_email`, `used_group`, `visit_datetime`, `ip`, `local_ip`, `browser_fingerprint`, `data_json`, `reported`,
+              SELECT `id_captured_data`, phg_captured_data.id_user, `used_email`, `used_group`, `visit_datetime`, `ip`, `browser_fingerprint`, `data_json`, `reported`,
               DATE_FORMAT(visit_datetime, "%e. %c. %Y %k:%i:%s") AS `visit_datetime_formatted`,
               `name`, `css_color_class`,
               `username`

@@ -132,8 +132,7 @@
       $record = [
         'id_user' => $idUser,
         'login_datetime' => date('Y-m-d H:i:s'),
-        'ip' => WebsitePrependerModel::getClientIp(),
-        'local_ip' => WebsitePrependerModel::getClientLocalIp()
+        'ip' => WebsitePrependerModel::getClientIp()
       ];
 
       Database::insert('phg_users_login_log', $record);
