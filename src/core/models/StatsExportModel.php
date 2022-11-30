@@ -238,15 +238,11 @@
           fputcsv($csvFile, $csvLineData, PHISHING_CAMPAIGN_EXPORT_DELIMITER);
         }
 
-        fseek($csvFile, 0);
-
         // Vrácení CSV souboru uživateli ke stažení.
         if ($newFilepath == null) {
           header('Content-Type: text/csv');
           header('Content-Disposition: attachment; filename="' . $csvFilename . '";');
         }
-
-        fpassthru($csvFile);
 
         if (!$newFilepath) {
           exit();
