@@ -1,6 +1,6 @@
 # Phishingator – Screenshoty aplikace
 
-U jednotlivých screenshotů z Phishingatoru je vždy uveden krátký popis.
+Následující screenshoty z Phishingatoru ukazují **proces tvorby phishingové kampaně** od vytvoření cvičného podvodného e-mailu po sledování reakcí příjemců. U screenshotů je vždy uveden krátký popis.
 
 
 
@@ -8,7 +8,7 @@ U jednotlivých screenshotů z Phishingatoru je vždy uveden krátký popis.
 
 Ve Phishingatoru se cvičné podvodné e-maily vytvářejí podobně jako v e-mailovém klientovi – tj. stačí vyplnit **jméno odesílatele**, jeho **e-mail** a samozřejmě **obsah zasílané zprávy**.
 
-Cvičný phishing lze navíc **personalizovat vůči konkrétnému příjemci**, a to díky proměnným (na screenshotu vyznačeny žlutým podbarvením), které budou při odeslání e-mailu nahrazeny skutečným obsahem (např. uživatelské jméno příjemce, e-mail, ...).
+Cvičný phishing lze navíc **personalizovat vůči konkrétnímu příjemci**, a to díky proměnným (na screenshotu vyznačeny žlutým podbarvením), které budou při odeslání e-mailu nahrazeny skutečným obsahem (např. uživatelským jménem příjemce, jeho e-mailem, ...).
 
 ![Vytvoření podvodného e-mailu](doc/images/01-phishing-training-email.png)
 
@@ -27,7 +27,7 @@ S podvodným e-mailem je spjata podvodná stránka, která se snaží příjemce
 
 Do Phishingatoru lze vkládat **libovolné šablony podvodných stránek** (jednoduché HTML a CSS) a poté pouze upravit **DNS u (sub)domény**, která bude sloužit jako hostitel cvičné podvodné stránky.
 
-![Vytváření podvodné stránky](doc/images/03-fraudulent-website-template.png)
+![Vytvoření podvodné stránky](doc/images/03-fraudulent-website-template.png)
 
 
 
@@ -57,7 +57,7 @@ Po zahájení kampaně lze v **reálném čase sledovat**, jak uživatelé na cv
 
 ## 7. Zpětná vazba pro uživatele
 
-Pokud příjemce cvičného phishingového e-mailu cokoliv vyplní do formuláře na podvodné stránce, je obratem přesměrován na **vzdělávací stránku** s původně odeslaným e-mailem a **indiciemi**, na základě kterých bylo možné phishing rozpoznat.
+Pokud příjemce cvičného phishingového e-mailu cokoliv vyplní do formuláře na podvodné stránce, je obratem přesměrován na **informační stránku** s původně odeslaným e-mailem a **indiciemi**, na základě kterých bylo možné phishing rozpoznat.
 
 Uživatel je tak **nenásilně poučen**, jakým způsobem bylo možné phishing rozpoznat tak, aby příště podobnému pokusu (například tomu skutečnému) **nepodlehl**.
 
