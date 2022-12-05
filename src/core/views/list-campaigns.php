@@ -40,7 +40,7 @@
         <td>
           <?= $campaign['email_name'] ?>
         </td>
-        <td>
+        <td class="pl-0">
           <a href="/portal/phishing-emails/<?= ACT_PREVIEW . '/' . $campaign['id_email'] ?>" class="badge badge-secondary" role="button" title="Náhled">
             <span data-feather="eye"></span>
           </a>

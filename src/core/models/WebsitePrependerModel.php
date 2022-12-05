@@ -31,14 +31,17 @@
 
 
     /**
-     * Vrátí IP adresu uživatele.
+     * Vrátí skutečnou IP adresu uživatele.
      *
      * @return string|null             IP adresa uživatele
      */
     public static function getClientIp() {
       $ipAddress = null;
 
-      if (getenv('REMOTE_ADDR')) {
+      if (getenv('HTTP_X_REAL_IP')) {
+        $ipAddress = getenv('HTTP_X_REAL_IP');
+      }
+      elseif (getenv('REMOTE_ADDR')) {
         $ipAddress = getenv('REMOTE_ADDR');
       }
       elseif (getenv('HTTP_X_FORWARDED_FOR')) {
