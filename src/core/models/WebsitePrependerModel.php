@@ -324,16 +324,27 @@
           $onsubmitAction = $campaignModel->getWebsiteAction($campaign['id_onsubmit']);
 
           if ($campaign['id_onsubmit'] == 2) {
-            // Přesměrování na stránku s informací o absolvování praktického phishingového testu.
+            // Přesměrování na vzdělávací stránku s indiciemi (po zadání čehokoliv).
             header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
             exit();
           }
           elseif ($campaign['id_onsubmit'] == 3) {
+            // Přesměrování na vzdělávací stránku s indiciemi (pouze po zadání platných přihlašovacích údajů).
+
+            if ($credentialsResult) {
+              header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
+              exit();
+            }
+            else {
+              $this->displayMessage = true;
+            }
+          }
+          elseif ($campaign['id_onsubmit'] == 4) {
             // Neustálé zobrazování chybové zprávy.
             $this->displayMessage = true;
           }
-          elseif ($campaign['id_onsubmit'] == 4) {
-            // Po druhém zadání přihlašovacích údajů provést přesměrování.
+          elseif ($campaign['id_onsubmit'] == 5) {
+            // Po druhém zadání přihlašovacích údajů přesměrovat na vzdělávací stránku s indiciemi.
             $countMaxSends = 2;
             $sessionName = 'phishingMessage-' . $args['id_campaign'];
 
@@ -347,7 +358,7 @@
 
             $this->displayMessage = true;
 
-            // Při překročení nastaveného limitu přesměrovat na stránku s informací o absolvování praktického phishingového testu.
+            // Při překročení nastaveného limitu přesměrovat na vzdělávací stránku s indiciemi.
             if ($_SESSION[$sessionName] >= $countMaxSends) {
               unset($_SESSION[$sessionName]);
 
