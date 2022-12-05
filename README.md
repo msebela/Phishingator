@@ -9,7 +9,7 @@ Phishingator je webová aplikace, jejímž cílem je provádět **praktické šk
 
 Administrátor si ve Phishingatoru jednoduše vytvoří **cvičný phishingový e-mail** a s ním svázanou **cvičnou phishingovou stránku** (např. napodobující přihlášení do skutečného systému organizace). Phishingator pak ve zvolený den a čas odešle administrátorem **vybraným příjemcům** cvičný phishing. Administrátor následně může **v reálném čase sledovat**, jak **uživatelé** na cvičný phishing a podvodnou stránku **reagují**. Phishingator informuje, zda adresáti podvodnou stránku navštívili, zda vyplnili a odeslali přihlašovací údaje a pokud ano, pak také zda jsou přihlašovací údaje platné či nikoliv.
 
-Pokud uživatel do cvičné phishingové stránky předá své **přihlašovací údaje**, je mu obratem zobrazena informační stránka s původně odeslaným phishingem, a to včetně **vyznačených indicií**, na základě kterých bylo možné podvod rozpoznat. Uživatel se tak má šanci ihned **poučit** a zjistit, jak mohl daný phishing rozpoznat tak, aby podobnému nebo dokonce skutečnému phishingu příště odolal. Stejné indicie jsou zobrazeny i všem ostatním uživatelům po ukončení školení.
+Pokud uživatel do cvičné phishingové stránky předá své **přihlašovací údaje**, je mu obratem zobrazena vzdělávací stránka s původně odeslaným phishingem, a to včetně **vyznačených indicií**, na základě kterých bylo možné podvod rozpoznat. Uživatel se tak má šanci ihned **poučit** a zjistit, jak mohl daný phishing rozpoznat tak, aby podobnému nebo dokonce skutečnému phishingu příště odolal. Stejné indicie jsou zobrazeny i všem ostatním uživatelům po ukončení školení.
 
 Phishingator byl navržen jako co nejvíce **intuitivní a automatizovaný systém** tak, aby jeho používání nevyžadovalo téměř **žádné technické znalosti**. Součástí systému je vedení jak **globální**, tak **osobní statistiky** u každého z uživatelů, a také vedení **podrobné statistiky** u každé phishingové kampaně. Phishingator lze jednoduše napojit na již **existující SSO** (např. *OIDC*).
 
@@ -28,7 +28,7 @@ Phishingator byl navržen jako co nejvíce **intuitivní a automatizovaný syst�
 - **Průběh phishingové kampaně**
   - Rozeslání phishingových e-mailů, notifikací, vedení a ukončení kampaně automaticky zajišťuje Phishingator
   - Administrátor vidí reakce uživatelů
-  - Informační stránka s vysvětlením a zobrazením indicií, na základě kterých bylo možné phishing rozpoznat
+  - Vzdělávací stránka s vysvětlením a zobrazením indicií, na základě kterých bylo možné phishing rozpoznat
     - Obratem po vyplnění údajů na podvodné stránce (uživatel se má šanci ihned poučit)
 - **Statistiky**
   - Podrobné statistiky u každé phishingové kampaně

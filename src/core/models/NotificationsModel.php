@@ -331,7 +331,7 @@
               $notificationReaction = '';
             }
 
-            // Zjištění uživatelského URL klíče pro informační stránku.
+            // Zjištění uživatelského URL klíče pro vzdělávací stránku.
             $code = WebsitePrependerModel::makeWebsiteUrl($campaign['id_campaign'], $user['url']);
 
             // Zjištění času a data odeslání podvodného e-mailu konkrétnímu uživateli.

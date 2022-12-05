@@ -23,8 +23,7 @@
         <th>Přidáno</th>
         <th>Přidal</th>
         <th colspan="2">Podvodný e-mail</th>
-        <th>Podvodná stránka</th>
-        <th colspan="2">URL podvodné stránky</th>
+        <th colspan="2">Podvodná stránka</th>
         <th>Odesláno e-mailů</th>
         <th>Spuštění rozesílání</th>
         <th>Aktivní od</th>
@@ -48,16 +47,16 @@
         <?php endif; ?>
         </td>
         <td><?= $campaign['email_name'] ?></td>
-        <td>
+        <td class="pl-0">
           <a href="/portal/phishing-emails/<?= ACT_PREVIEW . '/' . $campaign['id_email'] ?>" class="badge badge-secondary" title="Náhled">
             <span data-feather="eye"></span>
           </a>
         </td>
-        <td><?= $campaign['website_name'] ?></td>
         <td class="nowrap">
+          <?= $campaign['website_name'] ?><br>
           <span class="badge badge-<?= $campaign['url_protocol_color'] ?>"><?= $campaign['url_protocol'] ?></span><?= $campaign['url'] ?>
         </td>
-        <td>
+        <td class="pl-0">
           <a href="/portal/phishing-websites/<?= ACT_PREVIEW . '/' . $campaign['id_website'] ?>" target="_blank" class="badge badge-secondary" title="Náhled">
             <span data-feather="eye"></span>
           </a>
