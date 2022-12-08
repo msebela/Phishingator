@@ -283,6 +283,9 @@
    */
   define('CAMPAIGN_STATS_AGGREGATION', (getenv('CAMPAIGN_STATS_AGGREGATION')) ? getenv('CAMPAIGN_STATS_AGGREGATION') : 1);
 
+  /** Rozmazání identit uživatelů ve statistikách kampaní. */
+  define('CAMPAIGN_STATS_BLUR_IDENTITIES', (getenv('CAMPAIGN_STATS_HIDE_IDENTITIES')) ? getenv('CAMPAIGN_STATS_HIDE_IDENTITIES') : true);
+
 
 
   /* --- STRÁNKOVÁNÍ --- */

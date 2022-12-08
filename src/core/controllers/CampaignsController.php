@@ -190,6 +190,9 @@
 
       $this->setViewData('campaign', $campaign);
 
+      // Rozmazání identit uživatelů dle konfigurace.
+      $this->setViewData('blurIdentities', ((CAMPAIGN_STATS_BLUR_IDENTITIES) ? ' blur-text' : ''));
+
       // Získání nasbíraných dat.
       if (isset($_GET[ACT_STATS_ALL_ACTIONS])) {
         // Data uživatelů zaznamenané na podvodné stránce a akce "bez reakce".

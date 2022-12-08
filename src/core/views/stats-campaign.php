@@ -125,7 +125,7 @@
 
   <div class="btn-toolbar mb-2 mb-md-0 align-items-center">
     <div class="custom-control custom-checkbox mr-2">
-      <input type="checkbox" class="custom-control-input" id="blur-identity">
+      <input type="checkbox" class="custom-control-input" id="blur-identity"<?= ((!empty($blurIdentities)) ? ' checked' : '') ?>>
       <label class="custom-control-label" for="blur-identity" onclick="blurIdentity()">Rozmazat identity</label>
     </div>
 
@@ -174,7 +174,7 @@
             <td>
               <small><?= $i++; ?></small>
             </td>
-            <td class="identity">
+            <td class="identity<?= $blurIdentities ?>">
               <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
               <a href="/portal/users/<?= ACT_EDIT . '/' . $data['id_user'] ?>">
                 <span title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></span>
@@ -250,7 +250,7 @@
             <abbr title="Identifikátor a odkaz na tento záznam v rámci této kampaně" class="initialism cursor-help"><?= $i--; ?></abbr>
           </a>
         </td>
-        <td class="identity">
+        <td class="identity<?= $blurIdentities ?>">
           <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
           <a href="/portal/users/<?= ACT_EDIT . '/' . $data['id_user'] ?>">
             <span title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></span>
@@ -271,13 +271,13 @@
           <?php endif; ?>
         </td>
         <td data-sort="<?= $data['visit_datetime'] ?>"><?= $data['visit_datetime_formatted'] ?></td>
-        <td class="identity"><?= $data['ip'] ?></td>
+        <td class="identity<?= $blurIdentities ?>"><?= $data['ip'] ?></td>
         <td class="maxw-40-rem text-truncate">
           <small class="cursor-help" title="<?= $data['browser_fingerprint'] ?>" data-toggle="tooltip" data-placement="left">
             <?= $data['browser_fingerprint'] ?>
           </small>
         </td>
-        <td class="minw-15-rem maxw-20-rem text-truncate identity">
+        <td class="minw-15-rem maxw-20-rem text-truncate identity<?= $blurIdentities ?>">
           <?php if (!empty($data['data_json'])): ?>
           <code class="cursor-help" title="<?= $data['data_json'] ?>" data-toggle="tooltip" data-placement="left">
             <?= $data['data_json'] ?>
