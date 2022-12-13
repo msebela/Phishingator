@@ -125,8 +125,8 @@
 
   <div class="btn-toolbar mb-2 mb-md-0 align-items-center">
     <div class="custom-control custom-checkbox mr-2">
-      <input type="checkbox" class="custom-control-input" id="blur-identity"<?= ((!empty($blurIdentities)) ? ' checked' : '') ?>>
-      <label class="custom-control-label" for="blur-identity" onclick="blurIdentity()">Rozmazat identity</label>
+      <input type="checkbox" class="custom-control-input" id="blur-identity" onclick="blurIdentity()"<?= ((!empty($blurIdentities)) ? ' checked' : '') ?>>
+      <label class="custom-control-label" for="blur-identity">Rozmazat identity</label>
     </div>
 
     <?php if (isset($capturedData)): ?>

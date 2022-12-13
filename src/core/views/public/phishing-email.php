@@ -41,19 +41,19 @@
         </div>
         <div class="content">
           <div class="row">
-            <div class="col-sm-3 col-md-2"><strong>Od:</strong></div>
+            <div class="col-sm-3"><strong>Od:</strong></div>
             <div class="col"><?= $_email['sender'] ?></div>
           </div>
           <div class="row">
-            <div class="col-sm-3 col-md-2"><strong>Předmět:</strong></div>
+            <div class="col-sm-3"><strong>Předmět:</strong></div>
             <div class="col"><?= $_email['subject'] ?></div>
           </div>
           <div class="row">
-            <div class="col-sm-3 col-md-2"><strong>Komu:</strong></div>
+            <div class="col-sm-3"><strong>Komu:</strong></div>
             <div class="col"><?= $email['recipient_email'] ?></div>
           </div>
           <div class="row">
-            <div class="col-sm-3 col-md-2"><strong>Datum:</strong></div>
+            <div class="col-sm-3"><strong>Datum:</strong></div>
             <div class="col"><?= $email['date_sent'] ?></div>
           </div>
           <hr>
