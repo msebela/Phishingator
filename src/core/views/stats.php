@@ -131,8 +131,8 @@
 </div>
 <?php endfor; ?>
 
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.min.js?3.9.1"></script>
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.1.0"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.0.1"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0"></script>
 <script>
   <?php
     for ($year = date('Y'); $year >= $statsStartYear; $year--):
