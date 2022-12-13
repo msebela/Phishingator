@@ -292,6 +292,11 @@ header {
   width: 210px;
 }
 
+.tooltip-icon {
+  position: relative;
+  z-index: 1071;
+}
+
 .user-phishing-report {
   visibility: hidden;
 }
