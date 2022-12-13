@@ -292,9 +292,8 @@ header {
   width: 210px;
 }
 
-.tooltip-icon {
-  position: relative;
-  z-index: 1071;
+.tooltip {
+  pointer-events: none;
 }
 
 .user-phishing-report {

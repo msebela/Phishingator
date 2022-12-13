@@ -192,7 +192,7 @@
 
                 <input type="hidden" name="<?= ACT_STATS_REPORT_PHISH ?>" value="<?= $data['id_captured_data'] ?>">
 
-                <div class="tooltip-icon text-purple<?php if ($data['reported'] == 0): ?> user-phishing-report<?php endif; ?>" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel nahlásil pokus o&nbsp;cvičný phishing<br>(např. na helpdesk, správci IT, &hellip;)">
+                <div class="text-purple<?php if ($data['reported'] == 0): ?> user-phishing-report<?php endif; ?>" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel nahlásil pokus o&nbsp;cvičný phishing<br>(např. na helpdesk, správci IT, &hellip;)">
                   <button type="submit" class="border-0 bg-transparent" onclick="if (!confirm('Opravdu chcete u uživatele upravit nastavení o nahlášení cvičného phishingu?')) return false;">
                     <span data-feather="message-circle"></span>
                   </button>
@@ -201,7 +201,7 @@
             </td>
             <td>
               <?php if (isset($testPageData[$data['id_user']])): ?>
-              <div class="tooltip-icon text-success cursor-help" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel navštívil vzdělávací stránku o&nbsp;absolvování phishingu<br><?= $testPageData[$data['id_user']] ?>">
+              <div class="text-success cursor-help" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel navštívil vzdělávací stránku o&nbsp;phishingu<br><?= $testPageData[$data['id_user']] ?>">
                 <span data-feather="flag"></span>
               </div>
               <?php endif; ?>
