@@ -62,14 +62,14 @@ services:
     labels:
       - traefik.docker.network=traefik
       - traefik.enable=true
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host(`$WEB_HOST`,$FRAUDULENT_HOSTS)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=HostRegexp(`$WEB_HOST`,$FRAUDULENT_HOSTS)
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls=true
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.entrypoints=websecure
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.entrypoints=web
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.rule=Host(`$WEB_HOST`)
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.middlewares=web-https
       - traefik.http.middlewares.web-https.redirectscheme.scheme=https
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.rule=Host($FRAUDULENT_HOSTS)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.rule=HostRegexp($FRAUDULENT_HOSTS)
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.entrypoints=web
       - traefik.port=80
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.priority=50
