@@ -78,17 +78,13 @@
     public function getPhishingEmail($id) {
       $whereFilter = (PermissionsModel::getUserRole() == PERMISSION_TEST_MANAGER) ? 'AND `hidden` = 0' : '';
 
-      $this->dbRecordData = Database::querySingle('
+      return Database::querySingle('
               SELECT `id_email`, `name`, `sender_name`, `sender_email`, `subject`, `body`, `hidden`
               FROM `phg_emails`
               WHERE `id_email` = ?
               AND `visible` = 1
               ' . $whereFilter
       , $id);
-
-      $this->dbRecordData['dns_mx_record'] = $this->checkEmailDomainDNS($this->dbRecordData['sender_email']);
-
-      return $this->dbRecordData;
     }
 
 
@@ -220,25 +216,6 @@
       }
 
       Logger::info('Smazání existujícího podvodného e-mailu.', $id);
-    }
-
-
-    /**
-     * Ověří, zdali je v DNS správně směrován MX záznam u domény, která je uvedená v adrese odesílatele,
-     * a to na server, kde běží Phishingator.
-     *
-     * @param string $email            E-mail
-     * @return bool                    TRUE pokud je MX záznam správně směrován, jinak FALSE
-     */
-    private function checkEmailDomainDNS($email) {
-      $mxRecords = [];
-      $result = false;
-
-      if (filter_var($email, FILTER_VALIDATE_EMAIL) && getmxrr(get_domain_from_url('https://' . get_email_part($email, 'domain')), $mxRecords)) {
-        $result = in_array('phishingator.' . get_domain_from_url(WEB_URL), $mxRecords);
-      }
-
-      return $result;
     }
 
 

@@ -597,7 +597,7 @@
      * @return bool                    TRUE, pokud byla nalezena v konfiguraci proxy, jinak FALSE
      */
     public static function isDomainRegisteredInProxy($website) {
-      $proxyRegex = '{subhost:((.)*)}';
+      $proxyRegex = '{subdomain:((.)*)}';
       $registered = false;
 
       if (getenv('FRAUDULENT_HOSTS') !== null) {
