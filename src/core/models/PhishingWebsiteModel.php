@@ -608,16 +608,24 @@
 
         foreach ($proxyDomains as $proxyDomain) {
           if (!empty($subdomain)) {
-            preg_match('/' . $proxyRegex . '\.' . $domain . '/', $proxyDomain, $matches);
+            // Konkrétní subdoména v konfiguraci proxy.
+            if ($proxyDomain == $subdomain . '.' . $domain) {
+              $registered = true;
+            }
+            else {
+              // Subdoména jako regulární výraz u domény v konfiguraci proxy.
+              preg_match('/' . $proxyRegex . '\.' . $domain . '/', $proxyDomain, $matches);
 
-            if (isset($matches[1])) {
-              preg_match('/' . $matches[1] . '/', $subdomain, $subdomainMatches);
+              if (isset($matches[1])) {
+                preg_match('/' . $matches[1] . '/', $subdomain, $subdomainMatches);
 
-              if (isset($subdomainMatches[0]) && mb_strlen($subdomainMatches[0]) == mb_strlen($subdomain)) {
-                $registered = true;
+                if (isset($subdomainMatches[0]) && mb_strlen($subdomainMatches[0]) == mb_strlen($subdomain)) {
+                  $registered = true;
+                }
               }
             }
           }
+          // Konkrétní doména v konfiguraci proxy.
           elseif ($proxyDomain == $domain) {
             $registered = true;
           }
