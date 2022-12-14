@@ -575,14 +575,14 @@
      */
     private static function getPhishingWebsiteStatus($url) {
       $status = 0;
-      $url = get_hostname_from_url($url);
+      $hostname = get_hostname_from_url($url);
 
       // U podvodné domény chybí v DNS záznam typu A směrovaný na Phishingator.
-      if (gethostbyname($url) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
+      if (gethostbyname($hostname) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
         $status = 2;
       }
       // Chybí záznam o doméně v proxy Phishingatoru.
-      elseif (!in_array($url, self::getRegistredDomains())) {
+      elseif (!self::isDomainRegisteredInProxy($hostname)) {
         $status = 1;
       }
 
@@ -591,18 +591,44 @@
 
 
     /**
-     * Vrátí pole domén, které již byly interně zaregistrovány v proxy Phishingatoru.
+     * Ověří, zdali je doména zaregistrována v proxy Phishingatoru.
      *
-     * @return array|false|string[]    Pole obsahující názvy (sub)domén
+     * @param string $website          Doména (bez protokolu)
+     * @return bool                    TRUE, pokud byla nalezena v konfiguraci proxy, jinak FALSE
      */
-    public static function getRegistredDomains() {
-      $registredDomains = [];
+    public static function isDomainRegisteredInProxy($website) {
+      $proxyRegex = '{subhost:((.)*)}';
+      $registered = false;
 
       if (getenv('FRAUDULENT_HOSTS') !== null) {
-        $registredDomains = explode(',', str_replace('`', '', getenv('FRAUDULENT_HOSTS')));
+        $proxyDomains = explode(',', str_replace('`', '', getenv('FRAUDULENT_HOSTS')));
+
+        $domain = get_domain_from_url('https://' . $website);
+        $subdomain = mb_substr($website, 0, -mb_strlen($domain) - 1);
+
+        foreach ($proxyDomains as $proxyDomain) {
+          if (!empty($subdomain)) {
+            preg_match('/' . $proxyRegex . '\.' . $domain . '/', $proxyDomain, $matches);
+
+            if (isset($matches[1])) {
+              preg_match('/' . $matches[1] . '/', $subdomain, $subdomainMatches);
+
+              if (isset($subdomainMatches[0]) && mb_strlen($subdomainMatches[0]) == mb_strlen($subdomain)) {
+                $registered = true;
+              }
+            }
+          }
+          elseif ($proxyDomain == $domain) {
+            $registered = true;
+          }
+
+          if ($registered) {
+            break;
+          }
+        }
       }
 
-      return $registredDomains;
+      return $registered;
     }
 
 
