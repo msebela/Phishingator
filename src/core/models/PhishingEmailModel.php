@@ -78,13 +78,15 @@
     public function getPhishingEmail($id) {
       $whereFilter = (PermissionsModel::getUserRole() == PERMISSION_TEST_MANAGER) ? 'AND `hidden` = 0' : '';
 
-      return Database::querySingle('
+      $this->dbRecordData = Database::querySingle('
               SELECT `id_email`, `name`, `sender_name`, `sender_email`, `subject`, `body`, `hidden`
               FROM `phg_emails`
               WHERE `id_email` = ?
               AND `visible` = 1
               ' . $whereFilter
       , $id);
+
+      return $this->dbRecordData;
     }
 
 
