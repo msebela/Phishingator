@@ -575,14 +575,16 @@
      */
     private static function getPhishingWebsiteStatus($url) {
       $status = 0;
-      $hostname = get_hostname_from_url($url);
+
+      $websiteHostname = get_hostname_from_url($url);
+      $instanceHost = gethostbyname(get_hostname_from_url(getenv('WEB_URL')));
 
       // U podvodné domény chybí v DNS záznam typu A směrovaný na Phishingator.
-      if (gethostbyname($hostname) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
+      if (gethostbyname($websiteHostname) != $instanceHost && gethostbyname(get_domain_from_url($url)) != $instanceHost) {
         $status = 2;
       }
       // Chybí záznam o doméně v proxy Phishingatoru.
-      elseif (!self::isDomainRegisteredInProxy($hostname)) {
+      elseif (!self::isDomainRegisteredInProxy($websiteHostname)) {
         $status = 1;
       }
 
@@ -727,7 +729,7 @@
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     private function isURLValidDNSRecord() {
-      if (gethostbyname(get_hostname_from_url($this->url)) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
+      if (gethostbyname(get_domain_from_url($this->url)) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
         throw new UserError('U zadané domény (popř. subdomény) není v DNS nasměrován záznam typu A na IP adresu serveru, kde běží Phishingator.', MSG_ERROR);
       }
     }
