@@ -19,7 +19,7 @@
   </div>
   <div>
     <h4 class="alert-heading">Nedokončené přesměrování</h4>
-    Doména, na níž bude hostovaná podvodná strána, je správně směrována na IP adresu Phishingatoru, ještě je ovšem nutné aktivovat interní směrování domény v&nbsp;proxy Phishingatoru.
+    Doména, na níž bude hostována podvodná strána, je správně směrována na IP adresu Phishingatoru, zatím ale nedošlo k aktivaci domény v&nbsp;proxy Phishingatoru.
   </div>
 </div>
 
@@ -35,10 +35,26 @@
     <small class="form-text text-muted">Název slouží pouze k&nbsp;identifikaci v&nbsp;rámci tohoto systému.</small>
   </div>
 
-  <div class="form-group">
-    <label for="<?= $formPrefix ?>url">URL</label>
-    <input type="url" class="form-control" id="<?= $formPrefix ?>url" name="<?= $formPrefix ?>url" maxlength="<?= $inputsMaxLengths['url'] ?>" value="<?= $inputsValues['url'] ?>" required>
-    <small class="form-text text-muted">Adresa včetně protokolu, pod kterou bude podvodná stránka přístupná (na základě unikátního parametru pro identifikaci uživatele).</small>
+  <div class="form-row">
+    <div class="form-group col-sm-9 col-lg-11 col-xl-12">
+      <label for="<?= $formPrefix ?>url">URL</label>
+      <input type="url" class="form-control" id="<?= $formPrefix ?>url" name="<?= $formPrefix ?>url" maxlength="<?= $inputsMaxLengths['url'] ?>" value="<?= $inputsValues['url'] ?>" required>
+      <small class="form-text text-muted">URL adresa včetně protokolu, na které bude podvodná stránka přístupná (na základě unikátního parametru pro identifikaci uživatele). Použít lze (sub)domény uvedené v&nbsp;seznamu <span class="badge badge-info">Registrované domény</span>.</small>
+    </div>
+
+    <div class="form-group col-sm-7 col-lg-5 col-xl-4 text-right">
+      <label class="d-none d-sm-block">&nbsp;</label>
+      <div class="dropdown">
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          Registrované domény (<?= count ($domains) ?>)
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" id="phishing-domains-dropdown">
+          <?php foreach ($domains as $domain): ?>
+          <a href="#" class="dropdown-item text-monospace" data-var="http(s)://<?= $domain ?>"><?= $domain ?></a>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="form-group">
@@ -49,13 +65,13 @@
       <option value="<?= $template['id_website_template']; ?>"<?= (($inputsValues['id-template'] == $template['id_website_template']) ? ' selected': ''); ?>><?= $template['name'] ?></option>
       <?php endforeach; ?>
     </select>
-    <small class="form-text text-muted">Webová stránka, která se zobrazí uživateli.</small>
+    <small class="form-text text-muted">Šablona webové stránky s&nbsp;formulářem, která se zobrazí uživateli.</small>
   </div>
 
   <div class="form-group">
     <div class="custom-control custom-checkbox my-1 mr-sm-2">
       <input type="checkbox" class="custom-control-input" id="<?= $formPrefix ?>active" name="<?= $formPrefix ?>active"<?= (($inputsValues['active']) ? ' checked' : ''); ?>>
-      <label class="custom-control-label" for="<?= $formPrefix ?>active">Aktivovat podvodnou stránku na webovém serveru (do 5 min.)</label>
+      <label class="custom-control-label" for="<?= $formPrefix ?>active">Aktivovat podvodnou stránku na webovém serveru (do 5&nbsp;min.)</label>
       <small class="form-text text-muted">Změna proběhne do 5&nbsp;minut. Předpokladem je, aby byl u&nbsp;domény (popř. subdomény) v&nbsp;DNS nasměrován záznam typu&nbsp;A na IP adresu serveru, kde běží Phishingator. Po aktivaci budou moci podvodnou stránku využívat ve svých phishingových kampaních i&nbsp;<span class="badge badge-warning">správci testů</span>.</small>
     </div>
   </div>

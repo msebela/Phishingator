@@ -127,7 +127,7 @@
   define('WEB_HTML_BASE_TITLE', 'Phishingator');
 
   /** Verze systému. */
-  define('WEB_VERSION', '1.1');
+  define('WEB_VERSION', '1.2');
 
   /** URL, na které systém běží (slouží pro přesměrování v rámci systému). */
   define('WEB_URL', getenv('WEB_URL'));
@@ -273,6 +273,9 @@
 
   /** Název souboru (včetně přípony), v němž je uložen screenshot (ve formátu PNG a o šířce 800 px) podvodné stránky. */
   define('PHISHING_WEBSITE_SCREENSHOT_FILENAME', 'thumbnail.png');
+
+  /** Pravidlo umožňující vytváření subdomén v proxy Phishingatoru na základě regulárního výrazu. */
+  define('PHISHING_WEBSITE_PROXY_SUBDOMAIN_RULE', '{subdomain:((.)*)}');
 
 
 

@@ -67,8 +67,8 @@
       $model->initForm($formData['inputsNames'], $formData['formPrefix'], $formData['dbTable']);
       $this->initViewData($model, ACT_NEW, $formData['formPrefix']);
 
-      // Data z databáze pro vstupní pole.
       $this->setViewData('templates', $model->getPhishingWebsitesTemplates());
+      $this->setViewData('domains', $model->getDomainsRegisteredInProxy(false));
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {
@@ -108,8 +108,8 @@
 
       $this->initViewData($model, ACT_EDIT, $formData['formPrefix']);
 
-      // Data z databáze pro vstupní pole.
       $this->setViewData('templates', $model->getPhishingWebsitesTemplates());
+      $this->setViewData('domains', $model->getDomainsRegisteredInProxy(false));
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {

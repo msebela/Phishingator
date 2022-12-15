@@ -599,12 +599,10 @@
      * @return bool                    TRUE, pokud byla nalezena v konfiguraci proxy, jinak FALSE
      */
     public static function isDomainRegisteredInProxy($website) {
-      $proxyRegex = '{subdomain:((.)*)}';
       $registered = false;
+      $proxyDomains = self::getDomainsRegisteredInProxy();
 
-      if (getenv('FRAUDULENT_HOSTS') !== null) {
-        $proxyDomains = explode(',', str_replace('`', '', getenv('FRAUDULENT_HOSTS')));
-
+      if (!empty($proxyDomains)) {
         $domain = get_domain_from_url('https://' . $website);
         $subdomain = mb_substr($website, 0, -mb_strlen($domain) - 1);
 
@@ -616,7 +614,7 @@
             }
             else {
               // Subdoména jako regulární výraz u domény v konfiguraci proxy.
-              preg_match('/' . $proxyRegex . '\.' . $domain . '/', $proxyDomain, $matches);
+              preg_match('/' . PHISHING_WEBSITE_PROXY_SUBDOMAIN_RULE . '\.' . $domain . '/', $proxyDomain, $matches);
 
               if (isset($matches[1])) {
                 preg_match('/' . $matches[1] . '/', $subdomain, $subdomainMatches);
@@ -639,6 +637,28 @@
       }
 
       return $registered;
+    }
+
+
+    /**
+     * Vrátí pole všech (sub)domén, které jsou registrované v proxy Phishingatoru
+     * a které mohou být použity jako podvodné domény ve phishingových kampaních.
+     *
+     * @param bool $proxyRulesNames    TRUE, pokud mají být zachovány názvy pravidel z proxy Phishingatoru (výchozí)
+     * @return array|false|string[]    Pole podvodných domén a subdomén
+     */
+    public static function getDomainsRegisteredInProxy($proxyRulesNames = true) {
+      $proxyDomains = [];
+
+      if (getenv('FRAUDULENT_HOSTS') !== null) {
+        $proxyDomains = explode(',', str_replace('`', '', getenv('FRAUDULENT_HOSTS')));
+
+        if (!$proxyRulesNames) {
+          $proxyDomains = preg_replace('/' . PHISHING_WEBSITE_PROXY_SUBDOMAIN_RULE . '/', '$1', $proxyDomains);
+        }
+      }
+
+      return $proxyDomains;
     }
 
 

@@ -89,6 +89,10 @@ $('#phishing-email-variables code').on('click', function() {
   setCaretToPos(input[0], cursorPos + insertedVariable.length);
 });
 
+$('#phishing-domains-dropdown a').on('click', function() {
+  $('#phishing-website-url').val($(this).attr('data-var'));
+});
+
 /* https://stackoverflow.com/questions/499126/jquery-set-cursor-position-in-text-area */
 function setSelectionRange(input, selectionStart, selectionEnd) {
   if (input.setSelectionRange) {
