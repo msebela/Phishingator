@@ -75,6 +75,7 @@ services:
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.priority=50
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.middlewares=sslheader
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls.certresolver=leresolver
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.tls.certresolver=leresolver
       - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
 
   database:

@@ -48,7 +48,7 @@
 <p>Volba <strong>vzhledu</strong> příslušné podvodné stránky a&nbsp;<strong>použité URL</strong> (domény) rovněž <strong>ovlivňuje obtížnost</strong>:</p>
 <ul>
   <li>Podvodné stránky se mohou <strong>vizuálně shodovat</strong> se skutečnou, pravou webovou stránku (např. s&nbsp;<strong>přihlašovací stránkou</strong> organizace), a&nbsp;to včetně <strong>důvěryhodného HTTPS</strong> certifikátu.</li>
-  <li><strong>Podvodná doména</strong> (tj. hostitel podvodné stránky) může ve svém názvu obsahovat například <strong>nevýrazný překlep</strong> oproti legitimní stránce nebo v&nbsp;ní mohou být například <strong>tečky nahrazeny pomlčkou</strong> (např. <code>login.<?= getenv('ORG_DOMAIN') ?></code> vs.  <code>login-<?= getenv('ORG_DOMAIN') ?></code>).</li>
+  <li><strong>Podvodná doména</strong> (tj. hostitel podvodné stránky) může ve svém názvu obsahovat například <strong>nevýrazný překlep</strong> oproti legitimní (správné) doméně nebo v&nbsp;ní mohou být například <strong>tečky nahrazeny pomlčkou</strong> (např. <code>login.<?= getenv('ORG_DOMAIN') ?></code> vs.  <code>login-<?= getenv('ORG_DOMAIN') ?></code>).</li>
 </ul>
 
 <div class="alert alert-with-icon alert-warning" role="alert">

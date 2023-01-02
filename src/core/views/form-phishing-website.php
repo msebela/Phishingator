@@ -19,7 +19,7 @@
   </div>
   <div>
     <h4 class="alert-heading">Nedokončené přesměrování</h4>
-    Doména, na níž bude hostována podvodná strána, je správně směrována na IP adresu Phishingatoru, zatím ale nedošlo k aktivaci domény v&nbsp;proxy Phishingatoru.
+    Doména, na níž bude hostována podvodná strána, je správně směrována na IP adresu Phishingatoru, zatím ale nedošlo k&nbsp;aktivaci domény v&nbsp;proxy Phishingatoru.
   </div>
 </div>
 
