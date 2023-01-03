@@ -170,7 +170,7 @@
   <?php endif; ?>
 </div>
 
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.0.1"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.1.1"></script>
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0"></script>
 <script>
   let chartEndActions = new Chart(document.getElementById('chart-end-actions'), {

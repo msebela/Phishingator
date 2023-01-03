@@ -42,7 +42,7 @@
 
   <?php $this->controller->displayView(); ?>
 
-  <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-3.6.1.min.js"></script>
+  <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-3.6.3.min.js"></script>
   <script src="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.1/bootstrap.bundle.min.js"></script>
   <?php if ($phishingPage): ?>
   <script src="/js.js"></script>

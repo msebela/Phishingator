@@ -131,7 +131,7 @@
       </div>
     </div>
 
-    <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-3.6.1.min.js"></script>
+    <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-3.6.3.min.js"></script>
     <script src="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.1/bootstrap.bundle.min.js"></script>
     <script src="/<?= CORE_DIR_EXTENSIONS ?>/feather.min.js"></script>
 
