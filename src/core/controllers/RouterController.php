@@ -95,7 +95,7 @@
       }
 
       if ($public == false) {
-        // Chybová stránka o nenalezení sekce v interní části aplikace.
+        // Chybová stránka o nenalezení sekce v neveřejné části aplikace.
         return new ErrorNotFoundController();
       }
       else {
@@ -128,7 +128,6 @@
           $this->setView('wrapper');
         }
         else {
-          // Zjištění uživatelského jména uživatele (je-li přihlášen).
           $username = PermissionsModel::getUserName();
 
           $this->setViewData('username', $username);
@@ -153,11 +152,12 @@
 
 
     /**
-     * Odhlásí uživatele ze systému a přesměruje ho do kořene webu.
+     * Odhlásí uživatele ze systému a přesměruje ho na úvodní stránku projektu.
      */
     private function logout() {
       PermissionsModel::logout();
 
-      $this->redirect(null, 1);
+      header('Location: https://phishingator.cesnet.cz');
+      exit();
     }
   }

@@ -262,7 +262,7 @@
      * Přesměruje uživatele na konkrétní adresu v rámci systému.
      *
      * @param null|string $target      Relativní URL v rámci systému (nepovinný parametr). Při nevyplnění dojde
-     *                                  k přesměrování na úvodní stránku přihlášeného uživatele.
+     *                                 k přesměrování na úvodní stránku přihlášeného uživatele.
      * @param null|int $redirectToRoot TRUE pro přesměrování do kořene webu (nepovinný parametr).
      */
     public function redirect($target = null, $redirectToRoot = null) {

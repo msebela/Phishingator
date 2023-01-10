@@ -47,7 +47,7 @@
 
 
   /**
-   * Nastaví a spustí zabezpečnou formu SESSIONS (resp. COOKIES).
+   * Nastaví a spustí zabezpečenou variantu SESSIONS (resp. COOKIES).
    */
   function init_secure_session_start() {
     ini_set('session.cookie_secure', true);
@@ -61,10 +61,10 @@
   /**
    * Rozdělí e-mailovou adresu na části a vrátí tu část, která je požadována.
    *
-   * @param string $email              Zkoumaný e-mail
-   * @param null|string $requiredPart  Název části, která má být vrácena ("username" nebo "domain"),
+   * @param string $email              E-mail
+   * @param null|string $requiredPart  Požadovaná část, která má být vrácena ("username" nebo "domain"),
    *                                   nebo NULL (tj. všechny části)
-   * @return array|string|null         Zvolená část (nebo části) e-mailu
+   * @return array|string|null         Požadovaná část (nebo části) e-mailu
    */
   function get_email_part($email, $requiredPart = null) {
     $returnPart = null;
@@ -95,7 +95,7 @@
    * @param string $url                URL adresa
    * @return string                    Protokol
    */
-    function get_protocol_from_url($url) {
+  function get_protocol_from_url($url) {
     $protocol = '';
 
     if (!empty($url)) {

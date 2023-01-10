@@ -31,8 +31,8 @@ Phishingator uses, incorporates or may be acompanied by Open Source Software (OS
 |:-------------------------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
 | Bootstrap                | 4.6.1   | Copyright (c) 2011-2022 Twitter, Inc.<br/>https://github.com/twbs/bootstrap/blob/main/LICENSE                                                  |
 | Feather                  | 4.29.0  | Copyright (c) 2013-2017 Cole Bemis<br/>https://github.com/feathericons/feather/blob/master/LICENSE                                             |
-| jQuery                   | 3.6.1   | Copyright jQuery Foundation and other contributors<br/>https://jquery.org/license/                                                             |
-| Chart.js                 | 4.0.1   | Copyright (c) 2014-2022 Chart.js Contributors<br/>https://github.com/chartjs/Chart.js/blob/master/LICENSE.md                                   |
+| jQuery                   | 3.6.3   | Copyright jQuery Foundation and other contributors<br/>https://jquery.org/license/                                                             |
+| Chart.js                 | 4.1.2   | Copyright (c) 2014-2022 Chart.js Contributors<br/>https://github.com/chartjs/Chart.js/blob/master/LICENSE.md                                   |
 | Chart.js DataLabels      | 2.2.0   | Copyright (c) 2017-2021 chartjs-plugin-datalabels contributors<br/>https://github.com/chartjs/chartjs-plugin-datalabels/blob/master/LICENSE.md |
 | jQuery highlightTextarea | 3.1.3   | Copyright 2014-2016 Damien "Mistic" Sorel<br/>https://garysieling.github.io/jquery-highlighttextarea/                                          |
 | TABLE-SORT-JS.           | 1.8.0   | Copyright (c) 2021 Lee Wannacott<br/>https://github.com/LeeWannacott/table-sort-js/blob/master/LICENSE                                         |
@@ -84,7 +84,7 @@ PHP includes the Zend Engine, freely available at <http://www.zend.com>.
 
 | Component name | Version | Copyright (provided for informational purposes only)       |
 |----------------|:--------|:-----------------------------------------------------------|
-| PHPMailer      | 6.6.0   | https://github.com/PHPMailer/PHPMailer/blob/master/LICENSE |
+| PHPMailer      | 6.7.1   | https://github.com/PHPMailer/PHPMailer/blob/master/LICENSE |
 
 GNU Lesser General Public License
 

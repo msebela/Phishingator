@@ -80,6 +80,7 @@ V ukázkové verzi Phishingatoru jsou ve výchozím stavu k dispozici **práva a
 
 ### Odkazy
 
+- [Phishingator Portál](https://phishingator.cesnet.cz)
 - [Demo Phishingatoru](https://phishingator.cypherfix.cz)
 - [Zdrojové kódy Phishingatoru](/src)
 - [Uživatelská příručka](MANUAL.md)

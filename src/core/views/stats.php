@@ -131,7 +131,7 @@
 </div>
 <?php endfor; ?>
 
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.1.1"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.1.2"></script>
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0"></script>
 <script>
   <?php
