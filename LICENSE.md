@@ -29,7 +29,7 @@ Phishingator uses, incorporates or may be acompanied by Open Source Software (OS
 
 | Component name           | Version | Copyright (provided for informational purposes only)                                                                                           |
 |:-------------------------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
-| Bootstrap                | 4.6.1   | Copyright (c) 2011-2022 Twitter, Inc.<br/>https://github.com/twbs/bootstrap/blob/main/LICENSE                                                  |
+| Bootstrap                | 4.6.2   | Copyright (c) 2011-2023 The Bootstrap Authors<br/>https://github.com/twbs/bootstrap/blob/main/LICENSE                                          |
 | Feather                  | 4.29.0  | Copyright (c) 2013-2017 Cole Bemis<br/>https://github.com/feathericons/feather/blob/master/LICENSE                                             |
 | jQuery                   | 3.6.3   | Copyright jQuery Foundation and other contributors<br/>https://jquery.org/license/                                                             |
 | Chart.js                 | 4.1.2   | Copyright (c) 2014-2022 Chart.js Contributors<br/>https://github.com/chartjs/Chart.js/blob/master/LICENSE.md                                   |

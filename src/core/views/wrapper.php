@@ -11,7 +11,7 @@
 
     <link rel="icon" type="image/png" href="/favicon.png">
 
-    <link href="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.1/bootstrap.min.css" rel="stylesheet">
+    <link href="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.2/bootstrap.min.css" rel="stylesheet">
     <link href="/style.css" rel="stylesheet">
   </head>
 
@@ -132,7 +132,7 @@
     </div>
 
     <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-3.6.3.min.js"></script>
-    <script src="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.1/bootstrap.bundle.min.js"></script>
+    <script src="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.2/bootstrap.bundle.min.js"></script>
     <script src="/<?= CORE_DIR_EXTENSIONS ?>/feather.min.js"></script>
 
     <script src="/portal/js.js"></script>
