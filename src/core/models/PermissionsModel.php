@@ -65,6 +65,17 @@
 
 
     /**
+     * Ověří, zdali je identita předaná z SSO z organizace, pro kterou byla instance nasazena.
+     *
+     * @param string $identity         Identita uživatele
+     * @return bool                    TRUE pokud je uživatel z
+     */
+    private function isRemoteUserFromOrganization($identity) {
+      return get_domain_from_url(get_email_part($identity, 'domain')) == getenv('ORG_DOMAIN');
+    }
+
+
+    /**
      * Přihlásí uživatele do systému, přičemž pokud se jedná o první přihlášení uživatele do systému
      * (tedy typicky po automatické registraci), dojde k přesměrování do sekce, kde si lze navolit účast
      * v programu.
@@ -79,7 +90,16 @@
       if ($identity == null) {
         Logger::error('Při přihlašování se nepodařilo získat identitu uživatele z SSO.');
 
-        echo 'Failed to retrieve username from SSO!';
+        echo 'Nepodařilo se získat Vaši identitu z SSO. Kontaktujte, prosím, administrátora.';
+        exit();
+      }
+
+      // Ověření, zdali je získaná identita skutečně z dané organizace
+      // a nejedná se o validní přihlášení, ale pro jinou organizaci.
+      if (!$this->isRemoteUserFromOrganization($identity)) {
+        Logger::error('Identita uživatele předaná z SSO neodpovídá organizaci, pro kterou byla instance vytvořena.', $identity);
+
+        echo 'Jste přihlášeni jinou identitou, která nespadá do organizace ' . Controller::escapeOutput(getenv('ORG_DOMAIN')) . '. Odhlaste se, prosím, a přihlaste správnou identitou.';
         exit();
       }
 
