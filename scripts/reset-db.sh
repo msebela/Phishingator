@@ -1,11 +1,15 @@
 #!/bin/bash
 
-cd ../
-source .env
+if [ $# -ne 1 ]; then
+  echo "Drops all tables and deletes Phishingator database for specific instance (by organization name)."
+  echo
+  echo "Usage:"
+  echo "  $(basename "$0") <organization-name>"
+else
+  ORG=$1
+  read -r -p "Are you sure you want to reset Phishingator database: '$ORG' organization? [y/Y] " response
 
-read -r -p "Are you sure you want to reset Phishingator ($ORG) database? [y/Y] " response
-
-if [[ $response =~ ^[Yy]$ ]]; then
-  rm -rf phishingator-data/"$ORG"/database
-  docker-compose up --force-recreate
+  if [[ $response =~ ^[Yy]$ ]]; then
+    rm -rf phishingator-data/"$ORG"/database/phishingator/*
+  fi
 fi

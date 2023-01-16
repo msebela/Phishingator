@@ -26,7 +26,7 @@
     $model->login($_SERVER['REMOTE_USER'] ?? '');
   }
 
-  // Vytvoření nové instance routeru, který zpracovává příchozí požadavky.
+  // Router, který zpracovává příchozí požadavky.
   $router = new RouterController();
 
   $router->process($_SERVER['REQUEST_URI']);
