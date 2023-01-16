@@ -76,17 +76,23 @@
      * @return array|null              Vyhledaná data nebo NULL
      */
     private function getDataByFilter($ldapDn, $filter) {
+      $found = false;
       $data = null;
 
       if ($this->ldapConnection && !empty($ldapDn) && !empty($filter)) {
         $results = ldap_search($this->ldapConnection, $ldapDn . ',' . LDAP_BASE_DN, $filter);
-        $countRecords = ldap_count_entries($this->ldapConnection, $results);
 
-        if ($countRecords >= 1) {
-          $data = ldap_get_entries($this->ldapConnection, $results);
+        if ($results) {
+          $countRecords = ldap_count_entries($this->ldapConnection, $results);
+          $found = true;
+
+          if ($countRecords >= 1) {
+            $data = ldap_get_entries($this->ldapConnection, $results);
+          }
         }
       }
-      else {
+
+      if (!$found) {
         Logger::error(
           'Nepodařilo se získat data z LDAP.',
           ['ldap_dn' => $ldapDn, 'filter' => $filter]
@@ -112,7 +118,7 @@
       $username = $this->getAttributeFromDN($attributeUid, $username);
 
       if (!empty($username)) {
-        $info = $this->getDataByFilter(LDAP_USERS_DN, $attributeUid . '=' . $username);
+        $info = $this->getDataByFilter(LDAP_USERS_DN, ldap_escape($attributeUid, '', LDAP_ESCAPE_FILTER) . '=' . ldap_escape($username, '', LDAP_ESCAPE_FILTER));
 
         if (isset($info['count']) && $info['count'] > 0) {
           for ($i = 0; $i < $info[0][$attributeName]['count']; $i++) {
@@ -174,7 +180,7 @@
       $username = null;
 
       if (!empty($email)) {
-        $info = $this->getDataByFilter(LDAP_USERS_DN, 'mail=' . $email);
+        $info = $this->getDataByFilter(LDAP_USERS_DN, 'mail=' . ldap_escape($email, '', LDAP_ESCAPE_FILTER));
 
         if (isset($info[0]['uid'][0])) {
           $username = $info[0]['uid'][0];
@@ -294,7 +300,7 @@
       $users = null;
 
       if (!empty($group)) {
-        $info = $this->getDataByFilter(LDAP_GROUPS_DN, 'cn=' . $group);
+        $info = $this->getDataByFilter(LDAP_GROUPS_DN, 'cn=' . ldap_escape($group, '', LDAP_ESCAPE_FILTER));
 
         if (isset($info[0][LDAP_GROUPS_ATTR_MEMBER]) && isset($info[0][LDAP_GROUPS_ATTR_MEMBER]['count'])) {
           // Seznam uživatelů ve skupině.
@@ -321,7 +327,7 @@
       $departments = [];
 
       if ($this->ldapConnection && LDAP_ROOT_DEPARTMENTS_FILTER_DN) {
-        $rootDepartments = ldap_search($this->ldapConnection, LDAP_DEPARTMENTS_DN, LDAP_ROOT_DEPARTMENTS_FILTER_DN);
+        $rootDepartments = ldap_search($this->ldapConnection, LDAP_DEPARTMENTS_DN, ldap_escape(LDAP_ROOT_DEPARTMENTS_FILTER_DN, '', LDAP_ESCAPE_FILTER));
         $countRootDep = ldap_count_entries($this->ldapConnection, $rootDepartments);
 
         $rootDepData = ldap_get_entries($this->ldapConnection, $rootDepartments);
@@ -343,7 +349,7 @@
               $departments[$rootDepAbbr] = [];
 
               // Zjištění všech oddělení na fakultě/pracovišti apod.
-              $childDepartments = ldap_search($this->ldapConnection, LDAP_DEPARTMENTS_DN, $attributeDepartment . '=' . $rootDepId);
+              $childDepartments = ldap_search($this->ldapConnection, LDAP_DEPARTMENTS_DN, ldap_escape($attributeDepartment, '', LDAP_ESCAPE_FILTER) . '=' . ldap_escape($rootDepId, '', LDAP_ESCAPE_FILTER));
               $countChildDep = ldap_count_entries($this->ldapConnection, $childDepartments);
 
               $childDepData = ldap_get_entries($this->ldapConnection, $childDepartments);

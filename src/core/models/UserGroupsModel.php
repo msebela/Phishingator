@@ -390,6 +390,7 @@
       $this->isRoleEmpty();
       $this->existRole();
 
+      $this->isLdapGroupsValid();
       $this->isLdapGroupsTooLong();
       $this->isLdapGroupsUnique();
     }
@@ -427,6 +428,18 @@
     private function isDescriptionTooLong() {
       if (mb_strlen($this->description) > $this->inputsMaxLengths['description']) {
         throw new UserError('Popis skupiny je příliš dlouhý.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali seznam zobrazovaných LDAP skupin neobsahuje nepovolené znaky.
+     *
+     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     */
+    private function isLdapGroupsValid() {
+      if ($this->ldapGroups !== ldap_escape($this->ldapGroups, '', LDAP_ESCAPE_FILTER)) {
+        throw new UserError('Seznam zobrazovaných LDAP skupin obsahuje nepovolené znaky.', MSG_ERROR);
       }
     }
 

@@ -37,7 +37,7 @@
   <div class="form-group">
     <label for="<?= $formPrefix ?>ldap-groups">Zobrazené LDAP skupiny příjemců v&nbsp;<a href="/portal/campaigns">kampaních</a> (pouze u&nbsp;oprávnění <span class="badge badge-danger">Administrátor</span> a&nbsp;<span class="badge badge-warning">Správce testů</span>):</label>
     <textarea class="form-control text-monospace" rows="2" id="<?= $formPrefix ?>ldap-groups" name="<?= $formPrefix ?>ldap-groups" maxlength="<?= $inputsMaxLengths['ldap-groups'] ?>"><?= $inputsValues['ldap-groups'] ?></textarea>
-    <small class="form-text text-muted">Jednotlivé skupiny musí být odděleny znakem <code><?= LDAP_GROUPS_DELIMITER ?></code>. Vstup tedy bude například ve formátu <code>civ<?= LDAP_GROUPS_DELIMITER ?>helps</code>.</small>
+    <small class="form-text text-muted">Jednotlivé skupiny musí být odděleny znakem <code><?= LDAP_GROUPS_DELIMITER ?></code>. Vstup tedy bude například ve formátu <code>oddeleni1<?= LDAP_GROUPS_DELIMITER ?>oddeleni2</code>.</small>
   </div>
 
   <div class="text-center">

@@ -3,7 +3,7 @@
 cd ../
 source .env
 
-read -r -p "Are you sure you want to reset Phishingator database? [y/Y] " response
+read -r -p "Are you sure you want to reset Phishingator ($ORG) database? [y/Y] " response
 
 if [[ $response =~ ^[Yy]$ ]]; then
   rm -rf phishingator-data/"$ORG"/database

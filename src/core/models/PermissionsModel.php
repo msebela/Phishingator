@@ -34,11 +34,11 @@
         }
       }
 
+      // Pokud se nepodaří získat informace o uživateli z LDAP.
       if (!$registrated) {
         Logger::error('Při registraci se nepodařilo načíst informace o uživateli z LDAP.', $identity);
 
-        // Pokud se nepodaří načíst informace o uživateli z LDAP, přesměrovat uživatele na úvodní stránku systému.
-        //header('Location: ' . WEB_URL);
+        echo 'Nepodařilo se získat informace o Vaší identitě. Kontaktujte, prosím, administrátora.';
         exit();
       }
     }
@@ -65,13 +65,13 @@
 
 
     /**
-     * Ověří, zdali je identita předaná z SSO z organizace, pro kterou byla instance nasazena.
+     * Ověří, zdali je identita získaná z federativního SSO z organizace, pro kterou byla instance nasazena.
      *
      * @param string $identity         Identita uživatele
      * @return bool                    TRUE pokud je uživatel z
      */
     private function isRemoteUserFromOrganization($identity) {
-      return get_domain_from_url(get_email_part($identity, 'domain')) == getenv('ORG_DOMAIN');
+      return get_domain_from_url('https://' . get_email_part($identity, 'domain')) == getenv('ORG_DOMAIN');
     }
 
 

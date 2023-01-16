@@ -520,7 +520,7 @@
           continue;
         }
 
-        /* Získání seznamu uživatelů ve skupině. */
+        // Získání seznamu uživatelů ve skupině.
         $usersInGroup = $ldapModel->getUsersInGroup($group);
 
         if ($usersInGroup != null) {

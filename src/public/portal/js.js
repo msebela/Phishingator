@@ -55,9 +55,19 @@ function insertEmails(textareaSelector) {
 
 function getCountOfEmails(emailsList, countLabel) {
   let list = document.querySelector(emailsList);
-  let count = document.querySelector(countLabel);
+  let countValidEmailsLabel = document.querySelector(countLabel);
 
-  count.innerHTML = ((list.value.length > 0) ? list.value.match(/\S+@\S+/g).length : 0);
+  let countValidEmails = 0;
+
+  if (list.value.length > 4) {
+    let validEmails = list.value.match(/[^\s@]+@[^\s@]+\.[^\s@]+/g);
+
+    if (validEmails) {
+      countValidEmails = validEmails.length;
+    }
+  }
+
+  countValidEmailsLabel.innerHTML = countValidEmails;
 }
 
 function markCheckboxes(cover = '') {
