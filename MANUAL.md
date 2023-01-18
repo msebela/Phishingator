@@ -10,7 +10,7 @@ Samotná uživatelská příručka je rozdělena na:
 
 1. [příručku pro běžné uživatele](#1-příručka-pro-uživatele) Phishingatoru,
 2. [příručku pro administrátory](#2-příručka-pro-administrátory), kteří budou ve Phishingatoru vytvářet nové phishingové kampaně, cvičné phishingové e-maily a podvodné stránky,
-3. [správu phishingatoru](#3-správa-phishingatoru).
+3. [správu Phishingatoru](#3-správa-phishingatoru).
 
 ## 1 Příručka pro uživatele
 
@@ -105,7 +105,6 @@ Pro přidání indicií k phishingovému e-mailu stačí v souhrnném seznamu v�
   * `%sender_name%` – pro označení jména odesílatele e-mailu
   * `%sender_email%` – pro označení e-mailu odesílatele
   * `%subject%` – pro označení předmětu e-mailu
-
 * **nadpis** – stručný nadpis indicie nebo název kategorie (např. podezřelé oslovení, překlepy apod.)
 * **popis** – nepovinný údaj obsahující podrobnější popis indicie
 
@@ -138,7 +137,7 @@ Po těchto krocích systém automaticky nad podvodnou stránkou (resp. konkrétn
 
 * využít možnosti náhledu podvodné stránky (v sekci *Podvodné stránky*), a ověřit tak její funkčnost
 * při pokusu o přístup na URL adresu podvodné stránky (bez jakýchkoliv parametrů), musí automaticky dojít k přesměrování na úvodní stránku aplikace Phishingator
-* voláním příkazu `apache2ctl -S` v terminálu lze získat informace o všech aktivních `VirtualHost` v Apache (tedy o všech podvodných stránkách) s tím, že výsledkem voláním příkazu je i informace o tom, zdali daná podvodná stránka běží na protokolu HTTP (80), nebo HTTPS (443)
+* voláním příkazu `apache2ctl -S` v terminálu lze získat informace o všech aktivních `VirtualHost` v Apache (tedy o všech podvodných stránkách)
 
 
 #### 2.4.3 Odstranění podvodné stránky
