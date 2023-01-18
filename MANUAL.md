@@ -9,7 +9,8 @@ Phishingator původně vznikl na [Západočeské univerzitě v Plzni](https://ww
 Samotná uživatelská příručka je rozdělena na:
 
 1. [příručku pro běžné uživatele](#1-příručka-pro-uživatele) Phishingatoru,
-2. [příručku pro administrátory](#2-příručka-pro-administrátory), kteří budou ve Phishingatoru vytvářet nové phishingové kampaně, cvičné phishingové e-maily a podvodné stránky.
+2. [příručku pro administrátory](#2-příručka-pro-administrátory), kteří budou ve Phishingatoru vytvářet nové phishingové kampaně, cvičné phishingové e-maily a podvodné stránky,
+3. [správu phishingatoru](#3-správa-phishingatoru).
 
 ## 1 Příručka pro uživatele
 
@@ -127,7 +128,7 @@ Postup pro založení nové podvodné stránky je následující:
 * přidat podvodnou stránku v sekci *Podvodné stránky* (v adresáři nastaveném v konfiguračním souboru aplikace – konstanta `PHISHING_WEBSITE_APACHE_SITES_DIR` – dojte k vytvoření nového konfiguračního souboru pro podvodnou stránku, který je určený pro webový server – ten dané podvodné stránce nastavuje konkrétní `DocumentRoot`, tedy adresář, kde je umístěna šablona (vzhled) podvodné stránky a další parametry požadované pro svázání stránky s aplikací Phishingator), přičemž vstupní pole formuláře jsou následující:
   * **název** – slouží k identifikaci v systému
   * **URL** – URL adresa, která bude doplňována do podvodných e-mailů místo proměnné `%url%` a tedy URL adresa, jejíž konkrétní A záznam musí být v DNS směrován na IP adresu webového serveru, kde běží systém Phishingator
-  * **šablona** – vzhled, který bude na dané podvodné stránce (přidání další šablony je popsáno v kapitole [Přidání nové šablony podvodné stránky](#244-přidání-nové-šablony-podvodné-stránky))
+  * **šablona** – vzhled, který bude na dané podvodné stránce (přidání další šablony je popsáno v kapitole [Přidání nové šablony podvodné stránky](#35-přidání-nové-šablony-podvodné-stránky))
   * **aktivovat podvodnou stránku na webovém serveru** – nastavení, zdali má dojít k aktivaci podvodné stránky na webovém serveru (v Apache), čímž bude umožněno podvodnou stránku využívat v kampaních (aktivace nových nebo deaktivace neaktivních/smazaných podvodných stránek probíhá automaticky do 5 min.)
 
 Po těchto krocích systém automaticky nad podvodnou stránkou (resp. konkrétní doménou/subdoménou) převezme kontrolu.
@@ -145,18 +146,6 @@ Po těchto krocích systém automaticky nad podvodnou stránkou (resp. konkrétn
 * smazat stránku v sekci *Podvodné stránky*
 
 Do 5 min. bude stránka automaticky deaktivována v nastavení webového serveru Apache.
-
-
-#### 2.4.4 Přidání nové šablony podvodné stránky
-
-Aby systém zachytával data zadaná do formuláře na podvodné stránce, je nutné, aby formulář splňoval následující podmínky:
-
-* formulář (HTML tag `<form>`) musí mít jako metodu odesílání nastaveno `method="post"` (povoleny jsou pouze POST požadavky)
-* vstupní pole pro zadání uživatelského jména musí obsahovat atribut `name="username"`
-* vstupní pole pro zadání hesla musí obsahovat atribut `name="password"`
-* ve formuláři musí existovat tlačítko obsahující atribut `type="submit"` sloužící pro odeslání formuláře (obvykle v rámci HTML tagu `<input>` nebo `<button>`)
-
-Informace o nové šabloně (především lokaci zdrojových souborů na webovém serveru) je poté nutné manuálně přidat do databázové tabulky `phg_websites_templates` a všechny její soubory umístit do nového adresáře v lokaci nastavené v `PHISHING_WEBSITE_APACHE_SITES_DIR` (ve výchozím stavu `/templates/websites`).
 
 
 
@@ -198,14 +187,112 @@ Formulář pro přidání nebo úpravu skupiny obsahuje následující vstupní 
     * jedná se pouze o seznam uživatelů (resp. LDAP skupin, ve kterých jsou zařazeni), aby tvůrce kampaně mohl intuitivně vybrat příjemce z konkrétního pracoviště, oddělení, fakulty apod.
 
 
-### 2.7 Konfigurace systému
-
-Řadu možností systému (jako např. parametry pro připojení k databázi, LDAP, výchozí nastavení uživatelů k dobrovolnému odebírání cvičných phishingových zpráv apod.) lze konfigurovat v rámci souboru `config.php`. Vzhledem k tomu, že je detailně komentován, stejně jako zdrojový kód aplikace, nebudou zde jednotlivé možnosti popisovány.
+## 3 Správa Phishingatoru
 
 
-### 2.8 Možné problémy
+### 3.1 Konfigurace Phishingatoru
 
-#### 2.8.1 Vyčištění fronty neodeslaných e-mailů
+Řadu možností Phishingatoru (jako např. parametry pro připojení k databázi, LDAP, rozmazání identit uživatelů, způsob anonymizace hesel apod.) lze konfigurovat v rámci souboru [`config.php`](src/config.php), resp. pomocí **Environment variables** (`.env`), ze kterých `config.php` čerpá. Možnosti konfigurace jsou popsány v komentářích v souboru `config.php`.
+
+
+### 3.2 Zálohování databáze
+
+Data z databáze Phishingatoru lze zálohovat pomocí skriptu [`backup-db.sh`](scripts/backup-db.sh), který vytvoří mysqldump databáze pro zvolenou instanci (organizaci). Je nutné, aby při zálohování běžel databázový kontejner `phishingator_database` dané organizace.
+
+Soubor se zálohou se vytvoří v adresáři `/data/<organizace>/database-dumps`.
+
+Příklad volání:
+
+```
+./scripts/backup-db.sh cesnet
+```
+
+
+### 3.3 Obnovení databáze
+
+Data do databáze Phishingatoru lze importovat pomocí skriptu [`restore-db.sh`](scripts/restore-db.sh), který importuje strukturu a data z mysqldump souboru pro zvolenou instanci (organizaci). Je nutné, aby při obnovení databáze běžel databázový kontejner `phishingator_database` dané organizace. 
+
+Skript očekává, že mysqldump soubor (ve formátu `sql.gz`) je umístěn v adresáři `/data/<organizace>/database-dumps/`.
+
+Příklad volání:
+
+```
+./scripts/restore-db.sh cesnet 2023-01-17-09-55-25.sql.gz
+```
+
+
+### 3.4 Odstranění databáze
+
+Databázové tabulky společně s uloženými daty lze smazat pomocí skriptu [`reset-db.sh`](scripts/reset-db.sh). Skript smaže obsah adresáře `/data/<organizace>/database/phishingator/`.
+
+Příklad volání:
+
+```
+./scripts/reset-db.sh cesnet
+```
+
+Při vypnutí Phishingatoru, smazání všech podadresářů v adresáři `/data/<organizace>/database/` a opětovném spuštění Phishingatoru, dojde k vytvoření struktury databáze a k importu základních dat.
+
+
+### 3.5 Přidání nové šablony podvodné stránky
+
+Novou šablonu podvodné stránky lze do Phishingatoru přidat pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh). Je nutné, aby při obnovení databáze běžel databázový kontejner `phishingator_database` dané organizace.
+
+Aby Phishingator zachytával data zadaná do formuláře na podvodné stránce, je nutné, aby šablona podvodné stránky splňovala následující podmínky:
+
+* vstupním souborem bude soubor `index.php` (může obsahovat přesměrování na jiný soubor)
+* formulář (HTML tag `<form>`) musí mít jako metodu odesílání nastaveno `method="post"` (povoleny jsou pouze POST požadavky)
+* vstupní pole pro zadání uživatelského jména musí obsahovat atribut `name="username"`
+* vstupní pole pro zadání hesla musí obsahovat atribut `name="password"`
+* ve formuláři musí existovat tlačítko obsahující atribut `type="submit"` sloužící pro odeslání formuláře (obvykle v rámci HTML tagu `<input>` nebo `<button>`)
+* pokud má formulář umožňovat zobrazení chybové hlášky (např. o nesprávných přihlašovacích údajích), musí být v souboru uvedena podmínka `<?php if ($message): ?> (...) <text chybové hlášky> (...) <?php endif; ?>`, která bude obalovat samotnou chybovou hlášku
+  * chybová hláška se zobrazí pouze tehdy, pokud administrátor během vytváření kampaně nastaví jako *akci po odeslání formuláře* tu, která obsahuje text *zobrazit chybovou hlášku*
+
+Příklad části zdrojového kódu podvodné šablony včetně použití chybové hlášky:
+
+```
+(...)
+<h1>Login</h1>
+
+<?php if ($message): ?>
+  <p>Invalid username or password.</p>
+<?php endif; ?>
+
+<form method="post">
+  <label for="username">Username</label>
+  <input type="text" name="username" id="username">
+
+  <label for="password">Password</label>
+  <input type="password" name="password" id="password">
+
+  <button type="submit">Login</button>
+</form>
+(...)
+```
+
+Součástí souborů podvodné šablony musí být její screenshot pojmenovaný `thumbnail.png` uložený v kořenovém adresáři šablony. Screenshot by měl být široký přesně `800 px` a na výšku by měl zabírat minimálně celý formulář. Screenshot je použit při zobrazování indicií k podvodné stránce.
+
+Typicky bude obsah adresáře podvodné šablony vypadat následovně:
+
+```
+– images
+  – logo.svg
+– index.php
+– style.css
+– thumbnail.png
+```
+
+Na závěr je nutné přidat šablonu do Phishingatoru pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh), který záznam o nové šabloně vloží do databáze (do tabulky `phg_websites_templates`) a zkopíruje soubory podvodné stránky do dané instance Phishingatoru.
+
+Příklad volání:
+
+```
+./scripts/add-website-template.sh cesnet "CESNET SSO" /root/cesnet-sso/
+```
+
+### 3.6 Možné problémy
+
+#### 3.6.1 Vyčištění fronty neodeslaných e-mailů
 
 Poštovní server pravděpodobně **zamítne** odeslání e-mailů, u kterých se nepodaří resolve adresy (domény, subdomény, ...), která je uvedena v poli odesílatele. Takové e-maily tedy nebudou odeslány, i když se ve Phishingatoru tváří, že odeslány byly (chybová hláška `Sender address rejected: Domain not found (in reply to RCPT TO command)` v souboru `/var/log/mail.log` a plná fronta napoví, že tomu tak není).
 Následně je třeba ručně smazat neodeslané e-maily z fronty a kampaň smazat (aby se ve frontě znovu neobjevily), postup kroků je tedy následující:

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+RETURN_CODE=1
+
 if [ $# -ne 1 ]; then
   echo "Creates backup file (dump) Phishingator database for specific instance (by organization name)."
   echo
@@ -17,4 +19,16 @@ else
   DB_DATABASE=$(docker exec "$CONTAINER_NAME" printenv DB_DATABASE)
 
   docker exec "$CONTAINER_NAME" /usr/bin/mysqldump -u"$DB_USERNAME" -p"$DB_PASSWORD" "$DB_DATABASE" -B | gzip > "$BACKUP_DIR"/"$BACKUP_FILENAME"
+
+  MESSAGE_DATETIME="$(date +"%Y-%m-%d %H-%M-%S")"
+  MESSAGE=": [$(basename "$0")]  - Backup file (dump) of Phishingator database for org. '$ORG'"
+
+  if [[ -s "$BACKUP_DIR"/"$BACKUP_FILENAME" && $(gunzip -c "$BACKUP_DIR"/"$BACKUP_FILENAME" | head -c1 | wc -c | xargs) -eq 1 ]]; then
+    echo "$MESSAGE_DATETIME [INFO ] $MESSAGE was successfully created."
+    RETURN_CODE=0
+  else
+    echo "$MESSAGE_DATETIME [ERROR] $MESSAGE failed."
+  fi
 fi
+
+exit $RETURN_CODE
