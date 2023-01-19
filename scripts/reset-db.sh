@@ -10,6 +10,6 @@ else
   read -r -p "Are you sure you want to reset Phishingator database: '$ORG' organization? [y/Y] " response
 
   if [[ $response =~ ^[Yy]$ ]]; then
-    rm -rf phishingator-data/"$ORG"/database/phishingator/*
+    rm -rf /phishingator-data/"$ORG"/database/phishingator/*
   fi
 fi

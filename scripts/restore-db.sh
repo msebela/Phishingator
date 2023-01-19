@@ -9,14 +9,14 @@ else
   ORG=$1
   CONTAINER_NAME="phishingator_database_$ORG"
 
-  BACKUP_FILE="phishingator-data/$ORG/database-dumps/$2"
+  BACKUP_FILE="/phishingator-data/$ORG/database-dumps/$2"
 
   read -r -p "Are you sure you want to restore Phishingator database (org. '$ORG') from file: '$BACKUP_FILE'? [y/Y] " response
 
   if [[ $response =~ ^[Yy]$ ]]; then
-    DB_USERNAME=$(docker exec "$CONTAINER_NAME" printenv DB_USERNAME)
-    DB_PASSWORD=$(docker exec "$CONTAINER_NAME" printenv DB_PASSWORD)
-    DB_DATABASE=$(docker exec "$CONTAINER_NAME" printenv DB_DATABASE)
+    DB_USERNAME=$(docker exec "$CONTAINER_NAME" printenv MYSQL_USER)
+    DB_PASSWORD=$(docker exec "$CONTAINER_NAME" printenv MYSQL_ROOT_PASSWORD)
+    DB_DATABASE=$(docker exec "$CONTAINER_NAME" printenv MYSQL_DATABASE)
 
     gunzip < "$BACKUP_FILE" | docker exec -i "$CONTAINER_NAME" /usr/bin/mysql -u"$DB_USERNAME" -p"$DB_PASSWORD" -D"$DB_DATABASE"
   fi

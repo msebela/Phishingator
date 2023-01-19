@@ -198,7 +198,7 @@ Formulář pro přidání nebo úpravu skupiny obsahuje následující vstupní 
 
 Data z databáze Phishingatoru lze zálohovat pomocí skriptu [`backup-db.sh`](scripts/backup-db.sh), který vytvoří mysqldump databáze pro zvolenou instanci (organizaci). Je nutné, aby při zálohování běžel databázový kontejner `phishingator_database` dané organizace.
 
-Soubor se zálohou se vytvoří v adresáři `/data/<organizace>/database-dumps`.
+Soubor se zálohou se vytvoří v adresáři `/phishingator-data/<organizace>/database-dumps`.
 
 Příklad volání:
 
@@ -211,7 +211,7 @@ Příklad volání:
 
 Data do databáze Phishingatoru lze importovat pomocí skriptu [`restore-db.sh`](scripts/restore-db.sh), který importuje strukturu a data z mysqldump souboru pro zvolenou instanci (organizaci). Je nutné, aby při obnovení databáze běžel databázový kontejner `phishingator_database` dané organizace. 
 
-Skript očekává, že mysqldump soubor (ve formátu `sql.gz`) je umístěn v adresáři `/data/<organizace>/database-dumps/`.
+Skript očekává, že mysqldump soubor (ve formátu `sql.gz`) je umístěn v adresáři `/phishingator-data/<organizace>/database-dumps/`.
 
 Příklad volání:
 
@@ -222,7 +222,7 @@ Příklad volání:
 
 ### 3.4 Odstranění databáze
 
-Databázové tabulky společně s uloženými daty lze smazat pomocí skriptu [`reset-db.sh`](scripts/reset-db.sh). Skript smaže obsah adresáře `/data/<organizace>/database/phishingator/`.
+Databázové tabulky společně s uloženými daty lze smazat pomocí skriptu [`reset-db.sh`](scripts/reset-db.sh). Skript smaže obsah adresáře `/phishingator-data/<organizace>/database/phishingator/`.
 
 Příklad volání:
 
@@ -230,7 +230,7 @@ Příklad volání:
 ./scripts/reset-db.sh cesnet
 ```
 
-Při vypnutí Phishingatoru, smazání všech podadresářů v adresáři `/data/<organizace>/database/` a opětovném spuštění Phishingatoru, dojde k vytvoření struktury databáze a k importu základních dat.
+Při vypnutí Phishingatoru, smazání všech podadresářů v adresáři `/phishingator-data/<organizace>/database/` a opětovném spuštění Phishingatoru, dojde k vytvoření struktury databáze a k importu základních dat.
 
 
 ### 3.5 Přidání nové šablony podvodné stránky

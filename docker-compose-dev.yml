@@ -37,6 +37,7 @@ services:
       - ./phishingator-data/${ORG}/database-dumps:/phishingator-dumps
       - ./docker/database:/docker-entrypoint-initdb.d:ro
     environment:
+      - MYSQL_USER=${DB_USERNAME}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE}
     ports:

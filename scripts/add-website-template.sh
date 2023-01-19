@@ -12,7 +12,7 @@ else
   ORG=$1
   CONTAINER_NAME="phishingator_database_$ORG"
 
-  TEMPLATES_HOST_PATH="phishingator-data/$ORG/websites-templates/websites"
+  TEMPLATES_HOST_PATH="/phishingator-data/$ORG/websites-templates/websites"
   COUNT_TEMPLATES=$(find "$TEMPLATES_HOST_PATH" -maxdepth 1 | wc -l)
 
   TEMPLATE_DIR_NAME="$((COUNT_TEMPLATES+1))-$(basename "$3")"
@@ -21,9 +21,9 @@ else
   read -r -p "Are you sure you want to add new fraudulent website template '$2' to Phishingator (org. '$ORG') from dir: '$3'? [y/Y] " response
 
   if [[ $response =~ ^[Yy]$ ]]; then
-    DB_USERNAME=$(docker exec "$CONTAINER_NAME" printenv DB_USERNAME)
-    DB_PASSWORD=$(docker exec "$CONTAINER_NAME" printenv DB_PASSWORD)
-    DB_DATABASE=$(docker exec "$CONTAINER_NAME" printenv DB_DATABASE)
+    DB_USERNAME=$(docker exec "$CONTAINER_NAME" printenv MYSQL_USER)
+    DB_PASSWORD=$(docker exec "$CONTAINER_NAME" printenv MYSQL_ROOT_PASSWORD)
+    DB_DATABASE=$(docker exec "$CONTAINER_NAME" printenv MYSQL_DATABASE)
 
     cp -R "$3" "$TEMPLATES_HOST_PATH"/"$TEMPLATE_DIR_NAME"
 
