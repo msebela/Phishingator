@@ -20,7 +20,7 @@ else
 
   docker exec "$CONTAINER_NAME" /usr/bin/mysqldump -u"$DB_USERNAME" -p"$DB_PASSWORD" "$DB_DATABASE" -B | gzip > "$BACKUP_DIR"/"$BACKUP_FILENAME"
 
-  MESSAGE_DATETIME="$(date +"%Y-%m-%d %H-%M-%S")"
+  MESSAGE_DATETIME="$(date +"%Y-%m-%d %H:%M:%S")"
   MESSAGE=": [$(basename "$0")]  - Backup file (dump) of Phishingator database for org. '$ORG'"
 
   if zgrep -q "INSERT INTO \`phg_websites_templates\`" "$BACKUP_DIR"/"$BACKUP_FILENAME"; then

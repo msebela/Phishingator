@@ -49,7 +49,7 @@
       // Pokud se uživatel chce účastnit a zároveň nastavil limit počtu e-mailů na nulu,
       // pak jdou tato dvě tvrzení proti sobě a účastnit se pravděpodobně nechce.
       if ($this->recieveEmail && $this->emailLimitCheckbox && is_null($this->emailLimit)) {
-        $this->recieveEmail = 0;
+        $this->recieveEmail = false;
         $this->emailLimit = NULL;
       }
 
@@ -60,7 +60,7 @@
       }
 
       return [
-        'recieve_email' => $this->recieveEmail,
+        'recieve_email' => (int) $this->recieveEmail,
         'email_limit' => $this->emailLimit
       ];
     }
