@@ -23,7 +23,7 @@ else
   MESSAGE_DATETIME="$(date +"%Y-%m-%d %H-%M-%S")"
   MESSAGE=": [$(basename "$0")]  - Backup file (dump) of Phishingator database for org. '$ORG'"
 
-  if [[ -s "$BACKUP_DIR"/"$BACKUP_FILENAME" && $(gunzip -c "$BACKUP_DIR"/"$BACKUP_FILENAME" | head -c1 | wc -c | xargs) -eq 1 ]]; then
+  if zgrep -q "INSERT INTO \`phg_websites_templates\`" "$BACKUP_DIR"/"$BACKUP_FILENAME"; then
     echo "$MESSAGE_DATETIME [INFO ] $MESSAGE was successfully created."
     RETURN_CODE=0
   else

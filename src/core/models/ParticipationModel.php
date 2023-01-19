@@ -1,20 +1,19 @@
 <?php
   /**
-   * Třída řešící přihlašování a odhlašování uživatelů týkající se přijímání
-   * cvičných podvodných zpráv.
+   * Třída řešící přihlašování a odhlašování uživatelů k odebírání cvičných podvodných zpráv.
    *
    * @author Martin Šebela
    */
   class ParticipationModel extends FormModel {
     /**
-     * @var int         Promměná uchovávající informaci o tom, zdali je uživatel dobrovolně přihlášen k odebírání
-     *                  cvičných phishingových zpráv (1 pokud ano, jinak 0).
+     * @var bool        Stav o tom, zdali je uživatel dobrovolně přihlášen k odebírání
+     *                  cvičných phishingových zpráv (TRUE pokud ano, jinak FALSE).
      */
     protected $recieveEmail;
 
     /**
-     * @var int         Proměnná uchovávající stav o tom, zdali uživatel zaškrtl, že si přeje nastavit limit
-     *                  pro příjem cvičných podvodných zpráv (1 pokud ano, jinak 0).
+     * @var bool        Stav o tom, zdali uživatel zaškrtl, že si přeje nastavit limit
+     *                  pro příjem cvičných podvodných zpráv (TRUE pokud ano, jinak FALSE).
      */
     protected $emailLimitCheckbox;
 
@@ -33,8 +32,8 @@
     public function load($data) {
       parent::load($data);
 
-      $this->recieveEmail = (empty($this->recieveEmail) ? 0 : 1);
-      $this->emailLimitCheckbox = (empty($this->emailLimitCheckbox) ? 0 : 1);
+      $this->recieveEmail = !empty($this->recieveEmail);
+      $this->emailLimitCheckbox = !empty($this->emailLimitCheckbox);
     }
 
 
@@ -44,19 +43,19 @@
      * @return array                   Pole obsahující data o nastavení odebírání cvičných podvodných zpráv.
      */
     private function makeParticipation() {
-      /* Pokud nebyl vyplněn limit, tak se do databáze vloží NULL (nenastaven). */
+      // Pokud nebyl vyplněn limit, tak se do databáze vloží NULL (nenastaven).
       $this->emailLimit = (empty($this->emailLimit) ? NULL : $this->emailLimit);
 
-      /* Pokud uživatel nastavil početní limit e-mailů na nulu a zároveň se chce účastnit,
-         pak jdou tyto dvě tvrzení proti sobě a účastnit se pravděpodobně nechce. */
-      if ($this->recieveEmail == 1 && $this->emailLimitCheckbox == 1 && is_null($this->emailLimit)) {
+      // Pokud se uživatel chce účastnit a zároveň nastavil limit počtu e-mailů na nulu,
+      // pak jdou tato dvě tvrzení proti sobě a účastnit se pravděpodobně nechce.
+      if ($this->recieveEmail && $this->emailLimitCheckbox && is_null($this->emailLimit)) {
         $this->recieveEmail = 0;
         $this->emailLimit = NULL;
       }
 
-      /* Pokud uživatel nastavil početní limit e-mailů, ale související checkbox odškrtl,
-         tak pravděpodobně limit neplatí, nastavíme jej tedy na NULL (nenastaven). */
-      if ($this->emailLimitCheckbox == 0 && $this->emailLimit > 0) {
+      // Pokud uživatel nastavil limit počtu e-mailů, ale související checkbox odškrtl,
+      // tak pravděpodobně limit neplatí, nastavíme jej tedy na NULL (nenastaven).
+      if (!$this->emailLimitCheckbox && $this->emailLimit > 0) {
         $this->emailLimit = NULL;
       }
 
@@ -189,7 +188,7 @@
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     private function isRecieveAndLimitValid() {
-      if ($this->recieveEmail == 0 && $this->emailLimit) {
+      if (!$this->recieveEmail && $this->emailLimitCheckbox) {
         throw new UserError('Nelze nastavit zbývající počet cvičných phishingových zpráv, když není uživatel zapojen do dobrovolného programu.', MSG_ERROR);
       }
     }

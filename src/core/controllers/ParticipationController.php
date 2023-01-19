@@ -1,6 +1,6 @@
 <?php
   /**
-   * Třída zpracovává uživatelský vstup týkající úpravy nastavení dobrovolného přijímání cvičných
+   * Třída zpracovává uživatelský vstup týkající se nastavení dobrovolného přijímání cvičných
    * phishingových zpráv, na základě kterého volá odpovídající metody, přičemž svůj výstup
    * předává další vrstvě pro výpis.
    *
@@ -48,11 +48,9 @@
     private function processParticipation($model, $formData) {
       $model->initForm($formData['inputsNames'], $formData['formPrefix'], $formData['dbTable']);
 
-      $this->setView('form-participation');
-
-      // ID právě přihlášeného uživatele.
       $idUser = PermissionsModel::getUserId();
 
+      $this->setView('form-participation');
       $this->setViewData('formPrefix', $formData['formPrefix']);
       $this->setViewData('participation', $model->getParticipation($idUser));
 

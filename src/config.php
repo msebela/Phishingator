@@ -129,8 +129,11 @@
   /** Verze systému. */
   define('WEB_VERSION', '1.2');
 
-  /** URL, na které systém běží (slouží pro přesměrování v rámci systému). */
+  /** URL, na které Phishingator běží (slouží pro přesměrování v rámci systému). */
   define('WEB_URL', getenv('WEB_URL'));
+
+  /** URL, která slouží jako úvodní stránka a rozcestník Phishingatoru. */
+  define('WEB_BASE_URL', 'https://phishingator.cesnet.cz');
 
 
 

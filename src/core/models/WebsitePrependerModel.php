@@ -286,7 +286,7 @@
           $args[] = self::getClientIp();
           Logger::warning('Snaha o nepovolený přístup (s neplatnými argumenty) na podvodnou stránku.', $args);
 
-          header('Location: ' . WEB_URL);
+          header('Location: ' . WEB_BASE_URL);
           exit();
         }
 
@@ -300,7 +300,7 @@
           $args[] = self::getClientIp();
           Logger::warning('Snaha o nepovolený přístup na podvodnou stránku.', $args);
 
-          header('Location: ' . WEB_URL);
+          header('Location: ' . WEB_BASE_URL);
           exit();
         }
 
@@ -322,7 +322,8 @@
 
         // Vykonání akce, ke které má dojít po odeslání formuláře.
         if (!empty($_POST)) {
-          $this->processForm($campaignModel->getWebsiteAction($campaign['id_onsubmit']), $args, $credentialsResult);
+          $action = $campaignModel->getWebsiteAction($campaign['id_onsubmit']);
+          $this->processForm($action['id_onsubmit'], $args, $credentialsResult);
         }
       }
       // Náhled podvodné stránky pro administrátory a správce testů.
@@ -332,7 +333,7 @@
       else {
         Logger::warning('Snaha o nepovolený přístup (bez argumentů) na podvodnou stránku.', self::getClientIp());
 
-        header('Location: ' . WEB_URL);
+        header('Location: ' . WEB_BASE_URL);
         exit();
       }
     }
