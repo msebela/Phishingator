@@ -85,6 +85,8 @@
      * Vypíše obsah nápovědy určenou pro administátory, kteří budou připravovat phishingové kampaně.
      */
     private function setAdminHelp() {
+      $this->checkPermission(PERMISSION_TEST_MANAGER);
+
       $this->setTitle('Jak připravit phishing');
       $this->setView('help-principles-phishing');
 

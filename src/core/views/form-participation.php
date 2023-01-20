@@ -5,13 +5,13 @@
 
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-lg-11">
+      <div class="col-lg-12">
         <div class="form-group mb-4">
           <div class="custom-control custom-checkbox my-1 mr-sm-2">
             <input type="checkbox" class="custom-control-input" id="<?= $formPrefix ?>recieve-email" name="<?= $formPrefix ?>recieve-email"<?= (($inputsValues['recieve-email']) ? ' checked' : ''); ?>>
             <label class="custom-control-label h5 font-weight-bold" for="<?= $formPrefix ?>recieve-email">Ano, chci se dobrovolně přihlásit k&nbsp;odebírání cvičných phishingových zpráv</label>
             <small class="form-text text-muted">
-              To znamená, že několikrát do roka do mé e-mailové schránky dorazí e-mail, který bude obsahovat typické znaky phishingu a&nbsp;sociálního inženýrství. Na rozdíl od toho reálného mi ovšem ten cvičný nic neprovede ani neukradne.
+              To znamená, že několikrát do roka do mé e-mailové schránky dorazí e-mail, který bude obsahovat typické znaky phishingu a&nbsp;sociálního inženýrství. Na rozdíl od toho reálného mi ovšem ten cvičný nic neprovede ani neukradne, ale upozorní mě na hrozbu phishingu a&nbsp;na aktuální triky útočníků.
             </small>
           </div>
         </div>

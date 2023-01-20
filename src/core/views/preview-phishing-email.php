@@ -1,7 +1,7 @@
 <hr>
 
-<div class="container">
-  <div class="row mb-3 mb-sm-1">
+<div class="container email-preview">
+  <div class="row mb-3 mb-sm-2">
     <div class="col-sm-3 offset-xl-1 text-sm-right">
       Od:
     </div>
@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <div class="row mb-3 mb-sm-2">
+  <div class="row mb-3 mb-sm-3">
     <div class="col-sm-3 offset-xl-1 text-sm-right">
       Komu:
     </div>

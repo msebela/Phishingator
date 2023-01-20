@@ -339,6 +339,16 @@ form.active .form-row {
   box-shadow: 0 0 5px 0 rgba(255, 0, 0, 4);
 }
 
+.email-preview {
+  .text-monospace {
+    font-size: 1rem;
+  }
+
+  .variable {
+    background: #ffff00;
+  }
+}
+
 
 // SECTION: USERS
 .pagination select {

@@ -6,14 +6,14 @@
       <p class="par-intro"><strong>Kdyby</strong> se jednalo o&nbsp;<strong>skutečný phishing</strong>, <strong>útočníci</strong> by v&nbsp;tuto chvíli již velmi pravděpodobně <strong>znali údaje</strong>, které jste vyplnili do formuláře na <strong>podvodné stránce</strong>.</p>
       <?php endif; ?>
       <?php if ($volunteer == 1): ?>
-      <p class="par-intro"><strong>Děkujeme</strong>, že máte zájem <strong>vzdělávat se</strong> v&nbsp;oblasti <strong>phishingu</strong>. Jakékoliv <strong>změny</strong> včetně nastavení <strong>limitu cvičných e-mailů</strong> můžete provést po <a href="/">přihlášení</a> do Phishingatoru.</p>
+      <p class="par-intro"><strong>Děkujeme</strong>, že máte zájem <strong>vzdělávat se</strong> v&nbsp;oblasti <strong>phishingu</strong>. Jakékoliv <strong>změny</strong> včetně nastavení <strong>limitu cvičných e-mailů</strong> můžete provést po <a href="/portal">přihlášení</a> do Phishingatoru.</p>
       <?php else: ?>
-      <p class="par-intro">Využijte <strong>projektu</strong> <a href="/">Phishingator</a> a&nbsp;<strong><a href="/">přihlaste se</a></strong> k&nbsp;odebírání <strong>cvičných</strong> podvodných e-mailů, které Vám názorně ukáží, <strong>na co se v&nbsp;e-mailu zaměřit</strong> a&nbsp;<strong>jak rozpoznat a&nbsp;nenaletět na opravdový phishing</strong>.</p>
+      <p class="par-intro">Využijte <strong>projektu</strong> <a href="<?= WEB_BASE_URL ?>">Phishingator</a> a&nbsp;<strong><a href="<?= WEB_BASE_URL ?>">přihlaste se</a></strong> k&nbsp;odebírání <strong>cvičných</strong> podvodných e-mailů, které Vám názorně ukáží, <strong>na co se v&nbsp;e-mailu zaměřit</strong> a&nbsp;<strong>jak rozpoznat a&nbsp;nenaletět na opravdový phishing</strong>.</p>
       <?php endif; ?>
     </div>
 
     <div class="col-md-5 col-lg-4 mb-3 mb-md-0 d-flex align-items-center justify-content-end">
-      <a href="/" class="btn btn-primary with-icon" role="button">
+      <a href="<?= WEB_BASE_URL ?>" class="btn btn-primary with-icon" role="button">
         Více informací&hellip;
       </a>
     </div>
@@ -163,14 +163,16 @@
   <div class="row">
     <div class="col">
       <h3>Důležité informace</h3>
-      <ul class="mb-5">
+      <ul class="mb-lg-5">
         <li>Zadané heslo nebylo <strong>nikde uloženo</strong>. Jestli nám však nevěříte, změňte si ho standardní cestou.</li>
         <li>Praktické phishingové testy probíhají ve spolupráci s&nbsp;Vaším IT oddělením.</li>
       </ul>
     </div>
+
+    <div class="col-lg-3 footer-logo">
+      <a href="https://www.cesnet.cz" target="_blank">
+        <img src="/img/logo-cesnet.svg" alt="Logo sdružení CESNET, z. s. p. o.">
+      </a>
+    </div>
   </div>
 </div>
-
-<footer class="container text-right">
-  <p>&copy;&nbsp;Martin Šebela, 2019&ndash;2022</p>
-</footer>

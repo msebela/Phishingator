@@ -24,16 +24,16 @@
       $this->controller = null;
 
       $this->existsControllers = [
-        'public-homepage' => 'PublicHomepageController',
-        'campaigns' => 'CampaignsController',
-        'phishing-emails' => 'PhishingEmailsController',
-        'phishing-websites' => 'PhishingWebsitesController',
-        'users' => 'UsersController',
-        'user-groups' => 'UserGroupsController',
-        'stats' => 'StatsController',
-        'my-participation' => 'ParticipationController',
+        'public-homepage'          => 'PublicHomepageController',
+        'campaigns'                => 'CampaignsController',
+        'phishing-emails'          => 'PhishingEmailsController',
+        'phishing-websites'        => 'PhishingWebsitesController',
+        'users'                    => 'UsersController',
+        'user-groups'              => 'UserGroupsController',
+        'stats'                    => 'StatsController',
+        'my-participation'         => 'ParticipationController',
         'recieved-phishing-emails' => 'RecievedEmailsController',
-        'help' => 'HelpController'
+        'help'                     => 'HelpController'
       ];
     }
 
@@ -117,21 +117,26 @@
 
         $this->setViewData('html_title', $this->controller->getTitle());
 
-        if ($public == false) {
+        $currentSection = $_GET['section'] ?? '';
+
+        if (!$public) {
           $this->setViewData('menu', $this->getMenu());
+          $this->setViewData('rolesMenu', $this->getRolesMenu());
+
+          $this->setViewData('currentSection', $currentSection);
+          $this->setViewData('currentAction', $_GET['action'] ?? '');
+
           $this->setViewData('messages', $this->getMessages());
 
           $this->setViewData('userPermission', PermissionsModel::getUserPermission());
           $this->setViewData('userRole', PermissionsModel::getUserRole());
           $this->setViewData('userRoleText', PermissionsModel::getUserRoleText());
+          $this->setViewData('userRoleColor', UserGroupsModel::getColorGroupRole(PermissionsModel::getUserRole()));
 
           $this->setView('wrapper');
         }
         else {
-          $username = PermissionsModel::getUserName();
-
-          $this->setViewData('username', $username);
-          $this->setViewData('phishingPage', (isset($_GET['section']) && $_GET['section'] == ACT_PHISHING_TEST));
+          $this->setViewData('phishingPage', $currentSection == ACT_PHISHING_TEST);
 
           $this->setView('public/wrapper');
         }
@@ -140,7 +145,7 @@
 
 
     /**
-     * Změní roli právě přihlášeného uživatele a přesměruje ho na úvodní stránky systému.
+     * Změní roli právě přihlášeného uživatele a přesměruje ho na úvodní stránku Phishingatoru.
      *
      * @param string $role             Název požadované role
      */
@@ -152,12 +157,12 @@
 
 
     /**
-     * Odhlásí uživatele ze systému a přesměruje ho na úvodní stránku projektu.
+     * Odhlásí uživatele z Phishingatoru a přesměruje ho na úvodní stránku projektu.
      */
     private function logout() {
       PermissionsModel::logout();
 
-      header('Location: https://phishingator.cesnet.cz');
+      header('Location: ' . WEB_BASE_URL);
       exit();
     }
   }

@@ -7,4 +7,4 @@
     </a>
   </div>
 </div>
-<p>Pro dobrovolné zapojení do programu nebo naopak odhlášení z&nbsp;programu stačí upravit možnosti v&nbsp;této sekci. Podrobnější informace jsou k&nbsp;dispozici v&nbsp;<a href="<?= $helpLink ?>" target="_blank">nápovědě</a>.</p>
+<p>Pro dobrovolné odebírání cvičného phishingu z&nbsp;Phishingatoru nebo naopak pro jeho zrušení stačí upravit volby v&nbsp;této sekci.</p>

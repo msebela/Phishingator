@@ -209,7 +209,7 @@
     /**
      * Vrátí seznam systémových zpráv pro uživalele.
      *
-     * @return array                   Pole systémových zpráv.
+     * @return array                   Pole systémových zpráv
      */
     public static function getMessages() {
       if (isset($_SESSION['messages'])) {
@@ -226,35 +226,56 @@
     /**
      * Vrátí možnosti dostupné v menu v závislosti na právě zvolené roli uživatele.
      *
-     * @return array|null              Položky menu nebo NULL při neexistující roli
+     * @return array                   Menu s položkami
      */
     public function getMenu() {
-      $userRole = PermissionsModel::getUserRole();
-
       $menu = [
-        'Úvodní stránka' => ['minRole' => PERMISSION_USER, 'url' => '', 'icon' => 'home'],
-        'Kampaně' => ['minRole' => PERMISSION_TEST_MANAGER, 'url' => 'campaigns', 'icon' => 'layers'],
-        'Podvodné e-maily' => ['minRole' => PERMISSION_TEST_MANAGER, 'url' => 'phishing-emails', 'icon' => 'mail'],
-        'Podvodné stránky' => ['minRole' => PERMISSION_ADMIN, 'url' => 'phishing-websites', 'icon' => 'link'],
-        'Uživatelé' => ['minRole' => PERMISSION_ADMIN, 'url' => 'users', 'icon' => 'user'],
-        'Skupiny' => ['minRole' => PERMISSION_ADMIN, 'url' => 'user-groups', 'icon' => 'users'],
-        'Roční statistiky' => ['minRole' => PERMISSION_ADMIN, 'url' => 'stats', 'icon' => 'bar-chart-2'],
-        'Moje účast v&nbsp;programu' => ['minRole' => PERMISSION_USER, 'maxRole' => PERMISSION_USER, 'url' => 'my-participation', 'icon' => 'activity'],
+        'Úvodní stránka' =>              ['minRole' => PERMISSION_USER, 'url' => '', 'icon' => 'home'],
+        'Kampaně' =>                     ['minRole' => PERMISSION_TEST_MANAGER, 'url' => 'campaigns', 'icon' => 'layers'],
+        'Podvodné e-maily' =>            ['minRole' => PERMISSION_TEST_MANAGER, 'url' => 'phishing-emails', 'icon' => 'mail'],
+        'Podvodné stránky' =>            ['minRole' => PERMISSION_ADMIN, 'url' => 'phishing-websites', 'icon' => 'link'],
+        'Uživatelé' =>                   ['minRole' => PERMISSION_ADMIN, 'url' => 'users', 'icon' => 'user'],
+        'Skupiny' =>                     ['minRole' => PERMISSION_ADMIN, 'url' => 'user-groups', 'icon' => 'users'],
+        'Roční statistiky' =>            ['minRole' => PERMISSION_ADMIN, 'url' => 'stats', 'icon' => 'bar-chart-2'],
+        'Moje účast v&nbsp;programu' =>  ['minRole' => PERMISSION_USER, 'maxRole' => PERMISSION_USER, 'url' => 'my-participation', 'icon' => 'activity'],
         'Přijaté phishingové e-maily' => ['minRole' => PERMISSION_USER, 'maxRole' => PERMISSION_USER, 'url' => 'recieved-phishing-emails', 'icon' => 'mail']
       ];
 
-      if ($userRole !== null) {
-        foreach ($menu as $key => $item) {
-          // Odstranění těch položek menu, ke kterým by uživatel podle své role neměl mít přístup.
-          if ($item['minRole'] < $userRole || (isset($item['maxRole']) && $item['maxRole'] > $userRole)) {
-            unset($menu[$key]);
-          }
-        }
+      return $this->removeUnavailableMenuItems($menu, PermissionsModel::getUserRole());
+    }
 
-        return $menu;
+
+    /**
+     * Vrátí možnosti dostupné v menu s rolemi v závislosti na právě zvolené roli uživatele.
+     *
+     * @return array                   Menu s rolemi
+     */
+    public function getRolesMenu() {
+      $menu = [
+        PERMISSION_ADMIN =>        ['minRole' => PERMISSION_ADMIN, 'url' => PERMISSION_ADMIN_URL, 'name' => PERMISSION_ADMIN_TEXT],
+        PERMISSION_TEST_MANAGER => ['minRole' => PERMISSION_TEST_MANAGER, 'url' => PERMISSION_TEST_MANAGER_URL, 'name' => PERMISSION_TEST_MANAGER_TEXT],
+        PERMISSION_USER =>         ['minRole' => PERMISSION_USER, 'url' => PERMISSION_USER_URL, 'name' => PERMISSION_USER_TEXT]
+      ];
+
+      return $this->removeUnavailableMenuItems($menu, PermissionsModel::getUserPermission());
+    }
+
+
+    /**
+     * Odstraní z menu položky, ke kterým by uživatel podle své role neměl mít přístup.
+     *
+     * @param array $menu              Menu se všemi položkami
+     * @param int $minRole             Minimální požadovaná role
+     * @return array                   Menu bez položek, ke kterým by uživatel neměl mít přístup
+     */
+    private function removeUnavailableMenuItems($menu, $minRole) {
+      foreach ($menu as $key => $item) {
+        if ($item['minRole'] < $minRole || (isset($item['maxRole']) && $item['maxRole'] > $minRole)) {
+          unset($menu[$key]);
+        }
       }
 
-      return null;
+      return $menu;
     }
 
 

@@ -8,7 +8,7 @@
   </div>
 </div>
 
-<p>Tato sekce zobrazuje automaticky vygenerovanou, souhrnnou statistiku v&nbsp;jednotlivých letech. Statistika začíná rokem <?= $statsStartYear ?>, kdy došlo k&nbsp;nasazení systému <i><?= WEB_HTML_BASE_TITLE ?></i>.</p>
+<p>Tato sekce zobrazuje automaticky vygenerovanou, souhrnnou statistiku v&nbsp;jednotlivých letech. Statistika <strong>začíná rokem <?= $statsStartYear ?></strong>, kdy došlo k&nbsp;nasazení systému <i><?= WEB_HTML_BASE_TITLE ?></i>.</p>
 
 <?php for ($year = date('Y'); $year >= $statsStartYear; $year--): ?>
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -16,7 +16,6 @@
 </div>
 
 <div class="card-group cards-homepage pb-2 mb-3">
-  <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
   <div class="card bg-light text-center">
     <a href="/portal/campaigns">
       <div class="card-body">
@@ -71,41 +70,18 @@
       </div>
     </a>
   </div>
-  <?php elseif (PermissionsModel::getUserRole() == PERMISSION_TEST_MANAGER): ?>
-  <?php else: ?>
-  <div class="card bg-light text-center">
-    <a href="/portal/recieved-phishing-emails">
-      <div class="card-body">
-        <h4 class="card-title mb-0">
-          <span class="badge-pill badge-dark py-1"><?= $countRecievedEmails ?></span><br>
-          <?= $countRecievedEmailsText ?>
-        </h4>
-      </div>
-    </a>
-  </div>
-
-  <div class="card bg-light text-center">
-    <div class="card-body">
-      <h4 class="card-title mb-0">
-        <span class="badge-pill badge-dark py-1"><?= $countSuccessRate ?>%</span><br>
-        úspěšnost v&nbsp;odhalování phishingu
-      </h4>
-    </div>
-  </div>
-  <?php endif; ?>
 </div>
 
 <div class="d-flex flex-wrap justify-content-around mt-5">
-<?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
   <div class="chart-wrapper">
-    <h3>Konečné akce uživatelů v&nbsp;kampaních</h3>
-    <p>V&nbsp;potaz se berou všechna nasbíraná data, přičemž přednost má ta vážnější akce, kterou mohl uživatel v&nbsp;každé z&nbsp;kampaní udělat (podle pořadí legendy).</p>
+    <h3>Reakce uživatelů na cvičný phishing</h3>
+    <p>Konečné reakce uživatelů na všechny phishingové kampaně v&nbsp;roce <?= $year ?>.</p>
     <canvas class="my-4" id="chart-end-actions-<?= $year ?>"></canvas>
   </div>
 
   <div class="chart-wrapper">
-    <h3>Konečné akce v&nbsp;kampaních dle skupiny [%]</h3>
-    <p>Data se získávají stejným způsobem jako předchozí graf s&nbsp;tím rozdílem, že vše je rozděleno do sloupců symbolizujících skupinu, do které spadá e-mail příjemce.</p>
+    <h3>Reakce uživatelů dle oddělení [%]</h3>
+    <p>Konečné reakce uživatelů podle oddělení na všechny phishingové kampaně v&nbsp;roce <?= $year ?>.</p>
     <div class="table-responsive">
       <canvas class="my-4" id="chart-end-actions-groups-<?= $year ?>"></canvas>
     </div>
@@ -115,28 +91,13 @@
     <h3>Noví dobrovolníci</h3>
     <canvas class="my-4" id="chart-volunteers-<?= $year ?>"></canvas>
   </div>
-<?php elseif (PermissionsModel::getUserRole() == PERMISSION_TEST_MANAGER): ?>
-  <div class="chart-wrapper">
-    <h3>Konečné akce uživatelů v&nbsp;kampaních, ke kterým mám oprávnění</h3>
-    <p>V&nbsp;potaz se berou všechna nasbíraná data, přičemž přednost má ta vážnější akce, kterou mohl uživatel v&nbsp;každé z&nbsp;kampaní udělat (podle pořadí legendy).</p>
-    <canvas class="my-4" id="chart-end-actions-<?= $year ?>"></canvas>
-  </div>
-<?php else: ?>
-  <div class="chart-wrapper">
-    <h3>Moje souhrnná úspěšnost v&nbsp;kampaních</h3>
-    <p>V&nbsp;potaz se berou všechna nasbíraná data, přičemž přednost má ta vážnější akce, kterou mohl uživatel v&nbsp;každé z&nbsp;kampaní udělat (podle pořadí legendy).</p>
-    <canvas class="my-4" id="chart-end-actions-<?= $year ?>"></canvas>
-  </div>
-<?php endif; ?>
 </div>
 <?php endfor; ?>
 
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.1.2"></script>
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0"></script>
 <script>
-  <?php
-    for ($year = date('Y'); $year >= $statsStartYear; $year--):
-  ?>
+  <?php for ($year = date('Y'); $year >= $statsStartYear; $year--): ?>
   let chartEndActions<?= $year ?> = new Chart(document.getElementById('chart-end-actions-<?= $year ?>'), {
     plugins: [ChartDataLabels],
     type: 'doughnut',

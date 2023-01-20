@@ -17,6 +17,8 @@
      * @param array $arguments         Uživatelský vstup
      */
     public function process($arguments) {
+      $this->checkPermission(PERMISSION_ADMIN);
+
       $this->setTitle('Roční statistiky');
       $this->setView('stats');
 

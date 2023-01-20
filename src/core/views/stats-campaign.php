@@ -98,7 +98,7 @@
   </div>
 
   <div class="chart-wrapper">
-    <h4>Konečné akce v&nbsp;kampani dle skupiny</h4>
+    <h4>Konečné akce v&nbsp;kampani dle oddělení</h4>
     <div class="table-responsive">
       <canvas class="mt-4" id="campaign-actions-bar-chart"></canvas>
     </div>

@@ -19,21 +19,21 @@
         <td>
           <abbr title="Pořadí, v jakém byl cvičný phishing odeslán" class="initialism"><?= (count($phishingEmails) - $i) ?></abbr>
         </td>
-        <td><?= $phishingEmail['subject'] ?></td>
-        <td class="font-italic"><?= $phishingEmail['sender_name'] ?></td>
+        <td class="minw-15-rem"><?= $phishingEmail['subject'] ?></td>
+        <td class="minw-10-rem font-italic"><?= $phishingEmail['sender_name'] ?></td>
         <td>
           <code><?= $phishingEmail['sender_email'] ?></code>
         </td>
         <td data-sort="<?= $phishingEmail['date_sent'] ?>"><?= $phishingEmail['date_sent_formatted'] ?></td>
-        <td>
+        <td class="minw-10-rem">
           <span class="badge badge-<?= $phishingEmail['user_state']['css_color_class'] ?>">
             <?= $phishingEmail['user_state']['name'] ?>
           </span>
         </td>
         <td>
-          <a href="/portal/<?= $urlSection . '/' . ACT_PREVIEW . (($i > 0) ? '?page=' . $i : '') ?>" class="btn btn-primary btn-sm" role="button">
+          <a href="<?= WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $phishingEmail['code'] ?>" target="_blank" class="btn btn-info btn-sm" role="button" title="Otevře vzdělávací stránku se zobrazenými indiciemi">
             <span data-feather="eye"></span>
-            Detaily
+            Zobrazit
           </a>
         </td>
       </tr>
@@ -51,15 +51,13 @@
 <?php else: ?>
 <hr>
 
-<div class="container">
-  <div class="alert alert-with-icon alert-success" role="alert">
-    <div class="alert-icon pr-1">
-      <span data-feather="send"></span>
-    </div>
-    <div>
-      <h4 class="alert-heading">Zatím žádný cvičný phishing</h4>
-      <p>Systém Vám zatím žádný cvičný phishing neposlal, ale pokud jste přihlášeni k&nbsp;jeho odebírání v&nbsp;sekci <a href="/portal/my-participation" class="alert-link">Moje účast v&nbsp;programu</a>, tak určitě někdy dorazí a&nbsp;právě tady jej pak vždy zpětně uvidíte včetně popisu, jak se dal poznat.</p>
-    </div>
+<div class="alert alert-with-icon alert-success" role="alert">
+  <div class="alert-icon pr-1">
+    <span data-feather="send"></span>
+  </div>
+  <div>
+    <h4 class="alert-heading">Zatím žádný cvičný phishing</h4>
+    <p>Phishingator Vám zatím žádný cvičný phishing neposlal, ale pokud jste přihlášeni k&nbsp;jeho odebírání v&nbsp;sekci <a href="/portal/my-participation" class="alert-link">Moje účast v&nbsp;programu</a>, tak určitě někdy dorazí a&nbsp;právě tady jej pak vždy zpětně uvidíte včetně popisu, jak se dal poznat.</p>
   </div>
 </div>
 <?php endif; ?>

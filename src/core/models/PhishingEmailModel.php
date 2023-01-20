@@ -244,9 +244,8 @@
     private static function markVariablesInEmailBody($body) {
       $variables = self::getEmailBodyVariables();
 
-      /* Označení všech proměnných HTML tagem. */
       foreach ($variables as $variable) {
-        $body = str_replace($variable, '<code>' . $variable . '</code>', $body);
+        $body = str_replace($variable, '<span class="variable">' . $variable . '</span>', $body);
       }
 
       return $body;

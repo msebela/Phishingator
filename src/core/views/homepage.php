@@ -10,7 +10,11 @@
 
 <p>Vítejte v&nbsp;systému pro <strong>rozesílání cvičných phishingových zpráv</strong>.</p>
 <?php if (PermissionsModel::getUserPermission() == PERMISSION_ADMIN || PermissionsModel::getUserPermission() == PERMISSION_TEST_MANAGER): ?>
-  <p><strong>Menu</strong>, které máte k&nbsp;dispozici, je generováno v&nbsp;závislosti na tom, <strong>jakou roli</strong> máte právě nastavenou (viz tlačítko <span class="badge badge-info">Změnit roli</span> v&nbsp;<strong>pravé horní části</strong> obrazovky).</p>
+  <div class="alert alert-info" role="alert">
+
+
+  <strong>Menu</strong>, které máte k&nbsp;dispozici, je generováno v&nbsp;závislosti na tom, <strong>jaké oprávnění</strong> máte právě nastaveno &ndash; přepnout mezi jiným oprávněním je možné v&nbsp;<strong>pravé horní části</strong> obrazovky.
+  </div>
 <?php endif; ?>
 
 <div class="card-group cards-homepage pb-2 mb-3">
@@ -126,14 +130,14 @@
 <div class="d-flex flex-wrap justify-content-around">
   <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
   <div class="chart-wrapper">
-    <h3>Konečné akce uživatelů v&nbsp;kampaních</h3>
-    <p>V&nbsp;potaz se berou všechna nasbíraná data, přičemž přednost má ta vážnější akce, kterou mohl uživatel v&nbsp;každé z&nbsp;kampaní udělat (podle pořadí legendy).</p>
+    <h3>Reakce uživatelů na cvičný phishing</h3>
+    <p>Konečné reakce uživatelů na všechny phishingové kampaně.</p>
     <canvas class="my-4" id="chart-end-actions"></canvas>
   </div>
 
   <div class="chart-wrapper">
-    <h3>Konečné akce v&nbsp;kampaních dle skupiny [%]</h3>
-    <p>Data se získávají stejným způsobem jako předchozí graf s&nbsp;tím rozdílem, že vše je rozděleno do sloupců symbolizujících skupinu, do které spadá e-mail příjemce.</p>
+    <h3>Reakce uživatelů dle oddělení [%]</h3>
+    <p>Konečné reakce uživatelů podle oddělení na všechny phishingové kampaně.</p>
     <div class="table-responsive">
       <canvas class="my-4" id="chart-end-actions-groups"></canvas>
     </div>
@@ -141,20 +145,21 @@
 
   <div class="chart-wrapper-vertical">
     <h3>Dobrovolníci dle skupiny</h3>
+    <p>Zájem uživatelů o&nbsp;odebírání cvičného phishingu.</p>
     <canvas class="my-4" id="chart-volunteers"></canvas>
   </div>
 
   <?php elseif (PermissionsModel::getUserRole() == PERMISSION_TEST_MANAGER): ?>
 
   <div class="chart-wrapper">
-    <h3>Konečné akce uživatelů v&nbsp;kampaních, ke kterým mám oprávnění</h3>
-    <p>V&nbsp;potaz se berou všechna nasbíraná data, přičemž přednost má ta vážnější akce, kterou mohl uživatel v&nbsp;každé z&nbsp;kampaní udělat (podle pořadí legendy).</p>
+    <h3>Reakce uživatelů na cvičný phishing</h3>
+    <p>Konečné reakce uživatelů na všechny phishingové kampaně, ke kterým mám oprávnění.</p>
     <canvas class="my-4" id="chart-end-actions"></canvas>
   </div>
 
   <div class="chart-wrapper">
-    <h3>Konečné akce v&nbsp;kampaních dle skupiny [%]</h3>
-    <p>Data se získávají stejným způsobem jako předchozí graf s&nbsp;tím rozdílem, že vše je rozděleno do sloupců symbolizujících skupinu, do které spadá e-mail příjemce (např. studenti vs. zaměstnanci katedry).</p>
+    <h3>Reakce uživatelů dle oddělení [%]</h3>
+    <p>Konečné reakce uživatelů podle oddělení na všechny phishingové kampaně, ke kterým mám oprávnění.</p>
     <div class="table-responsive">
       <canvas class="my-4" id="chart-end-actions-groups"></canvas>
     </div>
@@ -163,8 +168,8 @@
   <?php else: ?>
 
   <div class="chart-wrapper">
-    <h3>Moje souhrnná úspěšnost v&nbsp;kampaních</h3>
-    <p>V&nbsp;potaz se berou všechna nasbíraná data, přičemž přednost má ta vážnější akce, kterou mohl uživatel v&nbsp;každé z&nbsp;kampaní udělat (podle pořadí legendy).</p>
+    <h3>Moje souhrnné reakce na cvičný phishing</h3>
+    <p>Konkrétní reakce na každý e-mail ukazuje stránka <a href="/portal/recieved-phishing-emails">přijaté phishingové e-maily</a>.</p>
     <canvas class="my-4" id="chart-end-actions"></canvas>
   </div>
   <?php endif; ?>

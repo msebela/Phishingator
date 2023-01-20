@@ -38,27 +38,21 @@
         <li class="nav-item">
           <p class="nav-link text-white">
             <span data-feather="user"></span>
-            <?= get_email_part($_SESSION['user']['email'], 'username') ?> <span class="d-none d-sm-inline text-light">(<?= $userRoleText ?>)</span>
+            <?= get_email_part($_SESSION['user']['email'], 'username') ?>
           </p>
         </li>
         <?php if ($userPermission <= PERMISSION_TEST_MANAGER): ?>
         <li class="nav-item dropdown">
           <a href="#" id="switchRoleDropdown" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="d-sm-none">Role</span>
-            <span class="d-none d-sm-inline">Změnit roli</span>
+            <span class="d-none d-sm-inline badge badge-<?= $userRoleColor ?>"><?= $userRoleText ?></span>
           </a>
           <div class="dropdown-menu" aria-labelledby="switchRoleDropdown">
-            <?php if ($userPermission == PERMISSION_ADMIN): ?>
-            <a href="/portal/?<?= ACT_SWITCH_ROLE . '=' . PERMISSION_ADMIN_URL ?>" class="dropdown-item<?php if ($userRole == PERMISSION_ADMIN) echo ' active'; ?>">
-              <?= PERMISSION_ADMIN_TEXT ?>
+            <?php foreach ($rolesMenu as $role): ?>
+            <a href="/portal/?<?= ACT_SWITCH_ROLE . '=' . $role['url'] ?>" class="dropdown-item<?php if ($userRole == $role) echo ' active'; ?>">
+              <?= $role['name'] ?>
             </a>
-            <?php endif; ?>
-            <a href="/portal/?<?= ACT_SWITCH_ROLE . '=' . PERMISSION_TEST_MANAGER_URL ?>" class="dropdown-item<?php if ($userRole == PERMISSION_TEST_MANAGER) echo ' active'; ?>">
-              <?= PERMISSION_TEST_MANAGER_TEXT ?>
-            </a>
-            <a href="/portal/?<?= ACT_SWITCH_ROLE . '=' . PERMISSION_USER_URL ?>" class="dropdown-item<?php if ($userRole == PERMISSION_USER) echo ' active'; ?>" >
-              <?= PERMISSION_USER_TEXT ?>
-            </a>
+            <?php endforeach; ?>
           </div>
         </li>
         <?php endif; ?>
@@ -78,10 +72,10 @@
             <ul class="nav flex-column">
               <?php foreach ($menu as $name => $section): ?>
               <li class="nav-item">
-                <a href="/portal/<?= ($section['url']) ? $section['url'] : ''; ?>" class="nav-link<?php if ((isset($_GET['section']) && $_GET['section'] == $section['url']) || (!isset($_GET['section']) && empty($section['url']))) echo ' active'; ?>">
+                <a href="/portal/<?= $section['url'] ?? ''; ?>" class="nav-link<?php if ($currentSection == $section['url'] || (empty($currentSection) && empty($section['url']))) echo ' active'; ?>">
                   <span data-feather="<?= $section['icon'] ?>"></span>
                   <?= $name ?>
-                  <?php if (isset($_GET['section']) && $_GET['section'] == $section['url']): ?><span class="sr-only">(vybráno)</span><?php endif; ?>
+                  <?php if ($currentSection == $section['url']): ?><span class="sr-only">(vybráno)</span><?php endif; ?>
                 </a>
               </li>
               <?php endforeach; ?>
@@ -96,14 +90,14 @@
 
             <ul class="nav flex-column mb-2">
               <li class="nav-item">
-                <a href="/portal/help/about-phishing" class="nav-link<?php if (isset($_GET['section']) && $_GET['section'] == 'help' && isset($_GET['action']) && $_GET['action'] == 'about-phishing') echo ' active'; ?>">
+                <a href="/portal/help/about-phishing" class="nav-link<?php if ($currentSection == 'help' && $currentAction == 'about-phishing') echo ' active'; ?>">
                   <span class="align-text-bottom" data-feather="anchor"></span>
                   Jak poznat phishing
                 </a>
               </li>
               <?php if ($userRole <= PERMISSION_TEST_MANAGER): ?>
               <li class="nav-item">
-                <a href="/portal/help/principles-phishing" class="nav-link<?php if (isset($_GET['section']) && $_GET['section'] == 'help' && isset($_GET['action']) && $_GET['action'] == 'principles-phishing') echo ' active'; ?>">
+                <a href="/portal/help/principles-phishing" class="nav-link<?php if ($currentSection == 'help' && $currentAction == 'principles-phishing') echo ' active'; ?>">
                   <span class="align-text-bottom" data-feather="file-text"></span>
                   Jak připravit phishing
                 </a>
@@ -139,7 +133,7 @@
     <script src="/js.js"></script>
     <script>feather.replace();</script>
 
-    <?php if ($userRole == PERMISSION_ADMIN): ?>
+    <?php if ($userRole == PERMISSION_ADMIN && $currentSection == 'phishing-emails' && ($currentAction == ACT_NEW || $currentAction == ACT_EDIT)): ?>
     <link href="/<?= CORE_DIR_EXTENSIONS ?>/jquery-highlighttextarea/jquery.highlighttextarea.min.css" rel="stylesheet">
     <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-highlighttextarea/jquery.highlighttextarea.min.js"></script>
 
@@ -151,7 +145,7 @@
     <?php endif; ?>
 
     <footer class="pr-2 text-right text-light bg-dark">
-      <small>&copy;&nbsp;Martin Šebela, 2019&ndash;2022</small>
+      <small>&copy;&nbsp;Martin Šebela, 2019&ndash;2023</small>
     </footer>
   </body>
 </html>
