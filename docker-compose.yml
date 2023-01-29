@@ -15,25 +15,32 @@ services:
       - /phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
       - /phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
     environment:
-      - DOCKER_REMOTE_USER      
+      - DOCKER_REMOTE_USER
       - ORG
       - ORG_DOMAIN
       - WEB_HOST
       - WEB_URL
+      - CSRF_KEY
+      - APACHE_DOCUMENT_ROOT
       - FRAUDULENT_HOSTS
+      - DB_HOST
       - DB_USERNAME
       - DB_PASSWORD
       - DB_DATABASE
       - LDAP_HOSTNAME
+      - LDAP_PORT
       - LDAP_USERNAME
       - LDAP_PASSWORD
       - LDAP_BASE_DN
       - LDAP_USERS_DN
+      - LDAP_USER_ATTR_NAME
       - LDAP_USER_ATTR_EMAIL
+      - LDAP_USER_ATTR_PRIMARY_GROUP
       - LDAP_GROUPS_DN
       - LDAP_GROUPS_ATTR_MEMBER
       - LDAP_DEPARTMENTS_DN
       - LDAP_ROOT_DEPARTMENTS_FILTER_DN
+      - INDEPENDENT_DEPARTMENTS
       - OIDC_METADATA_URL
       - OIDC_CLIENT_ID
       - OIDC_CLIENT_SECRET
@@ -46,14 +53,15 @@ services:
       - SMTP_PASSWORD
       - TEST_USERNAME
       - TEST_PASSWORD
+      - ITS_URL
       - NOTIFICATION_SENDER
       - AUTHENTICATION_TYPE
+      - AUTHENTICATION_IMAP_ARGS
       - PASSWORD_LEVEL_ANONYMIZATION
       - PHISHING_WEBSITE_SERVER_ADMIN
       - CAMPAIGN_STATS_AGGREGATION
       - CAMPAIGN_STATS_BLUR_IDENTITIES
-      - CSRF_KEY
-      - APACHE_DOCUMENT_ROOT
+      - CAMPAIGN_DEFAULT_ONSUBMIT_ACTION
     depends_on:
       - database
     networks:
