@@ -429,7 +429,7 @@
 
       foreach ($result as $recipient) {
         $recipientsArray[] = $recipient['email'];
-        $recipientsString .= $recipient['email'] . EMAILS_SEPARATOR;
+        $recipientsString .= $recipient['email'] . CAMPAIGN_EMAILS_DELIMITER;
       }
 
       return !$returnString ? $recipientsArray : $recipientsString;

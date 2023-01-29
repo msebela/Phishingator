@@ -79,10 +79,10 @@
         <select class="custom-select" id="<?= $formPrefix ?>id-onsubmit" name="<?= $formPrefix ?>id-onsubmit" required>
           <option value="0">Vyberte&hellip;</option>
           <?php foreach ($websiteActions as $onsubmit): ?>
-            <option value="<?= $onsubmit['id_onsubmit'] ?>"<?= (($inputsValues['id-onsubmit'] == $onsubmit['id_onsubmit']) ? ' selected': ''); ?>><?= $onsubmit['name'] ?></option>
+            <option value="<?= $onsubmit['id_onsubmit'] ?>"<?= (($inputsValues['id-onsubmit'] == $onsubmit['id_onsubmit'] || ($action == ACT_NEW && empty($inputsValues['id-onsubmit']) && $onsubmit['id_onsubmit'] == CAMPAIGN_DEFAULT_ONSUBMIT_ACTION)) ? ' selected': ''); ?>><?= $onsubmit['name'] ?></option>
           <?php endforeach; ?>
         </select>
-        <small class="form-text text-muted">Jedná se o akci, která se stane tehdy, když uživatel na stránce vyplní formulář a&nbsp;klikne na tlačítko pro jeho odeslání.</small>
+        <small class="form-text text-muted">Jedná se o&nbsp;akci, která se stane tehdy, když uživatel na stránce vyplní formulář a&nbsp;klikne na tlačítko pro jeho odeslání.</small>
       </div>
 
       <div class="form-row">
@@ -93,7 +93,7 @@
         </div>
 
         <div class="form-group col-md-8">
-          <label for="<?= $formPrefix ?>time-send-since">Spustit rozesílání e-mailů v čase</label>
+          <label for="<?= $formPrefix ?>time-send-since">Spustit rozesílání e-mailů v&nbsp;čase</label>
           <input type="time" class="form-control" id="<?= $formPrefix ?>time-send-since" name="<?= $formPrefix ?>time-send-since" maxlength="<?= $inputsMaxLengths['time-send-since'] ?>" value="<?= $inputsValues['time-send-since'] ?>" required>
           <small class="form-text text-muted">Určuje, od jakého času systém začne rozesílat zvoleným příjemcům vybraný e-mail.</small>
         </div>

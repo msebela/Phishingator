@@ -288,15 +288,21 @@
 
 
 
-  /* --- STATISTIKY V KAMPANÍCH --- */
+  /* --- PHISHINGOVÉ KAMPANĚ --- */
   /** Způsob agregace statistiky v kampaních – na základě:
    *  - 1 = LDAP skupiny uživatele (výchozí)
    *  - 2 = subdomény v e-mailu uživatele
    */
   define('CAMPAIGN_STATS_AGGREGATION', (getenv('CAMPAIGN_STATS_AGGREGATION')) ? getenv('CAMPAIGN_STATS_AGGREGATION') : 1);
 
-  /** Rozmazání identit uživatelů ve statistikách kampaní. */
+  /** Rozmazání identit uživatelů ve statistikách kampaně. */
   define('CAMPAIGN_STATS_BLUR_IDENTITIES', (getenv('CAMPAIGN_STATS_BLUR_IDENTITIES') !== false) ? getenv('CAMPAIGN_STATS_BLUR_IDENTITIES') : true);
+
+  /** Identifikátor výchozí akce po odeslání formuláře (bude ve formuláři při vytváření kampaně předvybrána). */
+  define('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION', (getenv('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION')) ? getenv('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION') : 0);
+
+  /** Znak používaný k oddělování příjemců v kampani. */
+  define('CAMPAIGN_EMAILS_DELIMITER', "\n");
 
 
 
@@ -373,12 +379,6 @@
 
   /* O kolik sekund déle bude moct skript běžet poté, co byl pozastaven (viz předchozí konstanta). */
   define('EMAIL_SENDER_CPU_TIME_S', 10);
-
-
-
-  /* --- ODDĚLOVÁNÍ PŘÍJEMCŮ V KAMPANI --- */
-  /** Znak používaný k oddělování příjemců v kampani. */
-  define('EMAILS_SEPARATOR', "\n");
 
 
 

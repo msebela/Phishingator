@@ -75,7 +75,7 @@
       $this->setViewData('websites', PhishingWebsiteModel::getActivePhishingWebsites());
       $this->setViewData('websiteActions', $model->getWebsiteActions());
       $this->setViewData('recipients', ($_POST[$model->formPrefix . 'recipients'] ?? ''));
-      $this->setViewData('countRecipients', count(explode(EMAILS_SEPARATOR, $this->getData('recipients'))) - 1);
+      $this->setViewData('countRecipients', count(explode(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients'))) - 1);
 
       if (PermissionsModel::getUserRole() == PERMISSION_ADMIN) {
         $this->setViewData('recipientsVolunteers', $model->getVolunteersRecipients($this->getData('recipients')));
@@ -130,7 +130,7 @@
       $this->setViewData('websites', PhishingWebsiteModel::getActivePhishingWebsites());
       $this->setViewData('websiteActions', $model->getWebsiteActions());
       $this->setViewData('recipients', ($_POST[$model->formPrefix . 'recipients'] ?? $model->getCampaignRecipients($idCampaign, true)));
-      $this->setViewData('countRecipients', count(explode(EMAILS_SEPARATOR, $this->getData('recipients'))) - 1);
+      $this->setViewData('countRecipients', count(explode(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients'))) - 1);
 
       if (PermissionsModel::getUserRole() == PERMISSION_ADMIN) {
         $this->setViewData('recipientsVolunteers', $model->getVolunteersRecipients($this->getData('recipients')));
