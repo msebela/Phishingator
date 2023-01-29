@@ -17,7 +17,7 @@
   </div>
 <?php endif; ?>
 
-<div class="card-group cards-homepage pb-2 mb-3">
+<div class="card-group cards-stats pb-2 mb-3">
   <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
   <div class="card bg-light text-center">
     <a href="/portal/campaigns">

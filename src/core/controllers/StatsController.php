@@ -47,7 +47,9 @@
       $this->setViewData('barChartLegendDesc', $barChart['legend']);
       $this->setViewData('barChartLegendData', $barChart['data']);
 
-      for ($year = date('Y'); $year >= $this->startStatsYear; $year--) {
+      $yearsStats = [];
+
+      for ($year = $this->startStatsYear; $year <= date('Y'); $year++) {
         $campaings = CampaignModel::getActiveCampaigns($year);
         $campaingsId = [];
 
@@ -56,34 +58,69 @@
         }
 
         $countCampaigns = count($campaings);
+        $yearsStats[$year]['countCampaigns'] = $countCampaigns;
+
+        $diff = ($year != $this->startStatsYear) ? $countCampaigns - ($yearsStats[$year - 1]['countCampaigns'] ?? 0) : 0;
 
         // Počet aktivních kampaní v daném roce.
         $this->setViewData('countCampaigns' . $year, get_formatted_number($countCampaigns));
         $this->setViewData('countCampaignsText' . $year, $model->getStatsText($countCampaigns, 'campaignsCount'));
 
+        $this->setViewData('countCampaignsDiff' . $year, get_formatted_number($diff, true));
+        $this->setViewData('countCampaignsDiffColor' . $year, $this->getDiffColor($diff));
+
+
         // Počet zaregistrovaných příjemců.
         $countUsers = UsersModel::getCountOfActiveUsers($year);
+        $yearsStats[$year]['countUsers'] = $countUsers;
+
+        $diff = ($year != $this->startStatsYear) ? $countUsers - ($yearsStats[$year - 1]['countUsers'] ?? 0) : 0;
 
         $this->setViewData('countUsers' . $year, get_formatted_number($countUsers));
         $this->setViewData('countUsersText' . $year, $model->getStatsText($countUsers, 'recipientsCount'));
 
+        $this->setViewData('countUsersDiff' . $year, get_formatted_number($diff, true));
+        $this->setViewData('countUsersDiffColor' . $year, $this->getDiffColor($diff));
+
+
         // Počet dobrovolníků.
         $countVolunteers = UsersModel::getCountOfVolunteers($year);
+        $yearsStats[$year]['countVolunteers'] = $countVolunteers;
+
+        $diff = ($year != $this->startStatsYear) ? $countVolunteers - ($yearsStats[$year - 1]['countVolunteers'] ?? 0) : 0;
 
         $this->setViewData('countVolunteers' . $year, get_formatted_number($countVolunteers));
         $this->setViewData('countVolunteersText' . $year, $model->getStatsText($countVolunteers, 'volunteersCount'));
 
+        $this->setViewData('countVolunteersDiff' . $year, get_formatted_number($diff, true));
+        $this->setViewData('countVolunteersDiffColor' . $year, $this->getDiffColor($diff));
+
+
         // Počet odeslaných e-mailů.
         $countSentEmails = EmailSenderModel::getCountOfSentEmails($year);
+        $yearsStats[$year]['countSentEmails'] = $countSentEmails;
+
+        $diff = ($year != $this->startStatsYear) ? $countSentEmails - ($yearsStats[$year - 1]['countSentEmails'] ?? 0) : 0;
 
         $this->setViewData('countSentEmails' . $year, get_formatted_number($countSentEmails));
         $this->setViewData('countSentEmailsText' . $year, $model->getStatsText($countSentEmails, 'sentEmails'));
 
+        $this->setViewData('countSentEmailsDiff' . $year, get_formatted_number($diff, true));
+        $this->setViewData('countSentEmailsDiffColor' . $year, $this->getDiffColor($diff));
+
+
         // Počet běžících podvodných stránek.
         $countPhishingWebsites = count(PhishingWebsiteModel::getActivePhishingWebsites($year));
+        $yearsStats[$year]['countPhishingWebsites'] = $countPhishingWebsites;
+
+        $diff = ($year != $this->startStatsYear) ? $countPhishingWebsites - ($yearsStats[$year - 1]['countPhishingWebsites'] ?? 0) : 0;
 
         $this->setViewData('countPhishingWebsites' . $year, get_formatted_number($countPhishingWebsites));
         $this->setViewData('countPhishingWebsitesText' . $year, $model->getStatsText($countPhishingWebsites, 'websitesCount'));
+
+        $this->setViewData('countPhishingWebsitesDiff' . $year, get_formatted_number($diff, true));
+        $this->setViewData('countPhishingWebsitesDiffColor' . $year, $this->getDiffColor($diff));
+
 
         // Data a legenda pro koláčový graf.
         $this->setViewData('chartLegend', $model->getLegendAsString('"'));
@@ -99,12 +136,27 @@
         $this->setViewData('barChartLegendColors' . $year, $model->colors);
         $this->setViewData('barChartLegendDesc' . $year, $barChart['legend']);
         $this->setViewData('barChartLegendData' . $year, $barChart['data']);
-
-        // Data a legenda pro sloupcový graf obsahující informace o dobrovolnících dle skupin.
-        $barChart = $model->getVolunteersStats($year);
-
-        $this->setViewData('chartVolunteers' . $year, $barChart['legend']);
-        $this->setViewData('chartVolunteersData' . $year, ($barChart['data']) ? $barChart['data'] : 0);
       }
+    }
+
+
+    /**
+     * Vrátí barvu na základě vypočítaného rozdílu dvou hodnot.
+     *
+     * @param int $diff                Vypočítaný rozdíl
+     * @return string                  Barva
+     */
+    private function getDiffColor($diff) {
+      $color = MSG_CSS_SUCCESS;
+      $threshold = -5;
+
+      if ($diff >= $threshold && $diff < 0) {
+        $color = MSG_CSS_WARNING;
+      }
+      elseif ($diff < $threshold) {
+        $color = MSG_CSS_ERROR;
+      }
+
+      return $color;
     }
   }

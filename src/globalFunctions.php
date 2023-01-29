@@ -176,10 +176,17 @@
    * Zformátuje číslo podle zvyklostí v České republice (oddělení jednotlivých řádů apod.).
    *
    * @param int $number                Číslo, které má být zformátováno
+   * @param bool $withSign             TRUE, pokud má být před číslem uvedeno navíc i znaménko, jinak FALSE (nepovinné)
    * @return string                    Zformátované číslo
    */
-  function get_formatted_number($number) {
-    return number_format($number,0, ',', ' ');
+  function get_formatted_number($number, $withSign = false) {
+    $number = number_format($number,0, ',', ' ');
+
+    if ($withSign) {
+      $number = ($number > 0) ? '+' . $number : $number;
+    }
+
+    return $number;
   }
 
 

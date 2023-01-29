@@ -10,13 +10,13 @@
    */
   class EmailSenderModel extends EmailSender {
     /**
-     * Vrátí celkový počet všech odeslaných e-mailů (případně v konkrétním roce).
+     * Vrátí celkový počet všech odeslaných e-mailů (případně do konkrétního roku).
      *
-     * @param int $year                Zkoumaný rok [nepovinné]
+     * @param int $year                Maximální rok, do kterého se bude počet odeslaných e-mailů zjišťovat [nepovinné]
      * @return mixed                   Počet odeslaných e-mailů
      */
     public static function getCountOfSentEmails($year = []) {
-      $yearQuery = (!is_array($year) && is_numeric($year)) ? 'YEAR(`date_sent`) = ?' : '`date_sent` IS NOT NULL';
+      $yearQuery = (!is_array($year) && is_numeric($year)) ? 'YEAR(`date_sent`) <= ?' : '`date_sent` IS NOT NULL';
 
       return Database::queryCount('
               SELECT COUNT(*)

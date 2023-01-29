@@ -397,13 +397,13 @@
 
 
     /**
-     * Vrátí počet všech aktivních, nesmazaných uživatelů (případně v konkrétním roce).
+     * Vrátí počet všech aktivních, nesmazaných uživatelů (případně do konkrétního roku).
      *
-     * @param int $year                Zkoumaný rok [nepovinné]
+     * @param int $year                Maximální rok, do kterého se bude počet uživatelů zjišťovat [nepovinné]
      * @return mixed                   Počet aktivních uživatelů
      */
     public static function getCountOfActiveUsers($year = []) {
-      $yearQuery = (!is_array($year) && is_numeric($year)) ? 'AND YEAR(`date_added`) = ?' : '';
+      $yearQuery = (!is_array($year) && is_numeric($year)) ? 'AND YEAR(`date_added`) <= ?' : '';
 
       return Database::queryCount('
               SELECT COUNT(*)
@@ -416,9 +416,9 @@
 
     /**
      * Vrátí počet všech dobrovolníků – uživatelů, kteří jsou přihlášeni
-     * k odebírání cvičných phishingových zpráv (případně v konkrétním roce).
+     * k odebírání cvičných phishingových zpráv (případně do konkrétního roku).
      *
-     * @param int $year                Zkoumaný rok [nepovinné]
+     * @param int $year                Maximální rok, do kterého se bude počet dobrovolníků zjišťovat [nepovinné]
      * @return mixed                   Počet dobrovolníků
      */
     public static function getCountOfVolunteers($year = null) {
@@ -429,9 +429,9 @@
                 LEFT JOIN `phg_users_participation_log`
                 ON phg_users.id_user = phg_users_participation_log.id_user
                 WHERE
-                (`recieve_email` = 1 AND `inactive` = 0 AND `visible` = 1 AND `logged` = 1 AND YEAR(`date_participation`) = ? AND YEAR(`date_added`) = ?)
+                (`recieve_email` = 1 AND `inactive` = 0 AND `visible` = 1 AND `logged` = 1 AND YEAR(`date_participation`) <= ? AND YEAR(`date_added`) <= ?)
                 OR
-                (`recieve_email` = 1 AND `inactive` = 0 AND `visible` = 1 AND YEAR(`date_added`) = ?);
+                (`recieve_email` = 1 AND `inactive` = 0 AND `visible` = 1 AND YEAR(`date_added`) <= ?);
         ', [$year, $year, $year]);
 
         $countVolunteers = count($volunteers);

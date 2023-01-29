@@ -15,60 +15,95 @@
   <h3>Rok <?= $year ?></h3>
 </div>
 
-<div class="card-group cards-homepage pb-2 mb-3">
+<div class="card-group cards-stats pb-2 mb-3">
   <div class="card bg-light text-center">
-    <a href="/portal/campaigns">
-      <div class="card-body">
-        <h4 class="card-title mb-0">
-          <span class="badge-pill badge-dark py-1"><?= ${"countCampaigns$year"} ?></span><br>
-          <?= ${"countCampaignsText$year"} ?>
-        </h4>
-      </div>
-    </a>
+    <div class="card-body">
+      <h4 class="card-title mb-0">
+        <span class="badge-pill badge-dark py-1">
+          <?= ${"countCampaigns$year"} ?>
+
+          <?php if (${"countCampaignsDiff$year"} != 0): ?>
+          <span class="badge-pill badge-<?= ${"countCampaignsDiffColor$year"} ?> diff cursor-help py-1" title="Rozdíl oproti předcházejícímu roku <?= $year - 1 ?>">
+            <?= ${"countCampaignsDiff$year"} ?>
+          </span>
+          <?php endif; ?>
+        </span>
+        <br>
+        <?= ${"countCampaignsText$year"} ?>
+      </h4>
+    </div>
   </div>
 
   <div class="card bg-light text-center">
-    <a href="/portal/users">
-      <div class="card-body">
-        <h4 class="card-title mb-0">
-          <span class="badge-pill badge-dark py-1"><?= ${"countUsers$year"} ?></span><br>
-          <?= ${"countUsersText$year"} ?>
-        </h4>
-      </div>
-    </a>
+    <div class="card-body">
+      <h4 class="card-title mb-0">
+        <span class="badge-pill badge-dark py-1">
+          <?= ${"countUsers$year"} ?>
+
+          <?php if (${"countUsersDiff$year"} != 0): ?>
+          <span class="badge-pill badge-<?= ${"countUsersDiffColor$year"} ?> diff cursor-help py-1" title="Rozdíl oproti předcházejícímu roku <?= $year - 1 ?>">
+            <?= ${"countUsersDiff$year"} ?>
+          </span>
+          <?php endif; ?>
+        </span>
+        <br>
+        <?= ${"countUsersText$year"} ?>
+      </h4>
+    </div>
   </div>
 
   <div class="card bg-light text-center">
-    <a href="/portal/users?only-volunteers=1">
-      <div class="card-body">
-        <h4 class="card-title mb-0">
-          <span class="badge-pill badge-dark py-1"><?= ${"countVolunteers$year"} ?></span><br>
-          <?= ${"countVolunteersText$year"} ?>
-        </h4>
-      </div>
-    </a>
+    <div class="card-body">
+      <h4 class="card-title mb-0">
+        <span class="badge-pill badge-dark py-1">
+          <?= ${"countVolunteers$year"} ?>
+
+          <?php if (${"countVolunteersDiff$year"} != 0): ?>
+          <span class="badge-pill badge-<?= ${"countVolunteersDiffColor$year"} ?> diff cursor-help py-1" title="Rozdíl oproti předcházejícímu roku <?= $year - 1 ?>">
+            <?= ${"countVolunteersDiff$year"} ?>
+          </span>
+          <?php endif; ?>
+        </span>
+        <br>
+        <?= ${"countVolunteersText$year"} ?>
+      </h4>
+    </div>
   </div>
 
   <div class="card bg-light text-center">
-    <a href="/portal/phishing-emails">
-      <div class="card-body">
-        <h4 class="card-title mb-0">
-          <span class="badge-pill badge-dark py-1"><?= ${"countSentEmails$year"} ?></span><br>
-          <?= ${"countSentEmailsText$year"} ?>
-        </h4>
-      </div>
-    </a>
+    <div class="card-body">
+      <h4 class="card-title mb-0">
+        <span class="badge-pill badge-dark py-1">
+          <?= ${"countSentEmails$year"} ?>
+
+          <?php if (${"countSentEmailsDiff$year"} != 0): ?>
+          <span class="badge-pill badge-<?= ${"countSentEmailsDiffColor$year"} ?> diff cursor-help py-1" title="Rozdíl oproti předcházejícímu roku <?= $year - 1 ?>">
+            <?= ${"countSentEmailsDiff$year"} ?>
+          </span>
+          <?php endif; ?>
+        </span>
+        <br>
+        <?= ${"countSentEmailsText$year"} ?>
+      </h4>
+    </div>
   </div>
 
   <div class="card bg-light text-center">
-    <a href="/portal/phishing-websites">
-      <div class="card-body">
-        <h4 class="card-title mb-0">
-          <span class="badge-pill badge-dark py-1"><?= ${"countPhishingWebsites$year"} ?></span><br>
-          <?= ${"countPhishingWebsitesText$year"} ?>
-        </h4>
-      </div>
-    </a>
+    <div class="card-body">
+      <h4 class="card-title mb-0">
+        <span class="badge-pill badge-dark py-1">
+          <?= ${"countPhishingWebsites$year"} ?>
+
+          <?php if (${"countPhishingWebsitesDiff$year"} != 0): ?>
+          <span class="badge-pill badge-<?= ${"countPhishingWebsitesDiffColor$year"} ?> diff cursor-help py-1" title="Rozdíl oproti předcházejícímu roku <?= $year - 1 ?>">
+            <?= ${"countPhishingWebsitesDiff$year"} ?>
+          </span>
+          <?php endif; ?>
+        </span>
+        <br>
+        <?= ${"countPhishingWebsitesText$year"} ?>
+      </h4>
+    </div>
   </div>
 </div>
 
@@ -85,11 +120,6 @@
     <div class="table-responsive">
       <canvas class="my-4" id="chart-end-actions-groups-<?= $year ?>"></canvas>
     </div>
-  </div>
-
-  <div class="chart-wrapper-vertical">
-    <h3>Noví dobrovolníci</h3>
-    <canvas class="my-4" id="chart-volunteers-<?= $year ?>"></canvas>
   </div>
 </div>
 <?php endfor; ?>
@@ -149,7 +179,6 @@
       },
     }
   });
-  <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
 
   let chartEndActionsGroups<?= $year ?> = new Chart(document.getElementById('chart-end-actions-groups-<?= $year ?>'), {
     plugins: [ChartDataLabels],
@@ -192,34 +221,5 @@
       },
     }
   });
-
-  let chartVolunteers<?= $year ?> = new Chart(document.getElementById('chart-volunteers-<?= $year ?>'), {
-    plugins: [ChartDataLabels],
-    type: 'bar',
-    data: {
-      labels: [<?= ${"_chartVolunteers$year"} ?>],
-      datasets: [{
-        label: 'Počet dobrovolníků',
-        backgroundColor: '#00c851',
-        data: [<?= ${"chartVolunteersData$year"} ?>]
-      }]
-    },
-    options: {
-      responsive: true,
-      tooltips: {mode: 'index', intersect: false},
-      indexAxis: 'y',
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {display: false},
-        datalabels: {
-          color: '#fff',
-          display: function(context) {
-            return context.dataset.data[context.dataIndex] > 1;
-          }
-        }
-      }
-    }
-  });
-  <?php endif; ?>
   <?php endfor; ?>
 </script>

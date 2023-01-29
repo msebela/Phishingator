@@ -164,14 +164,15 @@
      * @return string|null             Data s počtem každého typu možných akcí nebo NULL.
      */
     public function getStatsForAllActions($idCampaign) {
-      if (empty($this->legend) || empty($idCampaign)) {
-        return null;
+      $data = null;
+
+      if (!empty($this->legend) && !empty($idCampaign)) {
+        // Zjištění počtu každého typu akce provedené v kampani.
+        $data = $this->getCountOfEveryActionInCampaign($idCampaign);
+        $data = implode(', ', array_reverse($data));
       }
 
-      // Zjištění počtu každého typu akce provedené v kampani.
-      $data = $this->getCountOfEveryActionInCampaign($idCampaign);
-
-      return implode(', ', array_reverse($data));
+      return $data;
     }
 
 
@@ -238,25 +239,25 @@
         $theWorstUserActionInCampaigns = [];
 
         foreach ($dataUserActions as $action) {
-          /* Pokud se zjišťuje statistika pro množinu kampaní a daná kampaň není mezi požadovanými. */
+          // Pokud se zjišťuje statistika pro množinu kampaní a daná kampaň není mezi požadovanými.
           if (is_array($idCampaign) && !in_array($action['id_campaign'], $idCampaign)) {
             continue;
           }
 
           if (!isset($theWorstUserActionInCampaigns[$action['id_campaign']][$action['id_user']])) {
-            /* Pokud zatím záznam o uživateli neexistuje, vložíme jeho první nalezený záznam o akci, kterou provedl. */
+            // Pokud zatím záznam o uživateli neexistuje, vložíme jeho první nalezený záznam o akci, kterou provedl.
             $theWorstUserActionInCampaigns[$action['id_campaign']][$action['id_user']] = $action['id_action'];
           }
           else {
             if ($action['id_action'] > $theWorstUserActionInCampaigns[$action['id_campaign']][$action['id_user']]) {
-              /* Pokud v poli existuje záznam o jiné akci, kterou již uživatel v kampani udělal, ale právě zkoumaná
-                 akce je horší, než ta, která je tam dosud, tak ji změníme na aktuální. */
+              // Pokud v poli existuje záznam o jiné akci, kterou již uživatel v kampani udělal, ale právě zkoumaná
+              // akce je horší, než ta, která je tam dosud, tak ji změníme na aktuální.
               $theWorstUserActionInCampaigns[$action['id_campaign']][$action['id_user']] = $action['id_action'];
             }
           }
         }
 
-        /* Získání počtu jednotlivých akcí na podvodné stránce. */
+        // Získání počtu jednotlivých akcí na podvodné stránce.
         foreach ($theWorstUserActionInCampaigns as $campaign) {
           foreach ($campaign as $action) {
             $dataCountActions[$action] += 1;
@@ -265,18 +266,14 @@
         }
       }
       else {
-        /* Získání počtu jednotlivých akcí na podvodné stránce. */
+        // Získání počtu jednotlivých akcí na podvodné stránce.
         foreach ($dataUserActions as $action) {
           $dataCountActions[$action['id_action']] += 1;
           $countActionsWithReaction++;
         }
       }
 
-      if ($returnArray) {
-        return $dataCountActions;
-      }
-
-      return implode(', ', array_reverse($dataCountActions));
+      return ($returnArray) ? $dataCountActions : implode(', ', array_reverse($dataCountActions));
     }
 
 
@@ -558,11 +555,10 @@
      * Zjistí počet dobrovolníků v každé ze skupin (podle subdomény v e-mailu dobrovolníka).
      * Vrácená data jsou ve formátu požadované knihovnou Chart.js u sloupcového grafu.
      *
-     * @param int $year                Zkoumaný rok [nepovinné]
      * @return array                   Pole obsahující na indexu "legend" legendu a na indexu "data"
      *                                 pole s hodnotami pro sloupcový graf.
      */
-    public function getVolunteersStats($year = []) {
+    public function getVolunteersStats() {
       $data = [];
       $legend = '';
       $formattedData = '';
@@ -576,19 +572,6 @@
 
       // Zjištění dobrovolníků.
       $volunteers = Database::queryMulti('SELECT `email`, `primary_group` FROM `phg_users` WHERE `recieve_email` = 1 AND `visible` = 1');
-
-      if (!empty($year)) {
-        $volunteers = Database::queryMulti(
-          'SELECT DISTINCT email, `primary_group`
-                FROM `phg_users`
-                LEFT JOIN `phg_users_participation_log`
-                ON phg_users.id_user = phg_users_participation_log.id_user
-                WHERE
-                (`recieve_email` = 1 AND `inactive` = 0 AND `visible` = 1 AND `logged` = 1 AND YEAR(`date_participation`) = ? AND YEAR(`date_added`) = ?)
-                OR
-                (`recieve_email` = 1 AND `inactive` = 0 AND `visible` = 1 AND YEAR(`date_added`) = ?);
-            ', [$year, $year, $year]);
-      }
 
       // Zjištění skupin a počet dobrovolníků v každé z nich.
       foreach ($volunteers as $recipient) {
@@ -664,18 +647,21 @@
      * @return string                  Název CSS třídy
      */
     public static function getUserSuccessRateColor($value) {
+      $color = MSG_CSS_DEFAULT;
+
       if ($value !== null) {
         if ($value >= 90) {
-          return MSG_CSS_SUCCESS;
+          $color = MSG_CSS_SUCCESS;
         }
         elseif ($value >= 50) {
-          return MSG_CSS_WARNING;
+          $color = MSG_CSS_WARNING;
         }
-
-        return MSG_CSS_ERROR;
+        else {
+          $color = MSG_CSS_ERROR;
+        }
       }
 
-      return MSG_CSS_DEFAULT;
+      return $color;
     }
 
 
@@ -689,23 +675,35 @@
     public function getStatsText($count, $type) {
       $running = (PermissionsModel::getUserRole() == PERMISSION_ADMIN && !isset($_GET['section'])) ? 'běžící ' : '';
 
+      if (PermissionsModel::getUserRole() == PERMISSION_ADMIN && isset($_GET['section']) && $_GET['section'] == 'stats') {
+        $overall = ' celkem';
+
+        if ($count == 1) $new = 'nová ';
+        elseif ($count >= 2 && $count <= 4) $new = 'nové ';
+        else $new = 'nových ';
+      }
+      else {
+        $overall = '';
+        $new = '';
+      }
+
       if ($count == 1) {
         switch ($type) {
-          case 'campaignsCount': return $running . 'kampaň';
-          case 'recipientsCount': return 'registrovaný příjemce';
-          case 'volunteersCount': return 'dobrovolník';
-          case 'sentEmails': return 'odeslaný e-mail';
-          case 'websitesCount': return 'podvodná stránka';
+          case 'campaignsCount': return $new . $running . 'kampaň';
+          case 'recipientsCount': return $overall . 'registrovaný příjemce';
+          case 'volunteersCount': return 'dobrovolník' . $overall;
+          case 'sentEmails': return 'odeslaný e-mail' . $overall;
+          case 'websitesCount': return $new . 'podvodná stránka';
           case 'recievedEmails': return 'přijatý e-mail';
         }
       }
       elseif ($count >= 2 && $count <= 4) {
         switch ($type) {
-          case 'campaignsCount': return $running . 'kampaně';
-          case 'recipientsCount': return 'registrovaní příjemci';
-          case 'volunteersCount': return 'dobrovolníci';
-          case 'sentEmails': return 'odeslané e-maily';
-          case 'websitesCount': return 'podvodné stránky';
+          case 'campaignsCount': return $new . $running . 'kampaně';
+          case 'recipientsCount': return 'registrovaní příjemci' . $overall;
+          case 'volunteersCount': return 'dobrovolníci' . $overall;
+          case 'sentEmails': return 'odeslané e-maily' . $overall;
+          case 'websitesCount': return $new . 'podvodné stránky';
           case 'recievedEmails': return 'přijaté e-maily';
         }
       }
@@ -713,11 +711,11 @@
         if ($running) $running = 'běžících ';
 
         switch ($type) {
-          case 'campaignsCount': return $running . 'kampaní';
-          case 'recipientsCount': return 'registrovaných příjemců';
-          case 'volunteersCount': return 'dobrovolníků';
-          case 'sentEmails': return 'odeslaných e-mailů';
-          case 'websitesCount': return 'podvodných stránek';
+          case 'campaignsCount': return $new . $running . 'kampaní';
+          case 'recipientsCount': return 'registrovaných příjemců' . $overall;
+          case 'volunteersCount': return 'dobrovolníků' . $overall;
+          case 'sentEmails': return 'odeslaných e-mailů' . $overall;
+          case 'websitesCount': return $new . 'podvodných stránek';
           case 'recievedEmails': return 'přijatých e-mailů';
         }
       }
