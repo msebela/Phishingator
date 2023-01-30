@@ -13,6 +13,17 @@
 <?php for ($year = date('Y'); $year >= $statsStartYear; $year--): ?>
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
   <h3>Rok <?= $year ?></h3>
+
+  <div class="btn-toolbar mb-2 mb-md-0 align-items-center">
+    <button type="button" id="exportDropdown" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <span data-feather="save"></span>
+      Export
+    </button>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
+      <a href="#" class="dropdown-item" onclick="exportChart('<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-end-actions', 'chart-end-actions-<?= $year ?>', this)">Graf: Reakce uživatelů na cvičný phishing <code>[PNG]</code></a>
+      <a href="#" class="dropdown-item" onclick="exportChart('<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-end-actions-groups', 'chart-end-actions-groups-<?= $year ?>', this)">Graf: Reakce uživatelů dle oddělení <code>[PNG]</code></a>
+    </div>
+  </div>
 </div>
 
 <div class="card-group cards-stats pb-2 mb-3">

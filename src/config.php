@@ -253,8 +253,8 @@
 
 
   /* --- EXPORTY SOUBORŮ --- */
-  /** Prefix souborů exportovaných ze systému. */
-  define('PHISHING_CAMPAIGN_EXPORT_FILENAME', 'phishingator-kampan');
+  /** Prefix souborů exportovaných z Phishingatoru. */
+  define('PHISHING_CAMPAIGN_EXPORT_FILENAME', 'phishingator-campaign');
 
   /** Oddělovač používaný k oddělení hodnot v exportovaných CSV souborech. */
   define('PHISHING_CAMPAIGN_EXPORT_DELIMITER', ',');

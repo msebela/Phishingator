@@ -125,3 +125,8 @@ function setCaretToPos(input, pos) {
 function blurIdentity() {
   $('.identity').toggleClass('blur-text');
 }
+
+function exportChart(filename, chartName, link) {
+  link.download = filename + '.png';
+  link.href = document.getElementById(chartName).toDataURL('image/png', 1);
+}

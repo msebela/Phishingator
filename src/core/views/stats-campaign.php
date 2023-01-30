@@ -87,7 +87,7 @@
 <div class="d-flex flex-wrap justify-content-around mb-4">
   <div class="chart-wrapper sm">
     <h4>Konečné akce uživatelů v&nbsp;kampani</h4>
-    <canvas class="mt-4" id="campaign-end-actions-pie-chart"></canvas>
+    <canvas class="mt-4" id="chart-end-actions"></canvas>
 
     <p class="text-center mt-5">
       <a href="?<?= ACT_STATS_END_ACTIONS ?>#list" class="btn btn-lg btn-info mt-5 text-wrap" role="button">
@@ -100,13 +100,13 @@
   <div class="chart-wrapper">
     <h4>Konečné akce v&nbsp;kampani dle oddělení</h4>
     <div class="table-responsive">
-      <canvas class="mt-4" id="campaign-actions-bar-chart"></canvas>
+      <canvas class="mt-4" id="chart-end-actions-groups"></canvas>
     </div>
   </div>
 
   <div class="chart-wrapper sm">
     <h4>Provedené akce v&nbsp;kampani</h4>
-    <canvas class="mt-4" id="campaign-actions-pie-chart"></canvas>
+    <canvas class="mt-4" id="chart-end-actions-sum"></canvas>
 
     <p class="text-center mt-5">
       <a href="?<?= ACT_STATS_ALL_ACTIONS ?>#list" class="btn btn-lg btn-info mt-5 text-wrap" role="button">
@@ -130,15 +130,19 @@
     </div>
 
     <?php if (isset($capturedData)): ?>
-    <button id="exportDropdown" type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button type="button" id="exportDropdown" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <span data-feather="save"></span>
       Export
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
-      <a class="dropdown-item" href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-end-actions&amp;id=<?= $campaign['id_campaign'] ?>">Konečné akce uživatelů <code>[CSV]</code></a>
-      <a class="dropdown-item" href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all-users-actions&amp;id=<?= $campaign['id_campaign'] ?>">Všechna zaznamenaná data <code>[CSV]</code></a>
-      <a class="dropdown-item" href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=count-users-actions&amp;id=<?= $campaign['id_campaign'] ?>">Počet akcí každého uživatele <code>[CSV]</code></a>
-      <a class="dropdown-item" href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all&amp;id=<?= $campaign['id_campaign'] ?>">Vše v&nbsp;archivu <code>[ZIP]</code></a>
+      <a href="#" class="dropdown-item" onclick="exportChart('<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions', 'chart-end-actions', this)">Graf: Konečné akce uživatelů v&nbsp;kampani <code>[PNG]</code></a>
+      <a href="#" class="dropdown-item" onclick="exportChart('<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions-groups', 'chart-end-actions-groups', this)">Graf: Konečné akce v&nbsp;kampani dle oddělení <code>[PNG]</code></a>
+      <a href="#" class="dropdown-item" onclick="exportChart('<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions-sum', 'chart-end-actions-sum', this)">Graf: Provedené akce v&nbsp;kampani <code>[PNG]</code></a>
+      <div class="dropdown-divider"></div>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-end-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">Konečné akce uživatelů <code>[CSV]</code></a>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all-users-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">Všechna zaznamenaná data <code>[CSV]</code></a>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=count-users-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">Počet akcí každého uživatele <code>[CSV]</code></a>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">Všechna data v&nbsp;archivu <code>[ZIP]</code></a>
     </div>
     <?php endif; ?>
   </div>
@@ -298,7 +302,7 @@
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.2.0"></script>
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0"></script>
 <script>
-  let campaignChart1 = new Chart(document.getElementById('campaign-end-actions-pie-chart'), {
+  let campaignChart1 = new Chart(document.getElementById('chart-end-actions'), {
     plugins: [ChartDataLabels],
     type: 'doughnut',
     data: {
@@ -383,7 +387,7 @@
       }}
   });
 
-  let campaignChart2 = new Chart(document.getElementById('campaign-actions-pie-chart'), {
+  let campaignChart2 = new Chart(document.getElementById('chart-end-actions-sum'), {
     plugins: [ChartDataLabels],
     type: 'doughnut',
     data: {
@@ -432,7 +436,7 @@
       }}
   });
 
-  let campaignChart3 = new Chart(document.getElementById('campaign-actions-bar-chart'), {
+  let campaignChart3 = new Chart(document.getElementById('chart-end-actions-groups'), {
     type: 'bar',
     data: {
       labels: [<?= $_barChartLegendDesc ?>],
