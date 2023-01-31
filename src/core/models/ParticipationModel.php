@@ -106,7 +106,7 @@
         ':id_user' => $idUser
       ];
 
-      Logger::info('Úprava nastavení odebírání cvičných podvodných zpráv.', $participation);
+      Logger::info('Subscription to mock phishing emails modified.', $participation);
 
       Database::queryAffectedRows($query, $args);
 

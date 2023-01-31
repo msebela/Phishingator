@@ -586,14 +586,14 @@
       $campaign['id_by_user'] = PermissionsModel::getUserId();
       $campaign['date_added'] = date('Y-m-d H:i:s');
 
-      Logger::info('Vkládání nové kampaně.', $campaign);
+      Logger::info('New phishing campaign added.', $campaign);
 
       Database::insert($this->dbTableName, $campaign);
 
-      /* Zjištění ID nově vložené kampaně. */
+      // Zjištění ID nově vložené kampaně.
       $campaign['id'] = Database::getLastInsertId();
 
-      /* Vkládání příjemců kampaně do databáze. */
+      // Vkládání vybraných příjemců ke kampani.
       foreach ($this->recipients as $recipientEmail) {
         $this->insertRecipient($campaign['id'], $recipientEmail);
       }
@@ -626,7 +626,7 @@
 
           // Pokud se podařilo z LDAPu získat uživatelské jméno, dojde k nucené registraci nového uživatele.
           if (!empty($newUser->email) && !empty($newUser->username)) {
-            Logger::info('Registrace nového uživatele v rámci kampaně.', $username);
+            Logger::info('Registering a new user when creating a phishing campaign.', $username);
 
             $newUser->dbTableName = 'phg_users';
 
@@ -639,7 +639,7 @@
             $idUser = Database::getLastInsertId();
           }
           else {
-            Logger::error('Při registraci v rámci kampaně se nepodařilo načíst e-mail uživatele z LDAP.', $username);
+            Logger::error('Failed to retrieve a new users email from LDAP while creating a phishing campaign.', $username);
           }
         }
 
@@ -654,12 +654,12 @@
             'signed' => 1
           ];
 
-          Logger::info('Přihlášení uživatele do kampaně.', $recipient);
+          Logger::info('New recipient added to the phishing campaign.', $recipient);
 
           Database::insert('phg_campaigns_recipients', $recipient);
         }
         else {
-          Logger::error('Při registraci nového uživatele v rámci kampaně došlo k chybě.', $username);
+          Logger::error('Failed to add new recipient to the phishing campaign.', $username);
         }
       }
     }
@@ -683,7 +683,7 @@
           'signed' => 0
         ];
 
-        Logger::info('Odhlášení uživatele z kampaně.', $unsignRecipient);
+        Logger::info('Recipient removed from the phishing campaign.', $unsignRecipient);
 
         Database::insert('phg_campaigns_recipients', $unsignRecipient);
       }
@@ -698,7 +698,7 @@
     public function updateCampaign($id) {
       $campaign = $this->makeCampaign();
 
-      Logger::info('Úprava existující kampaně.', $campaign);
+      Logger::info('Phishing campaign modified.', $campaign);
 
       Database::update(
         $this->dbTableName,
@@ -751,12 +751,12 @@
       );
 
       if ($result == 0) {
-        Logger::warning('Snaha o smazání neexistující kampaně.', $id);
+        Logger::warning('Attempt to delete a non-existent phishing campaign.', $id);
 
         throw new UserError('Záznam vybraný ke smazání neexistuje.', MSG_ERROR);
       }
 
-      Logger::info('Smazání existující kampaně.', $id);
+      Logger::info('Phishing campaign deleted.', $id);
     }
 
 

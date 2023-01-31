@@ -178,7 +178,7 @@
         // Pokud uživatelské jméno obsahuje jiné, než alfanumerické znaky, tak to pravděpodobně není uživatelské jméno
         // používané v organizaci a nemá smysl jej ani ověřovat (i z bezpečnostního hlediska).
         if (!ctype_alnum($username)) {
-          Logger::warning('Snaha o použití uživatelského jména, které neobsahuje pouze alfanumerické znaky.', $username);
+          Logger::warning('Attempt to use a username that does not contain only alphanumeric characters.', $username);
 
           return false;
         }
@@ -262,7 +262,7 @@
           // Dočasné zablokování - nemožnost přistoupit zpět na podvodnou stránku po určitou dobu.
 
           Logger::warning(
-            'Zablokování nadlimitního počtu požadavků uživatele na podvodné stránce.',
+            'Blocking an excessive number of user requests on a phishing website.',
             ['id_campaign' => $idCampaign, 'id_user' => $idUser]
           );
 
@@ -284,7 +284,7 @@
 
         if ($args == null) {
           $args[] = self::getClientIp();
-          Logger::warning('Snaha o nepovolený přístup (s neplatnými argumenty) na podvodnou stránku.', $args);
+          Logger::warning('Unauthorized access to a phishing website (invalid user/campaign argument).', $args);
 
           header('Location: ' . WEB_BASE_URL);
           exit();
@@ -298,7 +298,7 @@
         // Kontrola existence záznamu.
         if (empty($campaign) || empty($user) || $campaignModel->isUserRecipient($args['id_campaign'], $user['id_user']) != 1) {
           $args[] = self::getClientIp();
-          Logger::warning('Snaha o nepovolený přístup na podvodnou stránku.', $args);
+          Logger::warning('Unauthorized access to a phishing website.', $args);
 
           header('Location: ' . WEB_BASE_URL);
           exit();
@@ -307,7 +307,7 @@
         // Stránka bude přístupná a bude zaznamenávat aktivitu od/do zvoleného data, přičemž hraniční čas konečného data je 23:59:59.
         if (strtotime($campaign['active_since']) > strtotime('now') || strtotime($campaign['active_to'] . ' 23:59:59') < strtotime('now')) {
           $args[] = self::getClientIp();
-          Logger::warning('Snaha o přístup na podvodnou stránku u kampaně, která není aktivní.', $args);
+          Logger::warning('Invalid access a phishing website for a phishing campaign that is not active.', $args);
 
           header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
           exit();
@@ -331,7 +331,7 @@
         $this->processPreview();
       }
       else {
-        Logger::warning('Snaha o nepovolený přístup (bez argumentů) na podvodnou stránku.', self::getClientIp());
+        Logger::warning('Unauthorized access to a phishing website (without arguments).', self::getClientIp());
 
         header('Location: ' . WEB_BASE_URL);
         exit();
@@ -402,7 +402,7 @@
       // Argumenty neodpovídají předpokladu.
       if ($args == null) {
         $args[] = self::getClientIp();
-        Logger::warning('Snaha o nepovolený přístup na náhled podvodné stránky.', $args);
+        Logger::warning('Unauthorized access to preview a phishing website (invalid user/campaign argument).', $args);
 
         header('Location: ' . WEB_URL);
         exit();
@@ -426,7 +426,7 @@
       // V databázi neexistuje ticket k přístupu na náhled podvodné stránky.
       if (empty($user) || !$previewAccess) {
         $args[] = self::getClientIp();
-        Logger::warning('Snaha o nepovolený přístup na náhled podvodné stránky (podvržení neplatných parametrů).', $args);
+        Logger::warning('Unauthorized access to preview a phishing website (non-existent ticket).', $args);
 
         header('Location: ' . WEB_URL);
         exit();
@@ -434,7 +434,7 @@
       // Pokud platnost ticketu k přístupu na náhled podvodné stránky vypršela.
       elseif (strtotime('now') > strtotime($previewAccess['active_to'])) {
         $args[] = self::getClientIp();
-        Logger::warning('Snaha o přístup na náhled podvodné stránky s vypršelým ticketem.', $args);
+        Logger::warning('Invalid access a preview of a phishing website with an expired ticket.', $args);
 
         echo 'Interval pro zobrazení náhledu podvodné stránky vypršel.';
         exit();
@@ -445,11 +445,11 @@
         // Vložení informační hlavičky s poznámkou, že se jedná o náhled podvodné stránky.
         require CORE_DOCUMENT_ROOT . '/' . CORE_DIR_VIEWS . '/preview-phishing-website' . CORE_VIEWS_FILE_EXTENSION;
 
-        Logger::info('Přístup na náhled podvodné stránky (správce testů/administrátor).', $args);
+        Logger::info('Access to a preview of the phishing website.', $args);
       }
       else {
         $args[] = self::getClientIp();
-        Logger::warning('Snaha o nepovolený přístup na náhled podvodné stránky (nedostatečné oprávnění).', $args);
+        Logger::warning('Unauthorized access to preview a phishing website (insufficient authorization).', $args);
 
         header('Location: ' . WEB_URL);
         exit();

@@ -167,7 +167,7 @@
 
       $this->isExpressionUnique();
 
-      Logger::info('Vkládání nové indicie.', $indication);
+      Logger::info('New phishing sign added.', $indication);
 
       Database::insert($this->dbTableName, $indication);
     }
@@ -184,7 +184,7 @@
 
       $this->isExpressionUnique($id);
 
-      Logger::info('Úprava existující indicie.', $indication);
+      Logger::info('Phishing sign modified.', $indication);
 
       Database::update(
         $this->dbTableName,
@@ -210,12 +210,12 @@
       );
 
       if ($result == 0) {
-        Logger::warning('Snaha o smazání neexistující indicie.', $id);
+        Logger::warning('Attempt to delete a non-existent phishing sign.', $id);
 
         throw new UserError('Záznam vybraný ke smazání neexistuje.', MSG_ERROR);
       }
 
-      Logger::info('Smazání existující indicie.', $id);
+      Logger::info('Phishing sign deleted.', $id);
     }
 
 

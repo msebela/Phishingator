@@ -164,7 +164,7 @@
      */
     public function isValidCsrfToken($postData) {
       if (!isset($postData['csrf-token']) || $postData['csrf-token'] !== PermissionsModel::getCsrfToken()) {
-        Logger::error('Neoprávněná aktivita.', $postData);
+        Logger::error('Unauthorized activity (invalid CSRF token).', $postData);
 
         throw new UserError('Zaznamenána neoprávněná akce! Její provedení bylo zablokováno.', MSG_ERROR);
       }

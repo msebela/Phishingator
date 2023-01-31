@@ -17,7 +17,7 @@
           $args = WebsitePrependerModel::parseWebsiteUrl($_GET['id']);
 
           if ($args == null) {
-            Logger::warning('Snaha o nepovolený přístup na stránku o testovacím phishingovém e-mailu.', [$args, $_GET]);
+            Logger::warning('Unauthorized access an educational site (invalid user/campaign argument).', [$args, $_GET]);
 
             header('Location: ' . WEB_URL);
             exit();
@@ -61,7 +61,7 @@
       // Kontrola existence záznamu.
       if (empty($campaign) || empty($user) || $campaignModel->isUserRecipient($idCampaign, $user['id_user']) != 1) {
         Logger::warning(
-          'Snaha o nepovolený přístup na stránku o testovacím phishingovém e-mailu (podstrčené parametry).',
+          'Unauthorized access an educational site (invalid arguments).',
           [$idCampaign, $idUser, $_GET]
         );
 
@@ -126,7 +126,7 @@
         'browser_fingerprint' => $_SERVER['HTTP_USER_AGENT']
       ];
 
-      Logger::info('Přístup na stránku o testovacím phishingovém e-mailu.', $record);
+      Logger::info('Access to the educational site.', $record);
       Database::insert('phg_captured_data_end', $record);
     }
   }

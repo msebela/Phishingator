@@ -91,12 +91,12 @@
 
       // Pokud se e-mail podařilo úspěšně odeslat, uložit do databáze datum odeslání.
       if ($result == 1) {
-        Logger::info('Úspěšné odeslání e-mailu s notifikací.', $record);
+        Logger::info('Notification email sent successfully.', $record);
 
         $record['date_sent'] = date('Y-m-d H:i:s');
       }
       else {
-        Logger::error('Neúspěšné odeslání e-mailu s notifikací.', $record);
+        Logger::error('Failure to send notification email.', $record);
       }
 
       Database::insert('phg_sent_notifications', $record);

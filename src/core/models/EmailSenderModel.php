@@ -120,14 +120,14 @@
 
       // Pokud se e-mail podařilo úspěšně odeslat, uložit do databáze datum odeslání.
       if ($result == 1) {
-        Logger::info('Úspěšné odeslání e-mailu.', $record);
+        Logger::info('Phishing email sent successfully.', $record);
 
         $record['date_sent'] = date('Y-m-d H:i:s');
 
         Database::insert('phg_sent_emails', $record);
       }
       else {
-        Logger::error('Neúspěšné odeslání e-mailu.', $record);
+        Logger::error('Failure to send phishing email.', $record);
       }
     }
 
@@ -145,7 +145,7 @@
         $newLimit = (($user['email_limit'] > 0) ? $user['email_limit'] - 1 : 0);
 
         Logger::info(
-          'Snížení zbývajícího limitu obdržených podvodných zpráv uživatele.',
+          'Reduced the remaining limit of phishing emails received by the user.',
           ['id_user' => $idUser, 'email_limit' => $newLimit]
         );
 

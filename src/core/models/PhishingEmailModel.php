@@ -161,7 +161,7 @@
       $email['id_by_user'] = $_SESSION['user']['id'];
       $email['date_added'] = date('Y-m-d H:i:s');
 
-      Logger::info('Vkládání nového podvodného e-mailu.', $email);
+      Logger::info('New phishing email added.', $email);
 
       Database::insert($this->dbTableName, $email);
 
@@ -180,7 +180,7 @@
 
       $this->isPhishingEmailUsedByTestManager($id);
 
-      Logger::info('Úprava existujícího podvodného e-mailu.', $email);
+      Logger::info('Phishing email modified.', $email);
 
       Database::update(
         $this->dbTableName,
@@ -212,12 +212,12 @@
       );
 
       if ($result == 0) {
-        Logger::warning('Snaha o smazání neexistujícího podvodného e-mailu.', $id);
+        Logger::warning('Attempt to delete a non-existent phishing email.', $id);
 
         throw new UserError('Záznam vybraný ke smazání neexistuje.', MSG_ERROR);
       }
 
-      Logger::info('Smazání existujícího podvodného e-mailu.', $id);
+      Logger::info('Phishing email deleted.', $id);
     }
 
 

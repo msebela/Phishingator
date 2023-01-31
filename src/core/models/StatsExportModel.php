@@ -16,7 +16,7 @@
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     public static function exportEndActions($id, $filepath = null) {
-      Logger::info('Žádost o export dat (konečné akce uživatelů) u kampaně.', $id);
+      Logger::info('Request to export phishing campaign data (users end actions).', $id);
 
       $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-end-actions';
       $csvData = CampaignModel::getUsersEndActionInCampaign($id);
@@ -47,7 +47,7 @@
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     public static function exportCountUsersActions($id, $filepath = null) {
-      Logger::info('Žádost o export dat (počet jednotlivých akcí každého uživatele) u kampaně.', $id);
+      Logger::info('Request to export phishing campaign data (count users actions).', $id);
 
       $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-count-users-actions';
       $csvData = [];
@@ -121,7 +121,7 @@
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     public static function exportAllCapturedData($id, $filepath = null) {
-      Logger::info('Žádost o export všech zaznamenaných dat u kampaně.', $id);
+      Logger::info('Request to export all phishing campaign data.', $id);
 
       $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-all-actions';
       $csvData = CampaignModel::getCapturedDataInCampaign($id);
@@ -152,7 +152,7 @@
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     public static function exportAllToZipArchive($idCampaign) {
-      Logger::info('Žádost o vytvoření archivu se všemi zaznamenanými daty o kampani.', $idCampaign);
+      Logger::info('Request to export a ZIP archive with all phishing campaign data.', $idCampaign);
 
       $zip = new ZipArchive();
 

@@ -50,7 +50,7 @@
       }
 
       if (!$this->ldapConnection || !$ldapBind) {
-        Logger::error('Nepodařilo se autentizovaně připojit k LDAP.');
+        Logger::error('Failed to authenticate to LDAP.');
       }
       else {
         $connected = true;
@@ -94,7 +94,7 @@
 
       if (!$found) {
         Logger::error(
-          'Nepodařilo se získat data z LDAP.',
+          'Failed to retrieve data from LDAP.',
           ['ldap_dn' => $ldapDn, 'filter' => $filter]
         );
       }

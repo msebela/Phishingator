@@ -234,7 +234,7 @@
       $group['id_by_user'] = PermissionsModel::getUserId();
       $group['date_added'] = date('Y-m-d H:i:s');
 
-      Logger::info('Vkládání nové uživatelské skupiny.', $group);
+      Logger::info('New user group added.', $group);
 
       Database::insert($this->dbTableName, $group);
     }
@@ -248,7 +248,7 @@
     public function updateUserGroup($id) {
       $group = $this->makeUserGroup();
 
-      Logger::info('Úprava existující uživatelské skupiny.', $group);
+      Logger::info('User group modified.', $group);
 
       Database::update(
         $this->dbTableName,
@@ -269,7 +269,7 @@
     public function deleteUserGroup($id) {
       // Ověření, zdali se uživatel nepokouší smazat rodičovskou (tj. základní) skupinu.
       if ($this->isGroupParent($id) != 0) {
-        Logger::warning('Snaha o smazání rodičovské, uživatelské skupiny.', $id);
+        Logger::warning('Attempt to delete root user group.', $id);
 
         throw new UserError('Záznam vybraný ke smazání neexistuje.', MSG_ERROR);
       }
@@ -299,18 +299,18 @@
         );
 
         if ($result == 0) {
-          Logger::warning('Snaha o smazání neexistující uživatelské skupiny.', $id);
+          Logger::warning('Attempt to delete a non-existent user group.', $id);
 
           throw new UserError('Záznam vybraný ke smazání neexistuje.', MSG_ERROR);
         }
       }
       else {
-        Logger::error('Při přesouvání uživatelů u uživatelské skupiny došlo k chybě.', $id);
+        Logger::error('Failed to move users to another user group.', $id);
 
         throw new UserError('Během přesouvání uživatelů došlo k chybě.', MSG_ERROR);
       }
 
-      Logger::info('Smazání existující uživatelské skupiny.', $id);
+      Logger::info('User group deleted.', $id);
     }
 
 

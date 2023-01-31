@@ -17,7 +17,7 @@
       // Pokud na poštovní server odešel daný počet e-mailů, uspat na určitou dobu skript,
       // aby poštovní server e-maily mezitím odbavil.
       if ($countSentMails >= EMAIL_SENDER_EMAILS_PER_CYCLE) {
-        Logger::info('Odesláno ' . EMAIL_SENDER_EMAILS_PER_CYCLE . ' e-mailů, skript bude uspán.');
+        Logger::info(EMAIL_SENDER_EMAILS_PER_CYCLE . ' emails sent. Script will be suspended for ' . EMAIL_SENDER_DELAY_MS . ' seconds.');
 
         // Uspání skriptu.
         usleep(EMAIL_SENDER_DELAY_MS * 1000);

@@ -18,7 +18,7 @@
 
       // Identita (e-mail) získaná z SSO.
       if (filter_var($identity, FILTER_VALIDATE_EMAIL)) {
-        Logger::info('Dobrovolná registrace nového uživatele.', $identity);
+        Logger::info('Voluntary new user registration.', $identity);
 
         $user->dbTableName = 'phg_users';
 
@@ -36,7 +36,7 @@
 
       // Pokud se nepodaří získat informace o uživateli z LDAP.
       if (!$registrated) {
-        Logger::error('Při registraci se nepodařilo načíst informace o uživateli z LDAP.', $identity);
+        Logger::error('Failed to retrieve data about user from LDAP during registration.', $identity);
 
         echo 'Nepodařilo se získat informace o Vaší identitě. Kontaktujte, prosím, administrátora.';
         exit();
@@ -88,7 +88,7 @@
 
       // Ověření, zdali získaná identita není prázdná, tzn. zdali SSO něco předalo.
       if ($identity == null) {
-        Logger::error('Při přihlašování se nepodařilo získat identitu uživatele z SSO.');
+        Logger::error('Failed to retrieve user identity from SSO.');
 
         echo 'Nepodařilo se získat Vaši identitu z SSO. Kontaktujte, prosím, administrátora.';
         exit();
@@ -97,7 +97,7 @@
       // Ověření, zdali je získaná identita skutečně z dané organizace
       // a nejedná se o validní přihlášení, ale pro jinou organizaci.
       if (!$this->isRemoteUserFromOrganization($identity)) {
-        Logger::error('Identita uživatele předaná z SSO neodpovídá organizaci, pro kterou byla instance vytvořena.', $identity);
+        Logger::error('The user identity provided by SSO does not match this Phishingator instance.', $identity);
 
         echo 'Jste přihlášeni jinou identitou, která nespadá do organizace ' . Controller::escapeOutput(getenv('ORG_DOMAIN')) . '. Odhlaste se, prosím, a přihlaste správnou identitou.';
         exit();
@@ -147,7 +147,7 @@
      * @param int $idUser              ID uživatele
      */
     private function logLogin($idUser) {
-      Logger::info('Přihlášení uživatele do systému.', $idUser);
+      Logger::info('Successful user login.', $idUser);
 
       $record = [
         'id_user' => $idUser,
@@ -186,7 +186,7 @@
       }
       else {
         Logger::warning(
-          'Snaha o změnu role u neoprávněného uživatele.',
+          'Unauthorized attempt to change the user role.',
           ['id_user' => self::getUserId(), 'new_role' => $newRole]
         );
       }

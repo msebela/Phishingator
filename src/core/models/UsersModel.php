@@ -503,7 +503,7 @@
      */
     public static function changeUserGroup($idUser, $idGroup) {
       Logger::info(
-        'Změna uživatelské skupiny uživateli.',
+        'Change the user group of a user.',
         ['id_user' => $idUser, 'id_group' => $idGroup]
       );
 
@@ -581,7 +581,7 @@
         $user['id_by_user'] = PermissionsModel::getUserId();
         $user['date_added'] = date('Y-m-d H:i:s');
 
-        Logger::info('Vkládání nového uživatele.', $user);
+        Logger::info('New user added.', $user);
 
         Database::insert($this->dbTableName, $user);
         $registrated = true;
@@ -604,7 +604,7 @@
 
       $this->isEmailUnique($id);
 
-      Logger::info('Úprava existujícího uživatele.', $user);
+      Logger::info('User modified.', $user);
 
       Database::update(
         $this->dbTableName,
@@ -640,7 +640,7 @@
               );
 
               Logger::info(
-                'Automatická deaktivace účtu uživatele (uživatel již není v organizaci) v databázi na základě dat v LDAP.',
+                'Deactivated user account based on the current data in LDAP.',
                 [$user['id_user'], $user['email'], $ldapEmail]
               );
             }
@@ -653,7 +653,7 @@
               );
 
               Logger::info(
-                'Aktualizace e-mailu uživatele v databázi na základě dat v LDAP.',
+                'Updated the users email based on the current data in LDAP.',
                 [$user['id_user'], $user['email'], $ldapEmail]
               );
             }
@@ -668,7 +668,7 @@
               );
 
               Logger::info(
-                'Aktualizace členství uživatele ve skupině v databázi na základě dat v LDAP.',
+                'Updated the users group based on the current data in LDAP.',
                 [$user['id_user'], $user['primary_group'], $ldapGroup]
               );
             }
@@ -700,12 +700,12 @@
       );
 
       if ($result == 0) {
-        Logger::warning('Snaha o smazání neexistujícího uživatele.', $id);
+        Logger::warning('Attempt to delete a non-existent user.', $id);
 
         throw new UserError('Záznam vybraný ke smazání neexistuje.', MSG_ERROR);
       }
 
-      Logger::info('Smazání existujícího uživatele.', $id);
+      Logger::info('User deleted.', $id);
     }
 
 

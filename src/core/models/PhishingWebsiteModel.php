@@ -247,7 +247,7 @@
 
       $this->isURLUnique();
 
-      Logger::info('Vkládání nové podvodné stránky.', $phishingWebsite);
+      Logger::info('New phishing website added.', $phishingWebsite);
 
       Database::insert($this->dbTableName, $phishingWebsite);
     }
@@ -289,7 +289,7 @@
         }
       }
 
-      Logger::info('Úprava existující podvodné stránky.', $phishingWebsite);
+      Logger::info('Phishing website modified.', $phishingWebsite);
 
       Database::update(
         $this->dbTableName,
@@ -324,12 +324,12 @@
       );
 
       if ($result == 0) {
-        Logger::info('Snaha o smazání neexistující podvodné stránky.', $id);
+        Logger::info('Attempt to delete a non-existent phishing website.', $id);
 
         throw new UserError('Záznam vybraný ke smazání neexistuje.', MSG_ERROR);
       }
 
-      Logger::info('Smazání existující podvodné stránky.', $id);
+      Logger::info('Phishing website deleted.', $id);
     }
 
 
@@ -384,7 +384,7 @@
     private function copyConfFileTemplate() {
       if (!file_exists(PHISHING_WEBSITE_TEMPLATE_CONF_FILE)) {
         Logger::error(
-          'Na serveru není vzorová šablona pro konfiguraci podvodné stránky!',
+          'Unable to find sample site configuration template on the server.',
           PHISHING_WEBSITE_TEMPLATE_CONF_FILE
         );
 
@@ -395,7 +395,7 @@
 
       if (!is_writable(PHISHING_WEBSITE_APACHE_SITES_DIR)) {
         Logger::error(
-          'Adresář pro vložení šablony konfiguračního souboru podvodné stránky není zapisovatelný!',
+          'The destination directory for inserting the sample phishing website configuration file is not writable.',
           PHISHING_WEBSITE_APACHE_SITES_DIR
         );
 
@@ -408,7 +408,7 @@
 
       if (!copy(PHISHING_WEBSITE_TEMPLATE_CONF_FILE, $confFilepath)) {
         Logger::error(
-          'Chyba při kopírování šablony konfiguračního souboru podvodné stránky!',
+          'Failed to create a copy of the sample site configuration template.',
           $confFilepath
         );
 
@@ -464,7 +464,7 @@
 
           if (!file_put_contents($apacheConfigFileName, $apacheConfig)) {
             Logger::error(
-              'Chyba při vytváření konfiguračního souboru podvodné stránky!', $apacheConfigFileName
+              'Failed to create a phishing website configuration file.', $apacheConfigFileName
             );
 
             throw new UserError(
@@ -473,16 +473,13 @@
           }
         }
         else {
-          Logger::error(
-            'Neexistující šablona pro vytvoření konfiguračního souboru podvodné stránky!',
-            $apacheConfigFileName
-          );
+          Logger::error('A non-existent phishing website template has been selected.', $apacheConfigFileName);
 
           throw new UserError('Zvolená šablona neexistuje.', MSG_ERROR);
         }
       }
       else {
-        Logger::error('Na serveru nebyl nalezen konfigurační soubor podvodné stránky!', $apacheConfigFileName);
+        Logger::error('Failed to find sample phishing website configuration on the server.', $apacheConfigFileName);
 
         throw new UserError('Nenalezen soubor se šablonou pro konfiguraci podvodné stránky.', MSG_ERROR);
       }
