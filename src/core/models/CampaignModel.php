@@ -125,12 +125,12 @@
      * @param int $idCampaign          ID kampaně
      * @return bool                    TRUE pokud uživatel právo k přístupu ke kampani má, jinak FALSE.
      */
-    private function isCampaignInUserGroup($idCampaign) {
+    private static function isCampaignInUserGroup($idCampaign) {
       $model = new UsersModel();
       $user = $model->getUser(PermissionsModel::getUserId());
       $userPermission = PermissionsModel::getUserPermission();
 
-      /* Spouštění z CRONu. */
+      // Spouštění z CRONu.
       if (empty($user)) {
         return true;
       }
@@ -165,8 +165,8 @@
      * @return array|null              Pole s informace o kampani nebo NULL, pokud uživatel k dané kampani
      *                                 nemá právo.
      */
-    public function getCampaignDetail($id) {
-      if ($this->isCampaignInUserGroup($id) !== true) {
+    public static function getCampaignDetail($id) {
+      if (self::isCampaignInUserGroup($id) !== true) {
         return null;
       }
 
@@ -202,11 +202,11 @@
         $result['url_protocol_color'] = PhishingWebsiteModel::getColorURLProtocol($urlProtocol);
         $result['url'] = mb_substr($result['url'], mb_strlen($urlProtocol));
 
-        $result['count_recipients'] = $this->getCountOfRecipients($result['id_campaign']);
+        $result['count_recipients'] = self::getCountOfRecipients($result['id_campaign']);
         $result['sent_emails'] = EmailSenderModel::getCountOfSentEmailsInCampaign($result['id_campaign']);
 
-        $result['active_since_color'] = $this->getColorDateByToday($result['active_since'], 'date-since');
-        $result['active_to_color'] = $this->getColorDateByToday($result['active_to'], 'date-to');
+        $result['active_since_color'] = self::getColorDateByToday($result['active_since'], 'date-since');
+        $result['active_to_color'] = self::getColorDateByToday($result['active_to'], 'date-to');
       }
 
       return $result;
@@ -329,6 +329,63 @@
               WHERE ' . $query . '
               AND `visible` = 1
       ', $year);
+    }
+
+
+    /**
+     * Vrátí seznam všech kampaní, u kterých je možné zahájit rozesílání e-mailů.
+     *
+     * @return mixed                   Pole kampaní
+     */
+    public static function getActiveCampaignsToSend() {
+      return Database::queryMulti('
+              SELECT `id_campaign`
+              FROM `phg_campaigns`
+              WHERE `time_send_since` <= TIME(NOW())
+              AND `active_since` <= CURDATE()
+              AND `active_to` >= CURDATE()
+              AND `visible` = 1
+      ');
+    }
+
+
+    /**
+     * Vrátí seznam všech nově (k dnešnímu dni) přidaných kampaní.
+     *
+     * @return mixed                   Pole obsahující informace o nově přidaných kampaní.
+     */
+    public static function getNewAddedCampaigns() {
+      return Database::queryMulti('
+              SELECT `id_campaign`,
+              `username`,
+              DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y (%k:%i)") AS `date_added`
+              FROM `phg_campaigns`
+              JOIN `phg_users`
+              ON phg_campaigns.id_by_user = phg_users.id_user
+              WHERE DATE(phg_campaigns.date_added) = CURDATE()
+              AND phg_campaigns.visible = 1
+      ');
+    }
+
+
+    /**
+     * Vrátí seznam všech kampaní, které ke včerejšímu dni skončily.
+     *
+     * @return mixed                   Pole obsahující informace o všech kampaních,
+     *                                 které ke včerejšímu dni vypršely.
+     */
+    public static function getFinishedCampaigns() {
+      return Database::queryMulti('
+              SELECT `id_campaign`, phg_campaigns.id_by_user, `active_to`,
+              `username`, `email`,
+              DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y (%k:%i)") AS `date_added`,
+              DATE_FORMAT(active_to, "%e. %c. %Y") AS `active_to`
+              FROM `phg_campaigns`
+              JOIN `phg_users`
+              ON phg_campaigns.id_by_user = phg_users.id_user
+              WHERE `active_to` = DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+              AND phg_campaigns.visible = 1
+      ');
     }
 
 
@@ -859,6 +916,27 @@
 
 
     /**
+     * Přidá do databáze záznam o tom, že uživatel v dané kampani zatím žádným způsobem nereagoval.
+     *
+     * @param int $idCampaign          ID kampaně
+     * @param int $idUser              ID uživatele
+     * @param string $usedEmail        E-mail uživatele použitý v kampani
+     * @param string $usedGroup        Skupina, která uživateli během kampaně náleží
+     */
+    public static function insertNoReactionRecord($idCampaign, $idUser, $usedEmail, $usedGroup) {
+      $record = [
+        'id_campaign' => $idCampaign,
+        'id_user' => $idUser,
+        'id_action' => CAMPAIGN_NO_REACTION_ID,
+        'used_email' => $usedEmail,
+        'used_group' => $usedGroup
+      ];
+
+      Database::insert('phg_captured_data', $record);
+    }
+
+
+    /**
      * Vrátí (z databáze) informace o akci, která se stane po odeslání formuláře na podvodné stránce.
      *
      * @param int $id                  ID akce po odeslání formuláře
@@ -935,7 +1013,7 @@
      * @param $dateSinceOrTo           "date-since" pro datum startu, "date-to" pro datum konce kampaně.
      * @return string|null             Název CSS třídy nebo NULL.
      */
-    private function getColorDateByToday($date, $dateSinceOrTo) {
+    private static function getColorDateByToday($date, $dateSinceOrTo) {
       $today = strtotime(date('Y-m-d'));
       $date = strtotime($date);
 

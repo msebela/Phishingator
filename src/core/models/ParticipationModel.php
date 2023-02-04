@@ -115,6 +115,33 @@
 
 
     /**
+     * Sníží uživatelem nastavený limit pro příjem cvičných podvodných zpráv o jedna.
+     *
+     * @param int $idUser              ID uživatele
+     */
+    public static function decrementEmailLimit($idUser) {
+      $user = UsersModel::getUserEmailLimit($idUser);
+
+      if (!empty($user) && $user['email_limit'] != null) {
+        // Nastavení nového limitu a kontrola, zdali nejde limit do záporných čísel.
+        $newLimit = ($user['email_limit'] > 0) ? $user['email_limit'] - 1 : 0;
+
+        Database::update(
+          'phg_users',
+          ['email_limit' => $newLimit],
+          'WHERE `id_user` = ? AND `visible` = 1',
+          $idUser
+        );
+
+        Logger::info(
+          'Reduced the remaining limit of phishing emails received by the user.',
+          ['id_user' => $idUser, 'email_limit' => $newLimit]
+        );
+      }
+    }
+
+
+    /**
      * Vloží do databáze záznam o změně nastavení týkající se přihlášení k odebírání cvičných podvodných zpráv.
      *
      * @param int $idUser              ID uživatele
