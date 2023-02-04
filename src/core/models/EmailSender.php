@@ -100,20 +100,23 @@
      *                                 popř. nastavený na 0)
      */
     protected function sleepSender($countSentMails) {
+      $newCountSentEmails = 0;
+
       // Pokud na poštovní server odešel daný počet e-mailů, uspat na určitou dobu skript,
       // aby poštovní server e-maily mezitím odbavil.
       if ($countSentMails >= EMAIL_SENDER_EMAILS_PER_CYCLE) {
-        Logger::info(EMAIL_SENDER_EMAILS_PER_CYCLE . ' emails sent. Script will be suspended for ' . EMAIL_SENDER_DELAY_MS . ' seconds.');
+        Logger::info(EMAIL_SENDER_EMAILS_PER_CYCLE . ' emails sent. Script will be suspended for ' . (EMAIL_SENDER_DELAY_MS / 1000) . ' seconds.');
 
         // Uspání skriptu.
-        usleep(EMAIL_SENDER_DELAY_MS * 1000);
+        usleep(EMAIL_SENDER_DELAY_MS);
 
         // Prodloužení maximální doby běhu skriptu.
         set_time_limit(EMAIL_SENDER_CPU_TIME_S);
-
-        return 0;
+      }
+      else {
+        $newCountSentEmails = $countSentMails + 1;
       }
 
-      return $countSentMails + 1;
+      return $newCountSentEmails;
     }
   }

@@ -372,10 +372,10 @@
   /* --- ODESÍLÁNÍ E-MAILŮ --- */
   /* Maximální počet e-mailů, které se pošlou v jedné iteraci cyklu (poté se skript na určitou dobu pozastaví,
      viz další konstanta). */
-  define('EMAIL_SENDER_EMAILS_PER_CYCLE', 3);
+  define('EMAIL_SENDER_EMAILS_PER_CYCLE', 5);
 
   /* Zpoždění mezi tím, než se pošle další počet (resp. sada) e-mailů (viz předchozí konstanta). */
-  define('EMAIL_SENDER_DELAY_MS', 1000);
+  define('EMAIL_SENDER_DELAY_MS', 2000);
 
   /* O kolik sekund déle bude moct skript běžet poté, co byl pozastaven (viz předchozí konstanta). */
   define('EMAIL_SENDER_CPU_TIME_S', 10);
