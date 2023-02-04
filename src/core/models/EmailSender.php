@@ -1,10 +1,96 @@
 <?php
+  use PHPMailer\PHPMailer\PHPMailer;
+  use PHPMailer\PHPMailer\SMTP;
+
   /**
-   * Třída sdružující obecné funkce týkající se odesílání e-mailů.
+   * Třída sdružující obecné metody týkající se odesílání e-mailů.
    *
    * @author Martin Šebela
    */
   class EmailSender {
+    /**
+     * @var PHPMailer   Instance třídy PHPMailer
+     */
+    protected PHPMailer $mailer;
+
+
+    /**
+     * Konstruktor pro inicializaci instance třídy PHPMailer.
+     *
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
+    public function __construct() {
+      $this->mailer = $this->getPHPMailerInstance();
+    }
+
+
+    /**
+     * Vytvoří novou instanci třídy PHPMailer společně s nastavením společným pro všechny odesílané e-maily.
+     *
+     * @return PHPMailer               Instance třídy PHPMailer
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
+    protected function getPHPMailerInstance() {
+      $mailer = new PHPMailer;
+
+      if (!empty(getenv('SMTP_HOST')) && !empty(getenv('SMTP_PORT'))) {
+        $mailer->isSMTP();
+
+        $mailer->Host = getenv('SMTP_HOST');
+        $mailer->Port = getenv('SMTP_PORT');
+
+        if (!empty(getenv('SMTP_USERNAME')) && !empty(getenv('SMTP_PASSWORD'))) {
+          $mailer->SMTPAuth = true;
+
+          if (getenv('SMTP_TLS')) {
+            $mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+          }
+
+          // Neuzavírat SMTP spojení po odeslání každého e-mailu.
+          $mailer->SMTPKeepAlive = true;
+
+          $mailer->Username = getenv('SMTP_USERNAME');
+          $mailer->Password = getenv('SMTP_PASSWORD');
+        }
+      }
+
+      $mailer->CharSet = 'UTF-8';
+      $mailer->Encoding = 'base64';
+
+      // K odstranění názvu klienta, který e-mail zaslal.
+      // SMTP::DEBUG_OFF = off (for production use)
+      $mailer->SMTPDebug = SMTP::DEBUG_OFF;
+      $mailer->XMailer = ' ';
+
+      // Speciální hlavička určená k identifikaci cvičného phishingu z tohoto systému.
+      $mailer->addCustomHeader(PHISHING_EMAIL_HEADER_ID, PHISHING_EMAIL_HEADER_VALUE);
+
+      return $mailer;
+    }
+
+
+    /**
+     * Odešle e-mail v rámci instance třídy PHPMailer.
+     *
+     * @param string $senderEmail      E-mail odesílatele
+     * @param string $senderName       Jméno odesílatele
+     * @param string $recipientEmail   E-mail příjemce
+     * @param string $subject          Předmět e-mailu
+     * @param string $body             Tělo e-mailu
+     * @return bool                    Výsledek odeslání e-mailu
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
+    protected function sendEmail($senderEmail, $senderName, $recipientEmail, $subject, $body) {
+      $this->mailer->setFrom($senderEmail, $senderName);
+      $this->mailer->addAddress($recipientEmail);
+
+      $this->mailer->Subject = $subject;
+      $this->mailer->Body = $body;
+
+      return $this->mailer->send();
+    }
+
+
     /**
      * Pokud na poštovní server odejde určitý počet e-mailů, uspí na určitou dobu skript, aby poštovní server
      * e-maily mezitím odbavil.

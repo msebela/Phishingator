@@ -1,83 +1,10 @@
 <?php
-  use PHPMailer\PHPMailer\PHPMailer;
-  use PHPMailer\PHPMailer\SMTP;
-
   /**
    * Třída řešící odesílání e-mailů a zjišťování informací o již odeslaných e-mailech.
    *
    * @author Martin Šebela
    */
   class EmailSenderModel extends EmailSender {
-
-
-    /**
-     * Vytvoří novou instanci třídy PHPMailer společně s nastavením společným pro všechny odesílané e-maily.
-     *
-     * @return PHPMailer               Instance třídy PHPMailer
-     * @throws \PHPMailer\PHPMailer\Exception
-     */
-    public static function getPHPMailerInstance() {
-      $mailer = new PHPMailer;
-
-      if (!empty(getenv('SMTP_HOST')) && !empty(getenv('SMTP_PORT'))) {
-        $mailer->isSMTP();
-
-        $mailer->Host = getenv('SMTP_HOST');
-        $mailer->Port = getenv('SMTP_PORT');
-
-        if (!empty(getenv('SMTP_USERNAME')) && !empty(getenv('SMTP_PASSWORD'))) {
-          $mailer->SMTPAuth = true;
-
-          if (getenv('SMTP_TLS')) {
-            $mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-          }
-
-          // Neuzavírat SMTP spojení po odeslání každého e-mailu.
-          $mailer->SMTPKeepAlive = true;
-
-          $mailer->Username = getenv('SMTP_USERNAME');
-          $mailer->Password = getenv('SMTP_PASSWORD');
-        }
-      }
-
-      $mailer->CharSet = 'UTF-8';
-      $mailer->Encoding = 'base64';
-
-      // K odstranění názvu klienta, který e-mail zaslal.
-      // SMTP::DEBUG_OFF = off (for production use)
-      $mailer->SMTPDebug = SMTP::DEBUG_OFF;
-      $mailer->XMailer = ' ';
-
-      // Speciální hlavička určená k identifikaci cvičného phishingu z tohoto systému.
-      $mailer->addCustomHeader(PHISHING_EMAIL_HEADER_ID, PHISHING_EMAIL_HEADER_VALUE);
-
-      return $mailer;
-    }
-
-
-    /**
-     * Odešle e-mail v rámci instance třídy PHPMailer.
-     *
-     * @param PHPMailer $mailer        Instance třídy PHPMailer
-     * @param string $senderEmail      E-mail odesílatele
-     * @param string $senderName       Jméno odesílatele
-     * @param string $recipientEmail   E-mail příjemce
-     * @param string $subject          Předmět e-mailu
-     * @param string $body             Tělo e-mailu
-     * @return bool                    Výsledek odeslání e-mailu
-     * @throws \PHPMailer\PHPMailer\Exception
-     */
-    public static function sendEmail($mailer, $senderEmail, $senderName, $recipientEmail, $subject, $body) {
-      $mailer->setFrom($senderEmail, $senderName);
-      $mailer->addAddress($recipientEmail);
-
-      $mailer->Subject = $subject;
-      $mailer->Body = $body;
-
-      return $mailer->send();
-    }
-
-
     /**
      * Přidá do databáze záznam o tom, zdali byl e-mail (ne)úspěšně odeslán.
      *
@@ -213,8 +140,6 @@
      * @throws \PHPMailer\PHPMailer\Exception
      */
     public function startSendingEmails() {
-      $mailer = $this->getPHPMailerInstance();
-
       $countSentMails = 0;
 
       // Seznam kampaní, u kterých je možné zahájit rozesílání e-mailů.
@@ -263,13 +188,12 @@
 
           // Odeslání e-mailu.
           $mailResult = $this->sendEmail(
-            $mailer,
             $campaign['sender_email'], $campaign['sender_name'], $recipient,
             $campaign['subject'], $campaign['body_personalized']
           );
 
           // Uložení záznamu o tom, zda se e-mail podařilo odeslat a případná dekrementace uživatelova omezení.
-          $this->logSentEmail($campaign['id_campaign'], $campaign['id_email'], $user['id_user'], $mailResult, $mailer->ErrorInfo);
+          $this->logSentEmail($campaign['id_campaign'], $campaign['id_email'], $user['id_user'], $mailResult, $this->mailer->ErrorInfo);
 
           if ($mailResult) {
             ParticipationModel::decrementEmailLimit($user['id_user']);
@@ -279,7 +203,7 @@
           CampaignModel::insertNoReactionRecord($campaign['id_campaign'], $user['id_user'], $recipient, $user['primary_group']);
 
           // Vyčištění pro další iteraci.
-          $mailer->clearAddresses();
+          $this->mailer->clearAddresses();
 
           // Uspání skriptu po odeslání určitého množství e-mailů.
           $countSentMails = $this->sleepSender($countSentMails);

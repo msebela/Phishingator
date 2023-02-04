@@ -1,18 +1,10 @@
 <?php
-  use PHPMailer\PHPMailer\PHPMailer;
-
   /**
    * Třída řešící odesílání e-mailů s notifikacemi o phishingových kampaní.
    *
    * @author Martin Šebela
    */
   class NotificationsModel extends EmailSender {
-    /**
-     * @var PHPMailer   Instance třídy PHPMailer
-     */
-    private PHPMailer $mailer;
-
-
     /**
      * Odešle e-mail s notifikací.
      *
@@ -22,9 +14,9 @@
      * @return bool                    Výsledek odeslání e-mailu
      * @throws \PHPMailer\PHPMailer\Exception
      */
-    private function sendEmail($recipientEmail, $subject, $body) {
-      return EmailSenderModel::sendEmail(
-        $this->mailer, NOTIFICATION_SENDER, WEB_HTML_BASE_TITLE,
+    private function sendNotificationEmail($recipientEmail, $subject, $body) {
+      return $this->sendEmail(
+        NOTIFICATION_SENDER, WEB_HTML_BASE_TITLE,
         $recipientEmail, WEB_HTML_BASE_TITLE . ' · ' . $subject, $body
       );
     }
@@ -136,7 +128,7 @@
           }
 
           // Odeslání e-mailu.
-          $mailResult = $this->sendEmail($recipient['email'], $notificationSubject, $notificationBody);
+          $mailResult = $this->sendNotificationEmail($recipient['email'], $notificationSubject, $notificationBody);
 
           // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
           $this->logSentEmail($campaign['id_campaign'], $recipient['id_user'], 1, $mailResult, $this->mailer->ErrorInfo);
@@ -215,7 +207,7 @@
           }
 
           // Odeslání e-mailu.
-          $mailResult = $this->sendEmail($recipient['email'], $notificationSubject, $notificationBody);
+          $mailResult = $this->sendNotificationEmail($recipient['email'], $notificationSubject, $notificationBody);
 
           // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
           $this->logSentEmail($campaign['id_campaign'], $recipient['id_user'], 2, $mailResult, $this->mailer->ErrorInfo);
@@ -327,7 +319,7 @@
           );
 
           // Odeslání e-mailu.
-          $mailResult = $this->sendEmail($recipient, $notificationSubject, $notificationBody);
+          $mailResult = $this->sendNotificationEmail($recipient, $notificationSubject, $notificationBody);
 
           // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
           $this->logSentEmail($campaign['id_campaign'], $user['id_user'], 3, $mailResult, $this->mailer->ErrorInfo);
@@ -348,8 +340,6 @@
      * @throws \PHPMailer\PHPMailer\Exception
      */
     public function startSendingNotifications() {
-      $this->mailer = EmailSenderModel::getPHPMailerInstance();
-
       // Notifikace pro administrátory a správce testů.
       $this->sendNewCampaignsNotifications();
       $this->sendFinishedCampaignsNotifications();
