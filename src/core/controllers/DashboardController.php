@@ -61,7 +61,7 @@
       $this->setViewData('countVolunteersText', $model->getStatsText($countVolunteers, 'volunteersCount'));
 
       // Počet odeslaných e-mailů.
-      $countSentEmails = EmailSenderModel::getCountOfSentEmails();
+      $countSentEmails = RecievedEmailModel::getCountOfSentEmails();
 
       $this->setViewData('countSentEmails', get_formatted_number($countSentEmails));
       $this->setViewData('countSentEmailsText', $model->getStatsText($countSentEmails, 'sentEmails'));
@@ -112,7 +112,7 @@
       $this->setViewData('countCampaignsText', $model->getStatsText($countCampaigns, 'campaignsCount'));
 
       // Počet odeslaných e-mailů.
-      $countSentEmails = (count($campaigns) > 0) ? EmailSenderModel::getCountOfSentEmailsInCampaign($campaigns) : 0;
+      $countSentEmails = (count($campaigns) > 0) ? RecievedEmailModel::getCountOfSentEmailsInCampaign($campaigns) : 0;
 
       $this->setViewData('countSentEmails', get_formatted_number($countSentEmails));
       $this->setViewData('countSentEmailsText', $model->getStatsText($countSentEmails, 'sentEmails'));
@@ -142,7 +142,7 @@
       $idUser = PermissionsModel::getUserId();
 
       // Počet přijatých e-mailů.
-      $countRecievedEmails = EmailSenderModel::getCountOfRecievedEmails($idUser);
+      $countRecievedEmails = RecievedEmailModel::getCountOfRecievedPhishingEmails($idUser);
 
       $this->setViewData('countRecievedEmails', get_formatted_number($countRecievedEmails));
       $this->setViewData('countRecievedEmailsText', $model->getStatsText($countRecievedEmails, 'recievedEmails'));

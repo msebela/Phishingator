@@ -34,7 +34,7 @@
      * @param int $result              1 pokud se e-mail s notifikací podařilo odeslat, 0 pokud ne
      * @param string $errorMessage     Chybová hláška, pokud se e-mail nepodařilo odeslat (nepovinné)
      */
-    private function logSentEmail($idCampaign, $idUser, $notificationType, $result, $errorMessage = false) {
+    private function logSentNotificationEmail($idCampaign, $idUser, $notificationType, $result, $errorMessage = false) {
       $record = [
         'id_campaign' => $idCampaign,
         'id_user' => $idUser,
@@ -61,9 +61,9 @@
      * @param int $idCampaign          ID kampaně
      * @param int $idUser              ID uživatele
      * @param int $notificationType    Typ notifikace
-     * @return bool                    TRUE pokud byl e-mail v minulosti odeslán, jinak FALSE.
+     * @return bool                    TRUE pokud byl e-mail v minulosti odeslán, jinak FALSE
      */
-    private function isEmailSent($idCampaign, $idUser, $notificationType) {
+    private function isNotificationEmailSent($idCampaign, $idUser, $notificationType) {
       $result = Database::queryCount('
               SELECT COUNT(*)
               FROM `phg_sent_notifications`
@@ -123,7 +123,7 @@
 
         foreach ($recipients as $recipient) {
           // Ověření, zdali nedošlo k odeslání notifikace o vytvoření kampaně stejnému uživateli někdy dříve.
-          if ($this->isEmailSent($campaign['id_campaign'], $recipient['id_user'], 1)) {
+          if ($this->isNotificationEmailSent($campaign['id_campaign'], $recipient['id_user'], 1)) {
             continue;
           }
 
@@ -131,7 +131,7 @@
           $mailResult = $this->sendNotificationEmail($recipient['email'], $notificationSubject, $notificationBody);
 
           // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
-          $this->logSentEmail($campaign['id_campaign'], $recipient['id_user'], 1, $mailResult, $this->mailer->ErrorInfo);
+          $this->logSentNotificationEmail($campaign['id_campaign'], $recipient['id_user'], 1, $mailResult, $this->mailer->ErrorInfo);
 
           // Vyčištění pro další iteraci.
           $this->mailer->clearAddresses();
@@ -202,7 +202,7 @@
 
         foreach ($recipients as $recipient) {
           // Ověření, zdali nedošlo k odeslání notifikace o ukončení kampaně někdy dříve.
-          if ($this->isEmailSent($campaign['id_campaign'], $recipient['id_user'], 2)) {
+          if ($this->isNotificationEmailSent($campaign['id_campaign'], $recipient['id_user'], 2)) {
             continue;
           }
 
@@ -210,7 +210,7 @@
           $mailResult = $this->sendNotificationEmail($recipient['email'], $notificationSubject, $notificationBody);
 
           // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
-          $this->logSentEmail($campaign['id_campaign'], $recipient['id_user'], 2, $mailResult, $this->mailer->ErrorInfo);
+          $this->logSentNotificationEmail($campaign['id_campaign'], $recipient['id_user'], 2, $mailResult, $this->mailer->ErrorInfo);
 
           // Vyčištění pro další iteraci.
           $this->mailer->clearAddresses();
@@ -250,7 +250,7 @@
           $user = UsersModel::getUserByEmail($recipient);
 
           // Ověření, zdali nedošlo k odeslání notifikace o účasti v kampani někdy dříve.
-          if ($this->isEmailSent($campaign['id_campaign'], $user['id_user'], 3)) {
+          if ($this->isNotificationEmailSent($campaign['id_campaign'], $user['id_user'], 3)) {
             continue;
           }
 
@@ -258,7 +258,7 @@
           $code = WebsitePrependerModel::makeWebsiteUrl($campaign['id_campaign'], $user['url']);
 
           // Zjištění data a času odeslání podvodného e-mailu konkrétnímu uživateli.
-          $emailSent = EmailSenderModel::getDateSentEmail($campaign['id_campaign'], $campaignDetail['id_email'], $user['id_user']);
+          $emailSent = RecievedEmailModel::getRecievedPhishingEmail($campaign['id_campaign'], $campaignDetail['id_email'], $user['id_user']);
 
           // Získání reakce příjemce na phishingovou kampaň.
           $user['reaction'] = CampaignModel::getUserReaction($campaign['id_campaign'], $user['id_user']);
@@ -322,7 +322,7 @@
           $mailResult = $this->sendNotificationEmail($recipient, $notificationSubject, $notificationBody);
 
           // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
-          $this->logSentEmail($campaign['id_campaign'], $user['id_user'], 3, $mailResult, $this->mailer->ErrorInfo);
+          $this->logSentNotificationEmail($campaign['id_campaign'], $user['id_user'], 3, $mailResult, $this->mailer->ErrorInfo);
 
           // Vyčištění pro další iteraci.
           $this->mailer->clearAddresses();

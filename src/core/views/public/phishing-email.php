@@ -54,7 +54,7 @@
           </div>
           <div class="row">
             <div class="col-sm-3"><strong>Datum:</strong></div>
-            <div class="col"><?= $email['date_sent'] ?></div>
+            <div class="col"><?= $email['datetime_sent_formatted'] ?></div>
           </div>
           <hr>
           <div class="row">

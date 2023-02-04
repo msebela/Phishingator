@@ -1,25 +1,66 @@
 <?php
   /**
-   * Třída sloužící k získávání informací o již zaslaných cvičných podvodných e-mailech
-   * s vazbou na konkrétního uživatele.
+   * Třída sloužící k získávání informací o již zaslaných cvičných podvodných e-mailech,
+   * a to především s vazbou na konkrétního uživatele.
    *
    * @author Martin Šebela
    */
   class RecievedEmailModel {
     /**
-     * Vrátí detailní informace o konkrétním cvičném podvodném e-mailu,
-     * který obdržel daný uživatel.
+     * Vrátí celkový počet odeslaných cvičných podvodných e-mailů (případně do konkrétního roku).
      *
+     * @param int $maxYear             Maximální rok, do kterého se bude počet odeslaných e-mailů zjišťovat (nepovinné)
+     * @return mixed                   Počet odeslaných e-mailů
+     */
+    public static function getCountOfSentEmails($maxYear = []) {
+      $yearQuery = (is_numeric($maxYear)) ? 'YEAR(`date_sent`) <= ?' : '`date_sent` IS NOT NULL';
+
+      return Database::queryCount('
+              SELECT COUNT(*)
+              FROM `phg_sent_emails`
+              JOIN `phg_campaigns`
+              ON phg_sent_emails.id_campaign = phg_campaigns.id_campaign
+              WHERE ' . $yearQuery . '
+              AND phg_campaigns.visible = 1
+      ', $maxYear);
+    }
+
+
+    /**
+     * Vrátí celkový počet všech cvičných podvodných e-mailů, které obdržel konkrétní uživatel.
+     *
+     * @param int $idUser              ID uživatele, pro kterého se počet přijatých e-mailů zjišťuje
+     * @return int                     Celkový počet přijatých cvičných podvodných e-mailů
+     */
+    public static function getCountOfRecievedPhishingEmails($idUser) {
+      return Database::queryCount('
+              SELECT COUNT(*)
+              FROM `phg_sent_emails`
+              JOIN `phg_campaigns`
+              ON phg_sent_emails.id_campaign = phg_campaigns.id_campaign
+              WHERE `id_user` = ?
+              AND phg_sent_emails.date_sent IS NOT NULL
+              AND phg_campaigns.visible = 1
+      ', $idUser);
+    }
+
+
+    /**
+     * Vrátí detailní informace o konkrétním cvičném podvodném e-mailu,
+     * který obdržel daný uživatel ve zvolené kampani.
+     *
+     * @param int $idCampaign          ID kampaně
      * @param int $idEmail             ID e-mailu
      * @param int $idUser              ID uživatele
-     * @return mixed                   Pole s informacemi o cvičném podvodném e-mailu.
+     * @return mixed                   Pole s informacemi o cvičném podvodném e-mailu
      */
-    public static function getRecievedPhishingEmail($idEmail, $idUser) {
+    public static function getRecievedPhishingEmail($idCampaign, $idEmail, $idUser) {
       return Database::querySingle('
               SELECT phg_sent_emails.id_campaign, `date_sent`,
               phg_emails.id_email, `sender_name`, `sender_email`, `subject`, `body`,
               `url`,
-              DATE_FORMAT(date_sent, "%e. %c. %Y %k:%i") AS `date_sent`,
+              DATE_FORMAT(date_sent, "%e. %c. %Y") AS `date_sent_formatted`,
+              DATE_FORMAT(date_sent, "%e. %c. %Y (%k:%i)") AS `datetime_sent_formatted`
               phg_campaigns.id_website
               FROM `phg_sent_emails`
               JOIN `phg_emails`
@@ -28,12 +69,13 @@
               ON phg_sent_emails.id_campaign = phg_campaigns.id_campaign
               JOIN `phg_websites`
               ON phg_campaigns.id_website = phg_websites.id_website
-              WHERE phg_sent_emails.id_email = ?
+              WHERE phg_sent_emails.id_campaign = ?
+              AND phg_sent_emails.id_email = ?
               AND phg_sent_emails.id_user = ?
               AND phg_sent_emails.date_sent IS NOT NULL
               AND phg_emails.visible = 1
               AND phg_campaigns.visible = 1
-      ', [$idEmail, $idUser]);
+      ', [$idCampaign, $idEmail, $idUser]);
     }
 
 
@@ -41,11 +83,10 @@
      * Vrátí seznam všech cvičných podvodných e-mailů, které obdržel konkrétní uživatel.
      *
      * @param int $idUser              ID uživatele
-     * @param int|null $from           Od jakého záznamu (pořadí) vrátit seznam e-mailů.
-     * @return mixed                   Pole e-mailů s informacemi o každém z nich.
+     * @return mixed                   Pole e-mailů s informacemi o každém z nich
      */
-    public static function getRecievedPhishingEmails($idUser, $from = null) {
-      $query = '
+    public static function getRecievedPhishingEmails($idUser) {
+      return Database::queryMulti('
               SELECT phg_sent_emails.id_campaign, `date_sent`,
               phg_emails.id_email, `sender_name`, `sender_email`, `subject`,
               DATE_FORMAT(date_sent, "%e. %c. %Y %k:%i") AS `date_sent_formatted`
@@ -58,20 +99,14 @@
               AND phg_sent_emails.date_sent IS NOT NULL
               AND phg_emails.visible = 1
               AND phg_campaigns.visible = 1
-              ORDER BY `id_event` DESC';
-      $args = $idUser;
-
-      if (!is_null($from)) {
-        $query .= ' LIMIT ?, 1';
-        $args = [$idUser, $from];
-      }
-
-      return Database::queryMulti($query, $args);
+              ORDER BY `id_event` DESC
+      ', $idUser);
     }
 
 
     /**
-     * Vrátí seznam kampaní a základních informací o nich, kterých se zúčastnil konkrétní uživatel.
+     * Na základě odeslaných e-mailů vrátí seznam kampaní a základních informací o nich,
+     * kterých se zúčastnil konkrétní uživatel.
      *
      * @param int $idUser              ID uživatele
      * @return mixed                   Data o tom, kterých kampaních se uživatel zúčastnil
@@ -110,20 +145,19 @@
 
 
     /**
-     * Vrátí celkový počet všech přijatých cvičných podvodných e-mailů pro konkrétního uživatele.
+     * Vrátí celkový počet odeslaných e-mailů v rámci konkrétní kampaně, případně v rámci několika kampaní.
      *
-     * @param int $idUser              ID uživatele, pro kterého se počet přijatých e-mailů zjišťuje.
-     * @return int                     Celkový počet přijatých cvičných podvodných e-mailů.
+     * @param int|array $idCampaign    ID konkrétní kampaně nebo pole s ID několika kampaní
+     * @return mixed                   Počet odeslaných e-mailů
      */
-    public static function getCountOfRecievedPhishingEmails($idUser) {
+    public static function getCountOfSentEmailsInCampaign($idCampaign) {
+      $cols = (is_array($idCampaign)) ? str_repeat(' OR `id_campaign` = ?', count($idCampaign) - 1) : '';
+
       return Database::queryCount('
               SELECT COUNT(*)
               FROM `phg_sent_emails`
-              JOIN `phg_campaigns`
-              ON phg_sent_emails.id_campaign = phg_campaigns.id_campaign
-              WHERE `id_user` = ?
-              AND phg_sent_emails.date_sent IS NOT NULL
-              AND phg_campaigns.visible = 1
-      ', $idUser);
+              WHERE `id_campaign` = ?' . $cols . '
+              AND `date_sent` IS NOT NULL
+      ', $idCampaign);
     }
   }

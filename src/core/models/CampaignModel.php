@@ -194,7 +194,7 @@
               AND phg_campaigns.visible = 1
       ', $id);
 
-      /* Zjištění dalších dodatečných informací pro výpis. */
+      // Zjištění dalších podrobností o kampani.
       if (!empty($result)) {
         $urlProtocol = get_protocol_from_url($result['url']);
 
@@ -203,7 +203,7 @@
         $result['url'] = mb_substr($result['url'], mb_strlen($urlProtocol));
 
         $result['count_recipients'] = self::getCountOfRecipients($result['id_campaign']);
-        $result['sent_emails'] = EmailSenderModel::getCountOfSentEmailsInCampaign($result['id_campaign']);
+        $result['sent_emails'] = RecievedEmailModel::getCountOfSentEmailsInCampaign($result['id_campaign']);
 
         $result['active_since_color'] = self::getColorDateByToday($result['active_since'], 'date-since');
         $result['active_to_color'] = self::getColorDateByToday($result['active_to'], 'date-to');

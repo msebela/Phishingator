@@ -82,11 +82,8 @@
       $volunteer = UsersModel::getUserEmailLimit($user['id_user']);
       $this->setViewData('volunteer', $volunteer['recieve_email']);
 
-      // Pro získání informací o podvodném e-mailu, který byl v kampani použit.
-      $model = new RecievedEmailModel();
-
       // Získání detailů o e-mailu a ošetření pro výpis.
-      $phishingEmail = self::escapeOutput($model->getRecievedPhishingEmail($campaign['id_email'], $user['id_user']));
+      $phishingEmail = self::escapeOutput(RecievedEmailModel::getRecievedPhishingEmail($idCampaign, $campaign['id_email'], $user['id_user']));
 
       // Ověření existence záznamu.
       $this->checkRecordExistence($phishingEmail);

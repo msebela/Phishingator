@@ -246,11 +246,7 @@
      * @return mixed|null              CSRF token nebo NULL
      */
     public static function getCsrfToken() {
-      if (isset($_SESSION['csrf_token'])) {
-        return $_SESSION['csrf_token'];
-      }
-
-      return null;
+      return $_SESSION['csrf_token'] ?? null;
     }
 
 
@@ -269,11 +265,7 @@
               WHERE `id_user` = ?
       ', self::getUserId());
 
-      if (!empty($result)) {
-        return $result['emails_restrictions'];
-      }
-
-      return null;
+      return $result['emails_restrictions'] ?? null;
     }
 
 
@@ -291,11 +283,7 @@
               WHERE `id_user` = ?
       ', self::getUserId());
 
-      if (!empty($result)) {
-        return $result['ldap_groups'];
-      }
-
-      return null;
+      return $result['ldap_groups'] ?? null;
     }
 
 
@@ -314,11 +302,7 @@
      * @return int|null                ID uživatele nebo NULL
      */
     public static function getUserId() {
-      if (isset($_SESSION['user']['id'])) {
-        return $_SESSION['user']['id'];
-      }
-
-      return null;
+      return $_SESSION['user']['id'] ?? null;
     }
 
 
@@ -328,11 +312,7 @@
      * @return string|null                Uživatelské jméno uživatele nebo NULL
      */
     public static function getUserName() {
-      if (isset($_SESSION['user']['email'])) {
-        return $_SESSION['user']['email'];
-      }
-
-      return null;
+      return $_SESSION['user']['email'] ?? null;
     }
 
 
@@ -342,11 +322,7 @@
      * @return int|null                Číslo oprávnění nebo NULL
      */
     public static function getUserPermission() {
-      if (isset($_SESSION['user']['permission'])) {
-        return $_SESSION['user']['permission'];
-      }
-
-      return null;
+      return $_SESSION['user']['permission'] ?? null;
     }
 
 
@@ -356,10 +332,6 @@
      * @return int|null                Číslo role nebo NULL
      */
     public static function getUserRole() {
-      if (isset($_SESSION['user']['role'])) {
-        return $_SESSION['user']['role'];
-      }
-
-      return null;
+      return $_SESSION['user']['role'] ?? null;
     }
   }

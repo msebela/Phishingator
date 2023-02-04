@@ -97,7 +97,7 @@
 
 
         // Počet odeslaných e-mailů.
-        $countSentEmails = EmailSenderModel::getCountOfSentEmails($year);
+        $countSentEmails = RecievedEmailModel::getCountOfSentEmails($year);
         $yearsStats[$year]['countSentEmails'] = $countSentEmails;
 
         $diff = ($year != $this->startStatsYear) ? $countSentEmails - ($yearsStats[$year - 1]['countSentEmails'] ?? 0) : 0;
