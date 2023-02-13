@@ -299,7 +299,7 @@
 
 <?php endif; ?>
 
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.2.0"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.2.1"></script>
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0"></script>
 <script>
   let campaignChart1 = new Chart(document.getElementById('chart-end-actions'), {
