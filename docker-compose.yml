@@ -108,6 +108,7 @@ services:
 
   waf:
     image: owasp/modsecurity-crs:apache
+    container_name: phishingator_waf_${ORG}
     environment:
       - PARANOIA=1
       - ANOMALY_INBOUND=10
