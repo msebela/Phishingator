@@ -8,7 +8,7 @@ services:
       args:
         APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT}
     restart: always
-    container_name: phishingator_web_${ORG}
+    container_name: phishingator-${ORG}-web
     env_file:
       - .env
     volumes:
@@ -29,7 +29,7 @@ services:
       context: .
       dockerfile: docker/database/Dockerfile
     restart: always
-    container_name: phishingator_database_${ORG}
+    container_name: phishingator-${ORG}-database
     env_file:
       - .env
     volumes:

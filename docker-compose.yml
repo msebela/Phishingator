@@ -9,7 +9,7 @@ services:
         APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT}
     image: ${CI_REGISTRY_IMAGE}/phishingator_web:${CI_COMMIT_REF_SLUG}
     restart: always
-    container_name: phishingator_web_${ORG}
+    container_name: phishingator-${ORG}-web
     volumes:
       - /phishingator-data/${ORG}/logs:/var/www/phishingator/logs
       - /phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
@@ -95,7 +95,7 @@ services:
       dockerfile: docker/database/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/phishingator_database:${CI_COMMIT_REF_SLUG}
     restart: always
-    container_name: phishingator_database_${ORG}
+    container_name: phishingator-${ORG}-database
     volumes:
       - /phishingator-data/${ORG}/database:/var/lib/mysql/
       - /phishingator-data/${ORG}/database-dumps:/phishingator-dumps
@@ -108,7 +108,7 @@ services:
 
   waf:
     image: owasp/modsecurity-crs:apache
-    container_name: phishingator_waf_${ORG}
+    container_name: phishingator-${ORG}-waf
     environment:
       - PARANOIA=1
       - ANOMALY_INBOUND=10
