@@ -7,7 +7,7 @@ if [ $# -ne 2 ]; then
   echo "  $(basename "$0") <organization-name> <database-dump-file.sql.gz>"
 else
   ORG=$1
-  CONTAINER_NAME="phishingator_database_$ORG"
+  CONTAINER_NAME="phishingator-$ORG-database"
 
   BACKUP_FILE="/phishingator-data/$ORG/database-dumps/$2"
 

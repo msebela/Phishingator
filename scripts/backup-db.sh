@@ -9,7 +9,7 @@ if [ $# -ne 1 ]; then
   echo "  $(basename "$0") <organization-name>"
 else
   ORG=$1
-  CONTAINER_NAME="phishingator_database_$ORG"
+  CONTAINER_NAME="phishingator-$ORG-database"
 
   BACKUP_DIR="/phishingator-data/$ORG/database-dumps"
   BACKUP_FILENAME="$(date +"%Y-%m-%d-%H-%M-%S.sql.gz")"

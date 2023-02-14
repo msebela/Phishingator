@@ -10,7 +10,7 @@ if [ $# -ne 3 ]; then
   echo "  $(basename "$0") cesnet \"Fake SSO login\" /fake-sso-login-template/"
 else
   ORG=$1
-  CONTAINER_NAME="phishingator_database_$ORG"
+  CONTAINER_NAME="phishingator-$ORG-database"
 
   TEMPLATES_HOST_PATH="/phishingator-data/$ORG/websites-templates/websites"
   COUNT_TEMPLATES=$(find "$TEMPLATES_HOST_PATH" -maxdepth 1 | wc -l)
