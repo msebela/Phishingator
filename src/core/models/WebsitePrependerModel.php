@@ -177,13 +177,12 @@
       if (!empty($username) && !empty($password)) {
         // Pokud uživatelské jméno obsahuje jiné, než alfanumerické znaky, tak to pravděpodobně není uživatelské jméno
         // používané v organizaci a nemá smysl jej ani ověřovat (i z bezpečnostního hlediska).
-        if (!ctype_alnum($username)) {
-          Logger::warning('Attempt to use a username that does not contain only alphanumeric characters.', $username);
-
-          return false;
+        if (ctype_alnum($username)) {
+          $validCreds = CredentialsTesterModel::tryLogin($username, $password);
         }
-
-        $validCreds = CredentialsTesterModel::tryLogin($username, $password);
+        else {
+          Logger::warning('Attempt to use a username that does not contain only alphanumeric characters.', $username);
+        }
       }
 
       return $validCreds;
@@ -415,7 +414,7 @@
       $userDetail = UsersModel::getUserByUsername($user['username']);
 
       // Zjištění informací o zobrazované podvodné stránce.
-      $website = PhishingWebsiteModel::getPhishingWebsiteByUrl(get_base_url());
+      $website = PhishingWebsiteModel::getPhishingWebsiteByUrl(get_current_url());
 
       // Zjištění, zdali je v databázi existující ticket pro přístup na náhled podvodné stránky.
       $previewAccess = Database::querySingle(

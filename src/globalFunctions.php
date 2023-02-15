@@ -146,12 +146,12 @@
 
 
   /**
-   * Vrátí základní URL adresu včetně použitého protokolu (HTTP/HTTPS), kde aplikace běží.
+   * Vrátí aktuální URL adresu včetně použitého protokolu (HTTP/HTTPS) a cesty.
    *
    * @return string                    Základní URL adresa
    */
-  function get_base_url() {
-    return (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+  function get_current_url() {
+    return (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'];
   }
 
 
