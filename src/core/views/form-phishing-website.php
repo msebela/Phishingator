@@ -36,13 +36,13 @@
   </div>
 
   <div class="form-row">
-    <div class="form-group col-sm-9 col-lg-11 col-xl-12">
+    <div class="form-group col-sm-9 col-lg-11 col-xl-13">
       <label for="<?= $formPrefix ?>url">URL</label>
       <input type="url" class="form-control" id="<?= $formPrefix ?>url" name="<?= $formPrefix ?>url" maxlength="<?= $inputsMaxLengths['url'] ?>" value="<?= $inputsValues['url'] ?>" required>
-      <small class="form-text text-muted">URL adresa včetně protokolu, na které bude podvodná stránka přístupná (na základě unikátního parametru pro identifikaci uživatele). Použít lze (sub)domény uvedené v&nbsp;seznamu <span class="badge badge-info">Registrované domény</span>.</small>
+      <small class="form-text text-muted">URL adresa včetně protokolu <span class="badge badge-success cursor-pointer phishing-domain-protocol" data-var="https">HTTPS</span> nebo <span class="badge badge-danger cursor-pointer phishing-domain-protocol" data-var="http">HTTP</span> a&nbsp;volitelně i&nbsp;s&nbsp;konkretizováním cesty (názvy adresářů). Na dané URL adrese bude podvodná stránka přístupná (po automatickém doplnění parametru pro identifikaci uživatele). Použít lze (sub)domény uvedené v&nbsp;seznamu <span class="badge badge-info">Registrované domény</span>.</small>
     </div>
 
-    <div class="form-group col-sm-7 col-lg-5 col-xl-4 text-right">
+    <div class="form-group col-sm-7 col-lg-5 col-xl-3 text-right">
       <label class="d-none d-sm-block">&nbsp;</label>
       <div class="dropdown">
         <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -50,7 +50,7 @@
         </button>
         <div class="dropdown-menu dropdown-menu-right" id="phishing-domains-dropdown">
           <?php foreach ($domains as $domain): ?>
-          <a href="#" class="dropdown-item text-monospace" data-var="http(s)://<?= $domain ?>"><?= $domain ?></a>
+          <a href="#" class="dropdown-item text-monospace" data-var="https://<?= $domain ?>"><?= $domain ?></a>
           <?php endforeach; ?>
         </div>
       </div>

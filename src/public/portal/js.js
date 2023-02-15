@@ -100,7 +100,34 @@ $('#phishing-email-variables code').on('click', function() {
 });
 
 $('#phishing-domains-dropdown a').on('click', function() {
-  $('#phishing-website-url').val($(this).attr('data-var'));
+  let domainInput = $('#phishing-website-url');
+
+  domainInput.val($(this).attr('data-var'));
+  domainInput.focus();
+});
+
+$('.phishing-domain-protocol').on('click', function() {
+  let domainInput = $('#phishing-website-url');
+  let domain = domainInput.val();
+
+  let selectedProtocol = $(this).attr('data-var');
+  let protocol = null;
+
+  if (domain.indexOf('http:') >= 0 && selectedProtocol === 'https') {
+    protocol = domain.replace('http:', 'https:');
+  }
+  else if (domain.indexOf('https:') >= 0 && selectedProtocol === 'http') {
+    protocol = domain.replace('https:', 'http:');
+  }
+  else if (domain.indexOf('http:') === -1 && domain.indexOf('https:') === -1) {
+    protocol = selectedProtocol + '://' + domain;
+  }
+
+  if (protocol !== null) {
+    domainInput.val(protocol);
+  }
+
+  domainInput.focus();
 });
 
 /* https://stackoverflow.com/questions/499126/jquery-set-cursor-position-in-text-area */

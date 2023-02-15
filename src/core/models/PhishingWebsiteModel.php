@@ -430,6 +430,19 @@
 
 
     /**
+     * Vrátí pole názvů proměnných, které se budou nahrazovat v šabloně konfiguračního souboru za skutečné hodnoty.
+     *
+     * @return string[]                Pole proměnných
+     */
+    private function getConfFileVarsToReplace() {
+      return [
+        'PHISHINGATOR_SERVER_PORT', 'PHISHINGATOR_SERVER_NAME', 'PHISHINGATOR_SERVER_ADMIN',
+        'PHISHINGATOR_DOCUMENT_ROOT', 'PHISHINGATOR_SERVER_ALIAS', 'PHISHINGATOR_WEBSITE_PREPENDER'
+      ];
+    }
+
+
+    /**
      * Vytvoří nový konfigurační soubor pro podvodnou stránku podle jejího nastavení.
      *
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
@@ -444,32 +457,26 @@
         $template = $this->getPhishingWebsiteTemplate($this->idTemplate);
 
         if ($template) {
-          // Proměnné, které se budou v šabloně konfiguračního souboru nahrazovat.
-          $variables = [
-            'PHISHINGATOR_SERVER_PORT', 'PHISHINGATOR_SERVER_NAME', 'PHISHINGATOR_SERVER_ADMIN',
-            'PHISHINGATOR_DOCUMENT_ROOT', 'PHISHINGATOR_WEBSITE_PREPENDER'
-          ];
-
           // Při neexistenci proxy...
           // $port = (get_protocol_from_url($this->url) == 'https') ? 443 : 80;
           $port = 80;
 
-          // Hodnoty za proměnné pro šablonu konfiguračního souboru podvodné stránky.
+          // Vytvoření aliasu, pokud je součástí URL adresy i cesta (názvy adresářů).
+          $urlPath = parse_url($this->url, PHP_URL_PATH);
+          $urlAlias = !empty($urlPath) ? $urlPath : '.';
+
+          // Hodnoty za proměnné pro šablonu konfiguračního souboru podvodné stránky (ve správném pořadí).
           $values = [
             $port, get_hostname_from_url($this->url), PHISHING_WEBSITE_SERVER_ADMIN,
-            $template['server_dir'], PHISHING_WEBSITE_PREPENDER
+            $template['server_dir'], $urlAlias, PHISHING_WEBSITE_PREPENDER
           ];
 
-          $apacheConfig = str_replace($variables, $values, $apacheConfig);
+          $apacheConfig = str_replace($this->getConfFileVarsToReplace(), $values, $apacheConfig);
 
           if (!file_put_contents($apacheConfigFileName, $apacheConfig)) {
-            Logger::error(
-              'Failed to create a phishing website configuration file.', $apacheConfigFileName
-            );
+            Logger::error('Failed to create a phishing website configuration file.', $apacheConfigFileName);
 
-            throw new UserError(
-              'Nepodařilo se připravit soubor pro konfiguraci podvodné stránky.', MSG_ERROR
-            );
+            throw new UserError('Nepodařilo se připravit soubor pro konfiguraci podvodné stránky.', MSG_ERROR);
           }
         }
         else {
@@ -672,6 +679,7 @@
       $this->isURLTooLong();
       $this->isURLValid();
       $this->isURLValidDNSRecord();
+      $this->isURLPathValid();
 
       $this->isTemplateEmpty();
       $this->existTemplate();
@@ -748,6 +756,20 @@
     private function isURLValidDNSRecord() {
       if (gethostbyname(get_hostname_from_url($this->url)) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
         throw new UserError('U zadané domény (popř. subdomény) není v DNS nasměrován záznam typu A na IP adresu serveru, kde běží Phishingator.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali zadaná cesta v URL adrese podvodné webové stránky neobsahuje nepovolené znaky a výrazy.
+     *
+     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     */
+    private function isURLPathValid() {
+      $path = parse_url($this->url, PHP_URL_PATH);
+
+      if (!empty($path) && (preg_match('/[^A-Za-z0-9\/._-]/', $path) || strpos($path, './') !== false)) {
+        throw new UserError('Cesta v URL adrese podvodné stránky obsahuje nepovolené znaky nebo výrazy.', MSG_ERROR);
       }
     }
 
