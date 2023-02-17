@@ -54,7 +54,7 @@
         </td>
         <td class="nowrap">
           <?= $campaign['website_name'] ?><br>
-          <span class="badge badge-<?= $campaign['url_protocol_color'] ?>"><?= $campaign['url_protocol'] ?></span><?= $campaign['url'] ?>
+          <span class="badge badge-<?= $campaign['url_protocol_color'] ?>"><?= $campaign['url_protocol'] ?></span><?= str_replace(VAR_RECIPIENT_URL, '<code>' . VAR_RECIPIENT_URL . '</code>', $campaign['url']) ?>
         </td>
         <td class="pl-0">
           <a href="/portal/phishing-websites/<?= ACT_PREVIEW . '/' . $campaign['id_website'] ?>" target="_blank" class="badge badge-secondary" title="Náhled">

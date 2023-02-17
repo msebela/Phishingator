@@ -255,7 +255,7 @@
           }
 
           // Zjištění uživatelského URL klíče pro vzdělávací stránku.
-          $code = WebsitePrependerModel::makeWebsiteUrl($campaign['id_campaign'], $user['url']);
+          $code = WebsitePrependerModel::makeUserWebsiteId($campaign['id_campaign'], $user['url']);
 
           // Zjištění data a času odeslání podvodného e-mailu konkrétnímu uživateli.
           $emailSent = RecievedEmailModel::getRecievedPhishingEmail($campaign['id_campaign'], $campaignDetail['id_email'], $user['id_user']);

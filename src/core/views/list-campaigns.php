@@ -48,7 +48,7 @@
         <td>
           <span class="badge badge-<?= $campaign['url_protocol_color'] ?>">
             <?= $campaign['url_protocol'] ?>
-          </span><?= $campaign['url'] ?>
+          </span>://<?= get_hostname_from_url($campaign['url_protocol'] . $campaign['url']) ?>
         </td>
         <td><?= $campaign['count_recipients'] ?></td>
         <td data-sort="<?= $campaign['active_since'] ?>">

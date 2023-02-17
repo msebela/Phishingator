@@ -80,9 +80,19 @@ function markCheckboxes(cover = '') {
 }
 
 function replaceVariable(selector, variable) {
+  let input = document.querySelector(selector);
+
   if (confirm('Opravdu chcete obsah pole nahradit touto proměnnou?')) {
-    document.querySelector(selector).value = variable;
+    input.value = variable;
+    input.focus();
   }
+}
+
+function insertVariable(selector, variable) {
+  let input = document.querySelector(selector);
+
+  input.value += variable;
+  input.focus();
 }
 
 $('#phishing-email-variables code').on('click', function() {

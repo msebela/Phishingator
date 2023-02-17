@@ -53,7 +53,7 @@
         <li><code class="cursor-pointer" data-var="<?= VAR_RECIPIENT_EMAIL ?>"><?= VAR_RECIPIENT_EMAIL ?></code> &ndash; e-mail příjemce</li>
         <li><code class="cursor-pointer" data-var="<?= VAR_DATE_CZ ?>"><?= VAR_DATE_CZ ?></code> &ndash; datum, ve kterém dochází k&nbsp;odeslání e-mailu v&nbsp;českém formátu (<?= date(VAR_DATE_CZ_FORMAT) ?>)</li>
         <li><code class="cursor-pointer" data-var="<?= VAR_DATE_EN ?>"><?= VAR_DATE_EN ?></code> &ndash; datum, ve kterém dochází k&nbsp;odeslání e-mailu ve&nbsp;formátu <samp>YYYY-MM-DD</samp> (<?= date(VAR_DATE_EN_FORMAT) ?>)</li>
-        <li><code class="cursor-pointer" data-var="<?= VAR_URL ?>"><?= VAR_URL ?></code> &ndash; URL podvodné stránky svázané s&nbsp;e-mailem</li>
+        <li><code class="cursor-pointer" data-var="<?= VAR_URL ?>"><?= VAR_URL ?></code> &ndash; URL podvodné stránky svázané s&nbsp;e-mailem (povinné)</li>
       </ul>
     </div>
   </div>

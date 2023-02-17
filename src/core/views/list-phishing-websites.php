@@ -36,7 +36,7 @@
         <td class="nowrap">
           <span class="badge badge-<?= $website['url_protocol_color'] ?>">
             <?= $website['url_protocol'] ?>
-          </span><?= $website['url'] ?>
+          </span><?= str_replace(VAR_RECIPIENT_URL, '<code>' . VAR_RECIPIENT_URL . '</code>', $website['url']) ?>
         </td>
         <td>
           <?php if ($website['status'] != 0): ?>

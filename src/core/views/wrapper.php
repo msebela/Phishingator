@@ -133,15 +133,28 @@
     <script src="/js.js"></script>
     <script>feather.replace();</script>
 
-    <?php if ($userRole == PERMISSION_ADMIN && $currentSection == 'phishing-emails' && ($currentAction == ACT_NEW || $currentAction == ACT_EDIT)): ?>
+    <?php if ($userRole == PERMISSION_ADMIN && ($currentSection == 'phishing-emails' || $currentSection == 'phishing-websites') && ($currentAction == ACT_NEW || $currentAction == ACT_EDIT)): ?>
     <link href="/<?= CORE_DIR_EXTENSIONS ?>/jquery-highlighttextarea/jquery.highlighttextarea.min.css" rel="stylesheet">
     <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-highlighttextarea/jquery.highlighttextarea.min.js"></script>
 
+    <?php if ($currentSection == 'phishing-emails'): ?>
     <script>
+      $('#phishing-email-sender-email').highlightTextarea({
+        words: ['<?= VAR_RECIPIENT_EMAIL ?>']
+      });
+
       $('#phishing-email-body').highlightTextarea({
         words: ['<?= VAR_RECIPIENT_USERNAME ?>', '<?= VAR_RECIPIENT_EMAIL ?>', '<?= VAR_DATE_CZ ?>', '<?= VAR_DATE_EN ?>', '<?= VAR_URL ?>']
       });
     </script>
+    <?php elseif ($currentSection == 'phishing-websites'): ?>
+    <script>
+      $('#phishing-website-url').highlightTextarea({
+        words: ['%id%']
+      });
+    </script>
+    <?php endif; ?>
+
     <?php endif; ?>
 
     <footer class="pr-2 text-right text-light bg-dark">

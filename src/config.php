@@ -286,6 +286,9 @@
   /** Název vstupního pole na podvodné stránce, do kterého uživatel zadává heslo. */
   define('PHISHING_WEBSITE_INPUT_FIELD_PASSWORD', 'password');
 
+  /** Délka hashe pro náhled podvodné stránky. */
+  define('PHISHING_WEBSITE_PREVIEW_HASH_LENGTH', 32);
+
 
 
   /* --- PHISHINGOVÉ KAMPANĚ --- */
@@ -339,6 +342,9 @@
 
   /** URL podvodné stránky. */
   define('VAR_URL', '%url%');
+
+  /** Identifikátor příjemce pro URL podvodné stránky. */
+  define('VAR_RECIPIENT_URL', '%id%');
 
 
 

@@ -305,7 +305,14 @@
 
         // Jestliže je specifikována i kampaň, vložit do URL podvodné stránky i identifikátor pro sledování uživatele.
         if ($idCampaign != null) {
-          $url .= '?' . WebsitePrependerModel::makeWebsiteUrl($idCampaign, $user['url']);
+          $url = str_replace(
+            VAR_RECIPIENT_URL,
+            PhishingWebsiteModel::validateRecipientUrlVar($websiteUrl) . WebsitePrependerModel::makeUserWebsiteId($idCampaign, $user['url']),
+            $websiteUrl
+          );
+        }
+        else {
+          $url = str_replace(VAR_RECIPIENT_URL, '', $websiteUrl);
         }
 
         $values[] = $url;

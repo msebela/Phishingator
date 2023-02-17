@@ -200,11 +200,13 @@
       $args = null;
       $halfLength = round(USER_ID_WEBSITE_LENGTH / 2);
 
-      if (mb_strlen($url) > USER_ID_WEBSITE_LENGTH) {
+      if (ctype_alnum($url) && mb_strlen($url) > USER_ID_WEBSITE_LENGTH) {
         $idCampaign = mb_substr($url, $halfLength, mb_strlen(USER_ID_WEBSITE_LENGTH) - $halfLength - 1);
         $idUser = mb_substr($url, 0, $halfLength) . mb_substr($url, -mb_strlen(USER_ID_WEBSITE_LENGTH) - $halfLength + 1);
 
-        $args = ['id_campaign' => $idCampaign, 'id_user' => $idUser, 'url' => $url];
+        if (mb_strlen($idUser) == USER_ID_WEBSITE_LENGTH && is_numeric($idCampaign)) {
+          $args = ['id_campaign' => $idCampaign, 'id_user' => $idUser, 'url' => $url];
+        }
       }
 
       return $args;
@@ -219,7 +221,7 @@
      * @param string $userUrl          Identifikátor uživatele pro podvodné stránky.
      * @return string                  Řetězec pro navštívení podvodné stránky a identifikaci uživatele a kampaně.
      */
-    public static function makeWebsiteUrl($idCampaign, $userUrl) {
+    public static function makeUserWebsiteId($idCampaign, $userUrl) {
       $url = '';
       $halfLength = round(USER_ID_WEBSITE_LENGTH / 2);
 
@@ -275,11 +277,19 @@
      * Zpracuje požadavky a připraví podvodnou stránku na základě konfigurace u dané kampaně v databázi.
      */
     private function process() {
-      if (isset($_GET) && count($_GET) == 1) {
+      if (isset($_GET) && !isset($_GET[ACT_PREVIEW])) {
         $campaignModel = new CampaignModel();
 
-        $getArgs = array_keys($_GET);
-        $args = $this->parseWebsiteUrl($getArgs[0]);
+        $getArgs = array_merge(array_keys($_GET), $_GET);
+
+        // Hledání identifikátoru uživatele ve všech GET parametrech a hodnotách.
+        foreach ($getArgs as $arg) {
+          $args = $this->parseWebsiteUrl($arg);
+
+          if ($args != null) {
+            break;
+          }
+        }
 
         if ($args == null) {
           $args[] = self::getClientIp();
@@ -326,7 +336,7 @@
         }
       }
       // Náhled podvodné stránky pro administrátory a správce testů.
-      elseif (isset($_GET) && count($_GET) == 2) {
+      elseif (isset($_GET) && count($_GET) == 3 && isset($_GET[ACT_PREVIEW])) {
         $this->processPreview();
       }
       else {

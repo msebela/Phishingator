@@ -43,7 +43,7 @@
       // Personalizace a dodatečné úpravy každého z e-mailů.
       foreach ($records as $key => $email) {
         $records[$key]['sender_name'] = self::escapeOutput($email['sender_name']);
-        $records[$key]['code'] = WebsitePrependerModel::makeWebsiteUrl($email['id_campaign'], $user['url']);
+        $records[$key]['code'] = WebsitePrependerModel::makeUserWebsiteId($email['id_campaign'], $user['url']);
 
         $records[$key] = PhishingEmailModel::personalizePhishingEmail($records[$key], $user, false);
       }

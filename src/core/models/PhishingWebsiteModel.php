@@ -50,7 +50,7 @@
     private function makePhishingWebsite() {
       return [
         'name' => $this->name,
-        'url' => $this->url,
+        'url' => str_replace(VAR_RECIPIENT_URL, PhishingWebsiteModel::validateRecipientUrlVar($this->url) . VAR_RECIPIENT_URL, $this->url),
         'id_template' => $this->idTemplate,
         'active' => $this->active
       ];
@@ -547,7 +547,7 @@
         if (empty($access)) {
           $activeSince = date('Y-m-d H:i:s');
           $activeTo = date('Y-m-d H:i:s', strtotime('+1 min'));
-          $hash = bin2hex(openssl_random_pseudo_bytes(32));
+          $hash = bin2hex(openssl_random_pseudo_bytes(PHISHING_WEBSITE_PREVIEW_HASH_LENGTH));
 
           $access = [
             'id_website' => $idWebsite,
@@ -564,7 +564,7 @@
           $hash = $access['hash'];
         }
 
-        $previewLink = $website['url'] . '?' . WebsitePrependerModel::makeWebsiteUrl('x', $user['url']) . '&' . $hash;
+        $previewLink = $website['url'] . '?' . WebsitePrependerModel::makeUserWebsiteId('x', $user['url']) . '&' . $hash . '&' . ACT_PREVIEW;
       }
 
       return $previewLink;
@@ -667,6 +667,38 @@
 
 
     /**
+     * Ověří, jakým způsobem je v URL adrese zapsána proměnná pro identifikaci uživatele na podvodné stránce
+     * a pokud před proměnnou chybí symbol pro GET argument, doplní jej.
+     *
+     * @param string $websiteUrl       URL adresa podvodné stránky včetně proměnné pro identifikaci uživatele
+     * @return string                  Ověřená URL adresa, kde je proměnná zvalidovaná jako GET argument
+     */
+    public static function validateRecipientUrlVar($websiteUrl) {
+      // Odstranění hostname a protokolu z URL adresy.
+      $hostnamePosition = mb_strpos($websiteUrl, get_hostname_from_url($websiteUrl));
+      $websiteUrl = mb_substr($websiteUrl, $hostnamePosition + mb_strlen(get_hostname_from_url($websiteUrl)));
+
+      // Zjištění symbolu, který je těsně před proměnnou.
+      $varPosition = mb_strpos($websiteUrl, VAR_RECIPIENT_URL);
+      $symbolBeforeVar = $websiteUrl[$varPosition - 1];
+
+      $websiteUrlArgs = parse_url($websiteUrl, PHP_URL_QUERY);
+
+      if ($symbolBeforeVar == '=' || $symbolBeforeVar == '?' || $symbolBeforeVar == '&') {
+        $mark = '';
+      }
+      elseif ($websiteUrlArgs == null || $symbolBeforeVar == '/') {
+        $mark = '?';
+      }
+      else {
+        $mark = '&';
+      }
+
+      return $mark;
+    }
+
+
+    /**
      * Zkontroluje uživatelský vstup (atributy třídy), který se bude zapisovat do databáze.
      *
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
@@ -680,6 +712,11 @@
       $this->isURLValid();
       $this->isURLValidDNSRecord();
       $this->isURLPathValid();
+      $this->isURLArgValid();
+
+      $this->containURLUserIdentifierVariable();
+      $this->checkCountURLUserIdentifierVariable();
+      $this->isURLUserIdentifierVariableValid();
 
       $this->isTemplateEmpty();
       $this->existTemplate();
@@ -761,15 +798,78 @@
 
 
     /**
-     * Ověří, zdali zadaná cesta v URL adrese podvodné webové stránky neobsahuje nepovolené znaky a výrazy.
+     * Ověří, zdali zadaná cesta v URL adrese podvodné stránky neobsahuje nepovolené znaky a výrazy.
      *
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     private function isURLPathValid() {
-      $path = parse_url($this->url, PHP_URL_PATH);
+      $path = parse_url(str_replace(VAR_RECIPIENT_URL, 'var', $this->url), PHP_URL_PATH);
 
       if (!empty($path) && (preg_match('/[^A-Za-z0-9\/._-]/', $path) || strpos($path, './') !== false)) {
-        throw new UserError('Cesta v URL adrese podvodné stránky obsahuje nepovolené znaky nebo výrazy.', MSG_ERROR);
+        throw new UserError('Adresářová cesta v URL adrese podvodné stránky obsahuje nepovolené znaky nebo výrazy.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali GET argumenty u zadané URL adresy podvodné stránky neobsahují nepovolené znaky a výrazy.
+     *
+     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     */
+    private function isURLArgValid() {
+      $query = parse_url(str_replace(VAR_RECIPIENT_URL, 'var', $this->url), PHP_URL_QUERY);
+
+      if (!empty($query) && preg_match('/[^A-Za-z0-9._?=&-]/', $query)) {
+        throw new UserError('Argumenty v URL adrese podvodné stránky obsahují nepovolené znaky.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali je v zadané URL adrese obsažena proměnná, která bude obsahovat identifikátor uživatele.
+     *
+     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     */
+    private function containURLUserIdentifierVariable() {
+      if (mb_strpos($this->url, VAR_RECIPIENT_URL) === false) {
+        throw new UserError(
+          'V argumentech URL adresy chybí použití proměnné "' . VAR_RECIPIENT_URL . '" pro identifikaci uživatele.',
+          MSG_ERROR
+        );
+      }
+    }
+
+
+    /**
+     * Ověří, zdali se v zadané URL adrese vícekrát nevyskytuje proměnná, která bude obsahovat identifikátor uživatele.
+     *
+     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     */
+    private function checkCountURLUserIdentifierVariable() {
+      if (substr_count($this->url, VAR_RECIPIENT_URL) > 1) {
+        throw new UserError(
+          'V argumentech URL adresy se nemůže proměnná "' . VAR_RECIPIENT_URL . '" vyskytovat vícekrát.',
+          MSG_ERROR
+        );
+      }
+    }
+
+
+    /**
+     * Ověří, zdali je v zadané URL adrese správně umístěna proměnná, která bude obsahovat identifikátor uživatele.
+     *
+     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     */
+    private function isURLUserIdentifierVariableValid() {
+      $variablePosition = mb_strpos($this->url, VAR_RECIPIENT_URL) + mb_strlen(VAR_RECIPIENT_URL);
+
+      if (isset($this->url[$variablePosition])) {
+        if ($this->url[$variablePosition] != '&') {
+          throw new UserError(
+            'Za proměnnou "' . VAR_RECIPIENT_URL . '" může následovat pouze další argument (tj. znak &), nebo nic dalšího.',
+            MSG_ERROR
+          );
+        }
       }
     }
 
