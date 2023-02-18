@@ -547,7 +547,7 @@
         if (empty($access)) {
           $activeSince = date('Y-m-d H:i:s');
           $activeTo = date('Y-m-d H:i:s', strtotime('+1 min'));
-          $hash = bin2hex(openssl_random_pseudo_bytes(PHISHING_WEBSITE_PREVIEW_HASH_LENGTH));
+          $hash = bin2hex(openssl_random_pseudo_bytes(PHISHING_WEBSITE_PREVIEW_HASH_BYTES));
 
           $access = [
             'id_website' => $idWebsite,

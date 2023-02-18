@@ -225,7 +225,7 @@
       $url = '';
       $halfLength = round(USER_ID_WEBSITE_LENGTH / 2);
 
-      if (!empty($idCampaign) && !empty($userUrl)) {
+      if (is_numeric($idCampaign) && !empty($userUrl)) {
         $url = mb_substr($userUrl, 0, $halfLength) . $idCampaign . mb_substr($userUrl, -mb_strlen(USER_ID_WEBSITE_LENGTH) - $halfLength + 1);
       }
 
@@ -332,7 +332,7 @@
     private function process() {
       if (isset($_GET)) {
         // Náhled podvodné stránky pro administrátory a správce testů.
-        if (isset($_GET[ACT_PREVIEW]) && mb_strlen($_GET[ACT_PREVIEW]) == PHISHING_WEBSITE_PREVIEW_HASH_LENGTH) {
+        if (isset($_GET[ACT_PREVIEW]) && mb_strlen($_GET[ACT_PREVIEW], '8bit') == PHISHING_WEBSITE_PREVIEW_HASH_BYTES) {
           $this->processPreview();
         }
         else {
@@ -460,14 +460,6 @@
         exit();
       }
 
-      if (!isset($_GET[ACT_PREVIEW]) || mb_strlen($_GET[ACT_PREVIEW]) != PHISHING_WEBSITE_PREVIEW_HASH_LENGTH) {
-        $args[] = self::getClientIp();
-        Logger::warning('Unauthorized access to preview a phishing website (non-existent ticket, invalid ticket).', $args);
-
-        header('Location: ' . WEB_URL);
-        exit();
-      }
-
       Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
 
       // Zjištění informací o uživateli, který se snaží na náhled podvodné stránky přistoupit.
@@ -475,7 +467,7 @@
       $userDetail = UsersModel::getUserByUsername($user['username']);
 
       // Odstranění GET parametrů pro náhled podvodné stránky.
-      $url = $this->removePreviewArguments(get_current_url(), $args['id_user']);
+      $url = $this->removePreviewArguments(get_current_url(), $args['url']);
 
       // Zjištění informací o zobrazované podvodné stránce.
       $website = PhishingWebsiteModel::getPhishingWebsiteByUrl($url);
