@@ -93,7 +93,7 @@
           $campaign['body_personalized'] = PhishingEmailModel::personalizeEmailBody(
             ['email' => $recipient],
             $campaign['body'],
-            $campaign['url_protocol'] . $campaign['url'] . '/',
+            $campaign['url_protocol'] . $campaign['url'],
             $campaign['id_campaign']
           );
 

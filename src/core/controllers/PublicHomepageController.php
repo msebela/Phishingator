@@ -101,10 +101,18 @@
         }
       }
 
+      $phishingEmail['url'] = str_replace('&amp;', '&', $phishingEmail['url']);
+      $phishingEmail['url'] = PhishingWebsiteModel::makeWebsiteUrl($phishingEmail['url'], WebsitePrependerModel::makeUserWebsiteId($idCampaign, $idUser));
+
       // Získání informací o podvodné stránce.
       $website['http'] = get_protocol_from_url($phishingEmail['url']) == 'http';
       $website['domain'] = get_domain_from_url($phishingEmail['url']);
-      $website['url_without_domain'] = mb_substr($phishingEmail['url'], 0, mb_strlen($phishingEmail['url']) - mb_strlen($website['domain']));
+
+      $domainPosition = mb_strpos($phishingEmail['url'], $website['domain']);
+
+      $website['url_before_domain'] = mb_substr($phishingEmail['url'], 0, $domainPosition);
+      $website['url_after_domain'] = str_replace(VAR_RECIPIENT_URL, 'id', mb_substr($phishingEmail['url'], $domainPosition + mb_strlen($website['domain'])));
+
       $website['image_src'] = '/' . ACT_PHISHING_TEST . '/' . self::escapeOutput($_GET['id']) . '?' . ACT_PHISHING_IMG;
 
       // Vložení získaných dat do View.

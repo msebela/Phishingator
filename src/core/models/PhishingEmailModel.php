@@ -305,10 +305,11 @@
 
         // Jestliže je specifikována i kampaň, vložit do URL podvodné stránky i identifikátor pro sledování uživatele.
         if ($idCampaign != null) {
+          $websiteUrl = str_replace('&amp;', '&', $websiteUrl);
           $url = PhishingWebsiteModel::makeWebsiteUrl($websiteUrl, WebsitePrependerModel::makeUserWebsiteId($idCampaign, $user['url']));
         }
         else {
-          $url = str_replace(VAR_RECIPIENT_URL, '', $websiteUrl);
+          $url = str_replace(VAR_RECIPIENT_URL, 'id', $websiteUrl);
         }
 
         $values[] = $url;
@@ -434,7 +435,8 @@
         if ($includeIndications) {
           // Personalizace těla e-mailu.
           $phishingEmail['body'] = self::personalizeEmailBody(
-            ['id' => $user['id_user']], $phishingEmail['body'], ($phishingEmail['url'] ?? null)
+            ['id' => $user['id_user']], $phishingEmail['body'],
+            ($phishingEmail['url'] ?? null), ($phishingEmail['id_campaign'] ?? null)
           );
         }
 

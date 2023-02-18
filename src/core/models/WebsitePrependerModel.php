@@ -297,38 +297,6 @@
 
 
     /**
-     * Odstraní z URL adresy na podvodnou stránku argumenty, které slouží pro její náhled.
-     *
-     * @param string $url              URL adresa podvodné stránky
-     * @param string $userId           Identifikátor uživatele na podvodné stránce
-     * @return string                  URL adresa podvodné stránky bez náhledových argumentů
-     */
-    private function removePreviewArguments($url, $userId) {
-      $url = str_replace([$userId, '&' . ACT_PREVIEW . '=' . $_GET[ACT_PREVIEW]], [VAR_RECIPIENT_URL, ''], $url);
-
-      $urlParts = parse_url($url);
-      $originalUrl = $url;
-
-      if (isset($urlParts['query'])) {
-        parse_str($urlParts['query'], $args);
-
-        unset($args[$userId]);
-        unset($args[ACT_PREVIEW]);
-
-        $urlParts['query'] = http_build_query($args);
-
-        $originalUrl = $urlParts['scheme'] . '://' . $urlParts['host'] . $urlParts['path'] . $urlParts['query'];
-
-        if (empty($urlParts['query'])) {
-          $originalUrl = rtrim($originalUrl, '/');
-        }
-      }
-
-      return $originalUrl;
-    }
-
-
-    /**
      * Zpracuje požadavky a připraví podvodnou stránku na základě konfigurace u dané kampaně v databázi.
      */
     private function process() {

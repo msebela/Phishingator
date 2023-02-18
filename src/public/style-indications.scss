@@ -158,6 +158,7 @@
       max-height: 350px;
       position: relative;
       overflow: hidden;
+      text-align: center;
       padding: 0;
 
       @include media-breakpoint-down(lg) {

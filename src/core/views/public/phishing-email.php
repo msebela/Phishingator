@@ -105,7 +105,7 @@
         <div class="column middle header">
           <div class="url<?php if ($website['http']): ?> http<?php endif; ?>">
             <?php if ($website['http']): ?><span data-feather="alert-triangle"></span>&nbsp;Nezabezpečeno | <?php else: ?><span data-feather="lock"></span><?php endif; ?>
-            <?= $website['url_without_domain'] ?><a href="#indication-url-text" id="indication-url" class="indication anchor-link" onclick="markIndication('url')" onmouseover="markIndication('url')" onmouseout="markIndication('url')"><?= $website['domain'] ?><div class="icons top"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>
+            <?= $website['url_before_domain'] ?><a href="#indication-url-text" id="indication-url" class="indication anchor-link" onclick="markIndication('url')" onmouseover="markIndication('url')" onmouseout="markIndication('url')"><?= $website['domain'] ?><div class="icons top"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a><?= $website['url_after_domain'] ?>
           </div>
           <div class="status bg-danger">
             <span data-feather="x"></span>
