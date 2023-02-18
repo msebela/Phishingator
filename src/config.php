@@ -307,6 +307,9 @@
   /** Znak používaný k oddělování příjemců v kampani. */
   define('CAMPAIGN_EMAILS_DELIMITER', "\n");
 
+  /** Čas (HH:MM:SS), kdy dochází k ukončení phishingových kampaní. */
+  define('CAMPAIGN_END_TIME', '23:59:59');
+
 
 
   /* --- STRÁNKOVÁNÍ --- */

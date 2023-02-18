@@ -564,7 +564,9 @@
           $hash = $access['hash'];
         }
 
-        $previewLink = $website['url'] . '?' . WebsitePrependerModel::makeUserWebsiteId('x', $user['url']) . '&' . $hash . '&' . ACT_PREVIEW;
+        $mark = (parse_url($website['url'], PHP_URL_QUERY) == null) ? '?' : '&';
+
+        $previewLink = $website['url'] . $mark . WebsitePrependerModel::makeUserWebsiteId(0, $user['url']) . '&' . ACT_PREVIEW . '=' . $hash;
       }
 
       return $previewLink;
