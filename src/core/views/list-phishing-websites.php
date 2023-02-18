@@ -33,7 +33,7 @@
           </a>
           <?php endif; ?>
         </td>
-        <td class="nowrap">
+        <td class="nowrap maxw-20-rem text-truncate">
           <span class="badge badge-<?= $website['url_protocol_color'] ?>">
             <?= $website['url_protocol'] ?>
           </span><?= str_replace(VAR_RECIPIENT_URL, '<code>' . VAR_RECIPIENT_URL . '</code>', $website['url']) ?>

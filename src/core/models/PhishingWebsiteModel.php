@@ -667,7 +667,7 @@
 
 
     /**
-     * Sestaví, případně opraví URL adresu na podvodnou stránku a nahradí
+     * Sestaví, případně upraví URL adresu na podvodnou stránku a nahradí
      * proměnnou pro identifikaci uživatele předaným obsahem.
      *
      * @param string $websiteUrl       URL adresa podvodné stránky včetně proměnné pro identifikaci uživatele
@@ -675,19 +675,19 @@
      * @return string                  Sestavená URL adresa na podvodnou stránku
      */
     public static function makeWebsiteUrl($websiteUrl, $varReplace = null) {
-      $hostnamePosition = mb_strpos($websiteUrl, get_hostname_from_url($websiteUrl));
-      $afterHostnamePosition = $hostnamePosition + mb_strlen(get_hostname_from_url($websiteUrl));
+      $hostname = get_hostname_from_url($websiteUrl);
+      $afterHostnamePosition = mb_strpos($websiteUrl, $hostname) + mb_strlen($hostname);
 
       // Přidání lomítka za hostname.
       if ($websiteUrl[$afterHostnamePosition] != '/') {
-        $websiteUrl = mb_substr($websiteUrl, 0, $afterHostnamePosition) . '/' . mb_substr($websiteUrl, $afterHostnamePosition);
+        $websiteUrl = substr_replace($websiteUrl, '/', $afterHostnamePosition, 0);
       }
 
       // Zjištění znaku, který je těsně před proměnnou.
       $varPosition = mb_strpos($websiteUrl, VAR_RECIPIENT_URL);
       $symbolBeforeVar = $websiteUrl[$varPosition - 1];
 
-      if ($symbolBeforeVar == '=' || $symbolBeforeVar == '?' || $symbolBeforeVar == '&') {
+      if (in_array($symbolBeforeVar, ['=', '?', '&'])) {
         $symbol = '';
       }
       elseif (parse_url($websiteUrl, PHP_URL_QUERY) == null || $symbolBeforeVar == '/') {
@@ -699,7 +699,14 @@
 
       // Případné doplnění chybějícího symbolu před proměnnou, aby se jednalo o GET parametr.
       if (!empty($symbol)) {
-        $websiteUrl = mb_substr($websiteUrl, 0, $varPosition) . $symbol . mb_substr($websiteUrl, $varPosition);
+        $websiteUrl = substr_replace($websiteUrl, $symbol, $varPosition, 0);
+      }
+
+      // Případné přidání lomítka před první argument.
+      $firstArgPosition = mb_strpos($websiteUrl, '?');
+
+      if ($websiteUrl[$firstArgPosition - 1] != '/') {
+        $websiteUrl = substr_replace($websiteUrl, '/', $firstArgPosition, 0);
       }
 
       // Nahrazení proměnné předaným obsahem (pokud byl předán jako argument).
@@ -723,7 +730,7 @@
       $this->isURLEmpty();
       $this->isURLTooLong();
       $this->isURLValid();
-      //$this->isURLValidDNSRecord();
+      $this->isURLValidDNSRecord();
       $this->isURLPathValid();
       $this->isURLArgValid();
 
