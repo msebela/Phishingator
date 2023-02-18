@@ -304,6 +304,8 @@
      * @return string                  URL adresa podvodné stránky bez náhledových argumentů
      */
     private function removePreviewArguments($url, $userId) {
+      $url = str_replace([$userId, '&' . ACT_PREVIEW . '=' . $_GET[ACT_PREVIEW]], [VAR_RECIPIENT_URL, ''], $url);
+
       $urlParts = parse_url($url);
       $originalUrl = $url;
 
@@ -332,7 +334,7 @@
     private function process() {
       if (isset($_GET)) {
         // Náhled podvodné stránky pro administrátory a správce testů.
-        if (isset($_GET[ACT_PREVIEW]) && mb_strlen($_GET[ACT_PREVIEW], '8bit') == PHISHING_WEBSITE_PREVIEW_HASH_BYTES) {
+        if (isset($_GET[ACT_PREVIEW]) && mb_strlen($_GET[ACT_PREVIEW]) == PHISHING_WEBSITE_PREVIEW_HASH_BYTES * 2) {
           $this->processPreview();
         }
         else {
@@ -466,8 +468,12 @@
       $user = UsersModel::getUserByURL($args['id_user']);
       $userDetail = UsersModel::getUserByUsername($user['username']);
 
-      // Odstranění GET parametrů pro náhled podvodné stránky.
-      $url = $this->removePreviewArguments(get_current_url(), $args['url']);
+      // Úprava URL adresy do původní podoby (odstranění parametrů pro náhled podvodné stránky).
+      $url = str_replace(
+        [$args['url'], '&' . ACT_PREVIEW . '=' . $_GET[ACT_PREVIEW]],
+        [VAR_RECIPIENT_URL, ''],
+        get_current_url()
+      );
 
       // Zjištění informací o zobrazované podvodné stránce.
       $website = PhishingWebsiteModel::getPhishingWebsiteByUrl($url);

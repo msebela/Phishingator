@@ -50,7 +50,7 @@
     private function makePhishingWebsite() {
       return [
         'name' => $this->name,
-        'url' => str_replace(VAR_RECIPIENT_URL, PhishingWebsiteModel::validateRecipientUrlVar($this->url) . VAR_RECIPIENT_URL, $this->url),
+        'url' => $this->makeWebsiteUrl($this->url),
         'id_template' => $this->idTemplate,
         'active' => $this->active
       ];
@@ -564,9 +564,7 @@
           $hash = $access['hash'];
         }
 
-        $mark = (parse_url($website['url'], PHP_URL_QUERY) == null) ? '?' : '&';
-
-        $previewLink = $website['url'] . $mark . WebsitePrependerModel::makeUserWebsiteId(0, $user['url']) . '&' . ACT_PREVIEW . '=' . $hash;
+        $previewLink = self::makeWebsiteUrl($website['url'], WebsitePrependerModel::makeUserWebsiteId(0, $user['url'])) . '&' . ACT_PREVIEW . '=' . $hash;
       }
 
       return $previewLink;
@@ -669,34 +667,47 @@
 
 
     /**
-     * Ověří, jakým způsobem je v URL adrese zapsána proměnná pro identifikaci uživatele na podvodné stránce
-     * a pokud před proměnnou chybí symbol pro GET argument, doplní jej.
+     * Sestaví, případně opraví URL adresu na podvodnou stránku a nahradí
+     * proměnnou pro identifikaci uživatele předaným obsahem.
      *
      * @param string $websiteUrl       URL adresa podvodné stránky včetně proměnné pro identifikaci uživatele
-     * @return string                  Ověřená URL adresa, kde je proměnná zvalidovaná jako GET argument
+     * @param string $varReplace       Obsah, který má být nahrazen za proměnnou pro identifikaci uživatele (nepovinné)
+     * @return string                  Sestavená URL adresa na podvodnou stránku
      */
-    public static function validateRecipientUrlVar($websiteUrl) {
-      // Odstranění hostname a protokolu z URL adresy.
+    public static function makeWebsiteUrl($websiteUrl, $varReplace = null) {
       $hostnamePosition = mb_strpos($websiteUrl, get_hostname_from_url($websiteUrl));
-      $websiteUrl = mb_substr($websiteUrl, $hostnamePosition + mb_strlen(get_hostname_from_url($websiteUrl)));
+      $afterHostnamePosition = $hostnamePosition + mb_strlen(get_hostname_from_url($websiteUrl));
 
-      // Zjištění symbolu, který je těsně před proměnnou.
+      // Přidání lomítka za hostname.
+      if ($websiteUrl[$afterHostnamePosition] != '/') {
+        $websiteUrl = mb_substr($websiteUrl, 0, $afterHostnamePosition) . '/' . mb_substr($websiteUrl, $afterHostnamePosition);
+      }
+
+      // Zjištění znaku, který je těsně před proměnnou.
       $varPosition = mb_strpos($websiteUrl, VAR_RECIPIENT_URL);
       $symbolBeforeVar = $websiteUrl[$varPosition - 1];
 
-      $websiteUrlArgs = parse_url($websiteUrl, PHP_URL_QUERY);
-
       if ($symbolBeforeVar == '=' || $symbolBeforeVar == '?' || $symbolBeforeVar == '&') {
-        $mark = '';
+        $symbol = '';
       }
-      elseif ($websiteUrlArgs == null || $symbolBeforeVar == '/') {
-        $mark = '?';
+      elseif (parse_url($websiteUrl, PHP_URL_QUERY) == null || $symbolBeforeVar == '/') {
+        $symbol = '?';
       }
       else {
-        $mark = '&';
+        $symbol = '&';
       }
 
-      return $mark;
+      // Případné doplnění chybějícího symbolu před proměnnou, aby se jednalo o GET parametr.
+      if (!empty($symbol)) {
+        $websiteUrl = mb_substr($websiteUrl, 0, $varPosition) . $symbol . mb_substr($websiteUrl, $varPosition);
+      }
+
+      // Nahrazení proměnné předaným obsahem (pokud byl předán jako argument).
+      if ($varReplace != null) {
+        $websiteUrl = str_replace(VAR_RECIPIENT_URL, $varReplace, $websiteUrl);
+      }
+
+      return $websiteUrl;
     }
 
 
@@ -712,7 +723,7 @@
       $this->isURLEmpty();
       $this->isURLTooLong();
       $this->isURLValid();
-      $this->isURLValidDNSRecord();
+      //$this->isURLValidDNSRecord();
       $this->isURLPathValid();
       $this->isURLArgValid();
 
