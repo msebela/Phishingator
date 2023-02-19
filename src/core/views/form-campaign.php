@@ -82,20 +82,20 @@
             <option value="<?= $onsubmit['id_onsubmit'] ?>"<?= (($inputsValues['id-onsubmit'] == $onsubmit['id_onsubmit'] || ($action == ACT_NEW && empty($inputsValues['id-onsubmit']) && $onsubmit['id_onsubmit'] == CAMPAIGN_DEFAULT_ONSUBMIT_ACTION)) ? ' selected': ''); ?>><?= $onsubmit['name'] ?></option>
           <?php endforeach; ?>
         </select>
-        <small class="form-text text-muted">Jedná se o&nbsp;akci, která se stane tehdy, když uživatel na stránce vyplní formulář a&nbsp;klikne na tlačítko pro jeho odeslání.</small>
+        <small class="form-text text-muted">Co se stane tehdy, pokud uživatel na podvodné stránce vyplní formulář a&nbsp;klikne na tlačítko pro jeho odeslání.</small>
       </div>
 
       <div class="form-row">
         <div class="form-group col-md-8">
           <label for="<?= $formPrefix ?>active-since">Start kampaně</label>
           <input type="date" class="form-control" id="<?= $formPrefix ?>active-since" name="<?= $formPrefix ?>active-since" maxlength="<?= $inputsMaxLengths['active-since'] ?>" value="<?= $inputsValues['active-since']; ?>" min="<?= (($action == ACT_NEW) ? date('Y-m-d') : $inputsValues['active-since']) ?>" required>
-          <small class="form-text text-muted">Udává, od kdy bude přístupná podvodná stránka a&nbsp;zároveň je to den, kdy započne odesílání e-mailů zvoleným příjemcům.</small>
+          <small class="form-text text-muted">V&nbsp;jaký den započne rozesílání e-mailů zvoleným příjemcům a&nbsp;zároveň den, od kterého bude přístupná podvodná stránka.</small>
         </div>
 
         <div class="form-group col-md-8">
           <label for="<?= $formPrefix ?>time-send-since">Spustit rozesílání e-mailů v&nbsp;čase</label>
           <input type="time" class="form-control" id="<?= $formPrefix ?>time-send-since" name="<?= $formPrefix ?>time-send-since" maxlength="<?= $inputsMaxLengths['time-send-since'] ?>" value="<?= $inputsValues['time-send-since'] ?>" required>
-          <small class="form-text text-muted">Určuje, od jakého času systém začne rozesílat zvoleným příjemcům vybraný e-mail.</small>
+          <small class="form-text text-muted">Od jakého času se zahájí rozesílání vybraného e-mailu zvoleným příjemcům.</small>
         </div>
       </div>
 
@@ -103,7 +103,7 @@
         <div class="form-group col-md-8">
           <label for="<?= $formPrefix ?>active-to">Ukončení kampaně (včetně)</label>
           <input type="date" class="form-control" id="<?= $formPrefix ?>active-to" name="<?= $formPrefix ?>active-to" maxlength="<?= $inputsMaxLengths['active-to'] ?>" value="<?= $inputsValues['active-to']; ?>" min="<?= (($action == ACT_NEW) ? date('Y-m-d') : $inputsValues['active-since']) ?>" required>
-          <small class="form-text text-muted">Určuje, do jakého data bude kampaň aktivní, tzn. do jakého data budou sbírány výsledky a&nbsp;do jakého data bude přístupná zvolená podvodná stránka.</small>
+          <small class="form-text text-muted">Do jakého data bude kampaň aktivní, tzn. do jakého data budou sbírány výsledky a&nbsp;do jakého data bude přístupná zvolená podvodná stránka.</small>
         </div>
       </div>
     </div>
@@ -154,7 +154,7 @@
                 <div class="col-md-8 text-right">
                   <button type="button" class="btn btn-outline-secondary btn-sm" onclick="$('#cover-volunteers').toggleClass('d-none')">
                     <span data-feather="user-check"></span>
-                    Seznam příjemců
+                    Seznam příjemců <span class="badge badge-secondary"><?= count($recipientsVolunteers) ?></span>
                   </button>
                 </div>
               </div>
@@ -181,7 +181,7 @@
                   <h6>
                     <label>
                       <input type="checkbox" onclick="markCheckboxes('#group-<?= $groupName ?>')">
-                      LDAP: <?= $groupName ?>
+                      <span class="font-weight-normal text-muted">LDAP:</span> <?= $groupName ?>
                     </label>
                   </h6>
                 </div>
@@ -189,7 +189,7 @@
                 <div class="col-md-8 text-right">
                   <button type="button" class="btn btn-outline-secondary btn-sm" onclick="$('#group-<?= $groupName ?>').toggleClass('d-none')">
                     <span data-feather="user-check"></span>
-                    Seznam příjemců
+                    Seznam příjemců <span class="badge badge-secondary"><?= count($group) ?></span>
                   </button>
                 </div>
               </div>

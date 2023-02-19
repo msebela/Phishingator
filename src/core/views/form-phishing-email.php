@@ -7,7 +7,7 @@
     <div class="form-group col-md-9 col-xl-11">
       <label for="<?= $formPrefix ?>name">Název</label>
       <input type="text" class="form-control" id="<?= $formPrefix ?>name" name="<?= $formPrefix ?>name" maxlength="<?= $inputsMaxLengths['name'] ?>" value="<?= $inputsValues['name'] ?>" required>
-      <small class="form-text text-muted">Název slouží pouze k&nbsp;identifikaci v&nbsp;rámci tohoto systému.</small>
+      <small class="form-text text-muted">Název slouží pouze pro vlastní pojmenování e-mailu.</small>
     </div>
 
     <div class="form-group col-md-7 col-xl-5 pl-md-5">

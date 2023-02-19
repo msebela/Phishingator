@@ -101,7 +101,6 @@
         }
       }
 
-      $phishingEmail['url'] = str_replace('&amp;', '&', $phishingEmail['url']);
       $phishingEmail['url'] = PhishingWebsiteModel::makeWebsiteUrl($phishingEmail['url'], WebsitePrependerModel::makeUserWebsiteId($idCampaign, $idUser));
 
       // Získání informací o podvodné stránce.

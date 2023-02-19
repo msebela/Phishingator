@@ -129,10 +129,10 @@
               <span data-feather="eye"></span>
             </a>
           </td>
-          <td>
+          <td class="nowrap maxw-20-rem text-truncate">
             <span class="badge badge-<?= $campaign['url_protocol_color'] ?>">
               <?= $campaign['url_protocol'] ?>
-            </span><?= $campaign['url'] ?>
+            </span><?= str_replace(VAR_RECIPIENT_URL, '<code>' . VAR_RECIPIENT_URL . '</code>', $campaign['url']) ?>
           </td>
           <td>
             <a href="/portal/phishing-websites/<?= ACT_PREVIEW . '/' . $campaign['id_website'] ?>" target="_blank" class="badge badge-secondary" role="button" title="Náhled">

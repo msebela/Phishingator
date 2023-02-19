@@ -6,7 +6,7 @@
   <div class="form-group">
     <label for="<?= $formPrefix ?>name">Název</label>
     <input type="text" class="form-control" id="<?= $formPrefix ?>name" name="<?= $formPrefix ?>name" maxlength="<?= $inputsMaxLengths['name'] ?>" value="<?= $inputsValues['name'] ?>" required>
-    <small class="form-text text-muted">Název slouží pouze k&nbsp;identifikaci v&nbsp;rámci tohoto systému.</small>
+    <small class="form-text text-muted">Název slouží pouze pro vlastní pojmenování skupiny.</small>
   </div>
 
   <div class="form-group">
