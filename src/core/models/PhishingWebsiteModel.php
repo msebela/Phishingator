@@ -730,7 +730,7 @@
       $this->isURLEmpty();
       $this->isURLTooLong();
       $this->isURLValid();
-      $this->isURLValidDNSRecord();
+      //$this->isURLValidDNSRecord();
       $this->isURLPathValid();
       $this->isURLArgValid();
 
@@ -825,8 +825,11 @@
     private function isURLPathValid() {
       $path = parse_url(str_replace(VAR_RECIPIENT_URL, 'var', $this->url), PHP_URL_PATH);
 
-      if (!empty($path) && (preg_match('/[^A-Za-z0-9\/._-]/', $path) || strpos($path, './') !== false)) {
-        throw new UserError('Adresářová cesta v URL adrese podvodné stránky obsahuje nepovolené znaky nebo výrazy.', MSG_ERROR);
+      if (!empty($path) && strpos($path, './') !== false) {
+        throw new UserError('Adresářová cesta v URL adrese podvodné stránky nemůže obsahovat výraz ../ pro přecházení mezi adresáři.', MSG_ERROR);
+      }
+      elseif (!empty($path) && preg_match('/[^A-Za-z0-9\/._-]/', $path, $matches)) {
+        throw new UserError('Adresářová cesta v URL adrese podvodné stránky obsahuje nepovolený znak (' . implode(',', $matches) . ').', MSG_ERROR);
       }
     }
 
@@ -839,8 +842,8 @@
     private function isURLArgValid() {
       $query = parse_url(str_replace(VAR_RECIPIENT_URL, 'var', $this->url), PHP_URL_QUERY);
 
-      if (!empty($query) && preg_match('/[^A-Za-z0-9._?=&-]/', $query)) {
-        throw new UserError('Argumenty v URL adrese podvodné stránky obsahují nepovolené znaky.', MSG_ERROR);
+      if (!empty($query) && preg_match('/[^A-Za-z0-9._?=&-]/', $query, $matches)) {
+        throw new UserError('Argumenty v URL adrese podvodné stránky obsahují nepovolený znak (' . implode(',', $matches) . ').', MSG_ERROR);
       }
     }
 
