@@ -70,7 +70,7 @@
   <?php if (!empty($email['indications'])): ?>
   <div class="card-columns pb-5 mb-5 border-bottom text-dark">
     <?php for ($i = 0; $i < count($email['indications']); $i++): ?>
-    <div id="indication-<?= $email['indications'][$i]['id_indication'] ?>-text" class="card bg-light cursor-pointer" onmouseover="markIndication(<?= $email['indications'][$i]['id_indication'] ?>)" onmouseout="markIndication(<?= $email['indications'][$i]['id_indication'] ?>)">
+    <div id="indication-<?= $email['indications'][$i]['id_indication'] ?>-text" class="card bg-light cursor-pointer mark-indication" data-indication="<?= $email['indications'][$i]['id_indication'] ?>">
       <a href="#indication-<?= $email['indications'][$i]['id_indication'] ?>" class="anchor-link">
         <div class="card-body">
           <h5 class="card-title">
@@ -80,7 +80,7 @@
           <p class="card-text"><?= $email['indications'][$i]['description'] ?></p>
 
           <div class="clearfix">
-            <button type="button" id="indication-<?= $email['indications'][$i]['id_indication'] ?>-btn" class="btn btn-sm btn-info float-right" onclick="markIndication(<?= $email['indications'][$i]['id_indication'] ?>)">
+            <button type="button" id="indication-<?= $email['indications'][$i]['id_indication'] ?>-btn" class="btn btn-sm btn-info float-right mark-indication" data-indication="<?= $email['indications'][$i]['id_indication'] ?>">
               <span data-feather="chevron-up"></span>
               <span>Označit</span>
             </button>
@@ -105,7 +105,7 @@
         <div class="column middle header">
           <div class="url<?php if ($website['http']): ?> http<?php endif; ?>">
             <?php if ($website['http']): ?><span data-feather="alert-triangle"></span>&nbsp;Nezabezpečeno | <?php else: ?><span data-feather="lock"></span><?php endif; ?>
-            <?= $website['url_before_domain'] ?><a href="#indication-url-text" id="indication-url" class="indication anchor-link" onclick="markIndication('url')" onmouseover="markIndication('url')" onmouseout="markIndication('url')"><?= $website['domain'] ?><div class="icons top"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a><?= $website['url_after_domain'] ?>
+            <?= $website['url_before_domain'] ?><a href="#indication-url-text" id="indication-url" class="indication anchor-link mark-indication" data-indication="url"><?= $website['domain'] ?><div class="icons top"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a><?= $website['url_after_domain'] ?>
           </div>
           <div class="status bg-danger">
             <span data-feather="x"></span>
@@ -129,7 +129,7 @@
 
   <?php $i = 1; ?>
   <div class="card-columns pb-5 mb-5 border-bottom text-dark">
-    <div id="indication-url-text" class="card bg-light cursor-pointer" onmouseover="markIndication('url')" onmouseout="markIndication('url')">
+    <div id="indication-url-text" class="card bg-light cursor-pointer mark-indication" data-indication="url">
       <a href="#indication-url" class="anchor-link">
         <div class="card-body">
           <h5 class="card-title">

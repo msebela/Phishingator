@@ -30,7 +30,7 @@
               <label for="group" class="input-group-text">Skupina</label>
             </div>
 
-            <select name="group" id="group" class="custom-select minw-8-rem" onchange="document.getElementById('search-form').submit()">
+            <select name="group" id="group" class="custom-select minw-8-rem btn-submit" data-form="#search-form">
               <option value="0">Vše</option>
               <?php foreach ($groups as $group): ?>
               <option value="<?= $group['id_user_group'] ?>"<?= (($filterGroup == $group['id_user_group']) ? ' selected': ''); ?>><?= $group['name'] ?></option>
@@ -45,7 +45,7 @@
               <label for="permission" class="input-group-text">Oprávnění</label>
             </div>
 
-            <select name="permission" id="permission" class="custom-select minw-8-rem" onchange="document.getElementById('search-form').submit()">
+            <select name="permission" id="permission" class="custom-select minw-8-rem btn-submit" data-form="#search-form">
               <option value="0">Vše</option>
               <?php foreach ($permissions as $permission): ?>
               <option value="<?= $permission['id_user_role'] ?>"<?= (($filterPermission == $permission['id_user_role']) ? ' selected': ''); ?>><?= $permission['name'] ?></option>
@@ -61,7 +61,7 @@
             </div>
 
             <div class="input-group-text bg-light input-group-checkbox">
-              <input type="checkbox" id="only-volunteers" name="only-volunteers" value="1"<?= (($filterOnlyVolunteers) ? ' checked' : '') ?> onchange="document.getElementById('search-form').submit()">
+              <input type="checkbox" id="only-volunteers" name="only-volunteers" value="1"<?= (($filterOnlyVolunteers) ? ' checked' : '') ?> class="btn-submit" data-form="#search-form">
             </div>
           </div>
         </div>
@@ -78,7 +78,7 @@
 </form>
 
 <?php if (count($users) > 0): ?>
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/table-sort.js"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/table-sort.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
 <div class="table-responsive">
   <table class="table table-sm table-striped table-hover records-list table-sort table-arrows">
@@ -86,7 +86,7 @@
       <tr>
         <th scope="col">Jméno a&nbsp;příjmení</th>
         <th scope="col">E-mail</th>
-        <th scope="col" colspan="2" class="data-sort" style="min-width: 210px">Registrován</th>
+        <th scope="col" colspan="2" class="data-sort minw-13-rem">Registrován</th>
         <th scope="col" class="data-sort datetime">Poslední přihlášení</th>
         <th scope="col" class="data-sort minw-110-px">Dobrovolník</th>
         <th scope="col" class="data-sort">Úspěšnost</th>
@@ -137,7 +137,7 @@
           <form method="post" action="/portal/<?= $urlSection . '/' . ACT_DEL . '/' . $user['id_user'] ?>" class="d-inline">
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
-            <button type="submit" class="btn btn-secondary btn-sm" onclick="if (!confirm('Opravdu chcete odstranit tento záznam?')) return false;">
+            <button type="submit" class="btn btn-secondary btn-sm btn-confirm" data-confirm="Opravdu chcete odstranit tento záznam?">
               <span data-feather="trash"></span>
               Smazat
             </button>
@@ -163,7 +163,7 @@
     </li>
 
     <li class="page-item">
-      <select class="custom-select mr-sm-2" onchange="if (this.value) window.location.href = '<?= $_pageLink ?>' + this.value">
+      <select class="custom-select mr-sm-2 btn-redirect" data-link="<?= $_pageLink ?>">
         <?php for ($i = 1; $i <= $countPages; $i++): ?>
         <option value="<?= $i ?>"<?php if ($page == $i): ?> selected<?php endif; ?>><?= $i ?></option>
         <?php endfor; ?>

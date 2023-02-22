@@ -42,13 +42,13 @@
 
   <?php $this->controller->displayView(); ?>
 
-  <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-3.6.3.min.js"></script>
-  <script src="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.2/bootstrap.bundle.min.js"></script>
+  <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-3.6.3.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+  <script src="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.2/bootstrap.bundle.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
   <?php if ($phishingPage): ?>
-  <script src="/js.js"></script>
+  <script src="/js.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
   <?php endif; ?>
-  <script src="/<?= CORE_DIR_EXTENSIONS ?>/feather.min.js"></script>
-  <script>
+  <script src="/<?= CORE_DIR_EXTENSIONS ?>/feather.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+  <script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">
     feather.replace()
   </script>
 </body>

@@ -18,7 +18,7 @@
 
         <div class="form-group mb-4">
           <div class="custom-control custom-checkbox my-1 mr-sm-2">
-            <input type="checkbox" class="custom-control-input" id="<?= $formPrefix ?>email-limit-checkbox" name="<?= $formPrefix ?>email-limit-checkbox"<?= (($inputsValues['email-limit-checkbox'] || $_inputsValues['email-limit'] !== NULL) ? ' checked' : ''); ?> onclick="$('#email-limit-count-wrapper').toggleClass('d-none');">
+            <input type="checkbox" name="<?= $formPrefix ?>email-limit-checkbox" id="<?= $formPrefix ?>email-limit-checkbox" class="custom-control-input btn-toggle-display"<?= (($inputsValues['email-limit-checkbox'] || $_inputsValues['email-limit'] !== NULL) ? ' checked' : ''); ?> data-toggle="#email-limit-count-wrapper">
             <label class="custom-control-label" for="<?= $formPrefix ?>email-limit-checkbox">Omezit počet zpráv, které mi budou zaslány (nepovinné)</label>
           </div>
         </div>

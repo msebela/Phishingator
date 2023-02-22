@@ -50,7 +50,7 @@
 <hr>
 
 <div class="text-center">
-  <button type="button" class="btn btn-primary btn-lg" onclick="window.close()">
+  <button type="button" class="btn btn-primary btn-lg btn-close">
     <span data-feather="x"></span>
     Zavřít
   </button>
@@ -62,7 +62,7 @@
 
 <div class="container card-columns">
   <?php foreach ($email['indications'] as $i => $indication): ?>
-  <div id="indication-<?= $indication['id_indication'] ?>-text" class="card bg-light cursor-pointer" onmouseover="markIndication(<?= $indication['id_indication'] ?>)" onmouseout="markIndication(<?= $indication['id_indication'] ?>)">
+  <div id="indication-<?= $indication['id_indication'] ?>-text" class="card bg-light cursor-pointer mark-indication" data-indication="<?= $indication['id_indication'] ?>">
     <a href="#indication-<?= $indication['id_indication'] ?>" class="anchor-link">
       <div class="card-body">
         <h5 class="card-title">
@@ -72,7 +72,7 @@
         <p class="card-text"><?= $indication['description'] ?></p>
 
         <div class="clearfix">
-          <button type="button" id="indication-<?= $indication['id_indication'] ?>-btn" class="btn btn-sm btn-info float-right" onclick="markIndication(<?= $indication['id_indication'] ?>)">
+          <button type="button" id="indication-<?= $indication['id_indication'] ?>-btn" class="btn btn-sm btn-info float-right mark-indication" data-indication="<?= $indication['id_indication'] ?>">
             <span data-feather="chevron-up"></span>
             <span>Označit</span>
           </button>

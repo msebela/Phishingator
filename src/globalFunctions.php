@@ -41,8 +41,8 @@
     header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
     header('X-Content-Type-Options: nosniff');
     header('Referrer-Policy: strict-origin-when-cross-origin');
-    header("Permissions-Policy: accelerometer=(); ambient-light-sensor=(); autoplay=(); battery=(); camera=(); display-capture=(); document-domain=(); encrypted-media=(); fullscreen=(); gamepad=(); geolocation=(); gyroscope=(); layout-animations=(); magnetometer=(); microphone=(); midi=(); payment=(); picture-in-picture=(); speaker-selection=(); usb=(); xr-spatial-tracking=()");
-    header("Content-Security-Policy: default-src 'self'; upgrade-insecure-requests; script-src 'self' '" . ((!defined('HTTP_HEADER_CSP_NONCE')) ? "unsafe-inline" : "nonce-" . HTTP_HEADER_CSP_NONCE) . "'; font-src 'self' data: fonts.gstatic.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; img-src 'self' data:");
+    header("Permissions-Policy: accelerometer=(); ambient-light-sensor=(); autoplay=(); battery=(); camera=(); display-capture=(); document-domain=(); encrypted-media=(); fullscreen=(); gamepad=(); geolocation=(); gyroscope=(); layout-animations=(); magnetometer=(); microphone=(); midi=(); payment=(); picture-in-picture=(); speaker-selection=(); usb=(); web-share=(); xr-spatial-tracking=()");
+    header("Content-Security-Policy: default-src 'self'; upgrade-insecure-requests; script-src 'self' 'nonce-" . HTTP_HEADER_CSP_NONCE . "'; font-src 'self' data: fonts.gstatic.com; style-src 'self' fonts.googleapis.com; img-src 'self' data:");
   }
 
 

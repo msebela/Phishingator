@@ -44,7 +44,7 @@
     <div class="form-group col-lg-3">
       <label for="<?= $formPrefix ?>expression">Indicie (podezřelý řetězec)</label>
       <input type="text" class="form-control" id="<?= $formPrefix ?>expression" name="<?= $formPrefix ?>expression" maxlength="<?= $inputsMaxLengths['expression'] ?>" value="<?= $inputsValues['expression'] ?>" required>
-      <small class="form-text text-muted">Pro označení jména odesílatele lze použít proměnnou <code class="cursor-pointer" onclick="replaceVariable('#<?= $formPrefix; ?>expression', '<?= VAR_INDICATION_SENDER_NAME ?>')"><?= VAR_INDICATION_SENDER_NAME ?></code>, pro e-mail odesílatele <code class="cursor-pointer" onclick="replaceVariable('#<?= $formPrefix; ?>expression', '<?= VAR_INDICATION_SENDER_EMAIL ?>')"><?= VAR_INDICATION_SENDER_EMAIL ?></code> a&nbsp;pro předmět pak <code class="cursor-pointer" onclick="replaceVariable('#<?= $formPrefix; ?>expression', '<?= VAR_INDICATION_SUBJECT ?>')"><?= VAR_INDICATION_SUBJECT ?></code>.</small>
+      <small class="form-text text-muted">Pro označení jména odesílatele lze použít proměnnou <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SENDER_NAME ?>"><?= VAR_INDICATION_SENDER_NAME ?></code>, pro e-mail odesílatele <code class="replace-variable cursor-pointer" data-input="<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SENDER_EMAIL ?>"><?= VAR_INDICATION_SENDER_EMAIL ?></code> a&nbsp;pro předmět pak <code class="replace-variable cursor-pointer" data-input="<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SUBJECT ?>"><?= VAR_INDICATION_SUBJECT ?></code>.</small>
     </div>
 
     <div class="form-group col-lg-3">
@@ -72,7 +72,7 @@
 
 <h4>Indicie (<?= count($emailIndications) ?>) k&nbsp;rozpoznání tohoto phishingu</h4>
 <?php foreach ($emailIndications as $i => $indication): $i++; ?>
-<form method="post" action="/portal/<?= $urlSection . '/' . ACT_INDICATIONS . '/' . $phishingEmail['id_email'] ?>" id="indication-<?= $indication['id_indication'] ?>-text" onmouseover="markIndication(<?= $indication['id_indication'] ?>)" onmouseout="markIndication(<?= $indication['id_indication'] ?>)">
+<form method="post" action="/portal/<?= $urlSection . '/' . ACT_INDICATIONS . '/' . $phishingEmail['id_email'] ?>" id="indication-<?= $indication['id_indication'] ?>-text" class="mark-indication" data-indication="<?= $indication['id_indication'] ?>">
   <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
   <input type="hidden" name="<?= $formPrefix . ACT_EDIT ?>-id" value="<?= $indication['id_indication'] ?>">
 
@@ -100,7 +100,7 @@
         Uložit změny
       </button>
 
-      <button type="submit" class="btn btn-secondary" name="<?= $formPrefix . ACT_DEL; ?>" onclick="if (!confirm('Opravdu chcete odstranit tento záznam?')) return false;">
+      <button type="submit" class="btn btn-secondary btn-confirm" name="<?= $formPrefix . ACT_DEL; ?>" data-confirm="Opravdu chcete odstranit tento záznam?">
         <span data-feather="trash"></span>
         Smazat
       </button>

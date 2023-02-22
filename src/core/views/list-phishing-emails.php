@@ -1,5 +1,5 @@
 <?php if (count($phishingEmails) > 0): ?>
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/table-sort.js"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/table-sort.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
 <div class="table-responsive">
   <table class="table table-striped table-hover records-list table-sort table-arrows">
@@ -65,7 +65,7 @@
           <form method="post" action="/portal/<?= $urlSection . '/' . ACT_DEL . '/' . $email['id_email'] ?>" class="d-inline">
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
-            <button type="submit" class="btn btn-secondary btn-sm" onclick="if (!confirm('Opravdu chcete odstranit tento záznam?')) return false;">
+            <button type="submit" class="btn btn-secondary btn-sm btn-confirm" data-confirm="Opravdu chcete odstranit tento záznam?">
               <span data-feather="trash"></span>
               Smazat
             </button>

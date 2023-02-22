@@ -730,7 +730,7 @@
       $this->isURLEmpty();
       $this->isURLTooLong();
       $this->isURLValid();
-      //$this->isURLValidDNSRecord();
+      $this->isURLValidDNSRecord();
       $this->isURLPathValid();
       $this->isURLArgValid();
 

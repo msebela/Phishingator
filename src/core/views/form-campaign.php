@@ -35,7 +35,7 @@
       <div class="row">
         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-13">
           <label for="<?= $formPrefix ?>id-email">Rozesílaný podvodný e-mail</label>
-          <select class="custom-select" id="<?= $formPrefix ?>id-email" name="<?= $formPrefix ?>id-email" required onchange="setButtonLink(this, '#btn-email-preview', 'emails')">
+          <select name="<?= $formPrefix ?>id-email" id="<?= $formPrefix ?>id-email" class="custom-select set-preview-btn" data-preview-btn="#btn-email-preview" data-preview-link="/portal/phishing-emails" required>
             <option value="0">Vyberte&hellip;</option>
             <?php foreach ($emails as $email): ?>
               <option value="<?= $email['id_email']; ?>"<?= (($inputsValues['id-email'] == $email['id_email']) ? ' selected': ''); ?>><?= $email['name'] ?></option>
@@ -56,7 +56,7 @@
       <div class="row">
         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-13">
           <label for="<?= $formPrefix ?>id-website">Podvodná webová stránka přístupná z&nbsp;e-mailu</label>
-          <select class="custom-select" id="<?= $formPrefix ?>id-website" name="<?= $formPrefix ?>id-website" required onchange="setButtonLink(this, '#btn-website-preview', 'websites')">
+          <select name="<?= $formPrefix ?>id-website" id="<?= $formPrefix ?>id-website" class="custom-select set-preview-btn" data-preview-btn="#btn-website-preview" data-preview-link="/portal/phishing-websites" required>
             <option value="0">Vyberte&hellip;</option>
             <?php foreach ($websites as $website): ?>
               <option value="<?= $website['id_website'] ?>"<?= (($inputsValues['id-website'] == $website['id_website']) ? ' selected': ''); ?>><?= $website['url'] . ' &ndash; ' . $website['name'] ?></option>
@@ -113,11 +113,11 @@
         <label for="<?= $formPrefix ?>recipients">Seznam účastníků kampaně</label>
         <span class="float-right">
           Celkem: <b id="countRecipients"><?= $countRecipients ?></b>
-          <button type="button" class="btn btn-outline-secondary btn-sm py-0" onclick="getCountOfEmails('#<?= $formPrefix ?>recipients', '#countRecipients');">
+          <button type="button" class="btn btn-outline-secondary btn-sm py-0 get-sum-of-emails" data-recipients-textarea="#<?= $formPrefix ?>recipients" data-sum-recipients-label="#countRecipients">
             <span data-feather="refresh-cw"></span>
           </button>
         </span>
-        <textarea class="form-control text-monospace" id="<?= $formPrefix ?>recipients" name="<?= $formPrefix ?>recipients" rows="20" required onkeyup="getCountOfEmails('#<?= $formPrefix ?>recipients', '#countRecipients');"><?= $recipients ?></textarea>
+        <textarea class="form-control text-monospace get-sum-of-emails" id="<?= $formPrefix ?>recipients" name="<?= $formPrefix ?>recipients" rows="20" required data-recipients-textarea="#<?= $formPrefix ?>recipients" data-sum-recipients-label="#countRecipients"><?= $recipients ?></textarea>
         <small class="form-text text-muted">
           Každý z&nbsp;příjemců musí být umístěn na samostatném řádku.
           <button type="button" class="btn btn-secondary btn-sm float-right mt-2 mb-4" data-toggle="modal" data-target="#recipientsDialog">
@@ -145,14 +145,14 @@
                 <div class="col-md-8">
                   <h6>
                     <label>
-                      <input type="checkbox" onclick="markCheckboxes('#cover-volunteers')">
+                      <input type="checkbox" class="mark-checkboxes" data-checkboxes-group="#cover-volunteers">
                       Dobrovolně registrovaní příjemci
                     </label>
                   </h6>
                 </div>
 
                 <div class="col-md-8 text-right">
-                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="$('#cover-volunteers').toggleClass('d-none')">
+                  <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-display" data-toggle="#cover-volunteers">
                     <span data-feather="user-check"></span>
                     Seznam příjemců <span class="badge badge-secondary"><?= count($recipientsVolunteers) ?></span>
                   </button>
@@ -164,7 +164,7 @@
                 <div class="d-flex flex-row flex-wrap justify-content-between mt-2">
                   <?php foreach ($recipientsVolunteers as $volunteer): ?>
                   <label class="recipients-list-email text-truncate">
-                    <input type="checkbox" name="<?= $volunteer['email'] ?>" value="<?= $volunteer['email'] ?>" onclick="checkSameCheckboxes(this.value, this.checked)"<?php if ($volunteer['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($volunteer['color'])) ? '<span class="badge badge-' . $volunteer['color'] . '">' . $volunteer['username'] . '</span>@' . $volunteer['domain'] : $volunteer['email']) . ((!empty($volunteer['email_limit'])) ? '&nbsp;<span class="badge badge-secondary">' . $volunteer['email_limit'] . '</span>' : '') ?>
+                    <input type="checkbox" name="<?= $volunteer['email'] ?>" value="<?= $volunteer['email'] ?>" class="mark-same-checkboxes"<?php if ($volunteer['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($volunteer['color'])) ? '<span class="badge badge-' . $volunteer['color'] . '">' . $volunteer['username'] . '</span>@' . $volunteer['domain'] : $volunteer['email']) . ((!empty($volunteer['email_limit'])) ? '&nbsp;<span class="badge badge-secondary">' . $volunteer['email_limit'] . '</span>' : '') ?>
                   </label>
                   <?php endforeach; ?>
                 </div>
@@ -180,14 +180,14 @@
                 <div class="col-md-8">
                   <h6>
                     <label>
-                      <input type="checkbox" onclick="markCheckboxes('#group-<?= $groupName ?>')">
+                      <input type="checkbox" class="mark-checkboxes" data-checkboxes-group="#group-<?= $groupName ?>">
                       <span class="font-weight-normal text-muted">LDAP:</span> <?= $groupName ?>
                     </label>
                   </h6>
                 </div>
 
                 <div class="col-md-8 text-right">
-                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="$('#group-<?= $groupName ?>').toggleClass('d-none')">
+                  <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-display" data-toggle="#group-<?= $groupName ?>">
                     <span data-feather="user-check"></span>
                     Seznam příjemců <span class="badge badge-secondary"><?= count($group) ?></span>
                   </button>
@@ -198,7 +198,7 @@
                 <div class="d-flex flex-row flex-wrap justify-content-between mt-2">
                   <?php foreach ($group as $user): ?>
                   <label class="recipients-list-email text-truncate">
-                    <input type="checkbox" name="<?= $user['email'] ?>" value="<?= $user['email'] ?>" onclick="checkSameCheckboxes(this.value, this.checked)"<?php if ($user['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($user['color'])) ? '<span class="badge badge-' . $user['color'] . '">' . $user['username'] . '</span>@' . $user['domain'] : $user['email']); ?>
+                    <input type="checkbox" name="<?= $user['email'] ?>" value="<?= $user['email'] ?>" class="mark-same-checkboxes"<?php if ($user['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($user['color'])) ? '<span class="badge badge-' . $user['color'] . '">' . $user['username'] . '</span>@' . $user['domain'] : $user['email']); ?>
                   </label>
                   <?php endforeach; ?>
                 </div>
@@ -210,7 +210,7 @@
               <?php if ($recipientsVolunteers == null && count($recipientsLdapGroups) == 0): ?>
               Administrátorem nebyly nastaveny žádné skupiny.
               <?php else: ?>
-              <button type="button" class="btn btn-outline-secondary btn-sm float-right" onclick="markCheckboxes()">
+              <button type="button" class="btn btn-outline-secondary btn-sm float-right mark-checkboxes" data-checkboxes-group="">
                 <span data-feather="users"></span>
                 Vybrat všechny příjemce
               </button>
@@ -222,7 +222,7 @@
               <span data-feather="x"></span>
               Zavřít
             </button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="insertEmails('#<?= $formPrefix ?>recipients'); getCountOfEmails('#<?= $formPrefix ?>recipients', '#countRecipients');">
+            <button type="button" class="btn btn-primary insert-recipients-emails get-sum-of-emails" data-dismiss="modal" data-recipients-textarea="#<?= $formPrefix ?>recipients" data-sum-recipients-label="#countRecipients">
               <span data-feather="save"></span>
               Uložit změny
             </button>
@@ -234,7 +234,7 @@
   </div>
 
   <div class="text-center">
-    <button type="submit" class="btn btn-primary btn-lg" name="<?= $formPrefix . $action; ?>"<?php if ($action == ACT_EDIT && strtotime($campaign['active_since']) <= strtotime(date('Y-m-d'))): ?> onclick="if (!confirm('Opravdu chcete upravit kampaň i přesto, že může mít vliv na statistiku a hodnocení kampaně?')) return false;"<?php endif; ?>>
+    <button type="submit" class="btn btn-primary btn-lg btn-confirm" name="<?= $formPrefix . $action; ?>"<?php if ($action == ACT_EDIT && strtotime($campaign['active_since']) <= strtotime(date('Y-m-d'))): ?> data-confirm="Opravdu chcete upravit kampaň i přesto, že může mít vliv na statistiku a hodnocení kampaně?"<?php endif; ?>>
       <span data-feather="save"></span>
       <?= ($action == ACT_NEW) ? 'Přidat' : 'Uložit změny'; ?>
     </button>

@@ -39,7 +39,7 @@
     <div class="form-group col-sm-9 col-lg-11 col-xl-13">
       <label for="<?= $formPrefix ?>url">URL</label>
       <input type="url" class="form-control" id="<?= $formPrefix ?>url" name="<?= $formPrefix ?>url" maxlength="<?= $inputsMaxLengths['url'] ?>" value="<?= $inputsValues['url'] ?>" required>
-      <small class="form-text text-muted">URL adresa včetně protokolu <span class="badge badge-success cursor-pointer phishing-domain-protocol" data-var="https">HTTPS</span> nebo <span class="badge badge-danger cursor-pointer phishing-domain-protocol" data-var="http">HTTP</span> (volitelně lze použít i&nbsp;adresáře a&nbsp;GET parametry), na které bude podvodná stránka přístupná. V&nbsp;parametrech adresy se musí uvést proměnná <code class="cursor-pointer" onclick="insertVariable('#<?= $formPrefix; ?>url', '<?= VAR_RECIPIENT_URL ?>')"><?= VAR_RECIPIENT_URL ?></code>, která bude nahrazena identifikátorem uživatele. Použít lze (sub)domény uvedené v&nbsp;seznamu <span class="badge badge-info">Registrované domény</span>.</small>
+      <small class="form-text text-muted">URL adresa včetně protokolu <span class="badge badge-success cursor-pointer phishing-domain-protocol" data-var="https">HTTPS</span> nebo <span class="badge badge-danger cursor-pointer phishing-domain-protocol" data-var="http">HTTP</span> (volitelně lze použít i&nbsp;adresáře a&nbsp;GET parametry), na které bude podvodná stránka přístupná. V&nbsp;parametrech adresy se musí uvést proměnná <code class="insert-variable cursor-pointer" data-input="#<?= $formPrefix ?>url" data-var="<?= VAR_RECIPIENT_URL ?>"><?= VAR_RECIPIENT_URL ?></code>, která bude nahrazena identifikátorem uživatele. Použít lze (sub)domény uvedené v&nbsp;seznamu <span class="badge badge-info">Registrované domény</span>.</small>
     </div>
 
     <div class="form-group col-sm-7 col-lg-5 col-xl-3 text-right">
@@ -58,7 +58,7 @@
   </div>
 
   <div class="alert alert-info" role="alert">
-    Proměnná <code class="cursor-pointer" onclick="insertVariable('#<?= $formPrefix; ?>url', '<?= VAR_RECIPIENT_URL ?>')"><?= VAR_RECIPIENT_URL ?></code> musí být součástí GET parametrů stránky, a&nbsp;to buď jako některý z&nbsp;parametrů (<span class="text-monospace">&hellip;?<code><?= VAR_RECIPIENT_URL ?></code></span> / <span class="text-monospace">&hellip;&amp;<code><?= VAR_RECIPIENT_URL ?></code></span>), nebo jako hodnota některého z&nbsp;parametrů (<span class="text-monospace">&hellip;?par=<code><?= VAR_RECIPIENT_URL ?></code></span>), například:
+    Proměnná <code class="insert-variable cursor-pointer" data-input="#<?= $formPrefix ?>url" data-var="<?= VAR_RECIPIENT_URL ?>"><?= VAR_RECIPIENT_URL ?></code> musí být součástí GET parametrů stránky, a&nbsp;to buď jako některý z&nbsp;parametrů (<span class="text-monospace">&hellip;?<code><?= VAR_RECIPIENT_URL ?></code></span> / <span class="text-monospace">&hellip;&amp;<code><?= VAR_RECIPIENT_URL ?></code></span>), nebo jako hodnota některého z&nbsp;parametrů (<span class="text-monospace">&hellip;?par=<code><?= VAR_RECIPIENT_URL ?></code></span>), například:
     <ul class="mt-2">
       <li class="text-monospace">https://phishingator.cz/?<code><?= VAR_RECIPIENT_URL ?></code></li>
       <li class="text-monospace">https://phishingator.cz/?par=<code><?= VAR_RECIPIENT_URL ?></code></li>

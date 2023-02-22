@@ -125,8 +125,8 @@
 
   <div class="btn-toolbar mb-2 mb-md-0 align-items-center">
     <div class="custom-control custom-checkbox mr-2">
-      <input type="checkbox" class="custom-control-input" id="blur-identity" onclick="blurIdentity()"<?= ((!empty($blurIdentities)) ? ' checked' : '') ?>>
-      <label class="custom-control-label" for="blur-identity">Rozmazat identity</label>
+      <input type="checkbox" class="custom-control-input" id="blur-identities"<?= ((!empty($blurIdentities)) ? ' checked' : '') ?>>
+      <label class="custom-control-label" for="blur-identities">Rozmazat identity</label>
     </div>
 
     <?php if (isset($capturedData)): ?>
@@ -135,9 +135,9 @@
       Export
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
-      <a href="#" class="dropdown-item" onclick="exportChart('<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions', 'chart-end-actions', this)">Graf: Konečné akce uživatelů v&nbsp;kampani <code>[PNG]</code></a>
-      <a href="#" class="dropdown-item" onclick="exportChart('<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions-groups', 'chart-end-actions-groups', this)">Graf: Konečné akce v&nbsp;kampani dle oddělení <code>[PNG]</code></a>
-      <a href="#" class="dropdown-item" onclick="exportChart('<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions-sum', 'chart-end-actions-sum', this)">Graf: Provedené akce v&nbsp;kampani <code>[PNG]</code></a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-end-actions" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions">Graf: Konečné akce uživatelů v&nbsp;kampani <code>[PNG]</code></a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-end-actions-groups" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions-groups">Graf: Konečné akce v&nbsp;kampani dle oddělení <code>[PNG]</code></a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-end-actions-sum" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions-sum">Graf: Provedené akce v&nbsp;kampani <code>[PNG]</code></a>
       <div class="dropdown-divider"></div>
       <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-end-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">Konečné akce uživatelů <code>[CSV]</code></a>
       <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all-users-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">Všechna zaznamenaná data <code>[CSV]</code></a>
@@ -197,7 +197,7 @@
                 <input type="hidden" name="<?= ACT_STATS_REPORT_PHISH ?>" value="<?= $data['id_captured_data'] ?>">
 
                 <div class="text-purple<?php if ($data['reported'] == 0): ?> user-phishing-report<?php endif; ?>" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel nahlásil pokus o&nbsp;cvičný phishing<br>(např. na helpdesk, správci IT, &hellip;)">
-                  <button type="submit" class="border-0 bg-transparent" onclick="if (!confirm('Opravdu chcete u uživatele upravit nastavení o nahlášení cvičného phishingu?')) return false;">
+                  <button type="submit" class="border-0 bg-transparent btn-confirm" data-confirm="Opravdu chcete u uživatele upravit nastavení o nahlášení cvičného phishingu?">
                     <span data-feather="message-circle"></span>
                   </button>
                 </div>
@@ -231,7 +231,7 @@
 <?php if (count($capturedData) > 0): ?>
 <p>Výpis všech provedených akcí na podvodné stránce, která je přístupná ze zasílaného podvodného e-mailu. Zastoupení všech těchto akcí znázorňuje také graf <i>Provedené akce v&nbsp;kampani</i>.</p>
 
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/table-sort.js"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/table-sort.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
 <div class="table-responsive">
   <table class="table table-striped table-hover records-list table-sort table-arrows">
@@ -299,9 +299,9 @@
 
 <?php endif; ?>
 
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.2.1"></script>
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0"></script>
-<script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.2.1" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+<script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">
   let campaignChart1 = new Chart(document.getElementById('chart-end-actions'), {
     plugins: [ChartDataLabels],
     type: 'doughnut',

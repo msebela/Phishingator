@@ -1,5 +1,5 @@
 <?php if (count($groups) > 0): ?>
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/table-sort.js"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/table-sort.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
 <div class="table-responsive">
   <table class="table table-striped table-hover records-list table-sort table-arrows">
@@ -41,7 +41,7 @@
           <form method="post" action="/portal/<?= $urlSection . '/' . ACT_DEL . '/' . $group['id_user_group'] ?>" class="d-inline">
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
-            <button type="submit" class="btn btn-secondary btn-sm" onclick="if (!confirm('Opravdu chcete odstranit tuto skupinu?<?= (($group['count_users'] > 0) ? ' Zbývající uživatelé budou přeřazeni do rodičovské skupiny.' : '') ?>')) return false;">
+            <button type="submit" class="btn btn-secondary btn-sm btn-confirm" data-confirm="Opravdu chcete odstranit tuto skupinu?<?= (($group['count_users'] > 0) ? ' Zbývající uživatelé budou přeřazeni do rodičovské skupiny.' : '') ?>">
               <span data-feather="trash"></span>
               Smazat
             </button>

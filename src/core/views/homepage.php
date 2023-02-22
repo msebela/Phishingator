@@ -175,9 +175,9 @@
   <?php endif; ?>
 </div>
 
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.2.1"></script>
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0"></script>
-<script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.2.1" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+<script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">
   let chartEndActions = new Chart(document.getElementById('chart-end-actions'), {
     plugins: [ChartDataLabels],
     type: 'doughnut',

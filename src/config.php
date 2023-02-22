@@ -213,10 +213,8 @@
 
 
   /* --- CONTENT SECURITY POLICY --- */
-  /** Hodnota nonce pro Content Security Policy u inline JavaScriptu.
-   *  Povolením dojde k zablokování jakéhokoliv JavaScriptu, který není opatřen nonce.
-   */
-  //define('HTTP_HEADER_CSP_NONCE', base64_encode(openssl_random_pseudo_bytes(32)));
+  /** Hodnota nonce pro Content Security Policy (CSP). */
+  define('HTTP_HEADER_CSP_NONCE', base64_encode(openssl_random_pseudo_bytes(32)));
 
 
 

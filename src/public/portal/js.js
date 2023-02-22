@@ -6,109 +6,164 @@ $(function () {
   }
 });
 
-function setButtonLink(selectObj, btnLink, defaultLink) {
-  let link = '/portal/phishing-' + defaultLink;
-  let id = selectObj.options[selectObj.selectedIndex].value;
 
-  document.querySelector(btnLink).href = ((id > 0) ? link + '/preview/' + id : link);
-}
-
-function checkSameCheckboxes(mail, checkedState) {
-  let sameCheckboxes = document.querySelectorAll('.modal-body input[value="' + mail + '"]');
-
-  sameCheckboxes.forEach(function(checkbox) {
-    checkbox.checked = checkedState;
-  });
-}
-
-function insertEmails(textareaSelector) {
-  let recipientsSeparator = "\n";
-  let textareaRecipients = $(textareaSelector).val().split(recipientsSeparator);
-
-  textareaRecipients.forEach(function(recipient) {
-    let index = textareaRecipients.indexOf("");
-
-    if (index !== -1) {
-      textareaRecipients.splice(index, 1);
-    }
-  });
-
-  let uncheckedCheckboxes = document.querySelectorAll('.modal-body input[type=checkbox]');
-  let checkedCheckboxes = document.querySelectorAll('.modal-body input[type=checkbox]:checked');
-
-  uncheckedCheckboxes.forEach(function(recipient) {
-    let index = textareaRecipients.indexOf(recipient.value);
-
-    if (index !== -1) {
-      textareaRecipients.splice(index, 1);
-    }
-  });
-
-  checkedCheckboxes.forEach(function(recipient) {
-    if (textareaRecipients.includes(recipient.value) === false && recipient.value.match(/\S+@\S+/g)) {
-      textareaRecipients.push(recipient.value);
-    }
-  });
-
-  $(textareaSelector).val(textareaRecipients.join(recipientsSeparator));
-}
-
-function getCountOfEmails(emailsList, countLabel) {
-  let list = document.querySelector(emailsList);
-  let countValidEmailsLabel = document.querySelector(countLabel);
-
-  let countValidEmails = 0;
-
-  if (list.value.length > 4) {
-    let validEmails = list.value.match(/[^\s@]+@[^\s@]+\.[^\s@]+/g);
-
-    if (validEmails) {
-      countValidEmails = validEmails.length;
-    }
-  }
-
-  countValidEmailsLabel.innerHTML = countValidEmails;
-}
-
-function markCheckboxes(cover = '') {
-  if (cover && $(cover).hasClass('d-none')) {
-    $(cover).toggleClass('d-none');
-  }
-
-  let checkboxes = $(cover + ' input[type=checkbox]');
-  checkboxes.prop('checked', !checkboxes.prop('checked'));
-}
-
-function replaceVariable(selector, variable) {
-  let input = document.querySelector(selector);
-
-  if (confirm('Opravdu chcete obsah pole nahradit touto proměnnou?')) {
-    input.value = variable;
-    input.focus();
-  }
-}
-
-function insertVariable(selector, variable) {
-  let input = document.querySelector(selector);
-
-  input.value += variable;
-  input.focus();
-}
-
-$('#phishing-email-variables code').on('click', function() {
-  let input = $('#phishing-email-body');
-  let insertedVariable = $(this).attr('data-var');
-
-  let cursorPos = input.prop('selectionStart');
-  let v = input.val();
-  let textBefore = v.substring(0, cursorPos);
-  let textAfter  = v.substring(cursorPos, v.length);
-
-  input.val(textBefore + insertedVariable + textAfter);
-
-  setCaretToPos(input[0], cursorPos + insertedVariable.length);
+$('.btn-close').on('click', function() {
+  window.close();
 });
 
+$('.btn-confirm').on('click', function() {
+  if (!confirm($(this).attr('data-confirm'))) {
+    return false;
+  }
+});
+
+$('.btn-submit').on('change', function() {
+  $($(this).attr('data-form')).submit();
+});
+
+$('.btn-redirect').on('change', function() {
+  window.location.href = $(this).attr('data-link') + $(this).val();
+});
+
+$('.btn-toggle-display').on('click', function() {
+  $($(this).attr('data-toggle')).toggleClass('d-none');
+});
+
+
+// PHISHING CAMPAIGNS
+$('.set-preview-btn').on('change', function() {
+  let link = $(this).attr('data-preview-link');
+  let id = $(this).find(':selected').val();
+
+  $($(this).attr('data-preview-btn')).attr('href', ((id > 0) ? link + '/preview/' + id : link));
+});
+
+$('.insert-recipients-emails').on('click', function() {
+  let recipientsTextarea = $($(this).attr('data-recipients-textarea'));
+
+  let recipientsSeparator = "\n";
+  let recipientsList = recipientsTextarea.val().split(recipientsSeparator);
+
+  recipientsList.forEach(function(recipient) {
+    let index = recipientsList.indexOf("");
+
+    if (index !== -1) {
+      recipientsList.splice(index, 1);
+    }
+  });
+
+  $('.modal-body input[type=checkbox]').each(function(recipient) {
+    let index = recipientsList.indexOf($(this).val());
+
+    if (index !== -1) {
+      recipientsList.splice(index, 1);
+    }
+  });
+
+  $('.modal-body input[type=checkbox]:checked').each(function(recipient) {
+    if (recipientsList.includes($(this).val()) === false && $(this).val().match(/\S+@\S+/g)) {
+      recipientsList.push($(this).val());
+    }
+  });
+
+  recipientsTextarea.val(recipientsList.join(recipientsSeparator));
+});
+
+$('.get-sum-of-emails').on('click keyup', function() {
+  let listEmails = $($(this).attr('data-recipients-textarea'));
+  let sumValidEmailsLabel = $($(this).attr('data-sum-recipients-label'));
+
+  let sumValidEmails = 0;
+
+  if (listEmails.val().length > 4) {
+    let validEmails = listEmails.val().match(/[^\s@]+@[^\s@]+\.[^\s@]+/g);
+
+    if (validEmails) {
+      sumValidEmails = validEmails.length;
+    }
+  }
+
+  sumValidEmailsLabel.text(sumValidEmails);
+});
+
+$('.mark-checkboxes').on('click', function() {
+  let group = $(this).attr('data-checkboxes-group');
+  let checkboxes = $(group + ' input[type=checkbox]');
+
+  if (group && $(group).hasClass('d-none')) {
+    $(group).toggleClass('d-none');
+  }
+
+  checkboxes.prop('checked', !checkboxes.prop('checked'));
+});
+
+$('.mark-same-checkboxes').on('click', function() {
+  $('.modal-body input[value="' + $(this).val() + '"]').prop('checked', $(this).prop('checked'));
+});
+
+
+$('#blur-identities').on('click', function() {
+  $('.identity').toggleClass('blur-text');
+});
+
+$('.export-chart').on('click', function(e) {
+  $(this).attr('download', $(this).attr('data-filename') + '.png');
+  $(this).attr('href', ($($(this).attr('data-chart'))[0]).toDataURL('image/png', 1));
+});
+
+
+// VARIABLES
+$('.replace-variable').on('click', function() {
+  let input = $($(this).attr('data-input'));
+
+  if (confirm('Opravdu chcete obsah pole nahradit touto proměnnou?')) {
+    input.val($(this).attr('data-var'));
+    input.focus();
+  }
+});
+
+$('.insert-variable').on('click', function() {
+  let input = $($(this).attr('data-input'));
+
+  input.val(input.val() + $(this).attr('data-var'));
+  input.focus();
+});
+
+
+// PHISHING EMAILS
+$('#phishing-email-variables code').on('click', function() {
+  let input = $('#phishing-email-body');
+  let inputValue = input.val();
+  let insertedValue = $(this).attr('data-var');
+
+  let cursorPos = input.prop('selectionStart');
+  let cursorPosAfter = cursorPos + insertedValue.length;
+
+  let textBefore = inputValue.substring(0, cursorPos);
+  let textAfter  = inputValue.substring(cursorPos, inputValue.length);
+
+  input.val(textBefore + insertedValue + textAfter);
+
+  setSelectionRange(input[0], cursorPosAfter, cursorPosAfter);
+});
+
+function setSelectionRange(input, selectionStart, selectionEnd) {
+  if (input.setSelectionRange) {
+    input.focus();
+    input.setSelectionRange(selectionStart, selectionEnd);
+  }
+  else if (input.createTextRange) {
+    let range = input.createTextRange();
+
+    range.collapse(true);
+    range.moveEnd('character', selectionEnd);
+    range.moveStart('character', selectionStart);
+    range.select();
+  }
+}
+
+
+// PHISHING WEBSITES
 $('#phishing-domains-dropdown a').on('click', function() {
   let domainInput = $('#phishing-website-url');
 
@@ -139,31 +194,3 @@ $('.phishing-domain-protocol').on('click', function() {
 
   domainInput.focus();
 });
-
-/* https://stackoverflow.com/questions/499126/jquery-set-cursor-position-in-text-area */
-function setSelectionRange(input, selectionStart, selectionEnd) {
-  if (input.setSelectionRange) {
-    input.focus();
-    input.setSelectionRange(selectionStart, selectionEnd);
-  }
-  else if (input.createTextRange) {
-    let range = input.createTextRange();
-    range.collapse(true);
-    range.moveEnd('character', selectionEnd);
-    range.moveStart('character', selectionStart);
-    range.select();
-  }
-}
-
-function setCaretToPos(input, pos) {
-  setSelectionRange(input, pos, pos);
-}
-
-function blurIdentity() {
-  $('.identity').toggleClass('blur-text');
-}
-
-function exportChart(filename, chartName, link) {
-  link.download = filename + '.png';
-  link.href = document.getElementById(chartName).toDataURL('image/png', 1);
-}

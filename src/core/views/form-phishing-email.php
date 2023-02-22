@@ -30,7 +30,7 @@
     <div class="form-group col-md-8">
       <label for="<?= $formPrefix ?>sender-email">E-mail odesílatele</label>
       <input type="text" class="form-control" id="<?= $formPrefix ?>sender-email" name="<?= $formPrefix ?>sender-email" maxlength="<?= $inputsMaxLengths['sender-email'] ?>" value="<?= $inputsValues['sender-email'] ?>" required>
-      <small class="form-text text-muted">Při použití proměnné <code class="cursor-pointer" onclick="replaceVariable('#<?= $formPrefix; ?>sender-email', '<?= VAR_RECIPIENT_EMAIL ?>')"><?= VAR_RECIPIENT_EMAIL ?></code> bude jako odesílatel uveden e-mail příjemce.</small>
+      <small class="form-text text-muted">Při použití proměnné <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>sender-email" data-var="<?= VAR_RECIPIENT_EMAIL ?>"><?= VAR_RECIPIENT_EMAIL ?></code> bude jako odesílatel uveden e-mail příjemce.</small>
     </div>
   </div>
 
@@ -40,12 +40,12 @@
   </div>
 
   <div class="form-row">
-    <div class="form-group col-sm-10 col-lg-12">
+    <div class="form-group col-lg-10 col-xl-12">
       <label for="<?= $formPrefix ?>body">Tělo</label>
       <textarea class="form-control text-monospace" rows="11" id="<?= $formPrefix ?>body" name="<?= $formPrefix ?>body" maxlength="<?= $inputsMaxLengths['body'] ?>" required><?= $inputsValues['body'] ?></textarea>
       <small class="form-text text-muted">V&nbsp;těle e-mailu lze používat proměnné, které budou při odeslání e-mailu nahrazeny zvoleným obsahem.</small>
     </div>
-    <div class="form-group col-sm-6 col-lg-4">
+    <div class="form-group col-lg-6 col-xl-4">
       <label>Proměnné</label>
       <p class="text-muted">Pro vložení proměnné do těla e-mailu můžete kliknout na její název v&nbsp;následujícím seznamu:</p>
       <ul class="form-text text-muted list-unstyled" id="<?= $formPrefix ?>variables">

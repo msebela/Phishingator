@@ -359,7 +359,7 @@
       // Vložení HTML indicií do hlaviček a těla e-mailu.
       foreach ($emailIndications as $indication) {
         $htmlTag = [
-          '<a href="#indication-' . $indication['id_indication'] . '-text" id="indication-' . $indication['id_indication'] . '" class="indication anchor-link" onclick="markIndication(' . $indication['id_indication'] . ')" onmouseover="markIndication(' . $indication['id_indication'] . ')" onmouseout="markIndication(' . $indication['id_indication'] . ')">',
+          '<a href="#indication-' . $indication['id_indication'] . '-text" id="indication-' . $indication['id_indication'] . '" class="indication anchor-link mark-indication" data-indication="' . $indication['id_indication'] . '">',
           '<div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>'
         ];
 

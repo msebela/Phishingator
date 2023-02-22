@@ -111,7 +111,7 @@
     <div class="content">
       <div class="row">
         <div class="col-sm-3 col-md-2"><strong>Od:</strong></div>
-        <div class="col"><?= $phishing['org'] ?> &lt;<a href="#indication-1-text" id="indication-1" class="indication anchor-link" onclick="markIndication(1)" onmouseover="markIndication(1)" onmouseout="markIndication(1)">admin@web<?= $phishing['orgDomain'] ?><div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>&gt;</div>
+        <div class="col"><?= $phishing['org'] ?> &lt;<a href="#indication-1-text" id="indication-1" class="indication anchor-link mark-indication" data-indication="1">admin@web<?= $phishing['orgDomain'] ?><div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>&gt;</div>
       </div>
       <div class="row">
         <div class="col-sm-3 col-md-2"><strong>Předmět:</strong></div>
@@ -129,11 +129,11 @@
       <div class="row">
         <div class="col">
           <p>Kalendář plánu mezd <?= date('Y') + 1 ?> je nyní k&nbsp;dispozici:</p>
-          &ndash; <a href="#indication-2-text" id="indication-2" class="indication anchor-link" onclick="markIndication(2)" onmouseover="markIndication(2)" onmouseout="markIndication(2)">http://login.web<?= $phishing['orgDomain'] ?><div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>
+          &ndash; <a href="#indication-2-text" id="indication-2" class="indication anchor-link mark-indication" data-indication="2">http://login.web<?= $phishing['orgDomain'] ?><div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>
           <br><br>
-          Pokud si plán <a href="#indication-3-text" id="indication-3" class="indication anchor-link" onclick="markIndication(3)" onmouseover="markIndication(3)" onmouseout="markIndication(3)">nevyzvednete do 24&nbsp;hodin<div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>, odměny vám <a href="#indication-4-text" id="indication-4" class="indication anchor-link" onclick="markIndication(4)" onmouseover="markIndication(4)" onmouseout="markIndication(4)">nebudou přiděleny<div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>.
+          Pokud si plán <a href="#indication-3-text" id="indication-3" class="indication anchor-link mark-indication" data-indication="3">nevyzvednete do 24&nbsp;hodin<div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>, odměny vám <a href="#indication-4-text" id="indication-4" class="indication anchor-link mark-indication" data-indication="4">nebudou přiděleny<div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>.
           <br><br>
-          <a href="#indication-5-text" id="indication-5" class="indication anchor-link" onclick="markIndication(5)" onmouseover="markIndication(5)" onmouseout="markIndication(5)">Ředitel <?= $phishing['org'] ?><div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>
+          <a href="#indication-5-text" id="indication-5" class="indication anchor-link mark-indication" data-indication="5">Ředitel <?= $phishing['org'] ?><div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>
         </div>
       </div>
     </div>
@@ -144,7 +144,7 @@
 
 <div class="container card-columns text-dark">
   <?php foreach ($_phishingIndications as $i => $indication): $i++; ?>
-  <div id="indication-<?= $i ?>-text" class="card bg-light cursor-pointer" onmouseover="markIndication(<?= $i ?>)" onmouseout="markIndication(<?= $i ?>)">
+  <div id="indication-<?= $i ?>-text" class="card bg-light cursor-pointer mark-indication" data-indication="<?= $i ?>">
     <a href="#indication-<?= $i ?>" class="anchor-link">
       <div class="card-body">
         <h5 class="card-title">
@@ -154,7 +154,7 @@
         <p class="card-text"><?= $indication[1] ?></p>
 
         <div class="clearfix">
-          <button type="button" id="indication-<?= $i ?>-btn" class="btn btn-sm btn-info float-right" onclick="markIndication(<?= $i ?>)">
+          <button type="button" id="indication-<?= $i ?>-btn" class="btn btn-sm btn-info float-right mark-indication" data-indication="<?= $i ?>">
             <span data-feather="chevron-up"></span>
             <span>Označit</span>
           </button>

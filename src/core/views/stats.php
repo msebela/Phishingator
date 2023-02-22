@@ -20,8 +20,8 @@
       Export
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
-      <a href="#" class="dropdown-item" onclick="exportChart('<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-end-actions', 'chart-end-actions-<?= $year ?>', this)">Graf: Reakce uživatelů na cvičný phishing <code>[PNG]</code></a>
-      <a href="#" class="dropdown-item" onclick="exportChart('<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-end-actions-groups', 'chart-end-actions-groups-<?= $year ?>', this)">Graf: Reakce uživatelů dle oddělení <code>[PNG]</code></a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-end-actions-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-end-actions">Graf: Reakce uživatelů na cvičný phishing <code>[PNG]</code></a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-end-actions-groups-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-end-actions-groups">Graf: Reakce uživatelů dle oddělení <code>[PNG]</code></a>
     </div>
   </div>
 </div>
@@ -135,9 +135,9 @@
 </div>
 <?php endfor; ?>
 
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.2.1"></script>
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0"></script>
-<script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.2.1" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+<script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">
   <?php for ($year = date('Y'); $year >= $statsStartYear; $year--): ?>
   let chartEndActions<?= $year ?> = new Chart(document.getElementById('chart-end-actions-<?= $year ?>'), {
     plugins: [ChartDataLabels],

@@ -125,20 +125,20 @@
       </div>
     </div>
 
-    <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-3.6.3.min.js"></script>
-    <script src="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.2/bootstrap.bundle.min.js"></script>
-    <script src="/<?= CORE_DIR_EXTENSIONS ?>/feather.min.js"></script>
+    <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-3.6.3.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+    <script src="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.2/bootstrap.bundle.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+    <script src="/<?= CORE_DIR_EXTENSIONS ?>/feather.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
-    <script src="/portal/js.js"></script>
-    <script src="/js.js"></script>
-    <script>feather.replace();</script>
+    <script src="/portal/js.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+    <script src="/js.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+    <script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">feather.replace();</script>
 
     <?php if ($userRole == PERMISSION_ADMIN && ($currentSection == 'phishing-emails' || $currentSection == 'phishing-websites') && ($currentAction == ACT_NEW || $currentAction == ACT_EDIT)): ?>
     <link href="/<?= CORE_DIR_EXTENSIONS ?>/jquery-highlighttextarea/jquery.highlighttextarea.min.css" rel="stylesheet">
-    <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-highlighttextarea/jquery.highlighttextarea.min.js"></script>
+    <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-highlighttextarea/jquery.highlighttextarea.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
     <?php if ($currentSection == 'phishing-emails'): ?>
-    <script>
+    <script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">
       $('#phishing-email-sender-email').highlightTextarea({
         words: ['<?= VAR_RECIPIENT_EMAIL ?>']
       });
@@ -148,7 +148,7 @@
       });
     </script>
     <?php elseif ($currentSection == 'phishing-websites'): ?>
-    <script>
+    <script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">
       $('#phishing-website-url').highlightTextarea({
         words: ['%id%']
       });
