@@ -1,4 +1,4 @@
-$(function () {
+$(function() {
   $('table [data-toggle="tooltip"]').tooltip();
 
   if ($(window).height() < $(document).height() && $(window).width() > 720) {
@@ -12,8 +12,12 @@ $('.btn-close').on('click', function() {
 });
 
 $('.btn-confirm').on('click', function() {
-  if (!confirm($(this).attr('data-confirm'))) {
-    return false;
+  let message = $(this).attr('data-confirm');
+
+  if (message) {
+    if (!confirm(message)) {
+      return false;
+    }
   }
 });
 

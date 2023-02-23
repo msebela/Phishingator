@@ -35,7 +35,7 @@ Phishingator uses, incorporates or may be acompanied by Open Source Software (OS
 | Chart.js                 | 4.2.1   | Copyright (c) 2014-2022 Chart.js Contributors<br/>https://github.com/chartjs/Chart.js/blob/master/LICENSE.md                                   |
 | Chart.js DataLabels      | 2.2.0   | Copyright (c) 2017-2021 chartjs-plugin-datalabels contributors<br/>https://github.com/chartjs/chartjs-plugin-datalabels/blob/master/LICENSE.md |
 | jQuery highlightTextarea | 3.1.3   | Copyright 2014-2016 Damien "Mistic" Sorel<br/>https://garysieling.github.io/jquery-highlighttextarea/                                          |
-| TABLE-SORT-JS.           | 1.8.0   | Copyright (c) 2021 Lee Wannacott<br/>https://github.com/LeeWannacott/table-sort-js/blob/master/LICENSE                                         |
+| TABLE-SORT-JS.           | 1.9.0   | Copyright (c) 2021 Lee Wannacott<br/>https://github.com/LeeWannacott/table-sort-js/blob/master/LICENSE                                         |
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -48,9 +48,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 | Component name | Version | Copyright (provided for informational purposes only)                                           |
 |----------------|:--------|:-----------------------------------------------------------------------------------------------|
-| PHP            | 7.4.33  | Copyright (c) 1999 - 2019 The PHP Group. All rights reserved.<br/>https://www.php.net/license/ |
+| PHP            | 8.2.3   | Copyright (c) 1999 - 2019 The PHP Group. All rights reserved.<br/>https://www.php.net/license/ |
 
-The PHP License, version 3.01
+The PHP License, version 3.01  
 Copyright (c) 1999 - 2019 The PHP Group. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, is permitted provided that the following conditions are met:
