@@ -95,17 +95,17 @@
 
       $model->initForm($formData['inputsNames'], $formData['formPrefix'], $formData['dbTable']);
 
-      // Data záznamu z databáze.
       $user = $model->getUser($idUser);
+
+      // Ověření existence záznamu.
+      $this->checkRecordExistence($user);
+
       $userDetails = UsersModel::getUserDetail($user['id_user']);
 
       // Přidání do pole s daty další detailní informace o uživateli.
       foreach ($userDetails as $key => $record) {
         $user[$key] = $record;
       }
-
-      // Ověření existence záznamu.
-      $this->checkRecordExistence($user);
 
       // Zjištění seznamu kampaní, do kterých byl uživatel zapojen.
       $campaigns = RecievedEmailModel::getUserCampaignsParticipation($user['id_user']);

@@ -846,9 +846,10 @@
      * Vrátí všechny zaznamenané akce, které uživatelé provedli na podvodné stránce přiřazené ke konkrétní kampani.
      *
      * @param int $idCampaign          ID kampaně
+     * @param bool $orderDesc          TRUE, pokud mají být akce řazeny od nejnovější po nejstarší
      * @return mixed                   Pole zaznamenaných akcí
      */
-    public static function getCapturedDataInCampaign($idCampaign) {
+    public static function getCapturedDataInCampaign($idCampaign, $orderDesc = false) {
       return Database::queryMulti('
               SELECT `id_captured_data`, phg_captured_data.id_user, `used_email`, `used_group`, `visit_datetime`, `ip`, `browser_fingerprint`, `data_json`, `reported`,
               DATE_FORMAT(visit_datetime, "%e. %c. %Y %k:%i:%s") AS `visit_datetime_formatted`,
@@ -861,8 +862,8 @@
               ON phg_captured_data.id_user = phg_users.id_user
               WHERE `id_campaign` = ?
               AND phg_captured_data.id_action != ?
-              ORDER BY `id_captured_data` DESC
-      ', [$idCampaign, CAMPAIGN_NO_REACTION_ID]);
+              ORDER BY `id_captured_data` ' . (($orderDesc) ? 'DESC' : '')
+      , [$idCampaign, CAMPAIGN_NO_REACTION_ID]);
     }
 
 

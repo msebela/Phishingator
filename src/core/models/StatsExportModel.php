@@ -157,7 +157,7 @@
       $zip = new ZipArchive();
 
       $filepath = CORE_DOCUMENT_ROOT . '/temp/';
-      $zipFilepath = $filepath . PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $idCampaign . '-' . date('Y-m-d') . '.zip';
+      $zipFilepath = Controller::escapeOutput($filepath . PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $idCampaign . '-' . date('Y-m-d') . '.zip');
 
       $files = [];
 
@@ -203,18 +203,23 @@
      *
      * @param array $data              Data obsahující název CSV souboru, hlavičku, názvy indexů a samotná data.
      * @param string|null $newFilepath Nepovinný parametr určující cestu, kde má být exportovaný CSV soubor
-     *                                 uložen na webovém serveru (jinak se ukládá do paměti).
+     *                                 uložen na webovém serveru (jinak se posílá na výstup).
      * @return string|null             Pokud má být exportovaný soubor uložený na webovém serveru (viz předchozí
      *                                 parametr), vrátí název exportovaného souboru.
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
      */
     private static function exportToCSV($data, $newFilepath = null) {
       if (!empty($data) && count($data) == 4) {
-        // Vytvoření CSV souboru, hlavičky a její zápis do souboru.
         $csvFilename = $data['csvFilename'] . '-' . date('Y-m-d') . '.csv';
 
-        // Vytvářet soubor v paměti nebo v konkrétním adresáři na webovém serveru...
-        $filepath = (($newFilepath == null) ? 'php://memory' : $newFilepath . $csvFilename);
+        // Vytvářet soubor na základě výpisu, nebo jako nový soubor v konkrétním adresáři na webovém serveru.
+        $filepath = Controller::escapeOutput(($newFilepath == null) ? 'php://output' : $newFilepath . $csvFilename);
+
+        // Vrácení CSV souboru uživateli ke stažení.
+        if ($newFilepath == null) {
+          header('Content-Type: text/csv; charset=utf-8');
+          header('Content-Disposition: attachment; filename="' . $csvFilename . '"');
+        }
 
         $csvFile = fopen($filepath, 'w');
         fputcsv($csvFile, $data['csvHeader'], PHISHING_CAMPAIGN_EXPORT_DELIMITER);
@@ -238,13 +243,9 @@
           fputcsv($csvFile, $csvLineData, PHISHING_CAMPAIGN_EXPORT_DELIMITER);
         }
 
-        // Vrácení CSV souboru uživateli ke stažení.
-        if ($newFilepath == null) {
-          header('Content-Type: text/csv');
-          header('Content-Disposition: attachment; filename="' . $csvFilename . '";');
-        }
+        fclose($csvFile);
 
-        if (!$newFilepath) {
+        if ($newFilepath == null) {
           exit();
         }
         else {

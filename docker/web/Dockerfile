@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:8.2-apache
 
 ENV TZ="Europe/Prague"
 ARG APACHE_DOCUMENT_ROOT

@@ -71,7 +71,9 @@
               AND `visible` = 1
       ', $id);
 
-      $this->dbRecordData['status'] = $this->getPhishingWebsiteStatus($this->dbRecordData['url']);
+      if (!empty($this->dbRecordData)) {
+        $this->dbRecordData['status'] = $this->getPhishingWebsiteStatus($this->dbRecordData['url']);
+      }
 
       return $this->dbRecordData;
     }

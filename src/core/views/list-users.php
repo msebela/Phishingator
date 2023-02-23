@@ -86,7 +86,7 @@
       <tr>
         <th scope="col">Jméno a&nbsp;příjmení</th>
         <th scope="col">E-mail</th>
-        <th scope="col" colspan="2" class="data-sort minw-13-rem">Registrován</th>
+        <th scope="col" colspan="2" class="data-sort minw-210-px">Registrován</th>
         <th scope="col" class="data-sort datetime">Poslední přihlášení</th>
         <th scope="col" class="data-sort minw-110-px">Dobrovolník</th>
         <th scope="col" class="data-sort">Úspěšnost</th>

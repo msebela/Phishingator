@@ -162,7 +162,7 @@
         return $pattern;
       }
       else {
-        return htmlspecialchars(stripslashes(trim($pattern)), ENT_QUOTES);
+        return htmlspecialchars(stripslashes(trim($pattern ?? '')), ENT_QUOTES);
       }
     }
 

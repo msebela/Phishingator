@@ -127,7 +127,7 @@
   define('WEB_HTML_BASE_TITLE', 'Phishingator');
 
   /** Verze systému. */
-  define('WEB_VERSION', '1.2');
+  define('WEB_VERSION', '1.3');
 
   /** URL, na které Phishingator běží (slouží pro přesměrování v rámci systému). */
   define('WEB_URL', getenv('WEB_URL'));
