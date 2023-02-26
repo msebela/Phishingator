@@ -260,14 +260,26 @@
 
 
   /* --- PODVODNÉ STRÁNKY --- */
-  /** Adresář pro ukládání konfigurace pro Apache VirtualHost pro podvodné stránky. */
-  define('PHISHING_WEBSITE_APACHE_SITES_DIR', '/var/www/phishingator/templates/sites-config/');
+  /** Adresář pro ukládání konfiguračních VirtualHost souborů pro Apache pro podvodné stránky. */
+  define('PHISHING_WEBSITE_CONF_DIR', '/var/www/phishingator/templates/sites-config/');
+
+  /** Adresář, kde se nacházejí dostupné konfigurační VirtualHost soubory pro Apache. */
+  define('PHISHING_WEBSITE_APACHE_DIR', '/etc/apache2/sites-available/');
 
   /** Cesta k souboru, který slouží jako šablona konfiguračního souboru podvodné stránky. */
   define('PHISHING_WEBSITE_TEMPLATE_CONF_FILE', '/var/www/phishingator/templates/000-default.conf');
 
   /** ServerAdmin v konfiguračním souboru pro Apache VirtualHost pro podvodné stránky. */
   define('PHISHING_WEBSITE_SERVER_ADMIN', getenv('PHISHING_WEBSITE_SERVER_ADMIN'));
+
+  /** Přípona konfiguračního souboru podvodné stránky. */
+  define('PHISHING_WEBSITE_CONF_EXT', '.conf');
+
+  /** Přípona konfiguračního souboru nově vytvořené podvodné stránky. */
+  define('PHISHING_WEBSITE_CONF_EXT_NEW', '.conf.new');
+
+  /** Přípona konfiguračního souboru podvodné stránky určené ke smazání. */
+  define('PHISHING_WEBSITE_CONF_EXT_DEL', '.conf.delete');
 
   /** Cesta k souboru, který obsluhuje požadavky uživatelů na podvodných stránkách. */
   define('PHISHING_WEBSITE_PREPENDER', '/var/www/phishingator/websitePrepender.php');

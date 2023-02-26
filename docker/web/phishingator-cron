@@ -4,4 +4,4 @@ PATH=/usr/bin:/bin:/usr/sbin/
 */5 * * * * /usr/local/bin/php /var/www/phishingator/cron/mailSender.php > /dev/null 2>&1
 */2 * * * * /usr/local/bin/php /var/www/phishingator/cron/notificationsSender.php > /dev/null 2>&1
 0 3 * * * /usr/local/bin/php /var/www/phishingator/cron/usersUpdater.php > /dev/null 2>&1
-*/2 * * * * /usr/local/bin/php /var/www/phishingator/cron/websitesController.php >> /var/www/phishingator/logs/websites.log 2>&1
+*/2 * * * * /usr/local/bin/php /var/www/phishingator/cron/websitesConfigsController.php >> /var/www/phishingator/logs/websites.log 2>&1
