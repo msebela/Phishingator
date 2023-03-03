@@ -161,7 +161,7 @@
     /**
      * Zkontroluje uživatelský vstup (atributy třídy), který se bude zapisovat do databáze.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function validateData() {
       $this->isEmailLimitEmpty();
@@ -176,7 +176,7 @@
      * Ověří, zdali byl vyplněn limit, pokud byl zároveň zaškrtnou odpovídají checkbox pro nastavení
      * limit přijatých cvičných podvodných e-mailů.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isEmailLimitEmpty() {
       if ($this->emailLimitCheckbox && !is_numeric($this->emailLimit) && !is_null($this->emailLimit)) {
@@ -188,7 +188,7 @@
     /**
      * Ověří, zdali není zadaný limit záporný.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isEmailLimitNegative() {
       if ($this->emailLimitCheckbox && $this->emailLimit < 0) {
@@ -200,7 +200,7 @@
     /**
      * Ověří, zdali není zadaný limit příliš velký.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isEmailLimitTooHigh() {
       if ($this->emailLimitCheckbox && $this->emailLimit > 1000) {
@@ -212,7 +212,7 @@
     /**
      * Ověří, zdali se uživatel nepokouší zadat limit tehdy, když není přihlášen k odebírání cvičných podvodných zpráv.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isRecieveAndLimitValid() {
       if (!$this->recieveEmail && $this->emailLimitCheckbox) {

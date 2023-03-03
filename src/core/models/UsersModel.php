@@ -562,7 +562,7 @@
      * Vloží do databáze nového uživatele.
      *
      * @return bool                    TRUE, pokud došlo k úspěšnému vložení uživatele do databáze, jinak FALSE
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function insertUser() {
       $registrated = false;
@@ -597,7 +597,7 @@
      * Upraví zvoleného uživatele.
      *
      * @param int $id                  ID uživatele
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function updateUser($id) {
       $user = $this->makeUser();
@@ -685,7 +685,7 @@
      * Odstraní (resp. deaktivuje) uživatele z databáze.
      *
      * @param int $id                  ID uživatele
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function deleteUser($id) {
       if ($id == PermissionsModel::getUserId()) {
@@ -712,7 +712,7 @@
     /**
      * Zkontroluje uživatelský vstup (atributy třídy), který se bude zapisovat do databáze.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function validateData() {
       $this->isEmailEmpty();
@@ -729,7 +729,7 @@
     /**
      * Ověří, zdali byl vyplněn e-mail uživatele.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isEmailEmpty() {
       if (empty($this->email)) {
@@ -741,7 +741,7 @@
     /**
      * Ověří, zdali zadaný e-mail uživatele není příliš dlouhý.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isEmailTooLong() {
       if (mb_strlen($this->email) > $this->inputsMaxLengths['email']) {
@@ -753,7 +753,7 @@
     /**
      * Ověří, zdali je zadaný e-mail uživatele validní.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isEmailValid() {
       if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
@@ -765,7 +765,7 @@
     /**
      * Ověří, zdali zadaný e-mail uživatele vede na povolenou doménu.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isEmailInAllowedDomain() {
       if (mb_substr($this->email, -mb_strlen(EMAILS_ALLOWED_DOMAIN)) !== EMAILS_ALLOWED_DOMAIN) {
@@ -777,7 +777,7 @@
     /**
      * Ověří, zdali zadaný e-mail (včetně možných aliasů) opravdu pro daného uživatele existuje v LDAP.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function existsEmailInLdap() {
       $ldap = new LdapModel();
@@ -800,7 +800,7 @@
      * Ověří, zdali zadaný e-mail již v aplikaci nepoužívá jiný uživatel (tzn. jestli je unikátní).
      *
      * @param int|null $id             ID uživatele (nepovinný parametr)
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isEmailUnique($id = null) {
       $ldap = new LdapModel();
@@ -819,7 +819,7 @@
     /**
      * Ověří, zdali je vybrána skupina, do které bude uživatel spadat.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isGroupEmpty() {
       if (empty($this->idUserGroup) || !is_numeric($this->idUserGroup)) {
@@ -831,7 +831,7 @@
     /**
      * Ověří, zdali existuje vybraná skupina, do které bude uživatel spadat.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function existsGroup() {
       $userGroupsModel = new UserGroupsModel();

@@ -173,7 +173,7 @@
      * Upraví zvolený e-mail.
      *
      * @param int $id                  ID e-mailu
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function updatePhishingEmail($id) {
       $email = $this->makePhishingEmail();
@@ -195,7 +195,7 @@
      * Odstraní (resp. deaktivuje) podvodný e-mail z databáze.
      *
      * @param int $id                  ID podvodného e-mailu
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function deletePhishingEmail($id) {
       if ($this->getCountOfUsePhishingEmail($id) != 0) {
@@ -460,7 +460,7 @@
     /**
      * Zkontroluje uživatelský vstup (atributy třídy), který se bude zapisovat do databáze.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function validateData() {
       $this->isNameEmpty();
@@ -484,7 +484,7 @@
     /**
      * Ověří, zdali byl vyplněn název e-mailu.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isNameEmpty() {
       if (empty($this->name)) {
@@ -496,7 +496,7 @@
     /**
      * Ověří, zdali zadaný název e-mailu není příliš dlouhý.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isNameTooLong() {
       if (mb_strlen($this->name) > $this->inputsMaxLengths['name']) {
@@ -508,7 +508,7 @@
     /**
      * Ověří, zdali zadané jméno odesílatele e-mailu není příliš dlouhé.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isSenderNameTooLong() {
       if (mb_strlen($this->senderName) > $this->inputsMaxLengths['sender-name']) {
@@ -520,7 +520,7 @@
     /**
      * Ověří, zdali byl vyplněn e-mail odesílatele.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isSenderEmailEmpty() {
       if (empty($this->senderEmail)) {
@@ -532,7 +532,7 @@
     /**
      * Ověří, zdali zadaný e-mail odesílatele není příliš dlouhý.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isSenderEmailTooLong() {
       if (mb_strlen($this->senderEmail) > $this->inputsMaxLengths['sender-email']) {
@@ -544,7 +544,7 @@
     /**
      * Ověří, zdali je zadaný e-mail odesílatele validní.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isSenderEmailValid() {
       if (!filter_var($this->senderEmail, FILTER_VALIDATE_EMAIL) && $this->senderEmail != VAR_RECIPIENT_EMAIL) {
@@ -556,7 +556,7 @@
     /**
      * Ověří, zdali byl vyplněn předmět e-mailu.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isSubjectEmpty() {
       if (empty($this->subject)) {
@@ -568,7 +568,7 @@
     /**
      * Ověří, zdali zadaný předmět e-mailu není příliš dlouhý.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isSubjectTooLong() {
       if (mb_strlen($this->subject) > $this->inputsMaxLengths['subject']) {
@@ -580,7 +580,7 @@
     /**
      * Ověří, zdali bylo vyplněno tělo e-mailu.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isBodyEmpty() {
       if (empty($this->body)) {
@@ -592,7 +592,7 @@
     /**
      * Ověří, zdali zadané tělo e-mailu není příliš dlouhé.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isBodyTooLong() {
       if (mb_strlen($this->body) > $this->inputsMaxLengths['body']) {
@@ -604,7 +604,7 @@
     /**
      * Ověří, zdali je v zadaném těle e-mailu obsažena proměnná, která bude obsahovat odkaz na podvodnou stránku.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function containBodyPhishingWebsiteVariable() {
       if (mb_strpos($this->body, VAR_URL) === false) {
@@ -621,7 +621,7 @@
      * (některým ze správců testů).
      *
      * @param int $idEmail             ID e-mailu
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isPhishingEmailUsedByTestManager($idEmail) {
       if ($this->hidden == 1 && $this->getCountOfUsePhishingEmailByTestManager($idEmail) > 0) {

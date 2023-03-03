@@ -789,7 +789,7 @@
      * Odstraní (resp. deaktivuje) kampaň z databáze.
      *
      * @param int $id                  ID uživatele
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function deleteCampaign($id) {
       $activeCampaigns = self::getActiveCampaigns();
@@ -1068,7 +1068,7 @@
     /**
      * Zkontroluje uživatelský vstup (atributy třídy), který se bude zapisovat do databáze.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function validateData() {
       $this->isNameEmpty();
@@ -1105,7 +1105,7 @@
     /**
      * Ověří, zdali byl vyplněn název kampaně.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isNameEmpty() {
       if (empty($this->name)) {
@@ -1117,7 +1117,7 @@
     /**
      * Ověří, zdali zadaný název kampaně není příliš dlouhý.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isNameTooLong() {
       if (mb_strlen($this->name) > $this->inputsMaxLengths['name']) {
@@ -1129,7 +1129,7 @@
     /**
      * Ověří, zdali je zadané číslo lístku (ticketu) s kampaní validní.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isTicketValid() {
       if (!empty($this->idTicket) && (!is_numeric($this->idTicket) || $this->idTicket < 1)) {
@@ -1141,7 +1141,7 @@
     /**
      * Ověří, zdali byl vybrán rozesílaný podvodný e-mail.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isPhishingEmailEmpty() {
       if (empty($this->idEmail) || !is_numeric($this->idEmail)) {
@@ -1153,7 +1153,7 @@
     /**
      * Ověří, zdali vybraný rozesílaný podvodný e-mail existuje.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function existPhishingEmail() {
       $model = new PhishingEmailModel();
@@ -1167,7 +1167,7 @@
     /**
      * Ověří, zdali byla vybrána podvodná webová stránka.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isPhishingWebsiteEmpty() {
       if (empty($this->idWebsite) || !is_numeric($this->idWebsite)) {
@@ -1179,7 +1179,7 @@
     /**
      * Ověří, zdali vybraná podvodná stránka existuje.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function existPhishingWebsite() {
       $model = new PhishingWebsiteModel();
@@ -1193,7 +1193,7 @@
     /**
      * Ověří, zdali byla vybrána akce, která se stane po odeslání formuláře na podvodné stránce.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isOnSubmitActionEmpty() {
       if (empty($this->idOnsubmit) || !is_numeric($this->idOnsubmit)) {
@@ -1205,7 +1205,7 @@
     /**
      * Ověří, zdali vybraná akce, která se stane po odeslání formuláře na podvodné stránce, existuje.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function existOnSubmitAction() {
       if (empty($this->getWebsiteAction($this->idOnsubmit))) {
@@ -1217,7 +1217,7 @@
     /**
      * Ověří, zdali byl vyplněn čas, ve kterém se spustí rozesílání podvodných e-mailů.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isEmptyTimeSince() {
       if (empty($this->timeSendSince)) {
@@ -1229,7 +1229,7 @@
     /**
      * Ověří, zdali je vyplněný čas startu rozesílání podvodných e-mailů ve správném formátu.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isTimeSinceValid() {
       if (!$this->isTimeValid($this->timeSendSince)) {
@@ -1241,7 +1241,7 @@
     /**
      * Ověří, zdali bylo vyplněno datum startu kampaně.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isEmptyActiveSince() {
       if (empty($this->activeSince)) {
@@ -1253,7 +1253,7 @@
     /**
      * Ověří, zdali je vyplněné datum startu kampaně ve správném formátu.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isActiveSinceValid() {
       if (!$this->isDateValid($this->activeSince)) {
@@ -1265,7 +1265,7 @@
     /**
      * Ověří, zdali bylo vyplněno datum konce kampaně.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isEmptyActiveTo() {
       if (empty($this->activeTo)) {
@@ -1277,7 +1277,7 @@
     /**
      * Ověří, zdali je vyplněné datum konce kampaně ve správném formátu.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isActiveToValid() {
       if (!$this->isDateValid($this->activeTo)) {
@@ -1289,7 +1289,7 @@
     /**
      * Ověří, zdali je datum startu kampaně dříve než datum ukončení kampaně.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isActiveSinceGreatherThanActiveTo() {
       if (strtotime($this->activeSince) > strtotime($this->activeTo)) {
@@ -1301,7 +1301,7 @@
     /**
      * Ověří, zdali kampaň obsahuje alespoň jednoho příjemce.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isRecipientsEmpty() {
       if (empty($this->recipients) || empty($this->recipients[0])) {
@@ -1314,7 +1314,7 @@
      * Ověří, zdali jsou e-maily všech zadaných příjemců ve správné formátu, zdali e-maily vedou na povolenou doménu
      * a jestli má uživatel povolení k tomu, aby danému uživateli e-mail rozeslal.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isRecipientsValid() {
       //$allowedDomains = PermissionsModel::getUserEmailRestrictions();
@@ -1357,7 +1357,7 @@
     /**
      * Ověří, zdali seznam příjemců neobsahuje duplicity.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isRecipientsUnique() {
       if (count(array_unique($this->recipients)) != count($this->recipients)) {

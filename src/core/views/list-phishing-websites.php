@@ -51,7 +51,7 @@
         </td>
         <td>
           <?php if ($website['active'] && $website['status'] == 0): ?>
-          <a href="/portal/<?= $urlSection . '/' . ACT_PREVIEW . '/' . $website['id_website'] ?>" target="_blank" class="btn btn-info btn-sm" role="button">
+          <a href="/portal/<?= $urlSection . '/' . ACT_PREVIEW . '/' . $website['id_website'] ?>" target="_blank" class="btn btn-info btn-sm<?php if (!$website['ready']): ?> disabled<?php endif; ?>" role="button">
             <span data-feather="eye"></span>
             Náhled
           </a>

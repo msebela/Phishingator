@@ -13,7 +13,7 @@
     protected $name;
 
     /**
-     * @var string      URL podvodné webové stránky, na které bude dostupná.
+     * @var string      URL adresa podvodné webové stránky, na které bude dostupná.
      */
     protected $url;
 
@@ -33,6 +33,7 @@
      * Načte a zpracuje předaná data.
      *
      * @param array $data              Vstupní data
+     * @return void
      * @throws UserError               Výjimka platná tehdy, pokud CSRF token neodpovídá původně vygenerovanému.
      */
     public function load($data) {
@@ -122,6 +123,7 @@
         $result[$key]['active_text'] = ($website['active']) ? 'ano' : 'ne';
         $result[$key]['active_color'] = ($website['active']) ? MSG_CSS_SUCCESS : MSG_CSS_ERROR;
 
+        $result[$key]['ready'] = PhishingWebsiteConfigs::isConfigReady($website['url']);
         $result[$key]['status'] = self::getPhishingWebsiteStatus($website['url']);
 
         if ($result[$key]['status'] == 1) {
@@ -142,7 +144,7 @@
      * Vrátí z databáze seznam podvodných webových stránek, které jsou skutečně dostupné
      * pro ostatní uživatele (případně v konkrétním roce).
      *
-     * @param int $year                Zkoumaný rok [nepovinné]
+     * @param int $year                Zkoumaný rok (nepovinné)
      * @return mixed                   Pole aktivních podvodných stránek a informace o každé z nich
      */
     public static function getActivePhishingWebsites($year = []) {
@@ -218,11 +220,10 @@
     /**
      * Vloží do databáze novou podvodnou webovou stránku.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     public function insertPhishingWebsite() {
-      PhishingWebsiteConfigs::generateConfFile($this->url, $this->idTemplate);
-
       $phishingWebsite = $this->makePhishingWebsite();
 
       $phishingWebsite['id_by_user'] = PermissionsModel::getUserId();
@@ -230,9 +231,20 @@
 
       $this->isURLUnique();
 
-      Logger::info('New phishing website added.', $phishingWebsite);
+      PhishingWebsiteConfigs::isConfigReady($this->url, true);
+
+      // Přidání podvodné stránky do existujícího konfiguračního souboru k již založené (sub)doméně.
+      if (file_exists(PhishingWebsiteConfigs::getConfigPath($this->url))) {
+        PhishingWebsiteConfigs::editConfig(ACT_NEW, $this->url, $this->idTemplate);
+        PhishingWebsiteConfigs::removeConfig($this->url);
+      }
+      else {
+        PhishingWebsiteConfigs::createNewConfig($this->url, $this->idTemplate);
+      }
 
       Database::insert($this->dbTableName, $phishingWebsite);
+
+      Logger::info('New phishing website added.', $phishingWebsite);
     }
 
 
@@ -240,7 +252,8 @@
      * Upraví zvolenou podvodnou webovou stránku.
      *
      * @param int $id                  ID podvodné stránky
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     public function updatePhishingWebsite($id) {
       $phishingWebsite = $this->makePhishingWebsite();
@@ -250,26 +263,47 @@
       $originalWebsite = new PhishingWebsiteModel();
       $originalWebsite = $originalWebsite->getPhishingWebsite($id);
 
-      // Pokud byla změněna URL adresa (stačí protokol) nebo šablona podvodné stránky,
-      // je nutné deaktivovat původní a vytvořit nový VirtualHost.
-      if ($originalWebsite['url'] != $this->url || $originalWebsite['id_template'] != $this->idTemplate) {
-        // Deaktivace původního VirtualHost.
-        PhishingWebsiteConfigs::deactivateConfFile($originalWebsite['url']);
+      // Pokud byla změněna URL adresa, šablona podvodné stránky nebo jde o (de)aktivaci stránky,
+      // je nutné upravit konfigurační soubor (VirtualHost).
+      if ($originalWebsite['url'] != $this->url || $originalWebsite['id_template'] != $this->idTemplate || $originalWebsite['active'] != $this->active) {
+        PhishingWebsiteConfigs::isConfigReady($this->url, true);
 
-        // Pokud má být podvodná stránka aktivována, je nutné vygenerovat nový konfigurační soubor se správným URL.
-        if ($this->active) {
-          PhishingWebsiteConfigs::generateConfFile($this->url, $this->idTemplate);
-        }
-      }
-
-      // Pokud se původní hodnota "active" liší od té aktuálně nastavené.
-      if ($originalWebsite['active'] != $this->active) {
-        if ($this->active) {
-          PhishingWebsiteConfigs::generateConfFile($this->url, $this->idTemplate);
+        // (Sub)doména se nijak nezměnila - upravovat se bude původní konfigurační soubor.
+        if (get_hostname_from_url($originalWebsite['url']) == get_hostname_from_url($this->url)) {
+          if ($this->active) {
+            PhishingWebsiteConfigs::editConfig(ACT_EDIT, $this->url, $this->idTemplate, $originalWebsite['url'], $originalWebsite['id_template']);
+          }
+          else {
+            PhishingWebsiteConfigs::editConfig(ACT_DEL, $this->url, $this->idTemplate);
+          }
         }
         else {
-          PhishingWebsiteConfigs::deactivateConfFile($this->url);
+          // (Sub)doména se změnila - z původního konfiguračního souboru je nutné záznam smazat.
+
+          PhishingWebsiteConfigs::isConfigReady($originalWebsite['url'], true);
+
+          // V původném konfiguračním souboru jsou ale ještě jiné aliasy - tj. nemazat celý
+          // konfigurační soubor, ale jenom konkrétní alias.
+          if ($this->existsWebsiteWithSameHostname($originalWebsite['url'], $id)) {
+            PhishingWebsiteConfigs::editConfig(ACT_DEL, $originalWebsite['url'], $originalWebsite['id_template']);
+          }
+
+          if ($this->active) {
+            // Pokud se (sub)doména změnila na nějakou jinou, ve Phishingatoru již existující (sub)doménu,
+            // tak ji k ní přidat jako další alias.
+            if (file_exists(PhishingWebsiteConfigs::getConfigPath($this->url))) {
+              PhishingWebsiteConfigs::editConfig(ACT_NEW, $this->url, $this->idTemplate);
+              PhishingWebsiteConfigs::removeConfig($this->url);
+            }
+            else {
+              // Pokud pro zadanou (sub)doménu neexistuje konfigurační soubor, vytvořit jej.
+              PhishingWebsiteConfigs::createNewConfig($this->url, $this->idTemplate);
+            }
+          }
         }
+
+        // Původní konfigurační soubor po úpravě zneplatnit.
+        PhishingWebsiteConfigs::removeConfig($originalWebsite['url']);
       }
 
       Logger::info('Phishing website modified.', $phishingWebsite);
@@ -284,20 +318,28 @@
 
 
     /**
-     * Odstraní (resp. deaktivuje) zvolenou podvodnou webovou stránku z databáze.
+     * Odstraní (resp. deaktivuje) zvolenou podvodnou webovou stránku.
      *
      * @param int $id                  ID podvodné stránky
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     public function deletePhishingWebsite($id) {
       if ($this->getCountOfUsePhishingWebsite($id) != 0) {
-        throw new UserError(
-          'Nelze smazat podvodnou stránku, která je svázána s nějakou existující kampaní.', MSG_ERROR
-        );
+        throw new UserError('Nelze smazat podvodnou stránku, která je svázána s nějakou existující kampaní.', MSG_ERROR);
       }
 
       $website = $this->getPhishingWebsite($id);
-      PhishingWebsiteConfigs::deactivateConfFile($website['url']);
+
+      PhishingWebsiteConfigs::isConfigReady($website['url'], true);
+
+      // Pokud existuje nějaká jiná podvodná stránka se stejnou (sub)doménou (tj. konfigurační soubor
+      // by po smazání nezůstal prázdný), smazat tu aktuální z konfiguračního souboru.
+      if ($this->existsWebsiteWithSameHostname($website['url'], $website['id_website'])) {
+        PhishingWebsiteConfigs::editConfig(ACT_DEL, $website['url'], $website['id_template']);
+      }
+
+      PhishingWebsiteConfigs::removeConfig($website['url']);
 
       $result = Database::update(
         'phg_websites',
@@ -317,9 +359,37 @@
 
 
     /**
+     * Ověří, zdali v databázi existuje podvodná stránka se stejnou (sub)doménou.
+     *
+     * @param string $websiteUrl       URL podvodné stránky
+     * @param string $websiteId        ID podvodné stránky
+     * @return bool                    TRUE, pokud existuje podvodná stránka se stejnou doménou, jinak FALSE
+     */
+    private function existsWebsiteWithSameHostname($websiteUrl, $websiteId) {
+      $websites = $this->getPhishingWebsites();
+      $websiteHostname = get_hostname_from_url($websiteUrl);
+
+      $found = false;
+
+      foreach ($websites as $anotherWebsite) {
+        if ($anotherWebsite['id_website'] == $websiteId) {
+          continue;
+        }
+
+        if (get_hostname_from_url($anotherWebsite['url_protocol'] . $anotherWebsite['url']) == $websiteHostname) {
+          $found = true;
+        }
+      }
+
+      return $found;
+    }
+
+
+    /**
      * Vrátí screenshot podvodné stránky.
      *
      * @param int $id                  ID podvodné stránky
+     * @return void
      */
     public function getPhishingWebsiteScreenshot($id) {
       $website = $this->getPhishingWebsite($id);
@@ -383,8 +453,8 @@
       $model = new PhishingWebsiteModel();
       $website = $model->getPhishingWebsite($idWebsite);
 
-      // Pokud podvodná stránka existuje a je nastavena jako skutečně aktivní (v Apache).
-      if ($user != null && $website != null && $website['active'] == 1) {
+      // Pokud podvodná stránka existuje a je nastavena jako skutečně aktivní na webovém serveru.
+      if ($user != null && $website != null && $website['active'] == 1 && PhishingWebsiteConfigs::isConfigReady($website['url'])) {
         // Pokud v databázi nejsou aktivní žádné tickety pro přístup na náhled podvodné stránky...
         if (empty($access)) {
           $activeSince = date('Y-m-d H:i:s');
@@ -527,7 +597,7 @@
 
       // Zjištění znaku, který je těsně před proměnnou.
       $varPosition = mb_strpos($websiteUrl, VAR_RECIPIENT_URL);
-      $symbolBeforeVar = $websiteUrl[$varPosition - 1];
+      $symbolBeforeVar = $websiteUrl[$varPosition - 1] ?? '';
 
       if (in_array($symbolBeforeVar, ['=', '?', '&'])) {
         $symbol = '';
@@ -563,7 +633,7 @@
     /**
      * Zkontroluje uživatelský vstup (atributy třídy), který se bude zapisovat do databáze.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function validateData() {
       $this->isNameEmpty();
@@ -590,7 +660,8 @@
     /**
      * Ověří, zdali byl vyplněn název podvodné webové stránky.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isNameEmpty() {
       if (empty($this->name)) {
@@ -602,7 +673,8 @@
     /**
      * Ověří, zdali zadaný název podvodné webové stránky není příliš dlouhý.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isNameTooLong() {
       if (mb_strlen($this->name) > $this->inputsMaxLengths['name']) {
@@ -614,7 +686,8 @@
     /**
      * Ověří, zdali byla vyplněna URL adresa podvodné webové stránky.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isURLEmpty() {
       if (empty($this->url)) {
@@ -626,7 +699,8 @@
     /**
      * Ověří, zdali zadaná URL adresa podvodné webové stránky není příliš dlouhá.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isURLTooLong() {
       if (mb_strlen($this->url) > $this->inputsMaxLengths['url']) {
@@ -638,7 +712,8 @@
     /**
      * Ověří, zdali je zadaná URL adresa podvodné webové stránky validní.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isURLValid() {
       if (!filter_var($this->url, FILTER_VALIDATE_URL)) {
@@ -650,7 +725,8 @@
     /**
      * Ověří, zdali je u zadané (sub)domény v DNS nasměrován A záznam na instanci Phishingatoru.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isURLValidDNSRecord() {
       if (gethostbyname(get_hostname_from_url($this->url)) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
@@ -662,7 +738,8 @@
     /**
      * Ověří, zdali zadaná cesta v URL adrese podvodné stránky neobsahuje nepovolené znaky a výrazy.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isURLPathValid() {
       $path = parse_url(str_replace(VAR_RECIPIENT_URL, 'var', $this->url), PHP_URL_PATH);
@@ -679,7 +756,8 @@
     /**
      * Ověří, zdali GET argumenty u zadané URL adresy podvodné stránky neobsahují nepovolené znaky a výrazy.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isURLArgValid() {
       $query = parse_url(str_replace(VAR_RECIPIENT_URL, 'var', $this->url), PHP_URL_QUERY);
@@ -693,7 +771,8 @@
     /**
      * Ověří, zdali je v zadané URL adrese obsažena proměnná, která bude obsahovat identifikátor uživatele.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function containURLUserIdentifierVariable() {
       if (mb_strpos($this->url, VAR_RECIPIENT_URL) === false) {
@@ -708,7 +787,8 @@
     /**
      * Ověří, zdali se v zadané URL adrese vícekrát nevyskytuje proměnná, která bude obsahovat identifikátor uživatele.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function checkCountURLUserIdentifierVariable() {
       if (substr_count($this->url, VAR_RECIPIENT_URL) > 1) {
@@ -723,7 +803,8 @@
     /**
      * Ověří, zdali je v zadané URL adrese správně umístěna proměnná, která bude obsahovat identifikátor uživatele.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isURLUserIdentifierVariableValid() {
       $variablePosition = mb_strpos($this->url, VAR_RECIPIENT_URL) + mb_strlen(VAR_RECIPIENT_URL);
@@ -743,7 +824,8 @@
      * Ověří, zdali zadanou URL adresu nepoužívá jiná podvodná webová stránka (tzn. jestli je unikátní).
      *
      * @param int $idWebsite           ID podvodné stránky
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isURLUnique($idWebsite = 0) {
       $websites = $this->getPhishingWebsites();
@@ -759,7 +841,8 @@
     /**
      * Ověří, zdali byla vybrána šablona podvodné webové stránky.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isTemplateEmpty() {
       if (empty($this->idTemplate) || !is_numeric($this->idTemplate)) {
@@ -771,7 +854,8 @@
     /**
      * Ověří, zdali vybraná šablona podvodné webové stránky existuje.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function existTemplate() {
       if (empty($this->getPhishingWebsiteTemplate($this->idTemplate))) {
@@ -783,14 +867,12 @@
     /**
      * Ověří, zdali lze zvolenou podvodnou stránku deaktivovat, aniž by byly ovlivněny některé existující kampaně.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @return void
+     * @throws UserError
      */
     private function isWebsiteDeactivable() {
-      if ($this->active == 0 && !empty($this->dbRecordData['id_website'])
-          && self::getCountOfUsePhishingWebsite($this->dbRecordData['id_website']) != 0) {
-        throw new UserError(
-          'Nelze deaktivovat podvodnou stránku, která je využívána v nějaké existující kampani.', MSG_ERROR
-        );
+      if ($this->active == 0 && !empty($this->dbRecordData['id_website']) && self::getCountOfUsePhishingWebsite($this->dbRecordData['id_website']) != 0) {
+        throw new UserError('Nelze deaktivovat podvodnou stránku, která je využívána v nějaké existující kampani.', MSG_ERROR);
       }
     }
   }

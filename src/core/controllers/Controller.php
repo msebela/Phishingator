@@ -198,6 +198,8 @@
       switch ($type) {
         case MSG_ERROR:
           return MSG_CSS_ERROR;
+        case MSG_WARNING:
+          return MSG_CSS_WARNING;
         case MSG_SUCCESS:
           return MSG_CSS_SUCCESS;
         default:

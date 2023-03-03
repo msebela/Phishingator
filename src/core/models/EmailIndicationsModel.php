@@ -157,7 +157,7 @@
     /**
      * Vloží do databáze novou indicii.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function insertEmailIndication() {
       $indication = $this->makeEmailIndication();
@@ -177,7 +177,7 @@
      * Upraví zvolenou indicii.
      *
      * @param int $id                  ID indicie
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function updateEmailIndication($id) {
       $indication = $this->makeEmailIndication();
@@ -199,7 +199,7 @@
      * Odstraní (resp. deaktivuje) indicii z databáze.
      *
      * @param int $id                  ID indicie
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function deleteEmailIndication($id) {
       $result = Database::update(
@@ -235,7 +235,7 @@
     /**
      * Zkontroluje uživatelský vstup (atributy třídy), který se bude zapisovat do databáze.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function validateData() {
       $this->isExpressionEmpty();
@@ -252,7 +252,7 @@
     /**
      * Ověří, zdali byla vyplněna indicie k rozpoznání phishingu.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isExpressionEmpty() {
       if (empty($this->expression)) {
@@ -264,7 +264,7 @@
     /**
      * Ověří, zdali zadaná indicie není příliš dlouhá.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isExpressionTooLong() {
       if (mb_strlen($this->expression) > $this->inputsMaxLengths['expression']) {
@@ -277,7 +277,7 @@
      * Ověří, zdali se výraz představující indicii opravdu nalézá v těle e-mailu (popř. nebo jestli se jedná
      * o povolenou proměnnou).
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function existExpressionInText() {
       if (mb_strpos($this->email, $this->expression) === false
@@ -291,7 +291,7 @@
      * Ověří, zdali výraz představující indicii není již mezi ostatními indiciemi (tzn. jestli je unikátní).
      *
      * @param int $idIndication        ID indicie (nepovinný parametr), aby se při úpravě vyloučila upravovaná indicie.
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isExpressionUnique($idIndication = 0) {
       if (self::existEmailIndication($this->idEmail, $this->expression, $idIndication) > 0) {
@@ -303,7 +303,7 @@
     /**
      * Ověří, zdali byl vyplněn název indicie.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isTitleEmpty() {
       if (empty($this->title)) {
@@ -315,7 +315,7 @@
     /**
      * Ověří, zdali zadaný název indicie není příliš dlouhý.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isTitleTooLong() {
       if (mb_strlen($this->title) > $this->inputsMaxLengths['title']) {
@@ -327,7 +327,7 @@
     /**
      * Ověří, zdali popis zadaný u indicie není příliš dlouhý.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isDescriptionTooLong() {
       if (mb_strlen($this->description) > $this->inputsMaxLengths['description']) {

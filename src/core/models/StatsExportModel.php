@@ -13,7 +13,7 @@
      *                                 pokud se soubor na webový server ukládat nemá.
      * @return string|null             Vrátí cestu k souboru (pokud měl být soubor uložen na webovém serveru),
      *                                 jinak NULL.
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public static function exportEndActions($id, $filepath = null) {
       Logger::info('Request to export phishing campaign data (users end actions).', $id);
@@ -44,7 +44,7 @@
      *                                 pokud se soubor na webový server ukládat nemá.
      * @return string|null             Vrátí cestu k souboru (pokud měl být soubor uložen na webovém serveru),
      *                                 jinak NULL.
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public static function exportCountUsersActions($id, $filepath = null) {
       Logger::info('Request to export phishing campaign data (count users actions).', $id);
@@ -118,7 +118,7 @@
      *                                 pokud se soubor na webový server ukládat nemá.
      * @return string|null             Vrátí cestu k souboru (pokud měl být soubor uložen na webovém serveru),
      *                                 jinak NULL.
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public static function exportAllCapturedData($id, $filepath = null) {
       Logger::info('Request to export all phishing campaign data.', $id);
@@ -149,7 +149,7 @@
      * Exportuje všechna data do ZIP archivu.
      *
      * @param int $idCampaign          ID kampaně
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public static function exportAllToZipArchive($idCampaign) {
       Logger::info('Request to export a ZIP archive with all phishing campaign data.', $idCampaign);
@@ -206,7 +206,7 @@
      *                                 uložen na webovém serveru (jinak se posílá na výstup).
      * @return string|null             Pokud má být exportovaný soubor uložený na webovém serveru (viz předchozí
      *                                 parametr), vrátí název exportovaného souboru.
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private static function exportToCSV($data, $newFilepath = null) {
       if (!empty($data) && count($data) == 4) {

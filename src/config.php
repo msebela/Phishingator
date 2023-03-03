@@ -284,6 +284,9 @@
   /** Cesta k souboru, který obsluhuje požadavky uživatelů na podvodných stránkách. */
   define('PHISHING_WEBSITE_PREPENDER', '/var/www/phishingator/websitePrepender.php');
 
+  /** Proměnná, která bude v konfiguračním souboru nahrazena dalším aliasem pro podvodnou stránku. */
+  define('PHISHING_WEBSITE_ANOTHER_ALIAS', '#PHISHINGATOR_ANOTHER_SERVER_ALIAS');
+
   /** Název souboru (včetně přípony), v němž je uložen screenshot (ve formátu PNG a o šířce 800 px) podvodné stránky. */
   define('PHISHING_WEBSITE_SCREENSHOT_FILENAME', 'thumbnail.png');
 

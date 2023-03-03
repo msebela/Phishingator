@@ -264,7 +264,7 @@
      * dojde k jejich přesunu do rodičovské skupiny.
      *
      * @param int $id                  ID skupiny
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function deleteUserGroup($id) {
       // Ověření, zdali se uživatel nepokouší smazat rodičovskou (tj. základní) skupinu.
@@ -379,7 +379,7 @@
     /**
      * Zkontroluje uživatelský vstup (atributy třídy), který se bude zapisovat do databáze.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     public function validateData() {
       $this->isNameEmpty();
@@ -399,7 +399,7 @@
     /**
      * Ověří, zdali byl vyplněn název skupiny.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isNameEmpty() {
       if (empty($this->name)) {
@@ -411,7 +411,7 @@
     /**
      * Ověří, zdali zadaný název skupiny není příliš dlouhý.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isNameTooLong() {
       if (mb_strlen($this->name) > $this->inputsMaxLengths['name']) {
@@ -423,7 +423,7 @@
     /**
      * Ověří, zdali zadaný popis skupiny není příliš dlouhý.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isDescriptionTooLong() {
       if (mb_strlen($this->description) > $this->inputsMaxLengths['description']) {
@@ -435,7 +435,7 @@
     /**
      * Ověří, zdali seznam zobrazovaných LDAP skupin neobsahuje nepovolené znaky.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isLdapGroupsValid() {
       if ($this->ldapGroups !== ldap_escape($this->ldapGroups, '', LDAP_ESCAPE_FILTER)) {
@@ -447,7 +447,7 @@
     /**
      * Ověří, zdali seznam zobrazovaných LDAP skupin není příliš dlouhý.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isLdapGroupsTooLong() {
       if (mb_strlen($this->ldapGroups) > $this->inputsMaxLengths['ldap-groups']) {
@@ -459,7 +459,7 @@
     /**
      * Ověří, zdali seznam zobrazovaných LDAP skupin neobsahuje duplicity.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isLdapGroupsUnique() {
       $ldapGroups = explode(LDAP_GROUPS_DELIMITER, $this->ldapGroups);
@@ -473,7 +473,7 @@
     /**
      * Ověří, zdali je vybráno oprávnění uživatele.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function isRoleEmpty() {
       if ((empty($this->role) || !is_numeric($this->role)) && $this->idParentGroup !== NULL) {
@@ -485,7 +485,7 @@
     /**
      * Ověří, zdali zvolené oprávnění existuje.
      *
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele.
+     * @throws UserError
      */
     private function existRole() {
       $role = $this->getRole($this->role);

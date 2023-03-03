@@ -2,4 +2,4 @@
 .env
 .env.test
 phishingator-data
-src/tests/*.phar
+src/tests
