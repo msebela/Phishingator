@@ -9,12 +9,11 @@
 </div>
 
 <p>Vítejte v&nbsp;systému pro <strong>rozesílání cvičných phishingových zpráv</strong>.</p>
+
 <?php if (PermissionsModel::getUserPermission() == PERMISSION_ADMIN || PermissionsModel::getUserPermission() == PERMISSION_TEST_MANAGER): ?>
-  <div class="alert alert-info" role="alert">
-
-
+<div class="alert alert-info" role="alert">
   <strong>Menu</strong>, které máte k&nbsp;dispozici, je generováno v&nbsp;závislosti na tom, <strong>jaké oprávnění</strong> máte právě nastaveno &ndash; přepnout mezi jiným oprávněním je možné v&nbsp;<strong>pravé horní části</strong> obrazovky.
-  </div>
+</div>
 <?php endif; ?>
 
 <div class="card-group cards-stats pb-2 mb-3">

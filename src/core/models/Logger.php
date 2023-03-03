@@ -120,12 +120,13 @@
       $levelsOrder = [Logger::DEBUG, Logger::INFO, Logger::WARNING, Logger::ERROR];
 
       $maxLevelOrder = array_search(LOGGER_LEVEL, $levelsOrder);
+      $validLevel = false;
 
-      if (in_array($maxLevelOrder, $levelsOrder) && array_search($level, $levelsOrder) >= $maxLevelOrder) {
-        return true;
+      if (in_array(LOGGER_LEVEL, $levelsOrder) && array_search($level, $levelsOrder) >= $maxLevelOrder) {
+        $validLevel = true;
       }
 
-      return false;
+      return $validLevel;
     }
 
 

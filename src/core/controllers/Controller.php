@@ -56,6 +56,7 @@
      * @param mixed $model             Instance třídy modelu podle formuláře
      * @param string $action           Název akce, ke které bude docházet ve formuláři
      * @param string $formPrefix       Prefix formuláře
+     * @return void
      */
     public function initViewData($model, $action, $formPrefix) {
       $this->setViewData('action', $action);
@@ -70,6 +71,7 @@
      *
      * @param string $view             Název souboru View (bez přípony)
      * @param bool $headerView         TRUE pokud se jedná o hlavičku pohledu (horní část stránky)
+     * @return void
      */
     public function setView($view, $headerView = false) {
       $viewFilepath = CORE_DOCUMENT_ROOT . '/' . CORE_DIR_VIEWS . '/' . $view . CORE_VIEWS_FILE_EXTENSION;
@@ -88,6 +90,8 @@
     /**
      * Ověří existenci souboru hlavičky View a v případě jeho nalezení jej vloží do stránky společně s extrahovanými
      * proměnnými používanými ve View.
+     *
+     * @return void
      */
     public function displayHeader() {
       $viewFilepath = CORE_DOCUMENT_ROOT . '/' . CORE_DIR_VIEWS . '/' . $this->viewHeaderName . CORE_VIEWS_FILE_EXTENSION;
@@ -105,6 +109,8 @@
     /**
      * Ověří existenci souboru View a v případě jeho nalezení jej vloží do stránky společně s extrahovanými
      * proměnnými používanými ve View.
+     *
+     * @return void
      */
     public function displayView() {
       $viewFilepath = CORE_DOCUMENT_ROOT . '/' . CORE_DIR_VIEWS . '/' . $this->viewName . CORE_VIEWS_FILE_EXTENSION;
@@ -126,6 +132,7 @@
      *
      * @param string $indexName        Index (resp. proměnná), přes kterou budou data dostupná
      * @param mixed $data              Data
+     * @return void
      */
     public function setViewData($indexName, $data) {
       $this->viewData[$indexName] = $data;
@@ -139,11 +146,13 @@
      * @return null|mixed              Požadovaná data nebo NULL, pokud index neexistuje
      */
     public function getData($indexName) {
+      $data = null;
+
       if (array_key_exists($indexName, $this->viewData)) {
-        return $this->viewData[$indexName];
+        $data = $this->viewData[$indexName];
       }
 
-      return null;
+      return $data;
     }
 
 
@@ -154,24 +163,29 @@
      * @return array|string            Ošetřený řetězec pro výstup do stránky
      */
     public static function escapeOutput($pattern) {
+      $escaped = '';
+
       if (is_array($pattern)) {
         foreach ($pattern as $key => $value) {
           $pattern[$key] = self::escapeOutput($value);
         }
 
-        return $pattern;
+        $escaped = $pattern;
       }
       else {
-        return htmlspecialchars(stripslashes(trim($pattern ?? '')), ENT_QUOTES);
+        $escaped = htmlspecialchars(stripslashes(trim($pattern ?? '')), ENT_QUOTES);
       }
+
+      return $escaped;
     }
 
 
     /**
-     * Přidá do seznamu nepřečtených systémových zpráv další položku.
+     * Přidá do seznamu nezobrazených systémových zpráv další položku.
      *
      * @param string $type             Typ systémové zprávy
      * @param string $message          Text systémové zprávy
+     * @return void
      */
     public function addMessage($type, $message) {
       $message = [
@@ -214,14 +228,14 @@
      * @return array                   Pole systémových zpráv
      */
     public static function getMessages() {
+      $messages = [];
+
       if (isset($_SESSION['messages'])) {
         $messages = $_SESSION['messages'];
         unset($_SESSION['messages']);
-
-        return $messages;
       }
 
-      return [];
+      return $messages;
     }
 
 
@@ -287,6 +301,7 @@
      * @param null|string $target      Relativní URL v rámci systému (nepovinný parametr). Při nevyplnění dojde
      *                                 k přesměrování na úvodní stránku přihlášeného uživatele.
      * @param null|int $redirectToRoot TRUE pro přesměrování do kořene webu (nepovinný parametr).
+     * @return void
      */
     public function redirect($target = null, $redirectToRoot = null) {
       $target = (($redirectToRoot == null) ? 'portal/' : '') . (($target != null) ? $target : '');
@@ -300,6 +315,7 @@
      * Nastaví URL název sekce, přes kterou je dostupná.
      *
      * @param string $section          URL sekce
+     * @return void
      */
     public function setUrlSection($section) {
       if (!empty($section)) {
@@ -313,6 +329,7 @@
      * Nastaví nadpis stránky (HTML tag title).
      *
      * @param string $htmlTitle        Nadpis stránky
+     * @return void
      */
     public function setTitle($htmlTitle) {
       if (!empty($htmlTitle)) {
@@ -335,6 +352,7 @@
      * Nastaví odkaz na nápovědu pro danou sekci.
      *
      * @param string $link             Odkaz na nápovědu
+     * @return void
      */
     public function setHelpLink($link) {
       if (!empty($link)) {
@@ -374,6 +392,7 @@
      * Ověří, zdali má uživatel dostatečné oprávnění ke vstupu do dané sekce.
      *
      * @param int $minPermission       Hodnota uživatelova oprávnění
+     * @return void
      */
     public function checkPermission($minPermission) {
       if (PermissionsModel::getUserRole() > $minPermission) {
@@ -387,6 +406,7 @@
      * Ověří, zdali je předaný záznam prázdný a pokud ano, vyhodí výjimku, aby kód dále nepokračoval.
      *
      * @param mixed $record            Kontrolovaný záznam
+     * @return void
      */
     public function checkRecordExistence($record) {
       if (empty($record)) {

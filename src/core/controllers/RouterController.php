@@ -42,6 +42,7 @@
      * Zpracuje vstup z URL adresy a na základě toho zavolá odpovídající metodu.
      *
      * @param string $arguments        Uživatelský vstup
+     * @return void
      */
     public function process($arguments) {
       $publicSite = true;
@@ -73,7 +74,7 @@
         $publicSite = true;
       }
 
-      // Aktivovat Controller určený pro danou stránku (resp. sekci).
+      // Aktivovat Controller určený pro danou stránku (sekci).
       $this->setControllerData($arguments, $publicSite);
     }
 
@@ -82,27 +83,26 @@
      * Vrátí odpovídající Controller v závislosti na předaném argumentu.
      *
      * @param string $controllerName   Název Controlleru
-     * @param bool $public             TRUE pokud se jedná o Controller přístupný na veřejné části aplikace, jinak FALSE
+     * @param bool $public             TRUE pokud se jedná o Controller přístupný na veřejné části aplikace, jinak FALSE (výchozí)
      * @return mixed|null              Instance Controlleru nebo NULL při nenalezení odpovídajícího Controlleru
      */
     private function getController($controllerName, $public = false) {
-      if (empty($controllerName)) {
-        return null;
+      $controller = null;
+
+      if (!empty($controllerName)) {
+        if (array_key_exists($controllerName, $this->existsControllers)) {
+          $controller = new $this->existsControllers[$controllerName]();
+        }
+        elseif (!$public) {
+          // Chybová stránka o nenalezení sekce v neveřejné části aplikace.
+          $controller = new ErrorNotFoundController();
+        }
+        else {
+          $this->redirect(null, 1);
+        }
       }
 
-      if (array_key_exists($controllerName, $this->existsControllers)) {
-        return new $this->existsControllers[$controllerName]();
-      }
-
-      if ($public == false) {
-        // Chybová stránka o nenalezení sekce v neveřejné části aplikace.
-        return new ErrorNotFoundController();
-      }
-      else {
-        $this->redirect(null, 1);
-      }
-
-      return null;
+      return $controller;
     }
 
 
@@ -110,6 +110,8 @@
      * Předá uživatelský vstup a data instanci Controlleru.
      *
      * @param string $arguments        Uživatelský vstup
+     * @param bool $public             TRUE pokud se jedná o Controller přístupný na veřejné části aplikace, jinak FALSE (výchozí)
+     * @return void
      */
     private function setControllerData($arguments, $public = false) {
       if ($this->controller != null) {
@@ -147,7 +149,8 @@
     /**
      * Změní roli právě přihlášeného uživatele a přesměruje ho na úvodní stránku Phishingatoru.
      *
-     * @param string $role             Název požadované role
+     * @param string $role             Identifikátor požadované role
+     * @return void
      */
     private function changeUserRole($role) {
       PermissionsModel::switchRole($role);
@@ -158,6 +161,8 @@
 
     /**
      * Odhlásí uživatele z Phishingatoru a přesměruje ho na úvodní stránku projektu.
+     *
+     * @return void
      */
     private function logout() {
       PermissionsModel::logout();
