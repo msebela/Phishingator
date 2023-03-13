@@ -112,19 +112,26 @@
       <div class="form-group">
         <label for="<?= $formPrefix ?>recipients">Seznam účastníků kampaně</label>
         <span class="float-right">
-          Celkem: <b id="countRecipients"><?= $countRecipients ?></b>
-          <button type="button" class="btn btn-outline-secondary btn-sm py-0 get-sum-of-emails" data-recipients-textarea="#<?= $formPrefix ?>recipients" data-sum-recipients-label="#countRecipients">
-            <span data-feather="refresh-cw"></span>
-          </button>
+          Celkem: <strong id="countRecipients"><?= $countRecipients ?></strong>
         </span>
-        <textarea class="form-control text-monospace get-sum-of-emails" id="<?= $formPrefix ?>recipients" name="<?= $formPrefix ?>recipients" rows="20" required data-recipients-textarea="#<?= $formPrefix ?>recipients" data-sum-recipients-label="#countRecipients"><?= $recipients ?></textarea>
-        <small class="form-text text-muted">
-          Každý z&nbsp;příjemců musí být umístěn na samostatném řádku.
-          <button type="button" class="btn btn-secondary btn-sm float-right mt-2 mb-4" data-toggle="modal" data-target="#recipientsDialog">
-            <span data-feather="user-check"></span>
-            Vybrat příjemce
-          </button>
-        </small>
+        <textarea class="form-control text-monospace" id="<?= $formPrefix ?>recipients" name="<?= $formPrefix ?>recipients" rows="20" required><?= $recipients ?></textarea>
+        <div class="form-text text-muted">
+          <small>Každý z&nbsp;příjemců musí být umístěn na samostatném řádku.</small>
+
+          <div class="float-right">
+            <input type="file" id="file-recipients" class="d-none">
+
+            <button type="button" class="btn btn-secondary btn-sm mt-2 mb-4 mr-1 import-recipients">
+              <span data-feather="upload"></span>
+              Importovat příjemce
+            </button>
+
+            <button type="button" class="btn btn-secondary btn-sm mt-2 mb-4" data-toggle="modal" data-target="#recipientsDialog">
+              <span data-feather="user-check"></span>
+              Vybrat příjemce
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -222,7 +229,8 @@
               <span data-feather="x"></span>
               Zavřít
             </button>
-            <button type="button" class="btn btn-primary insert-recipients-emails get-sum-of-emails" data-dismiss="modal" data-recipients-textarea="#<?= $formPrefix ?>recipients" data-sum-recipients-label="#countRecipients">
+
+            <button type="button" class="btn btn-primary insert-recipients-emails" data-dismiss="modal">
               <span data-feather="save"></span>
               Uložit změny
             </button>

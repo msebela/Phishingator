@@ -43,12 +43,12 @@ $('.set-preview-btn').on('change', function() {
 });
 
 $('.insert-recipients-emails').on('click', function() {
-  let recipientsTextarea = $($(this).attr('data-recipients-textarea'));
+  let recipientsTextarea = $('#campaign-recipients');
 
   let recipientsSeparator = "\n";
   let recipientsList = recipientsTextarea.val().split(recipientsSeparator);
 
-  recipientsList.forEach(function(recipient) {
+  recipientsList.forEach(function() {
     let index = recipientsList.indexOf("");
 
     if (index !== -1) {
@@ -56,7 +56,7 @@ $('.insert-recipients-emails').on('click', function() {
     }
   });
 
-  $('.modal-body input[type=checkbox]').each(function(recipient) {
+  $('.modal-body input[type=checkbox]').each(function() {
     let index = recipientsList.indexOf($(this).val());
 
     if (index !== -1) {
@@ -64,31 +64,51 @@ $('.insert-recipients-emails').on('click', function() {
     }
   });
 
-  $('.modal-body input[type=checkbox]:checked').each(function(recipient) {
-    if (recipientsList.includes($(this).val()) === false && $(this).val().match(/\S+@\S+/g)) {
+  $('.modal-body input[type=checkbox]:checked').each(function() {
+    if (recipientsList.includes($(this).val()) === false && $(this).val().match(/[^\s@]+@[^\s@]+\.[^\s@]+/g)) {
       recipientsList.push($(this).val());
     }
   });
 
   recipientsTextarea.val(recipientsList.join(recipientsSeparator));
+  updateSumEmails();
 });
 
-$('.get-sum-of-emails').on('click keyup', function() {
-  let listEmails = $($(this).attr('data-recipients-textarea'));
-  let sumValidEmailsLabel = $($(this).attr('data-sum-recipients-label'));
+$('#campaign-recipients').on('change keyup', function() {
+  let recipientsList = $(this).val().split("\n");
+
+  $('.modal-body input[type=checkbox]').prop('checked', false);
+
+  recipientsList.forEach(function (recipient) {
+    if (recipient.match(/[^\s@]+@[^\s@]+\.[^\s@]+/g)) {
+      let recipientCheckbox = $('.modal-body input[value="' + recipient + '" i]');
+
+      if (recipientCheckbox) {
+        recipientCheckbox.prop('checked', true);
+        markSameCheckboxes(recipientCheckbox);
+      }
+
+      updateSumEmails();
+    }
+  });
+});
+
+function updateSumEmails() {
+  let recipientsList = $('#campaign-recipients');
+  let sumValidRecipientsLabel = $('#countRecipients');
 
   let sumValidEmails = 0;
 
-  if (listEmails.val().length > 4) {
-    let validEmails = listEmails.val().match(/[^\s@]+@[^\s@]+\.[^\s@]+/g);
+  if (recipientsList.val().length > 4) {
+    let validEmails = recipientsList.val().match(/[^\s@]+@[^\s@]+\.[^\s@]+/g);
 
     if (validEmails) {
       sumValidEmails = validEmails.length;
     }
   }
 
-  sumValidEmailsLabel.text(sumValidEmails);
-});
+  sumValidRecipientsLabel.text(sumValidEmails);
+}
 
 $('.mark-checkboxes').on('click', function() {
   let group = $(this).attr('data-checkboxes-group');
@@ -99,18 +119,87 @@ $('.mark-checkboxes').on('click', function() {
   }
 
   checkboxes.prop('checked', !checkboxes.prop('checked'));
+  checkboxes.each(function() {
+    markSameCheckboxes($(this));
+  });
 });
 
 $('.mark-same-checkboxes').on('click', function() {
-  $('.modal-body input[value="' + $(this).val() + '"]').prop('checked', $(this).prop('checked'));
+  markSameCheckboxes($(this));
 });
 
+function markSameCheckboxes(recipient) {
+  $('.modal-body input[value="' + recipient.val() + '" i]').prop('checked', recipient.prop('checked'));
+}
+
+$('.import-recipients').on('click', function() {
+  let recipientsList = $('#campaign-recipients');
+  let inputImport = document.createElement('input');
+
+  inputImport.setAttribute('type', 'file');
+  inputImport.onchange = _ => {
+    let files = Array.from(inputImport.files);
+
+    if (files.length > 0) {
+      let file = files[0];
+
+      if (file.type && file.type === 'text/plain' || file.type === 'text/csv') {
+        let fileReader = new FileReader();
+
+        fileReader.readAsText(file);
+        fileReader.onload = function() {
+          let importedRecipients = new Set(fileReader.result.split(/\r?\n/));
+
+          if (file.type === 'text/csv') {
+            importedRecipients = importValuesFromCSV(importedRecipients);
+          }
+
+          importedRecipients.forEach(function (recipient) {
+            if (recipient.match(/[^\s@]+@[^\s@]+\.[^\s@]+/g)) {
+              let recipientCheckbox = $('.modal-body input[value="' + recipient + '" i]');
+
+              if (recipientCheckbox) {
+                recipientCheckbox.prop('checked', true);
+                markSameCheckboxes(recipientCheckbox);
+              }
+
+              recipientsList.val(recipientsList.val() + ((recipientsList.val() !== '') ? "\n" : '') + recipient);
+              updateSumEmails();
+            }
+          });
+        }
+      }
+      else {
+        alert('Vybraný typ souboru není podporován.');
+      }
+    }
+  };
+
+  inputImport.click();
+});
+
+function importValuesFromCSV(csvLines) {
+  let values = [];
+  let csvSeparator = prompt('Zadejte znak, který je v CSV souboru použit jako oddělovač hodnot.', ';');
+
+  if (csvSeparator != null || csvSeparator !== '') {
+    let lineValues = [];
+
+    csvLines.forEach(function (line) {
+      lineValues = lineValues.concat(line.split(csvSeparator));
+    });
+
+    values = lineValues;
+  }
+
+  return values;
+}
 
 $('#blur-identities').on('click', function() {
   $('.identity').toggleClass('blur-text');
 });
 
-$('.export-chart').on('click', function(e) {
+$('.export-chart').on('click', function() {
   $(this).attr('download', $(this).attr('data-filename') + '.png');
   $(this).attr('href', ($($(this).attr('data-chart'))[0]).toDataURL('image/png', 1));
 });
