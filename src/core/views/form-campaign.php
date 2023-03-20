@@ -116,17 +116,19 @@
         </span>
         <textarea class="form-control text-monospace" id="<?= $formPrefix ?>recipients" name="<?= $formPrefix ?>recipients" rows="20" required><?= $recipients ?></textarea>
         <div class="form-text text-muted">
-          <small>Každý z&nbsp;příjemců musí být umístěn na samostatném řádku.</small>
+          <div>
+            <small>Každý z&nbsp;příjemců musí být umístěn na samostatném řádku.</small>
+          </div>
 
-          <div class="float-right">
+          <div class="float-right mt-2 mb-4 text-right">
             <input type="file" id="file-recipients" class="d-none">
 
-            <button type="button" class="btn btn-secondary btn-sm mt-2 mb-4 mr-1 import-recipients">
+            <button type="button" class="btn btn-secondary btn-sm mb-1 import-recipients">
               <span data-feather="upload"></span>
               Importovat příjemce
             </button>
 
-            <button type="button" class="btn btn-secondary btn-sm mt-2 mb-4" data-toggle="modal" data-target="#recipientsDialog">
+            <button type="button" class="btn btn-secondary btn-sm mb-1" data-toggle="modal" data-target="#recipientsDialog">
               <span data-feather="user-check"></span>
               Vybrat příjemce
             </button>
