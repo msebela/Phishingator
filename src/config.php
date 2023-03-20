@@ -290,8 +290,8 @@
   /** Název souboru (včetně přípony), v němž je uložen screenshot (ve formátu PNG a o šířce 800 px) podvodné stránky. */
   define('PHISHING_WEBSITE_SCREENSHOT_FILENAME', 'thumbnail.png');
 
-  /** Pravidlo umožňující vytváření subdomén v proxy Phishingatoru na základě regulárního výrazu. */
-  define('PHISHING_WEBSITE_PROXY_SUBDOMAIN_RULE', '{subdomain:((.)*)}');
+  /** Povolené znaky v názvech subdomén u podvodných stránek v proxy Phishingatoru. */
+  define('PHISHING_WEBSITE_SUBDOMAINS_REGEXP', '/[^a-z0-9]/');
 
   /** Název vstupního pole na podvodné stránce, do kterého uživatel zadává uživatelské jméno. */
   define('PHISHING_WEBSITE_INPUT_FIELD_USERNAME', 'username');

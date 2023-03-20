@@ -523,25 +523,11 @@
         $subdomain = mb_substr($website, 0, -mb_strlen($domain) - 1);
 
         foreach ($proxyDomains as $proxyDomain) {
-          if (!empty($subdomain)) {
-            // Konkrétní subdoména v konfiguraci proxy.
-            if ($proxyDomain == $subdomain . '.' . $domain) {
-              $registered = true;
-            }
-            else {
-              // Subdoména jako regulární výraz u domény v konfiguraci proxy.
-              preg_match('/' . PHISHING_WEBSITE_PROXY_SUBDOMAIN_RULE . '\.' . $domain . '/', $proxyDomain, $matches);
-
-              if (isset($matches[1])) {
-                preg_match('/' . $matches[1] . '/', $subdomain, $subdomainMatches);
-
-                if (isset($subdomainMatches[0]) && mb_strlen($subdomainMatches[0]) == mb_strlen($subdomain)) {
-                  $registered = true;
-                }
-              }
-            }
+          // Existující konkrétní subdoména v konfiguraci proxy.
+          if (!empty($subdomain) && $proxyDomain == $subdomain . '.' . $domain) {
+            $registered = true;
           }
-          // Konkrétní doména v konfiguraci proxy.
+          // Existující konkrétní doména v konfiguraci proxy.
           elseif ($proxyDomain == $domain) {
             $registered = true;
           }
@@ -560,18 +546,13 @@
      * Vrátí pole všech (sub)domén, které jsou registrované v proxy Phishingatoru
      * a které mohou být použity jako podvodné domény ve phishingových kampaních.
      *
-     * @param bool $proxyRulesNames    TRUE, pokud mají být zachovány názvy pravidel z proxy Phishingatoru (výchozí)
-     * @return array|false|string[]    Pole podvodných domén a subdomén
+     * @return array|string[]          Pole podvodných domén a subdomén
      */
-    public static function getDomainsRegisteredInProxy($proxyRulesNames = true) {
+    public static function getDomainsRegisteredInProxy() {
       $proxyDomains = [];
 
       if (getenv('FRAUDULENT_HOSTS') !== null) {
         $proxyDomains = explode(',', str_replace('`', '', getenv('FRAUDULENT_HOSTS')));
-
-        if (!$proxyRulesNames) {
-          $proxyDomains = preg_replace('/' . PHISHING_WEBSITE_PROXY_SUBDOMAIN_RULE . '/', '$1', $proxyDomains);
-        }
       }
 
       return $proxyDomains;
@@ -643,6 +624,7 @@
       $this->isURLTooLong();
       $this->isURLValid();
       $this->isURLValidDNSRecord();
+      $this->isURLSubdomainValid();
       $this->isURLPathValid();
       $this->isURLArgValid();
 
@@ -731,6 +713,23 @@
     private function isURLValidDNSRecord() {
       if (gethostbyname(get_hostname_from_url($this->url)) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
         throw new UserError('U zadané domény (popř. subdomény) není v DNS nasměrován záznam typu A na IP adresu serveru, kde běží Phishingator.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali subdoména zadaná cesta v URL adrese podvodné stránky neobsahuje nepovolené znaky.
+     *
+     * @return void
+     * @throws UserError
+     */
+    private function isURLSubdomainValid() {
+      $hostname = get_hostname_from_url($this->url);
+      $domain = get_domain_from_url('https://' . $hostname);
+      $subdomain = mb_substr($hostname, 0, -mb_strlen($domain) - 1);
+
+      if (!empty($subdomain) && preg_match(PHISHING_WEBSITE_SUBDOMAINS_REGEXP, $subdomain, $matches)) {
+        throw new UserError('Zadaná subdoména obsahuje nepovolený znak (' . implode(',', $matches) . ').', MSG_ERROR);
       }
     }
 
