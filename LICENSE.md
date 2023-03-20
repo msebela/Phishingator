@@ -31,11 +31,11 @@ Phishingator uses, incorporates or may be acompanied by Open Source Software (OS
 |:-------------------------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
 | Bootstrap                | 4.6.2   | Copyright (c) 2011-2023 The Bootstrap Authors<br/>https://github.com/twbs/bootstrap/blob/main/LICENSE                                          |
 | Feather                  | 4.29.0  | Copyright (c) 2013-2017 Cole Bemis<br/>https://github.com/feathericons/feather/blob/master/LICENSE                                             |
-| jQuery                   | 3.6.3   | Copyright jQuery Foundation and other contributors<br/>https://jquery.org/license/                                                             |
+| jQuery                   | 3.6.4   | Copyright jQuery Foundation and other contributors<br/>https://jquery.org/license/                                                             |
 | Chart.js                 | 4.2.1   | Copyright (c) 2014-2022 Chart.js Contributors<br/>https://github.com/chartjs/Chart.js/blob/master/LICENSE.md                                   |
 | Chart.js DataLabels      | 2.2.0   | Copyright (c) 2017-2021 chartjs-plugin-datalabels contributors<br/>https://github.com/chartjs/chartjs-plugin-datalabels/blob/master/LICENSE.md |
 | jQuery highlightTextarea | 3.1.3   | Copyright 2014-2016 Damien "Mistic" Sorel<br/>https://garysieling.github.io/jquery-highlighttextarea/                                          |
-| TABLE-SORT-JS.           | 1.9.0   | Copyright (c) 2021 Lee Wannacott<br/>https://github.com/LeeWannacott/table-sort-js/blob/master/LICENSE                                         |
+| TABLE-SORT-JS.           | 1.9.2   | Copyright (c) 2021 Lee Wannacott<br/>https://github.com/LeeWannacott/table-sort-js/blob/master/LICENSE                                         |
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -84,7 +84,7 @@ PHP includes the Zend Engine, freely available at <http://www.zend.com>.
 
 | Component name | Version | Copyright (provided for informational purposes only)       |
 |----------------|:--------|:-----------------------------------------------------------|
-| PHPMailer      | 6.7.1   | https://github.com/PHPMailer/PHPMailer/blob/master/LICENSE |
+| PHPMailer      | 6.8.0   | https://github.com/PHPMailer/PHPMailer/blob/master/LICENSE |
 
 GNU Lesser General Public License
 
