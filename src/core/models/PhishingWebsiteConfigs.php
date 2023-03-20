@@ -155,6 +155,15 @@
           // Vytvoření aliasu, pokud je součástí URL adresy i cesta (názvy adresářů).
           $urlAlias = self::getUrlAlias($url);
 
+          // Pokud se nejedná o alias, je třeba změnit DocumentRoot.
+          if ($action == ACT_EDIT && $urlAlias == '.') {
+            $config = preg_replace(
+              '/DocumentRoot .*/',
+              'DocumentRoot ' . $newTemplate['server_dir'],
+              $config
+            );
+          }
+
           // Úprava existujícího aliasu.
           if ($action == ACT_EDIT && $previousUrl && $previousTemplate) {
             $previousUrlAlias = self::getUrlAlias($previousUrl);
