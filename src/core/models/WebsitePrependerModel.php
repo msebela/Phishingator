@@ -446,6 +446,17 @@
       // Zjištění informací o zobrazované podvodné stránce.
       $website = PhishingWebsiteModel::getPhishingWebsiteByUrl($url);
 
+      // Pokud se nepodařilo zjistit informace o podvodné stránce a mělo by se jednat o stránku
+      // běžící na protokolu HTTP, ale prohlížeč předal adresu s HTTPS (např. z důvodu HSTS),
+      // načíst informace o stránce i pro variantu s HTTPS.
+      $https = 'https://';
+
+      if (!$website && mb_substr($url, 0, mb_strlen($https)) == $https) {
+        $website = PhishingWebsiteModel::getPhishingWebsiteByUrl(
+          str_replace($https, 'http://', $url)
+        );
+      }
+
       // Zjištění, zdali je v databázi existující ticket pro přístup na náhled podvodné stránky.
       $previewAccess = Database::querySingle(
         'SELECT `active_since`, `active_to` FROM `phg_websites_preview` WHERE id_website = ? AND id_user = ? AND hash = ?',
