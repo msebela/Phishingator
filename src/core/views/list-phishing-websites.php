@@ -10,7 +10,7 @@
         <th scope="col" class="data-sort">Přidáno</th>
         <th scope="col" class="minw-5-rem">Přidal</th>
         <th scope="col" class="minw-10-rem">URL</th>
-        <th scope="col" class="minw-5-rem">Aktivní</th>
+        <th scope="col" class="minw-5-rem">Stav</th>
         <th scope="col" colspan="3" class="disable-sort"></th>
       </tr>
     </thead>
@@ -39,19 +39,13 @@
           </span><?= str_replace(VAR_RECIPIENT_URL, '<code>' . VAR_RECIPIENT_URL . '</code>', $website['url']) ?>
         </td>
         <td>
-          <?php if ($website['status'] != 0): ?>
           <span class="badge badge-<?= $website['status_color'] ?>">
             <?= $website['status_text'] ?>
           </span>
-          <?php else: ?>
-          <span class="badge badge-<?= $website['active_color'] ?>">
-            <?= $website['active_text'] ?>
-          </span>
-          <?php endif; ?>
         </td>
         <td>
           <?php if ($website['active'] && $website['status'] == 0): ?>
-          <a href="/portal/<?= $urlSection . '/' . ACT_PREVIEW . '/' . $website['id_website'] ?>" target="_blank" class="btn btn-info btn-sm<?php if (!$website['ready']): ?> disabled<?php endif; ?>" role="button">
+          <a href="/portal/<?= $urlSection . '/' . ACT_PREVIEW . '/' . $website['id_website'] ?>" target="_blank" class="btn btn-info btn-sm" role="button">
             <span data-feather="eye"></span>
             Náhled
           </a>

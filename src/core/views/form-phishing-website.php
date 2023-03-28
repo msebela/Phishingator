@@ -1,6 +1,6 @@
 <hr>
 
-<?php if ($action == ACT_EDIT && $phishingWebsite['status'] == 2): ?>
+<?php if ($action == ACT_EDIT && $phishingWebsite['status'] == 1): ?>
 <div class="alert alert-with-icon alert-danger" role="alert">
   <div class="alert-icon pr-1">
     <span data-feather="alert-triangle"></span>
@@ -12,7 +12,7 @@
 </div>
 
 <hr>
-<?php elseif ($action == ACT_EDIT && $phishingWebsite['status'] == 1): ?>
+<?php elseif ($action == ACT_EDIT && $phishingWebsite['status'] == 2): ?>
 <div class="alert alert-with-icon alert-warning" role="alert">
   <div class="alert-icon pr-1">
     <span data-feather="alert-triangle"></span>

@@ -120,20 +120,12 @@
         $result[$key]['url_protocol_color'] = self::getColorURLProtocol($urlProtocol);
         $result[$key]['url'] = mb_substr($website['url'], mb_strlen($urlProtocol));
 
-        $result[$key]['active_text'] = ($website['active']) ? 'ano' : 'ne';
-        $result[$key]['active_color'] = ($website['active']) ? MSG_CSS_SUCCESS : MSG_CSS_ERROR;
+        $status = self::getPhishingWebsiteStatus($website['url']);
+        $statusText = self::getPhishingWebsiteStatusText($status, $website['active']);
 
-        $result[$key]['ready'] = PhishingWebsiteConfigs::isConfigReady($website['url']);
-        $result[$key]['status'] = self::getPhishingWebsiteStatus($website['url']);
-
-        if ($result[$key]['status'] == 1) {
-          $result[$key]['status_text'] = 'nedokončené směrování';
-          $result[$key]['status_color'] = MSG_CSS_WARNING;
-        }
-        elseif ($result[$key]['status'] == 2) {
-          $result[$key]['status_text'] = 'chybné DNS';
-          $result[$key]['status_color'] = MSG_CSS_ERROR;
-        }
+        $result[$key]['status'] = $status;
+        $result[$key]['status_text'] = $statusText['text'];
+        $result[$key]['status_color'] = $statusText['color'];
       }
 
       return $result;
@@ -484,7 +476,7 @@
 
 
     /**
-     * Vrátí aktuální stav přesměrování podvodné domény na server, kde běží instance Phishingatoru.
+     * Vrátí aktuální stav podvodné domény.
      *
      * @param string $url              URL adresa podvodné stránky (bez protokolu)
      * @return int                     Aktuální stav
@@ -497,14 +489,56 @@
 
       // U podvodné domény chybí v DNS záznam typu A směrovaný na Phishingator.
       if (gethostbyname($websiteHostname) != $instanceHost && gethostbyname(get_domain_from_url($url)) != $instanceHost) {
-        $status = 2;
+        $status = 1;
       }
       // Chybí záznam o doméně v proxy Phishingatoru.
       elseif (!self::isDomainRegisteredInProxy($websiteHostname)) {
-        $status = 1;
+        $status = 2;
+      }
+      // Probíhá změna konfigurace podvodné stránky na dané doméně.
+      elseif (!PhishingWebsiteConfigs::isConfigReady($url)) {
+        $status = 3;
       }
 
       return $status;
+    }
+
+
+    /**
+     * Vrátí aktuální stav podvodné domény v textové podobě.
+     *
+     * @param int $status              Aktuální stav
+     * @param int $active              Stav nasazení podvodné stránky na webovém serveru
+     * @return string[]                Aktuální stav v textové podobě společně s barvou
+     */
+    private static function getPhishingWebsiteStatusText($status, $active) {
+      $message = [
+        'text' => '',
+        'color' => ''
+      ];
+
+      if ($status == 0 && $active == 1) {
+        $message['text'] = 'aktivní';
+        $message['color'] = MSG_CSS_SUCCESS;
+      }
+      elseif ($status == 0 && $active == 0) {
+        $message['text'] = 'neaktivní';
+        $message['color'] = MSG_CSS_DEFAULT;
+      }
+      elseif ($status == 1) {
+        $message['text'] = 'chybné DNS';
+        $message['color'] = MSG_CSS_ERROR;
+      }
+      elseif ($status == 2) {
+        $message['text'] = 'nedokončené směrování';
+        $message['color'] = MSG_CSS_WARNING;
+      }
+      elseif ($status == 3) {
+        $message['text'] = 'probíhají změny';
+        $message['color'] = MSG_CSS_DEFAULT;
+      }
+
+      return $message;
     }
 
 
