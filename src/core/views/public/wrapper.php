@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs"<?php if ($phishingPage): ?> class="phishing-email-detail"<?php endif; ?>>
+<html lang="cs">
 <head>
   <meta charset="utf-8">
 
@@ -20,23 +20,17 @@
   <link rel="stylesheet" href="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.2/bootstrap.min.css">
   <link rel="stylesheet" href="/style-intro.css">
 </head>
-<body<?php if ($phishingPage): ?> class="phishing-email-detail"<?php endif; ?>>
+<body class="phishing-email-detail">
   <header>
     <nav class="navbar navbar-expand-lg">
-      <?php if ($phishingPage): ?>
       <div class="container">
-      <?php endif; ?>
-
-      <a href="/" class="navbar-brand shifted">
-        <h1>
-          <span data-feather="anchor" class="logo"></span>
-          Phishingator
-        </h1>
-      </a>
-
-      <?php if ($phishingPage): ?>
+        <a href="/" class="navbar-brand shifted">
+          <h1>
+            <span data-feather="anchor" class="logo"></span>
+            Phishingator
+          </h1>
+        </a>
       </div>
-      <?php endif; ?>
     </nav>
   </header>
 

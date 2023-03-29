@@ -7,107 +7,17 @@
 @import 'style-variables.scss';
 
 
-// ------------------------------- HOMEPAGE AND PHISHING PAGE STYLES -------------------------------
-
 html, body {
   margin: 0;
-  position: relative;
-  font-family: 'Be Vietnam', sans-serif;
-  color: $text-color;
-
-  @include media-breakpoint-up(lg) {
-    height: calc(100% - 38px);
-  }
-
-  &.phishing-email-detail {
-    height: auto;
-  }
 }
 
 
 body {
-  background: $secondary-bg-color url($images-dir + 'footer-bg.svg') no-repeat left 108%;
+  font-family: 'Be Vietnam', sans-serif;
+  font-size: .875rem;
+  color: $text-color;
+  background: $secondary-bg-color url($images-dir + 'footer-bg.svg') no-repeat left bottom;
   background-size: 650px 290px;
-
-  @include media-breakpoint-down(md) {
-    background-position: left bottom;
-  }
-
-  // PHISHING PAGE - E-MAIL DETAIL
-  &.phishing-email-detail {
-    height: 100%;
-    font-size: .875rem;
-    margin-bottom: 1rem;
-    background-position: left bottom;
-
-    a.btn {
-      white-space: nowrap;
-    }
-
-    .mark-symbol {
-      height: auto;
-      display: inline-block;
-      position: relative;
-      transform: translateY(-35px);
-    }
-
-    // INDICATIONS
-    @import 'style-indications.scss';
-
-    .browser .indication.active {
-      padding: 0.5rem 0.5rem 0.5rem .3rem;
-    }
-
-    .card a {
-      text-decoration: none;
-      color: $black;
-    }
-
-    .card.active, .card:hover, .form-row.active {
-      background-color: rgba(237,89,74,1.0) !important;
-
-      a, a:hover {
-        color: $white;
-      }
-    }
-
-    .par-intro {
-      font-size: 1rem;
-    }
-
-    .status {
-      position: absolute;
-      right: -20px;
-      top: -25px;
-      font-size: 1rem;
-      color: #fff;
-      padding: 5px 10px 5px 5px;
-      text-transform: uppercase;
-      font-weight: bold;
-      border-radius: 10px;
-      transform: rotate(8deg);
-      z-index: 1;
-    }
-
-    @media only screen and (max-width: 480px) {
-      .status {
-        top: -35px;
-        left: 0;
-        right: unset;
-        transform: rotate(-4deg);
-      }
-    }
-
-    .footer-logo {
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-end;
-
-      img {
-        height: 80px;
-      }
-    }
-  }
 }
 
 
@@ -140,7 +50,7 @@ h1 {
   }
 }
 
-.navbar-collapse, .swiper {
+.navbar-collapse {
   h2 {
     font-size: 16px;
     font-weight: 400;
@@ -159,23 +69,6 @@ h1 {
     @include media-breakpoint-down(xs) {
       font-size: 26px;
     }
-  }
-}
-
-
-// SEPARATOR
-hr {
-  width: 300px;
-  text-align: left;
-  margin: 30px 0;
-  border-top: 2px solid $text-color;
-
-  @include media-breakpoint-down(lg) {
-    width: 90%;
-  }
-
-  @include media-breakpoint-down(xs) {
-    margin: 15px 0;
   }
 }
 
@@ -301,19 +194,27 @@ header {
 }
 
 
-// SWIPER WRAPPER
-.swiper {
-  height: 100%;
-  position: relative;
-  z-index: 0 !important;
+// FOOTER
+footer {
+  margin-bottom: 1rem;
 
-  @media (max-height: 800px) {
-    overflow-y: scroll !important;
+  .footer-logo {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    img {
+      height: 80px;
+    }
   }
 }
 
 
 // BUTTONS
+a.btn {
+  white-space: nowrap;
+}
+
 .btn-primary {
   width: 300px;
   height: 50px;
@@ -337,9 +238,13 @@ header {
   }
 
   &:hover, &:focus, &:active {
-    color: $primary-bg-color;
-    border: 1px solid $white;
+    color: $primary-bg-color !important;
+    border: 1px solid $white !important;
     background: $white !important;
+  }
+
+  &:focus, &:active {
+    box-shadow: 0 0 0 .2rem rgba(255,255,255,.4) !important;
   }
 
   &.with-icon {
@@ -354,7 +259,7 @@ header {
       background: url($images-dir + 'btn-play.svg') no-repeat top right;
     }
 
-    &:hover:after {
+    &:hover:after, &:focus:after, &:active:after {
       background: url($images-dir + 'btn-play-dark.svg') no-repeat top right;
     }
   }
@@ -368,191 +273,31 @@ header {
   }
 }
 
+// PHISHING INDICATIONS
+@import 'style-indications.scss';
 
-
-// SWIPER SLIDES
-.swiper-slide {
-  margin-top: 50px;
-
-  @include media-breakpoint-up(xl) {
-    @media (min-height: 800px) {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 0;
-
-      .row {
-        margin-bottom: 100px;
-      }
-    }
+.card {
+  a {
+    text-decoration: none;
+    color: $black;
   }
 
-  @include media-breakpoint-down(sm) {
-    margin-top: 20px;
-  }
+  &.active, &:hover {
+    background-color: rgba(237, 89, 74, 1.0) !important;
 
-  .container {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    position: relative;
-
-    @include media-breakpoint-down(md) {
-      flex-direction: column;
-    }
-  }
-
-  // LOGO
-  .logo {
-    position: absolute;
-    top: -120px;
-    left: -400px;
-
-    .feather {
-      width: 180px;
-      height: 180px;
-      position: relative;
-      top: 150px;
-      left: 170px;
-      padding: 20px;
-      border-radius: 50%;
-      background: $primary-bg-color;
-    }
-
-    @media (max-width: 1600px) {
-      top: -120px;
-      left: -330px;
-
-      .feather {
-        width: 150px;
-        height: 150px;
-      }
-    }
-
-    @media (max-width: 1450px) {
-      display: none;
+    a, a:hover {
+      color: $white;
     }
   }
 }
 
-
-// SLIDE TEXT
-.slide-text {
-  position: relative;
-
-  // INTRO SLIDE HEADING
-  .intro-heading {
-    margin: 0 0 20px 0;
-    font-size: 72px;
-    font-weight: 800;
-
-    @include media-breakpoint-down(lg) {
-      font-size: 60px;
-    }
-
-    @include media-breakpoint-down(md) {
-      font-size: 48px;
-      margin: 0;
-    }
-
-    @include media-breakpoint-down(xs) {
-      font-size: 40px;
-    }
-
-    @media (max-width: 370px) {
-      font-size: 22pt;
-    }
-
-    .feather {
-      width: 90px;
-      height: 90px;
-      padding: 10px;
-      border-radius: 50%;
-      background: $primary-bg-color;
-
-      @media (min-width: 1450px) {
-        display: none;
-      }
-
-      @include media-breakpoint-down(xs) {
-        width: 70px;
-        height: 70px;
-      }
-
-      @media (max-width: 360px) {
-        width: 50px;
-        height: 50px;
-      }
-    }
-  }
-
-  // INTRO SLIDE SUBHEADING
-  h4 {
-    margin-bottom: 1rem;
-    font-size: 30px;
-    font-weight: 700;
-
-    @include media-breakpoint-down(lg) {
-      font-size: 26px;
-    }
-
-    @include media-breakpoint-down(md) {
-      font-size: 24px;
-      text-align: right;
-    }
-
-    @include media-breakpoint-down(xs) {
-      font-size: 18px;
-    }
-  }
-
-  p {
-    font-size: 18px;
-
-    @include media-breakpoint-down(xs) {
-      font-size: 16px;
-    }
-
-    a {
-      text-decoration: underline;
-
-      &:hover {
-        text-decoration: none;
-      }
-    }
-  }
-
-  .login-buttons {
-    @include media-breakpoint-down(md) {
-      text-align: right;
-    }
-
-    @include media-breakpoint-down(xs) {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-
-    .btn {
-      width: auto;
-      padding-right: 40px;
-
-      @include media-breakpoint-up(xl) {
-        padding-right: 60px;
-      }
-
-      @include media-breakpoint-up(sm) {
-        &:last-of-type {
-          margin-left: 1rem;
-        }
-      }
-    }
-  }
+.par-intro {
+  font-size: 1rem;
 }
 
 
-// SLIDE - PHISHING EXAMPLE WINDOW
-.slide-phishing-example {
+// PHISHING - WINDOW WRAPPER
+.window-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -561,129 +306,26 @@ header {
   @include media-breakpoint-down(lg) {
     margin-top: 50px;
   }
-}
 
-
-// SWIPER - SLIDES PAGINATION BUTTONS
-.swiper-pagination-buttons {
-  width: 200px;
-  height: 56px;
-  padding: 6px;
-  position: absolute;
-  right: 150px;
-  bottom: 20px;
-  z-index: 1;
-  border-radius: 100px;
-  background: $primary-bg-color;
-
-  @include media-breakpoint-down(lg) {
-    right: 20px;
-  }
-
-  @include media-breakpoint-down(sm) {
-    width: 120px;
-  }
-
-  @include media-breakpoint-down(xs) {
-    bottom: 10px;
-  }
-
-  .btn-prev, .btn-next {
-    display: inline-block;
-    width: 45px;
-    height: 45px;
-    position: relative;
-    border-radius: 50%;
-    border: 2px solid $text-color;
-
-    &:after {
-      content: "";
-      display: inline-block;
-      width: 7px;
-      height: 12px;
-      position: absolute;
-      top: calc(50% - 6px);
-      left: calc(50% - 4px);
-    }
-  }
-
-  .btn-prev:after {
-    background: url($images-dir + 'btn-prev.svg') no-repeat top right;
-  }
-
-  .btn-next {
-    float: right;
-
-    &:after {
-      background: url($images-dir + 'btn-next.svg') no-repeat top right;
-    }
-  }
-}
-
-
-// SWIPER - PAGINATION BULLETS
-.swiper-pagination-bullets {
-  display: inline-block;
-  width: auto !important;
-  height: 30px;
-  position: absolute;
-  left: 20px !important;
-  bottom: 30px !important;
-  border-radius: 100px;
-  opacity: 0.8;
-  background: $primary-bg-color;
-
-  @include media-breakpoint-up(lg) {
-    left: 50% !important;
-    transform: translateX(-50%);
-  }
-
-  @include media-breakpoint-down(xs) {
-    display: none;
-  }
-
-  &:before {
-    content: "";
-    width: 100px;
+  .phishing-sign {
     position: absolute;
-    top: 13px;
-    left: 15px;
+    right: -20px;
+    top: -25px;
+    font-size: 1rem;
+    color: #fff;
+    padding: 5px 10px 5px 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 10px;
+    transform: rotate(8deg);
     z-index: 1;
-    border-top: 2px solid $text-color;
-  }
 
-  .swiper-pagination-bullet {
-    width: 20px;
-    height: 20px;
-    position: relative;
-    margin: 4px 15px !important;
-    opacity: 1;
-    border: 2px solid $primary-bg-color;
-    background: $primary-bg-color;
-
-    &:before {
-      content: "";
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      position: absolute;
-      top: 5px;
-      left: 5px;
-      border-radius: 50%;
-      background: $text-color;
+    @media only screen and (max-width: 480px) {
+      top: -35px;
+      left: 0;
+      right: unset;
+      transform: rotate(-4deg);
     }
-
-    &:first-of-type {
-      margin-left: 5px !important;
-    }
-
-    &:last-of-type {
-      margin-right: 5px !important;
-    }
-  }
-
-  .swiper-pagination-bullet-active {
-    border: 2px solid $text-color;
   }
 }
 
@@ -768,90 +410,8 @@ header {
       background: rgba(255, 255, 255, 1);
     }
   }
-
-  &.symbol-1 {
-    top: 40px;
-    right: -15px;
-  }
-
-  &.symbol-2 {
-    top: 165px;
-    right: 40px;
-  }
 }
 
-
-// SLIDE - ABOUT
-.about-footer {
-  @include media-breakpoint-up(md) {
-    margin-top: 40px;
-  }
-
-  .about-buttons {
-    @include media-breakpoint-up(lg) {
-      display: flex;
-      align-items: center;
-    }
-
-    @include media-breakpoint-down(xs) {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .btn {
-      width: auto;
-      padding-right: 40px;
-
-      @include media-breakpoint-up(xl) {
-        padding-right: 60px;
-      }
-
-      @include media-breakpoint-up(lg) {
-        margin-top: 0;
-      }
-
-      @include media-breakpoint-up(sm) {
-        &:last-of-type {
-          margin-left: 1rem;
-        }
-      }
-    }
-  }
-
-  // PARTNERS LOGOS
-  .logos-partners {
-    text-align: right;
-
-    @include media-breakpoint-down(md) {
-      margin-top: 40px;
-    }
-
-    a {
-      text-decoration: none;
-
-      img {
-        margin-left: 30px;
-        height: 80px;
-
-        @media (max-width: 1200px) {
-          height: 60px;
-        }
-
-        @media (max-width: 500px) {
-          margin-left: 0;
-        }
-
-        @media (max-width: 340px) {
-          height: 50px;
-        }
-      }
-
-      &:first-of-type img {
-        margin-left: 0;
-      }
-    }
-  }
-}
 
 .link-red {
   font-weight: bold;

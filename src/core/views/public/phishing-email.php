@@ -1,28 +1,28 @@
 <div class="container mt-5">
-  <div class="row pb-5 mb-5 border-bottom">
-    <div class="col-md-11 col-lg-12">
+  <div class="row pb-5">
+    <div class="col-md-10 col-lg-11">
       <h2 class="mb-3">Právě jste absolvovali <strong>cvičný phishing</strong></h2>
       <?php if ($campaign_ended == 0): ?>
       <p class="par-intro"><strong>Kdyby</strong> se jednalo o&nbsp;<strong>skutečný phishing</strong>, <strong>útočníci</strong> by v&nbsp;tuto chvíli již velmi pravděpodobně <strong>znali údaje</strong>, které jste vyplnili do formuláře na <strong>podvodné stránce</strong>.</p>
       <?php endif; ?>
       <?php if ($volunteer == 1): ?>
-      <p class="par-intro"><strong>Děkujeme</strong>, že máte zájem <strong>vzdělávat se</strong> v&nbsp;oblasti <strong>phishingu</strong>. Jakékoliv <strong>změny</strong> včetně nastavení <strong>limitu cvičných e-mailů</strong> můžete provést po <a href="/portal">přihlášení</a> do Phishingatoru.</p>
+      <p class="par-intro"><strong>Děkujeme</strong>, že máte zájem <strong>vzdělávat se</strong> v&nbsp;oblasti <strong>phishingu</strong>. Jakékoliv změny včetně nastavení <strong>limitu cvičných e-mailů</strong> můžete provést po <a href="/portal">přihlášení</a> do Phishingatoru.</p>
       <?php else: ?>
-      <p class="par-intro">Využijte <strong>projektu</strong> <a href="<?= WEB_BASE_URL ?>">Phishingator</a> a&nbsp;<strong><a href="<?= WEB_BASE_URL ?>">přihlaste se</a></strong> k&nbsp;odebírání <strong>cvičných</strong> podvodných e-mailů, které Vám názorně ukáží, <strong>na co se v&nbsp;e-mailu zaměřit</strong> a&nbsp;<strong>jak rozpoznat a&nbsp;nenaletět na opravdový phishing</strong>.</p>
+      <p class="par-intro">Využijte projektu <a href="<?= WEB_BASE_URL ?>">Phishingator</a> a&nbsp;<strong><a href="<?= WEB_BASE_URL ?>">přihlaste se</a></strong> k&nbsp;odebírání <strong>cvičných</strong> podvodných e-mailů, které Vám názorně ukáží, <strong>na co se v&nbsp;e-mailu zaměřit</strong> a&nbsp;<strong>jak rozpoznat a&nbsp;nenaletět na opravdový phishing</strong>.</p>
       <?php endif; ?>
     </div>
 
-    <div class="col-md-5 col-lg-4 mb-3 mb-md-0 d-flex align-items-center justify-content-end">
+    <div class="col-md-6 col-lg-5 mb-3 mb-md-0 d-flex align-items-center justify-content-end">
       <a href="<?= WEB_BASE_URL ?>" class="btn btn-primary with-icon" role="button">
         Více informací&hellip;
       </a>
     </div>
   </div>
 
-  <div class="pb-4 mb-3">
+  <div class="pt-5 pb-4 mb-3 border-top">
     <h3 class="mb-4">Jak bylo možné <strong>phishing</strong> rozpoznat z&nbsp;<strong>e-mailu</strong></h3>
 
-    <div class="slide-phishing-example">
+    <div class="window-wrapper">
       <div class="window">
         <div class="row">
           <div class="column left">
@@ -94,7 +94,7 @@
 
   <h3 class="mb-4">Jak bylo možné <strong>phishing</strong> rozpoznat <strong>na stránce</strong></h3>
 
-  <div class="slide-phishing-example mb-5">
+  <div class="window-wrapper mb-5">
     <div class="window">
       <div class="row">
         <div class="column left">
@@ -107,7 +107,7 @@
             <?php if ($website['http']): ?><span data-feather="alert-triangle"></span>&nbsp;Nezabezpečeno | <?php else: ?><span data-feather="lock"></span><?php endif; ?>
             <?= $website['url_before_domain'] ?><a href="#indication-url-text" id="indication-url" class="indication anchor-link mark-indication" data-indication="url"><?= $website['domain'] ?><div class="icons top"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a><?= $website['url_after_domain'] ?>
           </div>
-          <div class="status bg-danger">
+          <div class="phishing-sign bg-danger">
             <span data-feather="x"></span>
             Phishing
           </div>
@@ -136,7 +136,10 @@
             <span class="badge badge-pill badge-dark"><?= $i++; ?>.&nbsp;indicie</span>
             Špatná adresa stránky
           </h5>
-          <p class="card-text">Snaha o&nbsp;napodobení adresy stránky &ndash; je třeba sledovat adresu webu až do jejího konce. <?= $website['indication'] ?></p>
+          <p class="card-text">Snaha o&nbsp;napodobení adresy stránky &ndash; jedná se o&nbsp;typický trik útočníků, kdy se snaží využít překlepu nebo malé nesrovnalosti v&nbsp;adrese.
+          <?php if (!empty($website['indication'])): ?>
+          <p class="card-text"><?= $website['indication'] ?></p>
+          <?php endif; ?>
 
           <div class="clearfix">
             <button type="button" id="indication-url-btn" class="btn btn-sm btn-info float-right">
@@ -160,19 +163,21 @@
     <?php endif; ?>
   </div>
 
-  <div class="row">
-    <div class="col">
-      <h3>Důležité informace</h3>
-      <ul class="mb-lg-5">
-        <li>Zadané heslo nebylo <strong>nikde uloženo</strong>. Jestli nám však nevěříte, změňte si ho standardní cestou.</li>
-        <li>Praktické phishingové testy probíhají ve spolupráci s&nbsp;Vaším IT oddělením.</li>
-      </ul>
-    </div>
+  <footer>
+    <div class="row">
+      <div class="col">
+        <h3>Důležité informace</h3>
+        <ul class="mb-lg-5">
+          <li>Zadané heslo nebylo <strong>nikde uloženo</strong>. Jestli nám však nevěříte, změňte si ho standardní cestou.</li>
+          <li>Praktické phishingové testy probíhají ve spolupráci s&nbsp;Vaším IT oddělením.</li>
+        </ul>
+      </div>
 
-    <div class="col-lg-3 footer-logo">
-      <a href="https://www.cesnet.cz" target="_blank">
-        <img src="/img/logo-cesnet.svg" alt="Logo sdružení CESNET, z. s. p. o.">
-      </a>
+      <div class="col-lg-3 footer-logo">
+        <a href="https://www.cesnet.cz" target="_blank">
+          <img src="/img/logo-cesnet.svg" alt="Logo sdružení CESNET, z. s. p. o.">
+        </a>
+      </div>
     </div>
-  </div>
+  </footer>
 </div>
