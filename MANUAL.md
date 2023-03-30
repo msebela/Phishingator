@@ -10,7 +10,7 @@ Samotná uživatelská příručka je rozdělena na:
 
 1. [příručku pro běžné uživatele](#1-příručka-pro-uživatele) Phishingatoru,
 2. [příručku pro administrátory](#2-příručka-pro-administrátory), kteří budou ve Phishingatoru vytvářet nové phishingové kampaně, cvičné phishingové e-maily a podvodné stránky,
-3. [správu Phishingatoru](#3-správa-phishingatoru).
+3. [správu Phishingatoru](#3-správa-phishingatoru) s detaily o nasazení, zálohování a další správě.
 
 ## 1 Příručka pro uživatele
 
@@ -27,7 +27,11 @@ Uživatel si po přihlášení do systému může zvolit, zdali chce **dobrovoln
 
 ### 1.3 Přijaté phishingové e-maily
 
-V této sekci má uživatel možnost si **detailně prohlédnout seznam všech cvičných phishingových e-mailů**, které mu byly v minulosti doručeny. U každého e-mailu navíc vidí i **svou reakci**, tedy to, jakým způsobem na konkrétní e-mail reagoval (například zdali navštívil podvodnou stránku přístupnou z tohoto e-mailu a zadal do formuláře platné přihlašovací údaje apod.) či nereagoval. U podvodného e-mailu je vždy vytvořen i **seznam indicií** (vyznačené pasáže v textu s popisem, co konkrétně vyvolává podezření), na základě kterých může uživatel **zpětně zjistit, zdali postupoval správně** nebo čeho by si měl do **budoucna všímat**.
+V této sekci má uživatel možnost si **prohlédnout seznam všech cvičných phishingových e-mailů**, které mu byly v minulosti doručeny.
+
+U každého e-mailu navíc vidí i **svou reakci**, tedy to, jakým způsobem na daný podvodný e-mail reagoval (například zdali navštívil podvodnou stránku přístupnou z tohoto e-mailu a zadal do formuláře platné přihlašovací údaje apod.) či nereagoval.
+
+U podvodného e-mailu je také vždy odkaz na **vzdělávací stránku**, na níž je kromě původního e-mailu uveden i **seznam indicií** (vyznačené pasáže v textu s popisem, co konkrétně vyvolává podezření), na základě kterých může uživatel **zpětně zjistit, zdali postupoval správně** nebo čeho by si měl do **budoucna všímat**.
 
 
 ## 2 Příručka pro administrátory
@@ -37,12 +41,12 @@ V této sekci má uživatel možnost si **detailně prohlédnout seznam všech c
 
 ### 2.1 Změna role
 
-Systém umožňuje uživatelům s vyšším oprávněním (tedy minimálně s oprávněním *správce testů*) přepínat mezi všemi ostatními, nižšími rolemi. Pro změnu role stačí v systému kliknout na tlačítko *Změnit roli* (příp. *Role*) v pravé horní části obrazovky.
+Systém umožňuje uživatelům s vyšším oprávněním (tedy minimálně s oprávněním *správce testů*) přepínat mezi všemi ostatními, nižšími rolemi. Pro změnu role stačí ve Phishingatoru kliknout na název aktuálně vybrané role (příp. na tlačítko *Role*) v pravé horní části obrazovky.
 
 
 #### 2.1.1 Úvodní stránka
 
-Obsahuje **grafy** znázorňující **průběžnou úspěšnost všech přidaných kampaní**. Spolu s tím je k dispozici i další graf, který stejná data převádí do podoby sloupců symbolizujících **skupinu**, do které uživatelé (resp. příjemci) spadají (na základě jejich e-mailu). Dále je zde pak k dispozici i další graf znázorňující **počet dobrovolníků napříč skupinami**.
+Obsahuje **grafy** znázorňující **průběžnou úspěšnost všech phishingových kampaní**. Spolu s tím je k dispozici i další graf, který stejná data převádí do podoby sloupců symbolizujících **skupinu**, do které uživatelé (resp. příjemci) spadají (např. oddělení). Dále je zde pak k dispozici i další graf znázorňující **počet dobrovolníků napříč skupinami** (uživatelé, kteří se [dobrovolně přihlásili](#12-moje-účast-v-programu) k odebírání cvičného phishingu).
 
 
 ### 2.2 Kampaně
@@ -62,17 +66,21 @@ Obsahuje stručný přehled o všech přidaných kampaních. Data (sloupec *Akti
 
 Vstupní pole, která se musí při vytváření nebo během upravování kampaně vyplnit, jsou následující:
 
-* **název** – slouží k identifikaci v systému, resp. v seznamu přidaných kampaní
+* **název** – slouží pouze pro vlastní pojmenování kampaně
 * **číslo lístku s kampaní** – nepovinný údaj, který reprezentuje číslo lístku (ticketu) v RT systému s evidencí o realizaci phishingové kampaně
-* **rozesílaný podvodný e-mail** – cvičný phishingový e-mail, který bude zvoleným příjemcům kampaně doručen do jejich e-mailových schránek; z tohoto e-mailu se budou moci dostat na podvodnou webovou stránku (viz následující bod)
-* **podvodná webová stránka přístupná z e-mailu** – stránka, která bude přístupná z odkazu umístěného ve cvičném podvodném e-mailu a na které je umístěn formulář pro sbírání dat v něm zadaných
+* **rozesílaný podvodný e-mail** – cvičný phishingový e-mail, který bude zvoleným příjemcům kampaně doručen do jejich e-mailových schránek
+  * z tohoto e-mailu se budou příjemci moci dostat na podvodnou stránku (viz následující bod)
+* **podvodná webová stránka přístupná z e-mailu** – stránka, která bude přístupná z odkazu umístěného ve cvičném podvodném e-mailu a na které je umístěn formulář pro sbírání přihlašovacích (či jiných) údajů
 * **akce po odeslání formuláře** – akce, která nastane na straně uživatele po odeslání formuláře na podvodné webové stránce
 * **spustit rozesílání e-mailů v čase** – čas, ve kterém se začnou v den startu kampaně rozesílat cvičné phishingové e-maily
   * příjemcům dodatečně přidaným po tomto čase bude podvodný e-mail rozeslán následující den ve stejný čas
-* **start kampaně** – datum spuštění kampaně (den, kdy se začnou rozesílat cvičné phishingové e-maily a den, od kterého začne být vybraným příjemcům dostupná podvodná webová stránka)
-* **ukončení kampaně** – datum ukončení kampaně (den, kdy přestanou fungovat odkazy vedoucí na podvodnou stránku přístupnou z cvičných phishingových e-mailů a tedy den, kdy skončí zaznamenávání jakékoliv aktivity na této podvodné stránce)
-* **seznam účastníků kampaně** – příjemci zasílaného cvičného podvodného e-mailu a zároveň jediní uživatelé, kteří budou mít přes vlastní a jedinečný odkaz přístup na zvolenou podvodnou webovou stránku
-  * výběr příjemců probíhá buď manuálně vypsáním e-mailových adres, nebo po otevření dialogového okna stisknutím tlačítka *Vybrat příjemce* (pod vstupním polem se seznamem příjemců)
+* **start kampaně** – datum spuštění kampaně (den, kdy se začnou rozesílat cvičné phishingové e-maily a den, od kterého začne být vybraným příjemcům dostupná podvodná stránka)
+* **ukončení kampaně (včetně)** – datum ukončení kampaně (den, kdy přestanou fungovat odkazy vedoucí na podvodnou stránku přístupnou z cvičných phishingových e-mailů a tedy den, kdy skončí zaznamenávání jakékoliv aktivity na této podvodné stránce)
+* **seznam účastníků kampaně** – příjemci zasílaného cvičného podvodného e-mailu a zároveň jediní uživatelé, kteří budou mít přes vlastní a jedinečný odkaz přístup na zvolenou podvodnou stránku
+  * výběr příjemců lze provádět následovně (možnosti lze různě kombinovat):
+    * **manuálně** vypsáním e-mailových adres,
+    * **importem** z vybraného TXT/CSV souboru (tlačítko *Importovat příjemce*),
+    * nebo **interaktivním výběrem** (tlačítko *Vybrat příjemce*).
 
 
 
@@ -85,30 +93,37 @@ Obsahuje seznam všech přidaných podvodných e-mailů. Ke každému podvodném
 
 Vstupní pole při vytváření nebo úpravě podvodného e-mailu jsou následující:
 
-* **název** – slouží k identifikaci v systému
-* **jméno odesílatele** – nepovinný údaj, který v e-mailových klientech doplňuje e-mail odesílatele; při jeho nevyplnění bude v odeslaném podvodném e-mailu vidět pouze e-mail odesílatele
+* **název** – slouží pouze pro vlastní pojmenování e-mailu
+* **jméno odesílatele** – nepovinný údaj, který v e-mailových klientech doplňuje e-mail odesílatele
+  * při nevyplnění bude v odeslaném podvodném e-mailu vidět pouze e-mail odesílatele
 * **e-mail odesílatele** - umožňuje definovat e-mail, ze kterého budou odesílány podvodné e-maily, případně použít proměnnou `%recipient_email%`, místo které dojde ke vložení e-mailu příjemce (tzn. e-mail odesílatele i příjemce bude stejný)
 * **předmět**
-* **tělo** – v těle e-mailu je možné použít několik proměnných, které budou při odeslání podvodného e-mailu nahrazeny reálným (resp. personalizovaným) obsahem (pro vložení proměnné do těla e-mailu stačí kliknout na její název vedle vstupního pole):
-  * `%recipient_username%` – uživatelské jméno příjemce
-  * `%recipient_email%` – e-mail příjemce
-  * `%date_cz%` – datum, ve kterém dochází k odeslání e-mailu v českém formátu (např. 1. 9. 2022)
-  * `%date_en%` – datum, ve kterém dochází k odeslání e-mailu ve formátu `YYYY-MM-DD` (např. 2022-09-01)
-  * `%url%` – URL podvodné stránky svázané s e-mailem
+* **tělo** – obsah e-mailu, v němž je možné používat proměnné, které budou při odeslání podvodného e-mailu nahrazeny skutečným (resp. personalizovaným) obsahem
+  * pro vložení proměnné do těla e-mailu stačí kliknout na její název (vedle vstupního pole)
+  * vždy je nutné v těle e-mailu použít proměnnou `%url%`
+  * **seznam proměnných**:
+    * `%recipient_username%` – uživatelské jméno příjemce
+    * `%recipient_email%` – e-mail příjemce
+    * `%date_cz%` – datum, ve kterém dochází k odeslání e-mailu v českém formátu (např. 1. 9. 2022)
+    * `%date_en%` – datum, ve kterém dochází k odeslání e-mailu ve formátu `YYYY-MM-DD` (např. 2022-09-01)
+    * `%url%` – URL podvodné stránky svázané s e-mailem
 
 
 #### 2.3.2 Přidání nebo úprava indicií u podvodného e-mailu
 
-Pro přidání indicií k phishingovému e-mailu stačí v souhrnném seznamu všech e-mailů kliknout na tlačítko *Nastavit indicie*. Následuje zobrazení náhledu přidaného podvodného e-mailu a formuláře pro přidání nových či úpravu dosud přidaných indicií. Vstupní pole jsou následující:
+Pro přidání indicií k phishingovému e-mailu stačí v souhrnném seznamu všech e-mailů kliknout na tlačítko *Nastavit indicie* (pozn. číslo u tlačítka udává počet již přidaných indicií). Následuje zobrazení náhledu přidaného podvodného e-mailu a formuláře pro přidání nových či úpravu dosud přidaných indicií. Vstupní pole jsou následující:
 
-* **indicie (podezřelý řetězec)** – konkrétní pasáž v textu, která má být systémem označena (resp. zakroužkována) a se kterou má být svázán popis indicie; pokud není cílem odkázat na text v těle e-mailu, ale na jinou část e-mailu, je možné použít následující proměnné:
-  * `%sender_name%` – pro označení jména odesílatele e-mailu
-  * `%sender_email%` – pro označení e-mailu odesílatele
-  * `%subject%` – pro označení předmětu e-mailu
+* **indicie (podezřelý řetězec)** – konkrétní pasáž v textu, která má být označena (resp. zakroužkována) a se kterou má být svázán popis indicie
+  * pokud není cílem odkázat na text v těle e-mailu, ale na jinou část e-mailu (předmět, odesílatel), je možné použít následující **proměnné**:
+    * `%sender_name%` – pro označení jména odesílatele e-mailu
+    * `%sender_email%` – pro označení e-mailu odesílatele
+    * `%subject%` – pro označení předmětu e-mailu
 * **nadpis** – stručný nadpis indicie nebo název kategorie (např. podezřelé oslovení, překlepy apod.)
 * **popis** – nepovinný údaj obsahující podrobnější popis indicie
 
-Po přidání či úpravě indicie je ihned v horní části obrazovky uveden náhled zvýrazněné pasáže. Tlačítkem *Náhled včetně indicií* je možné si e-mail prohlédnout včetně seznamu indicií a včetně personalizovaných proměnných vůči aktuálně přihlášenému uživateli.
+Po přidání či úpravě indicie je v horní části obrazovky uveden náhled zvýrazněné pasáže přímo v e-mailu.
+
+Tlačítkem *Náhled včetně indicií* je možné si e-mail prohlédnout včetně seznamu indicií a včetně personalizovaných proměnných vůči aktuálně přihlášenému uživateli.
 
 
 
@@ -123,28 +138,32 @@ Vstup na podvodné stránky je omezen systémem, který je nechává přístupn�
 
 Postup pro založení nové podvodné stránky je následující:
 
-* u podvodné domény (popř. subdomény), na které bude provozována podvodná stránka, přidat v DNS záznam typu A, který bude nasměrován na IP adresu, kde běží aplikace Phishingator
-* přidat podvodnou stránku v sekci *Podvodné stránky* (v adresáři nastaveném v konfiguračním souboru aplikace – konstanta `PHISHING_WEBSITE_APACHE_SITES_DIR` – dojte k vytvoření nového konfiguračního souboru pro podvodnou stránku, který je určený pro webový server – ten dané podvodné stránce nastavuje konkrétní `DocumentRoot`, tedy adresář, kde je umístěna šablona (vzhled) podvodné stránky a další parametry požadované pro svázání stránky s aplikací Phishingator), přičemž vstupní pole formuláře jsou následující:
-  * **název** – slouží k identifikaci v systému
-  * **URL** – URL adresa, která bude doplňována do podvodných e-mailů místo proměnné `%url%` a tedy URL adresa, jejíž konkrétní A záznam musí být v DNS směrován na IP adresu webového serveru, kde běží systém Phishingator
-  * **šablona** – vzhled, který bude na dané podvodné stránce (přidání další šablony je popsáno v kapitole [Přidání nové šablony podvodné stránky](#35-přidání-nové-šablony-podvodné-stránky))
-  * **aktivovat podvodnou stránku na webovém serveru** – nastavení, zdali má dojít k aktivaci podvodné stránky na webovém serveru (v Apache), čímž bude umožněno podvodnou stránku využívat v kampaních (aktivace nových nebo deaktivace neaktivních/smazaných podvodných stránek probíhá automaticky do 5 min.)
+* u podvodné domény (popř. subdomény), na které bude provozována podvodná stránka, přidat v DNS záznam typu A, který bude směrovat na IP adresu, kde běží Phishingator
+* přidat podvodnou stránku v sekci *Podvodné stránky*, přičemž vstupní pole formuláře jsou následující:
+  * **název** – slouží pouze pro vlastní pojmenování podvodné stránky
+  * **URL** – URL adresa, která bude doplňována do podvodných e-mailů místo proměnné `%url%`
+    * pro zadanou (sub)doménu musí být v DNS směrován A záznam na IP adresu, kde běží systém Phishingator
+    * v URL adrese se musí vyskytnout proměnná `%id%`, která identifikuje konkrétního uživatele na podvodné stránce
+      * může být uvedena buď jako některý z GET parametrů (...`?%id%` / ...`&%id%`), nebo jako hodnota některého z parametrů (...`?par=%id%`)
+  * **šablona** – vzhled, který bude na dané podvodné stránce
+    * přidání další šablony je popsáno v kapitole [Přidání nové šablony podvodné stránky](#37-přidání-nové-šablony-podvodné-stránky)
+  * **aktivovat podvodnou stránku na webovém serveru** – nastavení, zdali má dojít k aktivaci podvodné stránky na webovém serveru, čímž bude umožněno využívat podvodnou stránku v kampaních (aktivace nových nebo deaktivace neaktivních/smazaných podvodných stránek probíhá automaticky do 5 min.)
 
-Po těchto krocích systém automaticky nad podvodnou stránkou (resp. konkrétní doménou/subdoménou) převezme kontrolu.
+Po těchto krocích Phishingator automaticky nad podvodnou stránkou převezme kontrolu.
 
 
 #### 2.4.2 Kontrola funkčnosti podvodné stránky
 
 * využít možnosti náhledu podvodné stránky (v sekci *Podvodné stránky*), a ověřit tak její funkčnost
 * při pokusu o přístup na URL adresu podvodné stránky (bez jakýchkoliv parametrů), musí automaticky dojít k přesměrování na úvodní stránku aplikace Phishingator
-* voláním příkazu `apache2ctl -S` v terminálu lze získat informace o všech aktivních `VirtualHost` v Apache (tedy o všech podvodných stránkách)
+* voláním příkazu `apache2ctl -S` v terminálu lze získat informace o všech aktivních `VirtualHost` na webovém serveru v Apache (tedy o všech podvodných stránkách)
 
 
 #### 2.4.3 Odstranění podvodné stránky
 
 * smazat stránku v sekci *Podvodné stránky*
 
-Do 5 min. bude stránka automaticky deaktivována v nastavení webového serveru Apache.
+Do 5 min. bude podvodná stránka automaticky deaktivována v nastavení webového serveru.
 
 
 
@@ -177,13 +196,13 @@ Tři základní (rodičovské) skupiny nelze smazat a slouží jako záloha pro 
 
 Formulář pro přidání nebo úpravu skupiny obsahuje následující vstupní pole:
 
-* **název** – slouží k identifikaci v systému
+* **název** – slouží pouze pro vlastní pojmenování skupiny
 * **popis** – nepovinný popis skupiny
-* **oprávnění** – oprávnění, které budou mít všichni uživatelé této skupiny (výběr mezi *uživatel*, *správce testů*, přičemž možnosti, která každá z těchto skupin nabízí, lze zjistit na základě přepnutí role – viz podkapitola [Změna role](#21-změna-role))
-* **zobrazené LDAP skupiny příjemců v kampaních** – seznam názvů LDAP skupin (oddělených znakem `;`), které budou *administrátorovi* či *správci testů* zobrazovány při výběrů příjemců kampaně
-  * *Poznámka:*
-    * neznamená to, že tvůrce kampaně nebude moct vybrat jiné příjemce (může vybrat, resp. manuálně zadat kohokoliv i z jiných LDAP skupin, akorát mu takové skupiny nebudou zobrazovány v dialogovém okně při výběrů příjemců)
-    * jedná se pouze o seznam uživatelů (resp. LDAP skupin, ve kterých jsou zařazeni), aby tvůrce kampaně mohl intuitivně vybrat příjemce z konkrétního pracoviště, oddělení, fakulty apod.
+* **oprávnění** – oprávnění, které budou mít všichni uživatelé této skupiny
+  * výběr mezi *uživatel*, *správce testů*, přičemž možnosti, která každá z těchto skupin nabízí, lze zjistit na základě přepnutí role – viz podkapitola [Změna role](#21-změna-role)
+* **zobrazené LDAP skupiny příjemců v kampaních** – seznam názvů LDAP skupin (oddělených znakem `;`), které budou *administrátorovi* či *správci testů* zobrazovány při interaktivním výběrů příjemců ve phishingové kampani
+  * neznamená to, že tvůrce kampaně nebude moct vybrat jiné příjemce (může vybrat, resp. manuálně zadat kohokoliv i z jiných LDAP skupin, akorát mu takové skupiny nebudou zobrazovány v dialogovém okně při interaktivním výběru příjemců)
+  * jedná se pouze o seznam uživatelů (resp. LDAP skupin, ve kterých jsou zařazeni), aby tvůrce kampaně mohl intuitivně vybrat příjemce z konkrétního pracoviště, oddělení, fakulty apod.
 
 
 ## 3 Správa Phishingatoru
@@ -191,10 +210,51 @@ Formulář pro přidání nebo úpravu skupiny obsahuje následující vstupní 
 
 ### 3.1 Konfigurace Phishingatoru
 
-Řadu možností Phishingatoru (jako např. parametry pro připojení k databázi, LDAP, rozmazání identit uživatelů, způsob anonymizace hesel apod.) lze konfigurovat v rámci souboru [`config.php`](src/config.php), resp. pomocí **Environment variables** (`.env`), ze kterých `config.php` čerpá. Možnosti konfigurace jsou popsány v komentářích v souboru `config.php`.
+Řadu možností Phishingatoru (jako např. parametry pro připojení k databázi a k LDAP, rozmazání identit uživatelů ve statistikách kampaně, způsob anonymizace hesel z podvodných stránek apod.) lze nastavit v souboru [`config.php`](src/config.php), resp. pomocí **Environment variables** (`.env`), ze kterých `config.php` čerpá. Možnosti konfigurace jsou popsány v komentářích v souboru `config.php`.
+
+Základní konfigurace, ze které lze vycházet, je umístěna v souboru [`.env.dist`](.env.dist). Tuto konfiguraci je nutné před spuštěním Phishingatoru doplnit a následně uložit pod názvem `.env`.
 
 
-### 3.2 Zálohování databáze
+### 3.2 Build Phishingatoru
+
+Před buildem Phishingatoru je nejprve nutné vytvořit [konfiguraci Phishingatoru](#31-konfigurace-phishingatoru) (soubor `.env`) na základě prostředí organizace.
+
+
+#### 3.2.1 Testovací instance
+
+Testovací instanci Phishingatoru lze spustit voláním skriptu `build-dev.sh`, a to například následovně:
+
+```
+./scripts/build-dev.sh
+```
+
+Při testování na lokálním prostředí je Phishingator po úspěšném vykonání skriptu dostupný na URL adrese <http://localhost:8000>.
+
+
+#### 3.2.2 Ostrá instance
+
+Před nasazením ostré verze je nutné nainstalovat a nakonfigurovat proxy (např. Traefik), která bude požadavky cílené na podvodné domény předávat do Phishingatoru.
+
+Samotný build ostré verze pak zajišťuje soubor `build.sh`:
+
+```
+./scripts/build.sh
+```
+
+
+### 3.3 Data Phishingatoru
+
+Veškerá data z Phishingatoru se na hostitelském serveru ukládají do adresáře `/phishingator-data/`, kde jsou dále členěna do jednotlivých podadresářů následovně:
+
+- `database` – data databáze,
+- `database-dumps` – mysqldump soubory,
+- `logs` – logy,
+- `websites-templates`
+  - `sites-config` – konfigurační soubory (Apache VirtualHost) podvodných stránek,
+  - `websites` – šablony podvodných stránek.
+
+
+### 3.4 Zálohování databáze
 
 Data z databáze Phishingatoru lze zálohovat pomocí skriptu [`backup-db.sh`](scripts/backup-db.sh), který vytvoří mysqldump databáze pro zvolenou instanci (organizaci). Je nutné, aby při zálohování běžel databázový kontejner `phishingator_database` dané organizace.
 
@@ -207,7 +267,7 @@ Příklad volání:
 ```
 
 
-### 3.3 Obnovení databáze
+### 3.5 Obnovení databáze
 
 Data do databáze Phishingatoru lze importovat pomocí skriptu [`restore-db.sh`](scripts/restore-db.sh), který importuje strukturu a data z mysqldump souboru pro zvolenou instanci (organizaci). Je nutné, aby při obnovení databáze běžel databázový kontejner `phishingator_database` dané organizace. 
 
@@ -220,7 +280,7 @@ Příklad volání:
 ```
 
 
-### 3.4 Odstranění databáze
+### 3.6 Odstranění databáze
 
 Databázové tabulky společně s uloženými daty lze smazat pomocí skriptu [`reset-db.sh`](scripts/reset-db.sh). Skript smaže obsah adresáře `/phishingator-data/<organizace>/database/phishingator/`.
 
@@ -233,7 +293,7 @@ Příklad volání:
 Při vypnutí Phishingatoru, smazání všech podadresářů v adresáři `/phishingator-data/<organizace>/database/` a opětovném spuštění Phishingatoru, dojde k vytvoření struktury databáze a k importu základních dat.
 
 
-### 3.5 Přidání nové šablony podvodné stránky
+### 3.7 Přidání nové šablony podvodné stránky
 
 Novou šablonu podvodné stránky lze do Phishingatoru přidat pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh). Je nutné, aby při obnovení databáze běžel databázový kontejner `phishingator_database` dané organizace.
 
@@ -289,9 +349,10 @@ Příklad volání:
 ./scripts/add-website-template.sh cesnet "CESNET SSO" /root/cesnet-sso/
 ```
 
-### 3.6 Možné problémy
+### 3.8 Možné problémy
 
-#### 3.6.1 Vyčištění fronty neodeslaných e-mailů
+
+#### 3.8.1 Vyčištění fronty neodeslaných e-mailů
 
 Poštovní server pravděpodobně **zamítne** odeslání e-mailů, u kterých se nepodaří resolve adresy (domény, subdomény, ...), která je uvedena v poli odesílatele. Takové e-maily tedy nebudou odeslány, i když se ve Phishingatoru tváří, že odeslány byly (chybová hláška `Sender address rejected: Domain not found (in reply to RCPT TO command)` v souboru `/var/log/mail.log` a plná fronta napoví, že tomu tak není).
 Následně je třeba ručně smazat neodeslané e-maily z fronty a kampaň smazat (aby se ve frontě znovu neobjevily), postup kroků je tedy následující:
