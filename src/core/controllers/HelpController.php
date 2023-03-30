@@ -77,7 +77,7 @@
       $this->setViewData('phishing', $phishing);
       $this->setViewData('phishingIndications', $phishingIndications);
 
-      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#1-pro-u%C5%BEivatele');
+      $this->setHelpLink('https://github.com/msebela/phishingator/blob/main/MANUAL.md#1-p%C5%99%C3%ADru%C4%8Dka-pro-u%C5%BEivatele');
     }
 
 
@@ -90,6 +90,6 @@
       $this->setTitle('Jak připravit phishing');
       $this->setView('help-principles-phishing');
 
-      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#2-pro-administr%C3%A1tory');
+      $this->setHelpLink('https://github.com/msebela/phishingator/blob/main/MANUAL.md#2-p%C5%99%C3%ADru%C4%8Dka-pro-administr%C3%A1tory');
     }
   }

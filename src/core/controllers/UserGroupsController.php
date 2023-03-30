@@ -45,7 +45,7 @@
         $this->processList($model);
       }
 
-      $this->setHelpLink('https://gitlab.cesnet.cz/709/flab/phishingator/-/blob/main/MANUAL.md#26-u%C5%BEivatelsk%C3%A9-skupiny');
+      $this->setHelpLink('https://github.com/msebela/phishingator/blob/main/MANUAL.md#26-u%C5%BEivatelsk%C3%A9-skupiny');
     }
 
 

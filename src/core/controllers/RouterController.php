@@ -119,9 +119,9 @@
 
         $this->setViewData('html_title', $this->controller->getTitle());
 
-        $currentSection = $_GET['section'] ?? '';
-
         if (!$public) {
+          $currentSection = $_GET['section'] ?? '';
+          
           $this->setViewData('menu', $this->getMenu());
           $this->setViewData('rolesMenu', $this->getRolesMenu());
 
@@ -138,8 +138,6 @@
           $this->setView('wrapper');
         }
         else {
-          $this->setViewData('phishingPage', $currentSection == ACT_PHISHING_TEST);
-
           $this->setView('public/wrapper');
         }
       }
