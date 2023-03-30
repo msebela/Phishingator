@@ -1,9 +1,10 @@
 # Phishingator
 
-###### Systém pro rozesílání cvičných phishingových zpráv
+Systém pro rozesílání cvičných phishingových zpráv
 
 
-### Co je Phishingator?
+
+## Co je Phishingator?
 
 Phishingator je webová aplikace, jejímž cílem je provádět **praktické školení uživatelů** v oblasti **phishingu a sociálního inženýrství**, a to odesíláním cvičných phishingových e-mailů.
 
@@ -15,7 +16,7 @@ Phishingator byl navržen jako co nejvíce **intuitivní a automatizovaný syst�
 
 
 
-### Klíčové vlastnosti
+## Klíčové vlastnosti
 
 - **Vytvoření cvičné phishingové kampaně** (školení)
   - Jednoduchý formulář s vyplněním *"komu, kdy, v kolik, jaký phishing a jaká phishingová stránka"*
@@ -43,9 +44,9 @@ Phishingator byl navržen jako co nejvíce **intuitivní a automatizovaný syst�
 
 
 
-### Způsob nasazení
+## Způsob nasazení
 
-Phishingator **Vám můžeme nasadit** a pomoct s jeho **ovládáním a prvotním nastavením**, nebo si můžete Phishingator **nasadit sami** díky dostupným zdrojovým kódům. Pokud si Phishingator necháte nasadit od nás, budou v systému **předpřipravené** i cvičné podvodné e-maily a podvodné šablony podvodných stránek (včetně **zakoupených domén**).
+Phishingator **Vám můžeme nasadit** a pomoct s jeho **ovládáním a prvotním nastavením**, nebo si můžete Phishingator **nasadit sami** díky veřejně dostupným zdrojovým kódům. Pokud si Phishingator necháte nasadit od nás, budou v systému **předpřipravené** i cvičné podvodné e-maily a podvodné šablony podvodných stránek (včetně **zakoupených domén**).
 
 **Možnosti konzultací**, **správy systému** ze strany CESNETu a **školení** pak ukazuje následující tabulka:
 
@@ -63,38 +64,30 @@ Phishingator **Vám můžeme nasadit** a pomoct s jeho **ovládáním a prvotní
 
 
 
-### Mám zájem o službu
+## Mám zájem o službu
 
-Pokud **máte zájem o zprovoznění** Phishingatoru ve Vaší organizaci, **napište nám**, prosím, na e-mail *phishingator@cesnet.cz*. Následně spolu domluvíme **technické detaily** a **způsob nasazení** Phishingatoru.
+Pokud **máte zájem o zprovoznění** Phishingatoru ve Vaší organizaci, **napište nám**, prosím, na e-mail *phishingator@cesnet.cz*. Phishingator Vám nejprve na společné online schůzce předvedeme, a to včetně kompletního procesu tvorby ukázkové cvičné phishingové kampaně. Následně si ujasníme **technické detaily** a **způsob nasazení** Phishingatoru ve Vaší organizaci.
 
-
-#### Demo aplikace
-
-Pokud nad službou váháte a chtěli byste si ji nejprve **nezávazně vyzkoušet**, můžete se do **ukázkové verze Phishingatoru** přihlásit přes stránku uvedenou níže v odkazech.
-
-V ukázkové verzi Phishingatoru jsou ve výchozím stavu k dispozici **práva administrátora** – celý systém si tak můžete proklikat včetně několika **testovacích phishingových kampaní**, reakcí uživatelů a i samotných podvodných e-mailů a podvodných stránek. Přihlášení je pomocí služby *eduID*.
-
-*Pozn.:* Demo z praktických důvodů **neumožňuje odesílat e-maily**.
+Prostředí Phishingatoru si můžete rovněž prohlédnout na několika ukázkových [screenshotech](SCREENSHOTS.md) s konkrétním popiskem.
 
 
 
-### Odkazy
+## Odkazy
 
 - [Phishingator Portál](https://phishingator.cesnet.cz)
-- [Demo Phishingatoru](https://phishingator.cypherfix.cz)
-- [Zdrojové kódy Phishingatoru](/src)
+- [Zdrojový kód Phishingatoru](/src)
 - [Uživatelská příručka](MANUAL.md)
-- [Ukázkové screenshoty aplikace](SCREENSHOTS.md)
+- [Ukázkové screenshoty](SCREENSHOTS.md)
 - [Licence](LICENSE.md)
 
 
 
-### O aplikaci
+## O aplikaci
 
 Phishingator původně vznikl na [Západočeské univerzitě v Plzni](https://www.zcu.cz) (ZČU) v roce 2019, a to jako výsledek bakalářské práce [Systém pro rozesílání cvičných phishingových zpráv](https://theses.cz/id/0kk18p/), jejímž autorem je Martin Šebela a vedoucím pak Aleš Padrta. Phishingator byl následně dále rozvíjen v [Centru informatizace a výpočetní techniky](https://civ.zcu.cz) na ZČU.
 
 
-#### Kontakt na vývojáře
+### Kontakt na vývojáře
 
 - phishingator@cesnet.cz
 - martin.sebela@cesnet.cz
