@@ -3,6 +3,9 @@ FROM php:8.2-apache
 ENV TZ="Europe/Prague"
 ARG APACHE_DOCUMENT_ROOT
 
+RUN apt-get update && apt-get install -y && \
+    useradd phishingator
+
 # PHP
 RUN docker-php-ext-install pdo_mysql mysqli
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -12,9 +15,9 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
 # Cron
 RUN apt-get update && apt-get -y install cron
 COPY docker/web/phishingator-cron /etc/cron.d/phishingator-cron
-RUN chmod 0644 /etc/cron.d/phishingator-cron
-RUN crontab /etc/cron.d/phishingator-cron
-RUN touch /var/log/cron.log
+RUN chmod 0644 /etc/cron.d/phishingator-cron && \
+    crontab /etc/cron.d/phishingator-cron && \
+    touch /var/log/cron.log
 
 # OIDC
 RUN apt-get -y install libapache2-mod-auth-openidc
@@ -39,5 +42,7 @@ COPY docker/web/msmtprc /etc/msmtprc.template
 # Phishingator
 WORKDIR $APACHE_DOCUMENT_ROOT
 COPY src ../
+
+USER phishingator:phishingator
 
 ENTRYPOINT "/entrypoint.sh"
