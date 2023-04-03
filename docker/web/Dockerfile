@@ -4,7 +4,9 @@ ENV TZ="Europe/Prague"
 ARG APACHE_DOCUMENT_ROOT
 
 RUN apt-get update && apt-get install -y && \
-    useradd phishingator
+    useradd phishingator && \
+    mkdir -p $APACHE_DOCUMENT_ROOT && \
+    chown -R phishingator $APACHE_DOCUMENT_ROOT
 
 # PHP
 RUN docker-php-ext-install pdo_mysql mysqli
