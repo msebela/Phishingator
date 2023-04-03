@@ -2,6 +2,8 @@
 
 mkdir -p ../temp
 chown phishingator ../temp
+
+chown phishingator ../logs
 touch ../logs/log.log
 chown phishingator ../logs/log.log
 chown phishingator ../templates/sites-config
