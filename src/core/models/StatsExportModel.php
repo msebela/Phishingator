@@ -155,17 +155,15 @@
       Logger::info('Request to export a ZIP archive with all phishing campaign data.', $idCampaign);
 
       $zip = new ZipArchive();
-
-      $filepath = CORE_DOCUMENT_ROOT . '/temp/';
-      $zipFilepath = Controller::escapeOutput($filepath . PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $idCampaign . '-' . date('Y-m-d') . '.zip');
+      $zipFilepath = Controller::escapeOutput(CORE_DIR_TEMP . '/' . PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $idCampaign . '-' . date('Y-m-d') . '.zip');
 
       $files = [];
 
       if ($zip->open($zipFilepath, ZipArchive::CREATE) === true) {
         // Získání jednotlivých souborů do archivu.
-        $files[] = self::exportEndActions($idCampaign, $filepath);
-        $files[] = self::exportAllCapturedData($idCampaign, $filepath);
-        $files[] = self::exportCountUsersActions($idCampaign, $filepath);
+        $files[] = self::exportEndActions($idCampaign, CORE_DIR_TEMP);
+        $files[] = self::exportAllCapturedData($idCampaign, CORE_DIR_TEMP);
+        $files[] = self::exportCountUsersActions($idCampaign, CORE_DIR_TEMP);
 
         // Vložení všech souborů do archivu.
         foreach ($files as $file) {
@@ -213,7 +211,7 @@
         $csvFilename = $data['csvFilename'] . '-' . date('Y-m-d') . '.csv';
 
         // Vytvářet soubor na základě výpisu, nebo jako nový soubor v konkrétním adresáři na webovém serveru.
-        $filepath = Controller::escapeOutput(($newFilepath == null) ? 'php://output' : $newFilepath . $csvFilename);
+        $filepath = Controller::escapeOutput(($newFilepath == null) ? 'php://output' : $newFilepath . '/' . $csvFilename);
 
         // Vrácení CSV souboru uživateli ke stažení.
         if ($newFilepath == null) {

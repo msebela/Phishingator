@@ -201,6 +201,9 @@
   /** Adresář obsahující další dodatečné knihovny. */
   define('CORE_DIR_EXTENSIONS', 'extensions');
 
+  /** Adresář pro umístění dočasných (temp) souborů. */
+  define('CORE_DIR_TEMP', '/tmp');
+
   /** Přípona view souborů. */
   define('CORE_VIEWS_FILE_EXTENSION', '.php');
 

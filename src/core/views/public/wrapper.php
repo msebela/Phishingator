@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.2/bootstrap.min.css">
   <link rel="stylesheet" href="/style-intro.css">
 </head>
-<body class="phishing-email-detail">
+<body>
   <header>
     <nav class="navbar navbar-expand-lg">
       <div class="container">
@@ -38,9 +38,7 @@
 
   <script src="/<?= CORE_DIR_EXTENSIONS ?>/jquery-3.6.4.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
   <script src="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.2/bootstrap.bundle.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
-  <?php if ($phishingPage): ?>
   <script src="/js.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
-  <?php endif; ?>
   <script src="/<?= CORE_DIR_EXTENSIONS ?>/feather.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
   <script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">
     feather.replace()
