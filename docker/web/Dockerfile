@@ -16,8 +16,10 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
 RUN apt-get update && apt-get -y install cron
 COPY docker/web/phishingator-cron /etc/cron.d/phishingator-cron
 RUN chmod u+s /usr/sbin/cron && \
-    chown phishingator:crontab /usr/bin/crontab && \
+    chown root:crontab /usr/bin/crontab && \
     chmod 2755 /usr/bin/crontab && \
+    chown phishingator:crontab /var/spool/cron/crontabs/phishingator && \
+    chmod 600 /var/spool/cron/crontabs/phishingator && \
     crontab -u phishingator /etc/cron.d/phishingator-cron && \
     touch /var/log/cron.log
 
