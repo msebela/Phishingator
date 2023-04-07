@@ -16,7 +16,8 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
 RUN apt-get update && apt-get -y install cron
 COPY docker/web/phishingator-cron /etc/cron.d/phishingator-cron
 RUN chmod u+s /usr/sbin/cron && \
-    chmod -R u+s /var/spool/cron && \
+    chown phishingator:crontab /usr/bin/crontab && \
+    chmod 2755 /usr/bin/crontab && \
     crontab -u phishingator /etc/cron.d/phishingator-cron && \
     touch /var/log/cron.log
 
@@ -44,4 +45,4 @@ RUN chown -R phishingator ../
 
 RUN sed -i 's/^exec /service cron start\n\nexec /' /usr/local/bin/apache2-foreground
 
-USER phishingator
+USER phishingator:phishingator
