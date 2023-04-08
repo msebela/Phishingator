@@ -17,10 +17,6 @@ RUN apt-get update && apt-get -y install cron
 COPY docker/web/phishingator-cron /etc/cron.d/phishingator-cron
 RUN chmod u+s /usr/sbin/cron && \
     crontab -u phishingator /etc/cron.d/phishingator-cron && \
-    chown root:crontab /usr/bin/crontab && \
-    chmod 2755 /usr/bin/crontab && \
-    chown phishingator:crontab /var/spool/cron/crontabs/phishingator && \
-    chmod 600 /var/spool/cron/crontabs/phishingator && \
     touch /var/log/cron.log
 
 # OIDC
@@ -29,6 +25,8 @@ RUN apt-get -y install libapache2-mod-auth-openidc
 # Apache
 COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/000-default.conf
 COPY docker/web/security.conf /etc/apache2/conf-enabled/
+
+COPY --chown=phishingator:phishingator docker/web/entrypoint.sh /entrypoint.sh
 
 RUN a2enmod rewrite
 
@@ -45,6 +43,6 @@ WORKDIR $APACHE_DOCUMENT_ROOT
 COPY src ../
 RUN chown -R phishingator ../
 
-RUN sed -i 's/^exec /service cron start\n\nexec /' /usr/local/bin/apache2-foreground
+USER phishingator
 
-USER phishingator:phishingator
+ENTRYPOINT [ "/entrypoint.sh" ]
