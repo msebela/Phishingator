@@ -255,9 +255,7 @@
               exec('a2ensite ' . escapeshellarg($serverName));
               rename($filepath, $filepathAppliedConfig);
 
-              echo '[new] copy(' . $filepath . ', ' . $filepathNewConfig . ')' . "\n";
-              echo '[new] a2ensite ' . $serverName . "\n";
-              echo '[new] rename(' . $filepath . ', ' . $filepathAppliedConfig . ')' . "\n";
+              Logger::info('New phishing website activated in Apache.', [$filepath, $filepathNewConfig, $filepathAppliedConfig, $serverName]);
 
               $changes = true;
             }
@@ -267,8 +265,7 @@
               exec('a2dissite ' . escapeshellarg($serverName));
               unlink($filepath);
 
-              echo '[del] a2dissite ' . $serverName . "\n";
-              echo '[del] unlink(' . $filepath . ')' . "\n";
+              Logger::info('Phishing website deactivated in Apache.', [$filepath, $serverName]);
 
               $changes = true;
             }
@@ -280,8 +277,7 @@
               copy($filepath, $filepathNewConfig);
               exec('a2ensite ' . escapeshellarg($serverName));
 
-              echo '[exg] copy(' . $filepath . ', ' . $filepathNewConfig . ')' . "\n";
-              echo '[exg] a2ensite ' . $serverName . "\n";
+              Logger::info('Existing phishing website activated in Apache.', [$filepath, $filepathNewConfig, $serverName]);
 
               $changes = true;
             }
@@ -292,7 +288,7 @@
       if ($changes) {
         exec('apachectl graceful');
 
-        echo 'apachectl graceful' . "\n";
+        Logger::info('Apache configuration reloaded.');
       }
     }
 

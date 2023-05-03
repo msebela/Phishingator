@@ -23,6 +23,9 @@ services:
       - '443:443'
     depends_on:
       - database
+    networks:
+      - database-net
+      - scheduler-net
 
   database:
     build:
@@ -30,8 +33,6 @@ services:
       dockerfile: docker/database/Dockerfile
     restart: always
     container_name: phishingator-${ORG}-database
-    env_file:
-      - .env
     volumes:
       - ./phishingator-data/${ORG}/database:/var/lib/mysql/
       - ./phishingator-data/${ORG}/database-dumps:/phishingator-dumps
@@ -42,6 +43,20 @@ services:
       - MYSQL_DATABASE=${DB_DATABASE}
     ports:
       - '3306:3306'
+    networks:
+      - database-net
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/scheduler/Dockerfile
+    restart: always
+    container_name: phishingator-${ORG}-scheduler
+    environment:
+      - SCHEDULER_TOKEN
+    networks:
+      scheduler-net:
+        ipv4_address: 172.22.0.20
 
   phpmyadmin:
     image: phpmyadmin
@@ -50,9 +65,21 @@ services:
       - PMA_HOST=${DB_HOST}
     ports:
      - '8080:80'
+    networks:
+      - database-net
 
   smtp:
     image: mailhog/mailhog
     ports:
       - '25:25'
       - '8025:8025'
+    networks:
+      - smtp-net
+
+networks:
+  database-net:
+  scheduler-net:
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+  smtp-net:

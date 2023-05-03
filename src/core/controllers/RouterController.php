@@ -67,8 +67,12 @@
         }
       }
 
+      if ($this->controller == null && $_SERVER['REMOTE_ADDR'] == SCHEDULER_ALLOWED_IP) {
+        $this->controller = new SchedulerController();
+      }
+
       // Ve všech ostatních případech se uživatel nalézá ve veřejné části aplikace (to se ovšem může dít
-      // i za předpokladu, že je přihlášený, proto to není jako ELSE větev předchozí podmínky).
+      // i za předpokladu, že je přihlášený, proto to není jako ELSE větev první podmínky).
       if ($this->controller == null) {
         $this->controller = $this->getController('public-homepage', true);
         $publicSite = true;

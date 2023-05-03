@@ -215,6 +215,15 @@
 
 
 
+  /* --- PLÁNOVAČ --- */
+  /** Token nutný pro spuštění metod volaných plánovačem. */
+  define('SCHEDULER_TOKEN', (getenv('SCHEDULER_TOKEN')) ? getenv('SCHEDULER_TOKEN') : '');
+
+  /** IP adresa, které je jako jediné povoleno volat plánovač. */
+  define('SCHEDULER_ALLOWED_IP', '172.22.0.20');
+
+
+
   /* --- CONTENT SECURITY POLICY --- */
   /** Hodnota nonce pro Content Security Policy (CSP). */
   define('HTTP_HEADER_CSP_NONCE', base64_encode(openssl_random_pseudo_bytes(32)));

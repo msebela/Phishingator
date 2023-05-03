@@ -12,21 +12,12 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions ldap imap zip
 
-# Cron
-RUN apt-get update && apt-get -y install cron
-COPY docker/web/phishingator-cron /etc/cron.d/phishingator-cron
-RUN chmod u+s /usr/sbin/cron && \
-    crontab -u phishingator /etc/cron.d/phishingator-cron && \
-    touch /var/log/cron.log
-
 # OIDC
-RUN apt-get -y install libapache2-mod-auth-openidc
+RUN apt-get update && apt-get install -y libapache2-mod-auth-openidc
 
 # Apache
 COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/000-default.conf
 COPY docker/web/security.conf /etc/apache2/conf-enabled/
-
-COPY --chown=phishingator:phishingator docker/web/entrypoint.sh /entrypoint.sh
 
 RUN a2enmod rewrite
 
@@ -34,7 +25,7 @@ RUN a2enmod rewrite
 COPY docker/web/ldap.conf /etc/ldap
 
 # MSMTP
-RUN apt-get -y install msmtp
+RUN apt-get install -y msmtp
 COPY docker/web/mail.ini /usr/local/etc/php/conf.d/mail.ini
 COPY docker/web/msmtprc /etc/msmtprc
 
@@ -44,5 +35,3 @@ COPY src ../
 RUN chown -R phishingator ../
 
 USER phishingator
-
-ENTRYPOINT [ "/entrypoint.sh" ]

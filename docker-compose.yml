@@ -21,6 +21,7 @@ services:
       - WEB_HOST
       - WEB_URL
       - CSRF_KEY
+      - SCHEDULER_TOKEN
       - APACHE_DOCUMENT_ROOT
       - FRAUDULENT_HOSTS
       - DB_HOST
@@ -66,7 +67,8 @@ services:
       - database
     networks:
       - traefik
-      - backend
+      - database-net
+      - scheduler-net
     labels:
       - traefik.docker.network=traefik
       - traefik.enable=true
@@ -104,7 +106,20 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE}
     networks:
-      - backend
+      - database-net
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/scheduler/Dockerfile
+    image: ${CI_REGISTRY_IMAGE}/phishingator_scheduler:${CI_COMMIT_REF_SLUG}
+    restart: always
+    container_name: phishingator-${ORG}-scheduler
+    environment:
+      - SCHEDULER_TOKEN
+    networks:
+      scheduler-net:
+        ipv4_address: 172.22.0.20
 
   waf:
     image: owasp/modsecurity-crs:apache
@@ -123,7 +138,10 @@ services:
       - traefik
 
 networks:
-  backend:
+  database-net:
+  scheduler-net:
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
   traefik:
-    external:
-      name: traefik
+    external: true
