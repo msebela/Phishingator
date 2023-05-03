@@ -3,8 +3,9 @@ FROM php:8.2-apache
 ENV TZ="Europe/Prague"
 ARG APACHE_DOCUMENT_ROOT
 
-RUN apt-get update && apt-get install -y && \
-    useradd -u 5000 phishingator
+RUN apt-get update && apt-get install -y sudo && \
+    useradd -u 5000 phishingator && \
+    echo 'phishingator ALL=(root) NOPASSWD: /usr/sbin/a2ensite, /usr/sbin/a2dissite' >> /etc/sudoers.d/phishingator
 
 # PHP
 RUN docker-php-ext-install pdo_mysql mysqli
@@ -19,7 +20,8 @@ RUN apt-get update && apt-get install -y libapache2-mod-auth-openidc
 COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/000-default.conf
 COPY docker/web/security.conf /etc/apache2/conf-enabled/
 
-RUN a2enmod rewrite
+RUN chown -R phishingator /etc/apache2/sites-available/ /etc/apache2/sites-enabled/ /var/lib/apache2/site/ && \
+    a2enmod rewrite
 
 # LDAP
 COPY docker/web/ldap.conf /etc/ldap
