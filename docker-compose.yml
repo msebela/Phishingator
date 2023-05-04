@@ -7,6 +7,7 @@ services:
       dockerfile: docker/web/Dockerfile
       args:
         APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT}
+        SMTP_HOST: ${SMTP_HOST}
     image: ${CI_REGISTRY_IMAGE}/phishingator_web:${CI_COMMIT_REF_SLUG}
     restart: always
     container_name: phishingator-${ORG}-web

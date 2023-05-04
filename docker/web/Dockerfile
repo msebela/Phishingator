@@ -2,6 +2,7 @@ FROM php:8.2-apache
 
 ENV TZ="Europe/Prague"
 ARG APACHE_DOCUMENT_ROOT
+ARG SMTP_HOST
 
 RUN apt-get update && apt-get install -y sudo && \
     useradd -u 5000 phishingator && \
@@ -19,7 +20,6 @@ RUN apt-get update && apt-get install -y libapache2-mod-auth-openidc
 # Apache
 COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/000-default.conf
 COPY docker/web/security.conf /etc/apache2/conf-enabled/
-
 RUN chown -R phishingator /etc/apache2/sites-available/ /etc/apache2/sites-enabled/ /var/lib/apache2/site/ && \
     a2enmod rewrite
 
@@ -30,6 +30,9 @@ COPY docker/web/ldap.conf /etc/ldap
 RUN apt-get install -y msmtp
 COPY docker/web/mail.ini /usr/local/etc/php/conf.d/mail.ini
 COPY docker/web/msmtprc /etc/msmtprc
+RUN sed -i "s/\${SMTP_HOST}/${SMTP_HOST}/g" /etc/msmtprc && \
+    touch /var/log/msmtp.log && \
+    chown phishingator /var/log/msmtp.log
 
 # Phishingator
 WORKDIR $APACHE_DOCUMENT_ROOT

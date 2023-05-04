@@ -7,14 +7,13 @@ services:
       dockerfile: docker/web/Dockerfile
       args:
         APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT}
+        SMTP_HOST: ${SMTP_HOST}
     restart: always
     container_name: phishingator-${ORG}-web
     env_file:
       - .env
     volumes:
       - ./src:/var/www/phishingator/
-      - ./docker/web/mail.ini:/usr/local/etc/php/conf.d/mail.ini
-      - ./docker/web/msmtprc:/etc/msmtprc
       - ./phishingator-data/${ORG}/logs:/var/www/phishingator/logs
       - ./phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
       - ./phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
