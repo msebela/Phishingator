@@ -68,8 +68,6 @@
       $model->initForm($formData['inputsNames'], $formData['formPrefix'], $formData['dbTable']);
       $this->initViewData($model, ACT_NEW, $formData['formPrefix']);
 
-      $userEmailRestriction = PermissionsModel::getUserEmailRestrictions();
-
       // Data z databáze pro vstupní pole.
       $this->setViewData('emails', PhishingEmailModel::getPhishingEmails());
       $this->setViewData('websites', PhishingWebsiteModel::getActivePhishingWebsites());
@@ -85,7 +83,7 @@
       }
 
       $userAllowedLdapGroups = (PermissionsModel::getUserAllowedLdapGroups() != null) ? PermissionsModel::getUserAllowedLdapGroups() : null;
-      $this->setViewData('recipientsLdapGroups', $model->getLdapRecipients($this->getData('recipients'), $userEmailRestriction, $userAllowedLdapGroups));
+      $this->setViewData('recipientsLdapGroups', $model->getLdapRecipients($this->getData('recipients'), $userAllowedLdapGroups, PermissionsModel::getUserEmailRestrictions()));
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {
@@ -123,8 +121,6 @@
 
       $this->initViewData($model, ACT_EDIT, $formData['formPrefix']);
 
-      $userEmailRestriction = PermissionsModel::getUserEmailRestrictions();
-
       // Data z databáze pro vstupní pole.
       $this->setViewData('emails', PhishingEmailModel::getPhishingEmails());
       $this->setViewData('websites', PhishingWebsiteModel::getActivePhishingWebsites());
@@ -140,7 +136,7 @@
       }
 
       $userAllowedLdapGroups = (PermissionsModel::getUserAllowedLdapGroups() != null) ? PermissionsModel::getUserAllowedLdapGroups() : null;
-      $this->setViewData('recipientsLdapGroups', $model->getLdapRecipients($this->getData('recipients'), $userEmailRestriction, $userAllowedLdapGroups));
+      $this->setViewData('recipientsLdapGroups', $model->getLdapRecipients($this->getData('recipients'), $userAllowedLdapGroups, PermissionsModel::getUserEmailRestrictions()));
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {

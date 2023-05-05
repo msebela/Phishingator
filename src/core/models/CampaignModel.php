@@ -554,63 +554,64 @@
      * příjemce zahrnul.
      *
      * @param string $allRecipients         Seznam příjemců, kteří jsou již součástí kampaně.
+     * @param string $allowedLdapGroups     Názvy povolených skupin v LDAP, které mají být vypisovány.
      * @param string|null $emailRestriction E-mailové omezení uživatele na konkrétní sadu e-mailů - takové e-maily
      *                                      nebudou uživateli ani vypisovány (nepovinný parametr).
      * @return array                        Seznam skupin s příjemci z LDAP.
      */
-    public static function getLdapRecipients($allRecipients, $emailRestriction = null, $allowedLdapGroups = null) {
-      $ldapModel = new LdapModel();
+    public static function getLdapRecipients($allRecipients, $allowedLdapGroups, $emailRestriction = null) {
       $ldapGroups = [];
 
-      /* Zjištění seznamu administrátorů a správců testů pro odlišení barvou. */
+      // Seznam administrátorů a správců testů pro odlišení barvou.
       $adminUsers = UsersModel::getUsersByPermission(PERMISSION_ADMIN, true);
       $testManagerUsers = UsersModel::getUsersByPermission(PERMISSION_TEST_MANAGER, true);
 
-      /* Seznam povolených skupin v LDAP, které budou vypisovány. */
-      $ldapAllowedGroups = explode(LDAP_GROUPS_DELIMITER, $allowedLdapGroups);
+      if (!empty($allowedLdapGroups)) {
+        $ldapModel = new LdapModel();
+        $ldapAllowedGroups = explode(LDAP_GROUPS_DELIMITER, $allowedLdapGroups);
 
-      foreach ($ldapAllowedGroups as $group) {
-        /* Odstranění bílých znaků z názvu skupiny. */
-        $group = remove_new_line_symbols($group);
+        foreach ($ldapAllowedGroups as $group) {
+          $group = remove_new_line_symbols($group);
 
-        if (empty($group)) {
-          continue;
-        }
+          if (empty($group)) {
+            continue;
+          }
 
-        // Získání seznamu uživatelů ve skupině.
-        $usersInGroup = $ldapModel->getUsersInGroup($group);
+          // Seznam uživatelů v dané LDAP skupině.
+          $usersInGroup = $ldapModel->getUsersInGroup($group);
 
-        if ($usersInGroup != null) {
-          foreach ($usersInGroup as $key => $user) {
-            $username = get_email_part($user, 'username');
-            $domain = get_email_part($user, 'domain');
+          if ($usersInGroup != null) {
+            foreach ($usersInGroup as $key => $user) {
+              $username = get_email_part($user, 'username');
+              $domain = get_email_part($user, 'domain');
 
-            /* Ověření, zdali je e-mail mezi těmi povolenými (pokud je v oprávnění na sadu e-mailů nějaká restrikce). */
-            if (empty($user) /*|| ($emailRestriction != null && strpos($emailRestriction, '@' . $domain) === false)*/) {
-              unset($usersInGroup[$key]);
-              continue;
+              // Ověření, zdali je e-mail mezi těmi povolenými (pokud je v oprávnění na sadu e-mailů nějaká restrikce).
+              if (empty($user) /*|| ($emailRestriction != null && strpos($emailRestriction, '@' . $domain) === false)*/) {
+                unset($usersInGroup[$key]);
+                continue;
+              }
+
+              // Ověření, zdali je daný uživatel vyplněn mezi příjemci.
+              $checked = (strpos($allRecipients, $user) !== false) ? 1 : 0;
+
+              $usersInGroup[$key] = ['email' => $user, 'checked' => $checked, 'username' => $username, 'domain' => $domain];
+
+              // Určení barvy uživatele na základě oprávnění ve Phishingatoru.
+              $usersInGroup[$key]['color'] = UserGroupsModel::getColorGroupRoleByUsername(
+                $user, ['admin' => $adminUsers, 'testmanager' => $testManagerUsers]
+              );
             }
 
-            /* Ověření, zdali je daný uživatel vyplněn mezi příjemci. */
-            $checked = (strpos($allRecipients, $user) !== false) ? 1 : 0;
-
-            $usersInGroup[$key] = ['email' => $user, 'checked' => $checked, 'username' => $username, 'domain' => $domain];
-
-            /* Určení barvy uživatele na základě předpřipravených skupin. */
-            $usersInGroup[$key]['color'] = UserGroupsModel::getColorGroupRoleByUsername(
-              $user, ['admin' => $adminUsers, 'testmanager' => $testManagerUsers]
-            );
-          }
-
-          /* Ověření, zdali má vůbec smysl skupinu uvažovat, pokud by došlo k tomu, že na základě uživatelova
-             oprávnění na sadu e-mailů nevyhovuje žádný z e-mailů. */
-          if (count($usersInGroup) > 0) {
-            $ldapGroups[$group] = $usersInGroup;
+            // Ověření, zdali má vůbec smysl skupinu uvažovat, pokud by došlo k tomu, že na základě uživatelova
+            // oprávnění na sadu e-mailů nevyhovuje žádný z e-mailů.
+            if (count($usersInGroup) > 0) {
+              $ldapGroups[$group] = $usersInGroup;
+            }
           }
         }
-      }
 
-      $ldapModel->close();
+        $ldapModel->close();
+      }
 
       return $ldapGroups;
     }

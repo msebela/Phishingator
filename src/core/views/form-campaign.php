@@ -38,7 +38,7 @@
           <select name="<?= $formPrefix ?>id-email" id="<?= $formPrefix ?>id-email" class="custom-select set-preview-btn" data-preview-btn="#btn-email-preview" data-preview-link="/portal/phishing-emails" required>
             <option value="0">Vyberte&hellip;</option>
             <?php foreach ($emails as $email): ?>
-              <option value="<?= $email['id_email']; ?>"<?= (($inputsValues['id-email'] == $email['id_email']) ? ' selected': ''); ?>><?= $email['name'] ?></option>
+            <option value="<?= $email['id_email']; ?>"<?= (($inputsValues['id-email'] == $email['id_email']) ? ' selected': ''); ?>><?= $email['name'] ?></option>
             <?php endforeach; ?>
           </select>
           <small class="form-text text-muted">Podvodný e-mail, který účastníci kampaně dostanou do svých e-mailových schránek a&nbsp;ze kterého se budou moci dostat na podvodnou stránku.</small>
@@ -59,7 +59,7 @@
           <select name="<?= $formPrefix ?>id-website" id="<?= $formPrefix ?>id-website" class="custom-select set-preview-btn" data-preview-btn="#btn-website-preview" data-preview-link="/portal/phishing-websites" required>
             <option value="0">Vyberte&hellip;</option>
             <?php foreach ($websites as $website): ?>
-              <option value="<?= $website['id_website'] ?>"<?= (($inputsValues['id-website'] == $website['id_website']) ? ' selected': ''); ?>><?= $website['url'] . ' &ndash; ' . $website['name'] ?></option>
+            <option value="<?= $website['id_website'] ?>"<?= (($inputsValues['id-website'] == $website['id_website']) ? ' selected': ''); ?>><?= $website['name'] . ' &ndash; ' . $website['url'] ?></option>
             <?php endforeach; ?>
           </select>
           <small class="form-text text-muted">Podvodná stránka, na kterou se uživatel dostane z&nbsp;podvodného e-mailu.</small>
@@ -79,7 +79,7 @@
         <select class="custom-select" id="<?= $formPrefix ?>id-onsubmit" name="<?= $formPrefix ?>id-onsubmit" required>
           <option value="0">Vyberte&hellip;</option>
           <?php foreach ($websiteActions as $onsubmit): ?>
-            <option value="<?= $onsubmit['id_onsubmit'] ?>"<?= (($inputsValues['id-onsubmit'] == $onsubmit['id_onsubmit'] || ($action == ACT_NEW && empty($inputsValues['id-onsubmit']) && $onsubmit['id_onsubmit'] == CAMPAIGN_DEFAULT_ONSUBMIT_ACTION)) ? ' selected': ''); ?>><?= $onsubmit['name'] ?></option>
+          <option value="<?= $onsubmit['id_onsubmit'] ?>"<?= (($inputsValues['id-onsubmit'] == $onsubmit['id_onsubmit'] || ($action == ACT_NEW && empty($inputsValues['id-onsubmit']) && $onsubmit['id_onsubmit'] == CAMPAIGN_DEFAULT_ONSUBMIT_ACTION)) ? ' selected': ''); ?>><?= $onsubmit['name'] ?></option>
           <?php endforeach; ?>
         </select>
         <small class="form-text text-muted">Co se stane tehdy, pokud uživatel na podvodné stránce vyplní formulář a&nbsp;klikne na tlačítko pro jeho odeslání.</small>
