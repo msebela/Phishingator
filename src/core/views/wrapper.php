@@ -83,7 +83,7 @@
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
               <span>Nápověda</span>
-              <a href="https://github.com/msebela/phishingator/blob/main/MANUAL.md" target="_blank" aria-label="Nápověda">
+              <a href="https://github.com/CESNET/Phishingator/phishingator/blob/main/MANUAL.md" target="_blank" aria-label="Nápověda">
                 <span data-feather="help-circle" class="align-text-bottom"></span>
               </a>
             </h6>

@@ -34,7 +34,7 @@
         $this->processParticipation($model, $formData);
       }
 
-      $this->setHelpLink('https://github.com/msebela/phishingator/blob/main/MANUAL.md#1-p%C5%99%C3%ADru%C4%8Dka-pro-u%C5%BEivatele');
+      $this->setHelpLink('https://github.com/CESNET/Phishingator/phishingator/blob/main/MANUAL.md#1-p%C5%99%C3%ADru%C4%8Dka-pro-u%C5%BEivatele');
     }
 
 

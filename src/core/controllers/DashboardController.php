@@ -89,7 +89,7 @@
       $this->setViewData('chartVolunteers', $barChart['legend']);
       $this->setViewData('chartVolunteersData', ($barChart['data']) ? $barChart['data'] : 0);
 
-      $this->setHelpLink('https://github.com/msebela/phishingator/blob/main/MANUAL.md#2-p%C5%99%C3%ADru%C4%8Dka-pro-administr%C3%A1tory');
+      $this->setHelpLink('https://github.com/CESNET/Phishingator/phishingator/blob/main/MANUAL.md#2-p%C5%99%C3%ADru%C4%8Dka-pro-administr%C3%A1tory');
     }
 
 
@@ -128,7 +128,7 @@
       $this->setViewData('barChartLegendDesc', $barChart['legend']);
       $this->setViewData('barChartLegendData', $barChart['data']);
 
-      $this->setHelpLink('https://github.com/msebela/phishingator/blob/main/MANUAL.md#2-p%C5%99%C3%ADru%C4%8Dka-pro-administr%C3%A1tory');
+      $this->setHelpLink('https://github.com/CESNET/Phishingator/phishingator/blob/main/MANUAL.md#2-p%C5%99%C3%ADru%C4%8Dka-pro-administr%C3%A1tory');
     }
 
 
@@ -153,6 +153,6 @@
       // Data pro koláčový graf (konečná akce uživatele).
       $this->setViewData('chartDataUserEndAction', $model->getStatsForAllEndActions(null, $idUser));
 
-      $this->setHelpLink('https://github.com/msebela/phishingator/blob/main/MANUAL.md#1-p%C5%99%C3%ADru%C4%8Dka-pro-u%C5%BEivatele');
+      $this->setHelpLink('https://github.com/CESNET/Phishingator/phishingator/blob/main/MANUAL.md#1-p%C5%99%C3%ADru%C4%8Dka-pro-u%C5%BEivatele');
     }
   }
