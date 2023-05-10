@@ -42,10 +42,10 @@
   /** Cesta k seznamu uživatelů v LDAP. */
   define('LDAP_USERS_DN', getenv('LDAP_USERS_DN'));
 
-  /** Název atributu v LDAP, ze kterého lze získat jméno a příjmení uživatele. */
-  define('LDAP_USER_ATTR_NAME', (getenv('LDAP_USER_ATTR_NAME')) ? getenv('LDAP_USER_ATTR_NAME') : 'cn');
+  /** Název atributu v LDAP (typicky "displayName" / "cn"), ve kterém je uloženo jméno a příjmení uživatele. */
+  define('LDAP_USER_ATTR_NAME', (getenv('LDAP_USER_ATTR_NAME')) ? getenv('LDAP_USER_ATTR_NAME') : 'displayName');
 
-  /** Název atributu v LDAP, ze kterého lze získat e-mail uživatele. */
+  /** Název atributu v LDAP, ve kterém je uložen e-mail uživatele. */
   define('LDAP_USER_ATTR_EMAIL', (getenv('LDAP_USER_ATTR_EMAIL')) ? getenv('LDAP_USER_ATTR_EMAIL') : 'mail');
 
   /** Název atributu v LDAP, ze kterého lze získat členství uživatele v primární skupině (např. mateřské oddělení). */

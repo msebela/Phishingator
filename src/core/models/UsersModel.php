@@ -311,7 +311,7 @@
         /* Získání dodatečných informací pro každý záznam pro výpis. */
         foreach ($result as $key => $user) {
           // Zjištění jména a příjmení uživatele z LDAP.
-          $result[$key]['person_name'] = $ldap->getUserCNByUsername($user['username']);
+          $result[$key]['person_name'] = $ldap->getFullnameByUsername($user['username']);
 
           // Informace o tom, zdali se uživatel registroval dobrovolně nebo administrátorem/správcem testů v rámci kampaně.
           $result[$key]['voluntary'] = ($user['id_by_user'] == null) ? 1 : 0;

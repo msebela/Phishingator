@@ -122,7 +122,7 @@
 
       // Data z LDAP.
       $ldap = new LdapModel();
-      $this->setViewData('name', $ldap->getUserCNByUsername($user['username']));
+      $this->setViewData('name', $ldap->getFullnameByUsername($user['username']));
       $ldap->close();
 
       // Data z databáze (seznam uživatelských skupin) pro vstupní pole.

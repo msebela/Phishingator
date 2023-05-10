@@ -239,7 +239,7 @@
         // jména a příjmení a k jeho doplnění do obsahu notifikace.
         if (UsersModel::getUserRole($campaign['id_by_user']) == PERMISSION_TEST_MANAGER) {
           $ldapModel = new LdapModel();
-          $testManager = $ldapModel->getUserCNByUsername(get_email_part($campaign['email'], 'username'));
+          $testManager = $ldapModel->getFullnameByUsername(get_email_part($campaign['email'], 'username'));
           $ldapModel->close();
         }
         else {

@@ -6,7 +6,7 @@
    */
   class LdapModel {
     /**
-     * @var resource    LDAP spojení nebo NULL.
+     * @var LDAP\Connection  LDAP spojení nebo NULL.
      */
     private $ldapConnection;
 
@@ -31,6 +31,7 @@
      *
      * @param string $username         Uživatelské jméno pro připojení do LDAP [nepovinné]
      * @param string $password         Heslo pro připojení do LDAP [nepovinné]
+     * @return bool                    TRUE pokud došlo k úspěšnému připojení, jinak FALSE
      */
     public function connect($username = null, $password = null) {
       $connected = false;
@@ -62,6 +63,8 @@
 
     /**
      * Uzavře LDAP spojení.
+     *
+     * @return void
      */
     public function close() {
       ldap_unbind($this->ldapConnection);
@@ -192,6 +195,61 @@
 
 
     /**
+     * Vrátí e-mail uživatele (první v pořadí) v závislosti na jeho uživatelském jménu z LDAP.
+     *
+     * @param string $username         Uživatelské jméno
+     * @return string|null             E-mail uživatele nebo NULL
+     */
+    public function getEmailByUsername($username) {
+      $email = null;
+
+      if (!empty($username)) {
+        $email = $this->getAttributeValue($username, LDAP_USER_ATTR_EMAIL);
+      }
+
+      return $email;
+    }
+
+
+    /**
+     * Vrátí všechny e-maily uživatele v závislosti na jeho uživatelském jménu z LDAP.
+     *
+     * @param string $username         Uživatelské jméno
+     * @return array|null              Všechny e-maily uživatele nebo NULL
+     */
+    public function getEmailsByUsername($username) {
+      $emails = [];
+
+      if (!empty($username)) {
+        $emails = $this->getAttributeValue($username, 'mail', null);
+      }
+
+      if (!is_array($emails)) {
+        $emails = [$emails];
+      }
+
+      return $emails;
+    }
+
+
+    /**
+     * Vrátí jméno a příjmení uživatele v závislosti na jeho uživatelském jménu z LDAP.
+     *
+     * @param string $username         Uživatelské jméno
+     * @return string|null             Jméno a příjmení uživatele nebo NULL
+     */
+    public function getFullnameByUsername($username) {
+      $name = null;
+
+      if (!empty($username)) {
+        $name = $this->getDecodedString($this->getAttributeValue($username, LDAP_USER_ATTR_NAME));
+      }
+
+      return $name;
+    }
+
+
+    /**
      * Vrátí primární skupinu uživatele v závislosti na jeho uživatelském jménu z LDAP.
      *
      * @param string $username            Uživatelské jméno
@@ -236,62 +294,7 @@
 
 
     /**
-     * Vrátí e-mail uživatele (první v pořadí) v závislosti na jeho uživatelském jménu z LDAP.
-     *
-     * @param string $username         Uživatelské jméno
-     * @return string|null             E-mail uživatele nebo NULL
-     */
-    public function getEmailByUsername($username) {
-      $email = null;
-
-      if (!empty($username)) {
-        $email = $this->getAttributeValue($username, LDAP_USER_ATTR_EMAIL);
-      }
-
-      return $email;
-    }
-
-
-    /**
-     * Vrátí všechny e-maily uživatele v závislosti na jeho uživatelském jménu z LDAP.
-     *
-     * @param string $username         Uživatelské jméno
-     * @return string|null             Všechny e-maily uživatele nebo NULL
-     */
-    public function getEmailsByUsername($username) {
-      $emails = [];
-
-      if (!empty($username)) {
-        $emails = $this->getAttributeValue($username, 'mail', null);
-      }
-
-      if (!is_array($emails)) {
-        $emails = [$emails];
-      }
-
-      return $emails;
-    }
-
-
-    /**
-     * Vrátí jméno a příjmení uživatele v závislosti na jeho uživatelském jménu z LDAP.
-     *
-     * @param string $username         Uživatelské jméno
-     * @return string|null             Jméno a příjmení uživatele nebo NULL
-     */
-    public function getUserCNByUsername($username) {
-      $name = null;
-
-      if (!empty($username)) {
-        $name = $this->getAttributeValue($username, LDAP_USER_ATTR_NAME);
-      }
-
-      return $name;
-    }
-
-
-    /**
-     * Vrátí seznam uživatelů (resp. jejich e-maily) ze zvolené skupiny z LDAP.
+     * Vrátí seznam uživatelů (resp. jejich e-maily) ze zvolené LDAP skupiny.
      *
      * @param string $group            Název skupiny
      * @return array|null              Seznam uživatelů nebo NULL
@@ -302,11 +305,11 @@
       if (!empty($group)) {
         $info = $this->getDataByFilter(LDAP_GROUPS_DN, 'cn=' . ldap_escape($group, '', LDAP_ESCAPE_FILTER));
 
-        if (isset($info[0][LDAP_GROUPS_ATTR_MEMBER]) && isset($info[0][LDAP_GROUPS_ATTR_MEMBER]['count'])) {
+        if (isset($info[0][LDAP_GROUPS_ATTR_MEMBER]['count'])) {
           // Seznam uživatelů ve skupině.
           $users = [];
 
-          // Projít všechny uživatele dané skupiny a ke každému z nich zjistit jeho e-mail.
+          // Projít všechny uživatele dané skupiny a u každého uživatele zjistit jeho e-mail.
           for ($i = 0; $i < $info[0][LDAP_GROUPS_ATTR_MEMBER]['count']; $i++) {
             $users[] = $this->getEmailByUsername($info[0][LDAP_GROUPS_ATTR_MEMBER][$i]);
           }
@@ -378,5 +381,27 @@
       $parts = ldap_explode_dn($dnString, 1);
 
       return ($parts[$index]) ?? '';
+    }
+
+
+    /**
+     * Ověří, zdali jde o řetězec zakódovaný base64 a pokud ano, dojde k jeho dekódování
+     * a vrácení na výstup. V opačném případě dojde k vrácení původního řetězce.
+     *
+     * @param string $string           Řetězec k dekódování
+     * @return string                  Dekódovaný/původní řetězec
+     */
+    private function getDecodedString($string) {
+      $output = '';
+
+      if ($string != null) {
+        $output = base64_decode($string, true);
+
+        if (base64_encode($output) !== $string) {
+          $output = $string;
+        }
+      }
+
+      return $output;
     }
   }
