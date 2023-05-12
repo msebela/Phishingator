@@ -131,19 +131,19 @@
   <div class="chart-wrapper">
     <h3>Reakce uživatelů na cvičný phishing</h3>
     <p>Konečné reakce uživatelů na všechny phishingové kampaně.</p>
-    <canvas class="my-4" id="chart-end-actions"></canvas>
+    <canvas class="my-4" id="chart-users-responses"></canvas>
   </div>
 
   <div class="chart-wrapper">
     <h3>Reakce uživatelů dle oddělení [%]</h3>
     <p>Konečné reakce uživatelů podle oddělení na všechny phishingové kampaně.</p>
     <div class="table-responsive">
-      <canvas class="my-4" id="chart-end-actions-groups"></canvas>
+      <canvas class="my-4" id="chart-users-responses-groups"></canvas>
     </div>
   </div>
 
   <div class="chart-wrapper-vertical">
-    <h3>Dobrovolníci dle skupiny</h3>
+    <h3>Dobrovolníci dle oddělení</h3>
     <p>Zájem uživatelů o&nbsp;odebírání cvičného phishingu.</p>
     <canvas class="my-4" id="chart-volunteers"></canvas>
   </div>
@@ -153,14 +153,14 @@
   <div class="chart-wrapper">
     <h3>Reakce uživatelů na cvičný phishing</h3>
     <p>Konečné reakce uživatelů na všechny phishingové kampaně, ke kterým mám oprávnění.</p>
-    <canvas class="my-4" id="chart-end-actions"></canvas>
+    <canvas class="my-4" id="chart-users-responses"></canvas>
   </div>
 
   <div class="chart-wrapper">
     <h3>Reakce uživatelů dle oddělení [%]</h3>
     <p>Konečné reakce uživatelů podle oddělení na všechny phishingové kampaně, ke kterým mám oprávnění.</p>
     <div class="table-responsive">
-      <canvas class="my-4" id="chart-end-actions-groups"></canvas>
+      <canvas class="my-4" id="chart-users-responses-groups"></canvas>
     </div>
   </div>
 
@@ -169,7 +169,7 @@
   <div class="chart-wrapper">
     <h3>Moje souhrnné reakce na cvičný phishing</h3>
     <p>Konkrétní reakce na každý e-mail ukazuje stránka <a href="/portal/recieved-phishing-emails">přijaté phishingové e-maily</a>.</p>
-    <canvas class="my-4" id="chart-end-actions"></canvas>
+    <canvas class="my-4" id="chart-users-responses"></canvas>
   </div>
   <?php endif; ?>
 </div>
@@ -177,13 +177,13 @@
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.3.0" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 <script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">
-  let chartEndActions = new Chart(document.getElementById('chart-end-actions'), {
+  let chartUsersResponses = new Chart(document.getElementById('chart-users-responses'), {
     plugins: [ChartDataLabels],
     type: 'doughnut',
     data: {
       labels: [<?= $_chartLegend ?>],
       datasets: [{
-        data: [<?= $chartDataUserEndAction ?>],
+        data: [<?= $chartDataUsersResponses ?>],
         backgroundColor: [<?= $_chartColors ?>],
         datalabels: {
           anchor: 'end', clamp: 'true'
@@ -230,7 +230,7 @@
   });
   <?php if (PermissionsModel::getUserRole() <= PERMISSION_TEST_MANAGER): ?>
 
-  let chartEndActionsGroups = new Chart(document.getElementById('chart-end-actions-groups'), {
+  let chartUsersResponsesGroups = new Chart(document.getElementById('chart-users-responses-groups'), {
     plugins: [ChartDataLabels],
     type: 'bar',
     data: {

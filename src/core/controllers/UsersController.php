@@ -111,7 +111,7 @@
       $campaigns = RecievedEmailModel::getUserCampaignsParticipation($user['id_user']);
 
       foreach ($campaigns as $key => $campaign) {
-        $campaigns[$key]['user_reaction'] = CampaignModel::getUserReaction($campaign['id_campaign'], $user['id_user']);
+        $campaigns[$key]['user_response'] = CampaignModel::getUserResponse($campaign['id_campaign'], $user['id_user']);
       }
 
       // Získaná data z databáze předat do View.

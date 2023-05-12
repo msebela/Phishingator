@@ -123,10 +123,7 @@
 
 
   /* --- NASTAVENÍ WEBU --- */
-  /** Základní nadpis v hlavičce webu. */
-  define('WEB_HTML_BASE_TITLE', 'Phishingator');
-
-  /** Verze systému. */
+  /** Verze Phishingatoru. */
   define('WEB_VERSION', '1.3');
 
   /** URL, na které Phishingator běží (slouží pro přesměrování v rámci systému). */
@@ -176,11 +173,11 @@
   define('NEW_USER_BY_CAMPAIGN_PARTICIPATION_EMAILS_LIMIT', NULL);
 
 
-  /* Výchozí skupina, která jsou uživatelům při registraci přidělena. */
+  /** Výchozí skupina, která jsou uživatelům při registraci přidělena. */
   define('NEW_USER_DEFAULT_GROUP_ID', 3);
 
-  /* Výchozí skupina, která jsou uživatelům při nucené registraci přidělena (tzn. do systému se uživatel
-   * nepřihlásil sám, ale byl registrován někým jiným). */
+  /** Výchozí skupina, která jsou uživatelům při nucené registraci přidělena (tzn. do systému se uživatel
+      nepřihlásil sám, ale byl registrován někým jiným). */
   define('NEW_USER_BY_CAMPAIGN_DEFAULT_GROUP_ID', 3);
 
 
@@ -407,14 +404,14 @@
 
 
   /* --- ODESÍLÁNÍ E-MAILŮ --- */
-  /* Maximální počet e-mailů, které se pošlou v jedné iteraci cyklu (poté se skript na určitou dobu pozastaví,
-     viz další konstanta). */
+  /** Maximální počet e-mailů, které se pošlou v jedné iteraci cyklu (poté se skript na určitou dobu pozastaví,
+      viz další konstanta). */
   define('EMAIL_SENDER_EMAILS_PER_CYCLE', 5);
 
-  /* Zpoždění mezi tím, než se pošle další počet (resp. sada) e-mailů (viz předchozí konstanta). */
+  /** Zpoždění mezi tím, než se pošle další počet (sada) e-mailů (viz předchozí konstanta). */
   define('EMAIL_SENDER_DELAY_MS', 2000);
 
-  /* O kolik sekund déle bude moct skript běžet poté, co byl pozastaven (viz předchozí konstanta). */
+  /** O kolik sekund déle bude moct skript běžet poté, co byl pozastaven (viz předchozí konstanta). */
   define('EMAIL_SENDER_CPU_TIME_S', 10);
 
 
@@ -509,13 +506,13 @@
   /** Zobrazení statistiky. */
   define('ACT_STATS', 'stats');
 
-  /** Zobrazení statistiky pro všechny akce. */
-  define('ACT_STATS_ALL_ACTIONS', 'all-actions');
+  /** Zobrazení statistiky – reakce jednotlivých uživatelů. */
+  define('ACT_STATS_USERS_RESPONSES', 'users-responses');
 
-  /** Zobrazení statistiky pouze pro konečné akce. */
-  define('ACT_STATS_END_ACTIONS', 'end-actions');
+  /** Zobrazení statistiky – všechny akce provedené na podvodné stránce. */
+  define('ACT_STATS_WEBSITE_ACTIONS', 'website-actions');
 
-  /** Úprava nastavení uživatelského hlášení o phishingu, */
+  /** Úprava nastavení uživatelského hlášení o phishingu. */
   define('ACT_STATS_REPORT_PHISH', 'report');
 
   /** Export dat. */

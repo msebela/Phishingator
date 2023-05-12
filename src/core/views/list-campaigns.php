@@ -22,7 +22,7 @@
     <?php foreach ($campaigns as $campaign): ?>
       <tr>
         <td>
-          <abbr title="Identifikátor v aplikaci <?= WEB_HTML_BASE_TITLE ?>" class="initialism"><?= $campaign['id_campaign'] ?></abbr>
+          <abbr title="Identifikátor v aplikaci Phishingator" class="initialism"><?= $campaign['id_campaign'] ?></abbr>
         </td>
         <td><?= $campaign['name'] ?></td>
         <td data-sort="<?= $campaign['date_added'] ?>"><?= insert_nonbreaking_spaces($campaign['date_added_formatted']) ?></td>

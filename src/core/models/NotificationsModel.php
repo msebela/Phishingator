@@ -16,8 +16,8 @@
      */
     private function sendNotificationEmail($recipientEmail, $subject, $body) {
       return $this->sendEmail(
-        NOTIFICATION_SENDER, WEB_HTML_BASE_TITLE,
-        $recipientEmail, WEB_HTML_BASE_TITLE . ' · ' . $subject, $body
+        NOTIFICATION_SENDER, 'Phishingator',
+        $recipientEmail, 'Phishingator · ' . $subject, $body
       );
     }
 
@@ -104,7 +104,7 @@
         // Předmět a obsah notifikace.
         $notificationSubject = 'Nová phishingová kampaň [' . $campaign['id_campaign'] . ']';
 
-        $notificationBody = 'Automatická notifikace systému ' . WEB_HTML_BASE_TITLE . "\n" .
+        $notificationBody = 'Automatická notifikace systému Phishingator' . "\n" .
           '-------------------------------------------' . "\n\n" .
           'V systému došlo k vytvoření nové kampaně:' . "\n\n" .
           'Organizace:               ' . $campaignOrg . "\n\n" .
@@ -164,7 +164,7 @@
         }
 
         // Získání výsledků kampaně.
-        $campaignStats = $statsModel->getStatsForAllEndActions($campaign['id_campaign'], null, true);
+        $campaignStats = $statsModel->getUsersResponses($campaign['id_campaign'], null, true);
 
         // Organizace, ve které k vytvoření phishingové kampaně došlo.
         $campaignOrg = getenv('ORG') . ' (' . getenv('ORG_DOMAIN') . ')';
@@ -172,7 +172,7 @@
         // Předmět a obsah notifikace.
         $notificationSubject = 'Phishingová kampaň ukončena [' . $campaign['id_campaign'] . ']';
 
-        $notificationBody = 'Automatická notifikace systému ' . WEB_HTML_BASE_TITLE . "\n" .
+        $notificationBody = 'Automatická notifikace systému Phishingator' . "\n" .
           '-------------------------------------------' . "\n\n" .
           'V systému došlo k ukončení platnosti kampaně:' . "\n\n" .
           'Organizace:               ' . $campaignOrg . "\n\n" .
@@ -186,7 +186,7 @@
           'Aktivní od:               ' . $campaignDetail['active_since_formatted'] . "\n" .
           'Aktivní do:               ' . $campaignDetail['active_to_formatted'] . "\n\n" .
           '-------------------------------------------' . "\n\n" .
-          'Konečné reakce příjemců byly následující:' . "\n\n";
+          'Reakce příjemců byly následující:' . "\n\n";
 
         // Vložení reakcí příjemců do obsahu notifikace.
         foreach ($statsModel->legend as $key => $legend) {
@@ -261,25 +261,25 @@
           $emailSent = RecievedEmailModel::getRecievedPhishingEmail($campaign['id_campaign'], $campaignDetail['id_email'], $user['id_user']);
 
           // Získání reakce příjemce na phishingovou kampaň.
-          $user['reaction'] = CampaignModel::getUserReaction($campaign['id_campaign'], $user['id_user']);
+          $user['response'] = CampaignModel::getUserResponse($campaign['id_campaign'], $user['id_user']);
 
           // Úprava znění notifikace podle reakce příjemce - pokud uživatel (ne)vyplnil platné přihlašovací údaje.
-          if ($user['reaction']['id_action'] != CAMPAIGN_VALID_CREDENTIALS_ID) {
-            $reactionText = 'Gratulujeme, v testu jste obstáli :)' . "\n\n";
+          if ($user['response']['id_action'] != CAMPAIGN_VALID_CREDENTIALS_ID) {
+            $userResponseText = 'Gratulujeme, v testu jste obstáli :)' . "\n\n";
           }
           else {
-            $reactionText = '';
+            $userResponseText = '';
           }
 
           // Předmět a obsah notifikace.
           $notificationSubject = 'Cvičný phishing z ' . $emailSent['date_sent_formatted'];
           $notificationBody =
-            'Automatická notifikace systému ' . WEB_HTML_BASE_TITLE . "\n" .
+            'Automatická notifikace systému Phishingator' . "\n" .
             '-------------------------------------------' . "\n\n" .
             'Dne ' . $emailSent['datetime_sent_formatted'] . ' Vám byl odeslán e-mail "' . $campaignDetail['subject'] . '".' . "\n" .
             'Jednalo se o cvičný phishing (podvodnou zprávu) s typickými znaky, které útočníci' . "\n" .
             'používají při snaze získat Vaše heslo, osobní údaje nebo číslo platební karty.' . "\n\n" .
-            $reactionText .
+            $userResponseText .
             'E-mail včetně indicií pro jeho rozpoznání si můžete prohlédnout zde:' . "\n" .
             WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $code . "\n\n\n";
 
@@ -296,7 +296,7 @@
             $notificationBody .=
               'Cílem bylo ukázat Vám, čeho jsou útočníci schopni a jak podvodný e-mail' . "\n" .
               '(phishing) rozpoznat. Chcete-li podobné cvičné podvodné zprávy dostávat' . "\n" .
-              'pravidelně, zapojte se do projektu ' . WEB_HTML_BASE_TITLE . '. Pomůže Vám lépe' . "\n" .
+              'pravidelně, zapojte se do projektu Phishingator. Pomůže Vám lépe' . "\n" .
               'poznat skutečné phishingové útoky s falešnými fakturami, falešnými' . "\n" .
               'přihlašovacími formuláři apod. a budete vědět, na co se v e-mailu' . "\n" .
               'zaměřit a podle čeho rozpoznat typický phishing.';

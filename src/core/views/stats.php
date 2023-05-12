@@ -8,7 +8,7 @@
   </div>
 </div>
 
-<p>Tato sekce zobrazuje automaticky vygenerovanou, souhrnnou statistiku v&nbsp;jednotlivých letech. Statistika <strong>začíná rokem <?= $statsStartYear ?></strong>, kdy došlo k&nbsp;nasazení systému <i><?= WEB_HTML_BASE_TITLE ?></i>.</p>
+<p>Tato sekce zobrazuje automaticky vygenerovanou, souhrnnou statistiku v&nbsp;jednotlivých letech. Statistika <strong>začíná rokem <?= $statsStartYear ?></strong>, kdy došlo k&nbsp;nasazení systému <i>Phishingator</i>.</p>
 
 <?php for ($year = date('Y'); $year >= $statsStartYear; $year--): ?>
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -20,8 +20,12 @@
       Export
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-end-actions-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-end-actions">Graf: Reakce uživatelů na cvičný phishing <code>[PNG]</code></a>
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-end-actions-groups-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-end-actions-groups">Graf: Reakce uživatelů dle oddělení <code>[PNG]</code></a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-users-responses">
+        Graf: Reakce uživatelů na cvičný phishing <code>[PNG]</code>
+      </a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-groups-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-users-responses-groups">
+        Graf: Reakce uživatelů dle oddělení <code>[PNG]</code>
+      </a>
     </div>
   </div>
 </div>
@@ -122,14 +126,14 @@
   <div class="chart-wrapper">
     <h3>Reakce uživatelů na cvičný phishing</h3>
     <p>Konečné reakce uživatelů na všechny phishingové kampaně v&nbsp;roce <?= $year ?>.</p>
-    <canvas class="my-4" id="chart-end-actions-<?= $year ?>"></canvas>
+    <canvas class="my-4" id="chart-users-responses-<?= $year ?>"></canvas>
   </div>
 
   <div class="chart-wrapper">
     <h3>Reakce uživatelů dle oddělení [%]</h3>
     <p>Konečné reakce uživatelů podle oddělení na všechny phishingové kampaně v&nbsp;roce <?= $year ?>.</p>
     <div class="table-responsive">
-      <canvas class="my-4" id="chart-end-actions-groups-<?= $year ?>"></canvas>
+      <canvas class="my-4" id="chart-users-responses-groups-<?= $year ?>"></canvas>
     </div>
   </div>
 </div>
@@ -139,13 +143,13 @@
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 <script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">
   <?php for ($year = date('Y'); $year >= $statsStartYear; $year--): ?>
-  let chartEndActions<?= $year ?> = new Chart(document.getElementById('chart-end-actions-<?= $year ?>'), {
+  let chartUsersResponses<?= $year ?> = new Chart(document.getElementById('chart-users-responses-<?= $year ?>'), {
     plugins: [ChartDataLabels],
     type: 'doughnut',
     data: {
       labels: [<?= $_chartLegend ?>],
       datasets: [{
-        data: [<?= ${"chartDataUserEndAction$year"} ?>],
+        data: [<?= ${"chartDataUsersResponses$year"} ?>],
         backgroundColor: [<?= $_chartColors ?>],
         datalabels: {
           anchor: 'end', clamp: 'true'
@@ -191,7 +195,7 @@
     }
   });
 
-  let chartEndActionsGroups<?= $year ?> = new Chart(document.getElementById('chart-end-actions-groups-<?= $year ?>'), {
+  let chartUsersResponsesGroups<?= $year ?> = new Chart(document.getElementById('chart-users-responses-groups-<?= $year ?>'), {
     plugins: [ChartDataLabels],
     type: 'bar',
     data: {

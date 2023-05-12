@@ -6,7 +6,7 @@
    */
   class StatsExportModel {
     /**
-     * Exportuje konečné akce uživatelů u konkrétní kampaně.
+     * Exportuje reakce uživatelů na phishing pro konkrétní kampaň.
      *
      * @param int $id                  ID kampaně
      * @param string|null $filepath    Cesta na webovém serveru, kde má být exportovaný soubor uložen nebo NULL,
@@ -15,14 +15,14 @@
      *                                 jinak NULL.
      * @throws UserError
      */
-    public static function exportEndActions($id, $filepath = null) {
-      Logger::info('Request to export phishing campaign data (users end actions).', $id);
+    public static function exportUsersResponses($id, $filepath = null) {
+      Logger::info('Request to export phishing campaign data (users responses).', $id);
 
-      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-end-actions';
-      $csvData = CampaignModel::getUsersEndActionInCampaign($id);
+      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-users-responses';
+      $csvData = CampaignModel::getUsersResponsesInCampaign($id);
 
       // Informace o datech pro CSV export.
-      $csvHeader = ['id_line', 'username', 'email', 'group', 'action', 'reported'];
+      $csvHeader = ['username', 'email', 'group', 'action', 'reported'];
       $csvDataIndexes = ['username', 'used_email', 'used_group', 'name', 'reported'];
 
       $data = [
@@ -46,14 +46,14 @@
      *                                 jinak NULL.
      * @throws UserError
      */
-    public static function exportCountUsersActions($id, $filepath = null) {
+    public static function exportUsersResponsesSum($id, $filepath = null) {
       Logger::info('Request to export phishing campaign data (count users actions).', $id);
 
-      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-count-users-actions';
+      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-users-responses-sum';
       $csvData = [];
 
       $statsModel = new StatsModel();
-      $actions = $statsModel->getEmptyArrayCountActions();
+      $actions = $statsModel->getEmptyArraySumActions();
 
       $result = Database::queryMulti('
               SELECT phg_users.id_user, `name`, `username`, `used_email` AS `email`, `used_group`, phg_captured_data.id_action, `reported`
@@ -94,8 +94,8 @@
 
       // Informace o datech pro CSV export.
       $csvHeader = [
-        'id_line', 'username', 'email', 'group',
-        'count_page_visited', 'count_invalid_credentials', 'count_valid_credentials', 'reported'
+        'username', 'email', 'group',
+        'sum_visit_fraudulent_page', 'sum_invalid_credentials', 'sum_valid_credentials', 'reported'
       ];
       $csvDataIndexes = ['username', 'email', 'group', 'action-2', 'action-3', 'action-4', 'reported'];
 
@@ -123,12 +123,12 @@
     public static function exportAllCapturedData($id, $filepath = null) {
       Logger::info('Request to export all phishing campaign data.', $id);
 
-      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-all-actions';
+      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-website-actions';
       $csvData = CampaignModel::getCapturedDataInCampaign($id);
 
       // Informace o datech pro CSV export.
       $csvHeader = [
-        'id_line', 'username', 'email', 'group', 'action', 'action_datetime', 'reported', 'ip', 'user_agent', 'http_post_data_json'
+        'username', 'email', 'group', 'action', 'action_datetime', 'reported', 'ip', 'user_agent', 'http_post_data_json'
       ];
       $csvDataIndexes = [
         'username', 'used_email', 'used_group', 'name', 'visit_datetime', 'reported', 'ip', 'browser_fingerprint', 'data_json'
@@ -161,9 +161,9 @@
 
       if ($zip->open($zipFilepath, ZipArchive::CREATE) === true) {
         // Získání jednotlivých souborů do archivu.
-        $files[] = self::exportEndActions($idCampaign, CORE_DIR_TEMP);
+        $files[] = self::exportUsersResponses($idCampaign, CORE_DIR_TEMP);
         $files[] = self::exportAllCapturedData($idCampaign, CORE_DIR_TEMP);
-        $files[] = self::exportCountUsersActions($idCampaign, CORE_DIR_TEMP);
+        $files[] = self::exportUsersResponsesSum($idCampaign, CORE_DIR_TEMP);
 
         // Vložení všech souborů do archivu.
         foreach ($files as $file) {
@@ -222,15 +222,9 @@
         $csvFile = fopen($filepath, 'w');
         fputcsv($csvFile, $data['csvHeader'], PHISHING_CAMPAIGN_EXPORT_DELIMITER);
 
-        $firstIndex = 1;
-
         // Zápis připravených dat do CSV souboru.
         foreach ($data['csvData'] as $row) {
           $csvLineData = [];
-
-          // První sloupec bude vždy ID záznamu.
-          $csvLineData[] = $firstIndex;
-          $firstIndex++;
 
           // Příprava zapisovaných dat na základě názvů předaných indexů
           // (aby byla data ve správném pořadí vůči hlavičce CSV souboru).

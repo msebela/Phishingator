@@ -190,17 +190,16 @@
       $this->setViewData('blurIdentities', (CAMPAIGN_STATS_BLUR_IDENTITIES ? 'blur-text' : ''));
 
       // Získání nasbíraných dat.
-      if (isset($_GET[ACT_STATS_ALL_ACTIONS])) {
+      if (isset($_GET[ACT_STATS_WEBSITE_ACTIONS])) {
         // Data uživatelů zaznamenané na podvodné stránce a akce "bez reakce".
         $capturedData = $model->getCapturedDataInCampaign($idCampaign, true);
         $this->setViewData('capturedData', $capturedData);
       }
-      elseif (isset($_GET[ACT_STATS_END_ACTIONS])) {
-        // Konečné akce uživatelů v kampani.
-        $endActions = $model->getUsersEndActionInCampaign($idCampaign);
-        $this->setViewData('endActions', $endActions);
-        $this->setViewData('endActionsLegend', $statsModel->legend);
-        $this->setViewData('endActionsLegendCssClasses', $statsModel->cssClasess);
+      elseif (isset($_GET[ACT_STATS_USERS_RESPONSES])) {
+        // Reakce uživatelů v kampani.
+        $this->setViewData('usersResponses', $model->getUsersResponsesInCampaign($idCampaign));
+        $this->setViewData('usersResponsesLegend', $statsModel->legend);
+        $this->setViewData('usersResponsesLegendCssClasses', $statsModel->cssClasess);
 
         // Data o navštívení stránky o absolvování phishingu.
         $testPageData = $model->getCapturedDataTestPage($idCampaign);
@@ -215,19 +214,19 @@
       $this->setViewData('chartLegend', $statsModel->getLegendAsString('"'));
       $this->setViewData('chartColors', $statsModel->getColorsAsString('"'));
 
-      // Data pro koláčový graf (konečná akce uživatele).
-      $this->setViewData('chartDataUserEndAction', $statsModel->getStatsForAllEndActions($idCampaign));
+      // Data pro koláčový graf (reakce uživatelů).
+      $this->setViewData('chartDataUsersResponses', $statsModel->getUsersResponses($idCampaign));
 
-      // Data a legenda pro sloupcový graf.
-      $barChart = $statsModel->getStatsForAllEndActionsByGroups($idCampaign);
+      // Data pro koláčový graf (všechny provedené akce).
+      $this->setViewData('chartDataUsersResponsesSum', $statsModel->getUsersResponsesSum($idCampaign));
+
+      // Data a legenda pro sloupcový graf (reakce uživatelů dle oddělení).
+      $barChart = $statsModel->getUsersResponsesByGroups($idCampaign);
 
       $this->setViewData('barChartLegend', $statsModel->legend);
       $this->setViewData('barChartLegendColors', $statsModel->colors);
       $this->setViewData('barChartLegendDesc', $barChart['legend']);
       $this->setViewData('barChartLegendData', $barChart['data']);
-
-      // Data pro koláčový graf pro všechny akce uživatelů.
-      $this->setViewData('chartData', $statsModel->getStatsForAllActions($idCampaign));
     }
 
 
@@ -236,26 +235,23 @@
      *
      * @param CampaignModel $model     Instance třídy
      * @param int $idCampaign          ID kampaně
-     * @param string $exportData       Jaká data se mají exportovat ("count-users-actions",
-     *                                 "all-users-actions" nebo "all").
+     * @param string $exportData       Jaká data se mají exportovat
      */
     private function processExportStats($model, $idCampaign, $exportData) {
-      // Ověření existence záznamu.
       $this->checkRecordExistence($model->getCampaign($idCampaign));
 
       try {
-        // Exportovat ta data, která si uživatel vyžádal a podle toho zavolat odpovídající metodu.
         switch ($exportData) {
-          case 'users-end-actions':
-            StatsExportModel::exportEndActions($idCampaign);
+          case 'users-responses':
+            StatsExportModel::exportUsersResponses($idCampaign);
             break;
 
-          case 'all-users-actions':
+          case 'website-actions':
             StatsExportModel::exportAllCapturedData($idCampaign);
             break;
 
-          case 'count-users-actions':
-            StatsExportModel::exportCountUsersActions($idCampaign);
+          case 'users-responses-sum':
+            StatsExportModel::exportUsersResponsesSum($idCampaign);
             break;
 
           case 'all':
@@ -296,7 +292,7 @@
           $this->addMessage($error->getCode(), $error->getMessage());
         }
 
-        $this->redirect($this->urlSection . '/' . ACT_STATS . '/' . $idCampaign . '?' . ACT_STATS_END_ACTIONS . '#list');
+        $this->redirect($this->urlSection . '/' . ACT_STATS . '/' . $idCampaign . '?' . ACT_STATS_USERS_RESPONSES . '#list');
       }
     }
 

@@ -333,7 +333,7 @@
      */
     public function setTitle($htmlTitle) {
       if (!empty($htmlTitle)) {
-        $this->htmlTitle = $htmlTitle . ' · ' . WEB_HTML_BASE_TITLE;
+        $this->htmlTitle = $htmlTitle . ' · Phishingator';
       }
     }
 

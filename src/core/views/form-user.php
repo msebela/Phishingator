@@ -141,8 +141,8 @@
           </td>
           <td data-sort="<?= $campaign['date_sent'] ?>"><?= $campaign['date_sent_formatted'] ?></td>
           <td>
-            <span class="badge badge-<?= $campaign['user_reaction']['css_color_class'] ?>">
-              <?= $campaign['user_reaction']['name'] ?>
+            <span class="badge badge-<?= $campaign['user_response']['css_color_class'] ?>">
+              <?= $campaign['user_response']['name'] ?>
             </span>
           </td>
         </tr>

@@ -72,11 +72,11 @@
       $this->setViewData('countPhishingWebsites', get_formatted_number($countPhishingWebsites));
       $this->setViewData('countPhishingWebsitesText', $model->getStatsText($countPhishingWebsites, 'websitesCount'));
 
-      // Data pro koláčový graf (konečné akce uživatelů).
-      $this->setViewData('chartDataUserEndAction', $model->getStatsForAllEndActions());
+      // Data pro koláčový graf (reakce uživatelů).
+      $this->setViewData('chartDataUsersResponses', $model->getUsersResponses());
 
-      // Data a legenda pro sloupcový graf o konečných akcích uživatelů dle skupin.
-      $barChart = $model->getStatsForAllEndActionsByGroups();
+      // Data a legenda pro sloupcový graf (reakce uživatelů dle oddělení).
+      $barChart = $model->getUsersResponsesByGroups();
 
       $this->setViewData('barChartLegend', $model->legend);
       $this->setViewData('barChartLegendColors', $model->colors);
@@ -117,11 +117,11 @@
       $this->setViewData('countSentEmails', get_formatted_number($countSentEmails));
       $this->setViewData('countSentEmailsText', $model->getStatsText($countSentEmails, 'sentEmails'));
 
-      // Data pro koláčový graf (konečné akce uživatelů).
-      $this->setViewData('chartDataUserEndAction', $model->getStatsForAllEndActions($campaigns));
+      // Data pro koláčový graf (reakce uživatelů).
+      $this->setViewData('chartDataUsersResponses', $model->getUsersResponses($campaigns));
 
-      // Data a legenda pro sloupcový graf o konečných akcích uživatelů dle skupin.
-      $barChart = $model->getStatsForAllEndActionsByGroups($campaigns);
+      // Data a legenda pro sloupcový graf (reakce uživatelů dle oddělení).
+      $barChart = $model->getUsersResponsesByGroups($campaigns);
 
       $this->setViewData('barChartLegend', $model->legend);
       $this->setViewData('barChartLegendColors', $model->colors);
@@ -150,8 +150,8 @@
       // Úspěšnost v odhalování phishingu.
       $this->setViewData('countSuccessRate', $model->getUserSuccessRate($idUser));
 
-      // Data pro koláčový graf (konečná akce uživatele).
-      $this->setViewData('chartDataUserEndAction', $model->getStatsForAllEndActions(null, $idUser));
+      // Data pro koláčový graf (reakce uživatele).
+      $this->setViewData('chartDataUsersResponses', $model->getUsersResponses(null, $idUser));
 
       $this->setHelpLink('https://github.com/CESNET/Phishingator/phishingator/blob/main/MANUAL.md#1-p%C5%99%C3%ADru%C4%8Dka-pro-u%C5%BEivatele');
     }

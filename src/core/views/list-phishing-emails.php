@@ -22,7 +22,7 @@
     <?php foreach ($phishingEmails as $email): ?>
       <tr>
         <td>
-          <abbr title="Identifikátor v aplikaci <?= WEB_HTML_BASE_TITLE ?>" class="initialism"><?= $email['id_email'] ?></abbr>
+          <abbr title="Identifikátor v aplikaci Phishingator" class="initialism"><?= $email['id_email'] ?></abbr>
         </td>
         <td>
           <?= $email['name'] ?>

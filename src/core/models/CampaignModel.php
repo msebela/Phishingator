@@ -869,12 +869,12 @@
 
 
     /**
-     * Vrátí konečné akce uživatelů v konkrétní kampani.
+     * Vrátí reakce uživatelů na phishing pro konkrétní kampaň.
      *
      * @param int $idCampaign          ID kampaně
-     * @return mixed                   Pole konečných akcí
+     * @return mixed                   Reakce uživatelů
      */
-    public static function getUsersEndActionInCampaign($idCampaign) {
+    public static function getUsersResponsesInCampaign($idCampaign) {
       return Database::queryMulti('
               SELECT
               worstAct.id_user, worstAct.id_captured_data, worstAct.used_email, worstAct.used_group, worstAct.id_action, worstAct.reported,
@@ -977,7 +977,7 @@
      * @param int $idUser              ID uživatele
      * @return array|null              Pole s informacemi o reakci uživatele
      */
-    public static function getUserReaction($idCampaign, $idUser) {
+    public static function getUserResponse($idCampaign, $idUser) {
       $result = null;
 
       if ($idCampaign && $idUser) {

@@ -442,7 +442,7 @@
 
         if (isset($phishingEmail['id_campaign'])) {
           // Získání uživatelské reakce na daný e-mail.
-          $phishingEmail['user_state'] = CampaignModel::getUserReaction(
+          $phishingEmail['user_state'] = CampaignModel::getUserResponse(
             $phishingEmail['id_campaign'], $user['id_user']
           );
         }

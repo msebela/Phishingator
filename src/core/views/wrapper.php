@@ -6,7 +6,7 @@
     <title><?= $html_title ?></title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="<?= WEB_HTML_BASE_TITLE ?> je systém pro rozesílání cvičných phishingových zpráv, jehož cílem je naučit uživatele odhalovat reálný phishing.">
+    <meta name="description" content="Phishingator je systém pro rozesílání cvičných phishingových zpráv, jehož cílem je naučit uživatele odhalovat reálný phishing.">
     <meta name="author" content="Martin Šebela">
 
     <link rel="icon" type="image/png" href="/favicon.png">
@@ -19,7 +19,7 @@
     <header class="navbar navbar-expand navbar-dark sticky-top bg-dark flex-column flex-md-row p-0 shadow">
       <a href="/" class="navbar-brand col-md-4 col-lg-3 col-xl-2 mr-0">
         <span data-feather="anchor"></span>
-        <h1 class="h6 d-inline"><?= WEB_HTML_BASE_TITLE ?> <small>v<?= WEB_VERSION ?></small></h1>
+        <h1 class="h6 d-inline">Phishingator <small>v<?= WEB_VERSION ?></small></h1>
       </a>
 
       <button class="navbar-toggler d-inline d-md-none border-0 text-white" type="button" data-toggle="collapse" data-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">

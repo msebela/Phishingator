@@ -39,8 +39,8 @@
 
       $model = new StatsModel();
 
-      // Data a legenda pro sloupcový graf o konečných akcích uživatelů dle skupin.
-      $barChart = $model->getStatsForAllEndActionsByGroups();
+      // Data a legenda pro sloupcový graf (reakce uživatelů dle oddělení).
+      $barChart = $model->getUsersResponsesByGroups();
 
       $this->setViewData('barChartLegend', $model->legend);
       $this->setViewData('barChartLegendColors', $model->colors);
@@ -126,11 +126,11 @@
         $this->setViewData('chartLegend', $model->getLegendAsString('"'));
         $this->setViewData('chartColors', $model->getColorsAsString('"'));
 
-        // Data pro koláčový graf (konečná akce uživatele).
-        $this->setViewData('chartDataUserEndAction' . $year, $model->getStatsForAllEndActions($campaingsId));
+        // Data pro koláčový graf (reakce uživatelů).
+        $this->setViewData('chartDataUsersResponses' . $year, $model->getUsersResponses($campaingsId));
 
-        // Data a legenda pro sloupcový graf o konečných akcích uživatelů dle skupin.
-        $barChart = $model->getStatsForAllEndActionsByGroups($campaingsId);
+        // Data a legenda pro sloupcový graf (reakce uživatelů dle oddělení).
+        $barChart = $model->getUsersResponsesByGroups($campaingsId);
 
         $this->setViewData('barChartLegend' . $year, $model->legend);
         $this->setViewData('barChartLegendColors' . $year, $model->colors);

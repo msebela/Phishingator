@@ -86,30 +86,30 @@
 
 <div class="d-flex flex-wrap justify-content-around mb-4">
   <div class="chart-wrapper sm">
-    <h4>Konečné akce uživatelů v&nbsp;kampani</h4>
-    <canvas class="mt-4" id="chart-end-actions"></canvas>
+    <h4>Reakce uživatelů</h4>
+    <canvas class="mt-4" id="chart-users-responses"></canvas>
 
     <p class="text-center mt-5">
-      <a href="?<?= ACT_STATS_END_ACTIONS ?>#list" class="btn btn-lg btn-info mt-5 text-wrap" role="button">
+      <a href="?<?= ACT_STATS_USERS_RESPONSES ?>#list" class="btn btn-lg btn-info mt-5 text-wrap" role="button">
         <span data-feather="archive"></span>
-        Tabulka konečných akcí
+        Tabulka reakcí uživatelů
       </a>
     </p>
   </div>
 
   <div class="chart-wrapper">
-    <h4>Konečné akce v&nbsp;kampani dle oddělení</h4>
+    <h4>Reakce uživatelů dle oddělení</h4>
     <div class="table-responsive">
-      <canvas class="mt-4" id="chart-end-actions-groups"></canvas>
+      <canvas class="mt-4" id="chart-users-responses-groups"></canvas>
     </div>
   </div>
 
   <div class="chart-wrapper sm">
-    <h4>Provedené akce v&nbsp;kampani</h4>
-    <canvas class="mt-4" id="chart-end-actions-sum"></canvas>
+    <h4>Všechny provedené akce</h4>
+    <canvas class="mt-4" id="chart-users-responses-sum"></canvas>
 
     <p class="text-center mt-5">
-      <a href="?<?= ACT_STATS_ALL_ACTIONS ?>#list" class="btn btn-lg btn-info mt-5 text-wrap" role="button">
+      <a href="?<?= ACT_STATS_WEBSITE_ACTIONS ?>#list" class="btn btn-lg btn-info mt-5 text-wrap" role="button">
         <span data-feather="activity"></span>
         Tabulka všech provedených akcí
       </a>
@@ -117,11 +117,11 @@
   </div>
 </div>
 
-<?php if (isset($_GET[ACT_STATS_END_ACTIONS]) || isset($_GET[ACT_STATS_ALL_ACTIONS])): ?>
+<?php if (isset($_GET[ACT_STATS_USERS_RESPONSES]) || isset($_GET[ACT_STATS_WEBSITE_ACTIONS])): ?>
 <a id="list"></a>
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-5 mb-3 border-bottom">
-  <h3><?php if (isset($_GET[ACT_STATS_END_ACTIONS])): ?>Konečné akce<?php else: ?>Akce na podvodné stránce podle času<?php endif; ?></h3>
+  <h3><?php if (isset($_GET[ACT_STATS_USERS_RESPONSES])): ?>Reakce jednotlivých uživatelů<?php else: ?>Provedené akce na podvodné stránce<?php endif; ?></h3>
 
   <div class="btn-toolbar mb-2 mb-md-0 align-items-center">
     <div class="custom-control custom-checkbox mr-2">
@@ -129,35 +129,47 @@
       <label class="custom-control-label" for="blur-identities">Rozmazat identity</label>
     </div>
 
-    <?php if (isset($capturedData)): ?>
     <button type="button" id="exportDropdown" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <span data-feather="save"></span>
       Export
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-end-actions" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions">Graf: Konečné akce uživatelů v&nbsp;kampani <code>[PNG]</code></a>
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-end-actions-groups" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions-groups">Graf: Konečné akce v&nbsp;kampani dle oddělení <code>[PNG]</code></a>
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-end-actions-sum" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-chart-end-actions-sum">Graf: Provedené akce v&nbsp;kampani <code>[PNG]</code></a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-<?= date('Y-m-d') ?>">
+        Graf: Reakce uživatelů <code>[PNG]</code>
+      </a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-groups" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-groups-<?= date('Y-m-d') ?>">
+        Graf: Reakce uživatelů dle oddělení <code>[PNG]</code>
+      </a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-sum" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-sum-<?= date('Y-m-d') ?>">
+        Graf: Všechny provedené akce <code>[PNG]</code>
+      </a>
       <div class="dropdown-divider"></div>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-end-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">Konečné akce uživatelů <code>[CSV]</code></a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all-users-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">Všechna zaznamenaná data <code>[CSV]</code></a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=count-users-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">Počet akcí každého uživatele <code>[CSV]</code></a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">Všechna data v&nbsp;archivu <code>[ZIP]</code></a>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
+        Tabulka: Reakce uživatelů <code>[CSV]</code>
+      </a>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=website-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
+        Tabulka: Akce na podvodné stránce <code>[CSV]</code>
+      </a>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses-sum&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
+        Počet akcí každého uživatele <code>[CSV]</code>
+      </a>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
+        Všechna data v&nbsp;archivu <code>[ZIP]</code>
+      </a>
     </div>
-    <?php endif; ?>
   </div>
 </div>
 <?php endif; ?>
 
-<?php if (isset($_GET[ACT_STATS_END_ACTIONS])): ?>
+<?php if (isset($_GET[ACT_STATS_USERS_RESPONSES])): ?>
 
-<p>Výpis konečných akcí všech uživatelů, přičemž jako konečná akce je myšlena ta nejzávažnější akce, kterou mohl uživatel v&nbsp;kampani provést.</p>
+<p>Nejzávažnější akce, kterou může uživatel v&nbsp;kampani provést, je <i>zadání platných (přihlašovacích) údajů</i>.</p>
 
 <div class="row">
-  <?php foreach ($endActionsLegend as $idAction => $nameAction): ?>
+  <?php foreach ($usersResponsesLegend as $idAction => $nameAction): ?>
   <div class="col-xl-4">
     <h4>
-      <span class="badge badge-<?= $endActionsLegendCssClasses[$idAction] ?>"><?= $nameAction ?></span>
+      <span class="badge badge-<?= $usersResponsesLegendCssClasses[$idAction] ?>"><?= $nameAction ?></span>
     </h4>
     <br>
 
@@ -172,7 +184,7 @@
           </tr>
         </thead>
         <tbody>
-        <?php $i = 1; foreach ($endActions as $data): ?>
+        <?php $i = 1; foreach ($usersResponses as $data): ?>
           <?php if ($data['id_action'] != $idAction) continue; ?>
           <tr class="campaign-user-action">
             <td>
@@ -212,7 +224,7 @@
             </td>
             <td>
               <?php if ($idAction != CAMPAIGN_NO_REACTION_ID): ?>
-              <a href="?<?= ACT_STATS_ALL_ACTIONS ?>&amp;rows=<?= $data['id_user'] ?>#d<?= $data['id_captured_data'] ?>" class="text-dark">
+              <a href="?<?= ACT_STATS_WEBSITE_ACTIONS ?>&amp;rows=<?= $data['id_user'] ?>#d<?= $data['id_captured_data'] ?>" class="text-dark">
                 <span data-feather="eye"></span>
               </a>
               <?php endif; ?>
@@ -226,10 +238,10 @@
   <?php endforeach; ?>
 </div>
 
-<?php elseif (isset($_GET[ACT_STATS_ALL_ACTIONS])): ?>
+<?php elseif (isset($_GET[ACT_STATS_WEBSITE_ACTIONS])): ?>
 
 <?php if (count($capturedData) > 0): ?>
-<p>Výpis všech provedených akcí na podvodné stránce, která je přístupná ze zasílaného podvodného e-mailu. Zastoupení všech těchto akcí znázorňuje také graf <i>Provedené akce v&nbsp;kampani</i>.</p>
+<p>Výpis všech akcí provedených na podvodné stránce, která je přístupná ze zasílaného podvodného e-mailu. Zastoupení těchto akcí znázorňuje také graf <i>Všechny provedené akce</i>.</p>
 
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/table-sort.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
@@ -302,13 +314,13 @@
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chart.umd.js?4.3.0" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 <script src="/<?= CORE_DIR_EXTENSIONS ?>/chartjs/chartjs-plugin-datalabels.min.js?2.2.0" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 <script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">
-  let campaignChart1 = new Chart(document.getElementById('chart-end-actions'), {
+  let chartUsersResponses = new Chart(document.getElementById('chart-users-responses'), {
     plugins: [ChartDataLabels],
     type: 'doughnut',
     data: {
       labels: [<?= $_chartLegend ?>],
       datasets: [{
-        data: [<?= $chartDataUserEndAction ?>],
+        data: [<?= $chartDataUsersResponses ?>],
         backgroundColor: [<?= $_chartColors ?>],
         datalabels: {
           anchor: function(context) {
@@ -387,13 +399,13 @@
       }}
   });
 
-  let campaignChart2 = new Chart(document.getElementById('chart-end-actions-sum'), {
+  let chartUsersResponsesSum = new Chart(document.getElementById('chart-users-responses-sum'), {
     plugins: [ChartDataLabels],
     type: 'doughnut',
     data: {
       labels: [<?= $_chartLegend ?>],
       datasets: [{
-        data: [<?= $chartData ?>],
+        data: [<?= $chartDataUsersResponsesSum ?>],
         backgroundColor: [<?= $_chartColors ?>],
         datalabels: {
           anchor: 'end', clamp: 'true'
@@ -436,7 +448,7 @@
       }}
   });
 
-  let campaignChart3 = new Chart(document.getElementById('chart-end-actions-groups'), {
+  let chartUsersResponsesGroups = new Chart(document.getElementById('chart-users-responses-groups'), {
     type: 'bar',
     data: {
       labels: [<?= $_barChartLegendDesc ?>],

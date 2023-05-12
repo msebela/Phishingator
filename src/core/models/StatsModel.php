@@ -97,7 +97,7 @@
      *
      * @return array                   Vynulované pole akcí.
      */
-    public function getEmptyArrayCountActions() {
+    public function getEmptyArraySumActions() {
       $actionsArray = [];
 
       if (!empty($this->legend)) {
@@ -163,7 +163,7 @@
      * @param int $idCampaign          ID kampaně
      * @return string|null             Data s počtem každého typu možných akcí nebo NULL.
      */
-    public function getStatsForAllActions($idCampaign) {
+    public function getUsersResponsesSum($idCampaign) {
       $data = null;
 
       if (!empty($this->legend) && !empty($idCampaign)) {
@@ -177,19 +177,19 @@
 
 
     /**
-     * Vrátí data pro statistiku ukazující podíl konečných typů provedených akcí (těch nejvážnějších,
-     * které mohli uživatelé na podvodné stránce udělat).
+     * Vrátí data prezentující reakce uživatelů pro danou kampaň/kampaně, a to podle nejzávážnější akce,
+     * kterou každý z uživatelů v kampani provedl.
      *
      * @param int|array|null $idCampaign ID kampaně (nebo pole ID kampaní), pro které se statistika zjišťuje nebo NULL,
      *                                   pokud se zjišťuje pro všechny kampaně.
      * @param int|null $idUser           ID uživatele, pro kterého se statistika zjišťuje (v tom případě musí být
      *                                   předchozí parametr metody NULL), pokud pro všechny uživatele, tak NULL.
      * @param bool $returnArray          FALSE pokud data vrátit jako řetězec (výchozí) nebo TRUE pokud jako pole.
-     * @return array|string              Data s počtem konečných akcí uživatelů/uživatele.
+     * @return array|string              Data s počtem jednotlivých reakcí uživatelů/uživatele.
      */
-    public function getStatsForAllEndActions($idCampaign = null, $idUser = null, $returnArray = false) {
+    public function getUsersResponses($idCampaign = null, $idUser = null, $returnArray = false) {
       // Připravení prázdného pole, kde index v poli představuje danou akci.
-      $dataCountActions = $this->getEmptyArrayCountActions();
+      $dataCountActions = $this->getEmptyArraySumActions();
 
       if (!is_array($idCampaign) && $idCampaign != null) {
         // Zjištění statistiky pro jednu konkrétní kampaň.
@@ -297,13 +297,12 @@
 
     /**
      * Vrátí data a legendu pro sloupcový graf, který bude znázorňovat počet provedených akcí (každého typu)
-     * po skupinách uživatelů (na základě jejich e-mailů). Data lze požadovat buď pro konkrétní kampaň
-     * nebo pro všechny kampaně.
+     * po skupinách (odděleních) uživatelů. Data lze požadovat buď pro konkrétní kampaň, nebo pro všechny kampaně.
      *
      * @param int|null $idCampaign     ID kampaně
      * @return array                   Pole s daty a legendou určené pro sloupcový graf knihovny Chart.js
      */
-    public function getStatsForAllEndActionsByGroups($idCampaign = null) {
+    public function getUsersResponsesByGroups($idCampaign = null) {
       if ($idCampaign != null && !is_array($idCampaign)) {
         // Zjištění statistiky pro konkrétní kampaň.
         $query = '
@@ -344,11 +343,11 @@
 
       if ($idCampaign != null && !is_array($idCampaign)) {
         // Zjišťování statistiky pro konkrétní kampaň.
-        $data = $this->processDataForAllEndActionsByGroupsInCampaign($capturedData, $allDepartments);
+        $data = $this->processUsersResponsesByGroupsInCampaign($capturedData, $allDepartments);
       }
       else {
         // Zjišťování statistiky pro všechny kampaně.
-        $data = $this->processDataForAllEndActionsByGroupsInAllCampaigns($capturedData, $allDepartments, true);
+        $data = $this->processUsersResponsesByGroupsInAllCampaigns($capturedData, $allDepartments, true);
       }
 
       // Transformace dat do požadované struktury pro sloupcový graf Chart.js.
@@ -357,14 +356,14 @@
 
 
     /**
-     * Zpracuje zaznamenaná data konečných akcí uživatelů ve všech kampaních a zpracovaná data vrátí.
+     * Zpracuje reakce uživatelů ve všech kampaních a zpracovaná data vrátí.
      *
      * @param array $capturedData      Pole obsahující zaznamenaná data z podvodné stránky
      * @param array $allDepartments    Seznam pracovišť
      * @param bool $percentage         Vrátit data v procentech (TRUE), jinak FALSE (výchozí)
      * @return array                   Zpracovaná data
      */
-    private function processDataForAllEndActionsByGroupsInAllCampaigns($capturedData, $allDepartments, $percentage = false) {
+    private function processUsersResponsesByGroupsInAllCampaigns($capturedData, $allDepartments, $percentage = false) {
       $data = [];
       $usersResponses = [];
 
@@ -404,7 +403,7 @@
 
           // Pro každou novou skupinu vynulování počtu akcí, které mohli uživatelé udělat.
           if (!isset($data[$domain])) {
-            $data[$domain] = $this->getEmptyArrayCountActions();
+            $data[$domain] = $this->getEmptyArraySumActions();
           }
 
           // Inkrementace konkrétní akce v právě procházené skupině.
@@ -432,13 +431,13 @@
 
 
     /**
-     * Zpracuje zaznamenaná data konečných akcí uživatelů zapojených do konkrétní kampaně a zpracovaná data vrátí.
+     * Zpracuje reakce uživatelů zapojených do konkrétní kampaně a zpracovaná data vrátí.
      *
      * @param array $capturedData      Pole obsahující zaznamenaná data z podvodné stránky
      * @param array $allDepartments    Seznam pracovišť
      * @return array                   Zpracovaná data
      */
-    private function processDataForAllEndActionsByGroupsInCampaign($capturedData, $allDepartments) {
+    private function processUsersResponsesByGroupsInCampaign($capturedData, $allDepartments) {
       $data = [];
 
       // Vytvoření skupin na základě subdomén e-mailů (resp. domén nižších řádů)
@@ -454,7 +453,7 @@
 
         // Pro každou novou skupinu vynulování počtu akcí, které uživatelé mohli udělat.
         if (!isset($data[$department])) {
-          $data[$department] = $this->getEmptyArrayCountActions();
+          $data[$department] = $this->getEmptyArraySumActions();
         }
 
         // Inkrementace konkrétní akce v právě procházené skupině (pokud je známa konkrétní kampaň).
@@ -615,28 +614,28 @@
      */
     public static function getUserSuccessRate($idUser) {
       // Reakce uživatelů, které jsou považovány za "úspěšné odhalení phishingu".
-      $correctReactionsId = [CAMPAIGN_NO_REACTION_ID, CAMPAIGN_VISIT_FRAUDULENT_PAGE_ID, CAMPAIGN_INVALID_CREDENTIALS_ID];
+      $correctResponsesId = [CAMPAIGN_NO_REACTION_ID, CAMPAIGN_VISIT_FRAUDULENT_PAGE_ID, CAMPAIGN_INVALID_CREDENTIALS_ID];
 
       // Počet jednotlivých reakcí na zaslané e-maily.
-      $allReactionsCount = 0;
-      $correctReactionsCount = 0;
+      $sumAllResponses = 0;
+      $sumCorrectResponses = 0;
 
       $recievedEmails = RecievedEmailModel::getRecievedPhishingEmails($idUser);
 
       // Průchod všemi odeslanými e-maily a zjištění reakce uživatele.
       foreach ($recievedEmails as $email) {
-        $reaction = CampaignModel::getUserReaction($email['id_campaign'], $idUser);
+        $response = CampaignModel::getUserResponse($email['id_campaign'], $idUser);
 
         // Zjištění počtu správných reakcí na phishing.
-        if (in_array($reaction['id_action'], $correctReactionsId)) {
-          $correctReactionsCount++;
+        if (in_array($response['id_action'], $correctResponsesId)) {
+          $sumCorrectResponses++;
         }
 
-        $allReactionsCount++;
+        $sumAllResponses++;
       }
 
       // Spočítání úspěšnosti v odhalování phishingu.
-      return (($allReactionsCount != 0) ? round((100 * $correctReactionsCount) / $allReactionsCount) : 0);
+      return (($sumAllResponses != 0) ? round((100 * $sumCorrectResponses) / $sumAllResponses) : 0);
     }
 
 

@@ -18,7 +18,7 @@
     <?php foreach ($phishingWebsites as $website): ?>
       <tr>
         <td>
-          <abbr title="Identifikátor v aplikaci <?= WEB_HTML_BASE_TITLE ?>" class="initialism"><?= $website['id_website'] ?></abbr>
+          <abbr title="Identifikátor v aplikaci Phishingator" class="initialism"><?= $website['id_website'] ?></abbr>
         </td>
         <td><?= $website['name'] ?></td>
         <td data-sort="<?= $website['date_added'] ?>"><?= $website['date_added_formatted'] ?></td>
