@@ -745,7 +745,8 @@
      * @throws UserError
      */
     private function isURLValidDNSRecord() {
-      if (gethostbyname(get_hostname_from_url($this->url)) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
+      if (!in_array(get_domain_from_url($this->url), PhishingWebsiteModel::getDomainsRegisteredInProxy()) &&
+           gethostbyname(get_hostname_from_url($this->url)) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
         throw new UserError('U zadané domény (popř. subdomény) není v DNS nasměrován záznam typu A na IP adresu serveru, kde běží Phishingator.', MSG_ERROR);
       }
     }

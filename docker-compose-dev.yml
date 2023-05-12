@@ -52,7 +52,7 @@ services:
     restart: always
     container_name: phishingator-${ORG}-scheduler
     environment:
-      - SCHEDULER_TOKEN
+      - PHISHINGATOR_TOKEN
     networks:
       scheduler-net:
         ipv4_address: 172.22.0.20

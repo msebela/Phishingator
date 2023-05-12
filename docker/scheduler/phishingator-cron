@@ -1,7 +1,7 @@
 PATH=/usr/bin:/bin:/usr/sbin/
 
 # m h  dom mon dow   command
-*/5 * * * * /usr/bin/curl --silent -H "Phishingator-Token: $SCHEDULER_TOKEN" http://web?action=send-emails > /dev/null 2>&1
-*/2 * * * * /usr/bin/curl --silent -H "Phishingator-Token: $SCHEDULER_TOKEN" http://web?action=send-notifications > /dev/null 2>&1
-0 3 * * * /usr/bin/curl --silent -H "Phishingator-Token: $SCHEDULER_TOKEN" http://web?action=synchronize-users-data > /dev/null 2>&1
-*/2 * * * * /usr/bin/curl --silent -H "Phishingator-Token: $SCHEDULER_TOKEN" http://web?action=deploy-websites >> /dev/null 2>&1
+*/5 * * * * /usr/bin/curl --silent -H "Phishingator-Token: $PHISHINGATOR_TOKEN" http://web?action=send-emails > /dev/null 2>&1
+*/2 * * * * /usr/bin/curl --silent -H "Phishingator-Token: $PHISHINGATOR_TOKEN" http://web?action=send-notifications > /dev/null 2>&1
+0 3 * * * /usr/bin/curl --silent -H "Phishingator-Token: $PHISHINGATOR_TOKEN" http://web?action=synchronize-users-data > /dev/null 2>&1
+*/2 * * * * /usr/bin/curl --silent -H "Phishingator-Token: $PHISHINGATOR_TOKEN" http://web?action=deploy-websites >> /dev/null 2>&1

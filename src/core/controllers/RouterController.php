@@ -67,12 +67,17 @@
         }
       }
 
-      if ($this->controller == null && $_SERVER['REMOTE_ADDR'] == SCHEDULER_ALLOWED_IP) {
-        $this->controller = new SchedulerController();
+      if ($this->controller == null) {
+        if ($_SERVER['REMOTE_ADDR'] == SCHEDULER_ALLOWED_IP) {
+          $this->controller = new SchedulerController();
+        }
+        elseif ($_SERVER['REMOTE_ADDR'] == DOMAINER_ALLOWED_IP) {
+          $this->controller = new DomainsController();
+        }
       }
 
-      // Ve všech ostatních případech se uživatel nalézá ve veřejné části aplikace (to se ovšem může dít
-      // i za předpokladu, že je přihlášený, proto to není jako ELSE větev první podmínky).
+      // Ve všech ostatních případech se uživatel nalézá ve veřejné části aplikace (to se ovšem může
+      // dít i za předpokladu, že je přihlášený, proto to není jako ELSE větev první podmínky).
       if ($this->controller == null) {
         $this->controller = $this->getController('public-homepage', true);
         $publicSite = true;
