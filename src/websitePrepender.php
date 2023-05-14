@@ -12,4 +12,7 @@
   spl_autoload_register('autoload_functions');
 
   $prepender = new WebsitePrependerModel();
+
   $message = $prepender->getDisplayMessage();
+  $username = Controller::escapeOutput($prepender->getUsername());
+  $email = Controller::escapeOutput($prepender->getEmail());

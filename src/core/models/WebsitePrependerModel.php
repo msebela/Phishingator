@@ -1,25 +1,59 @@
 <?php
   /**
-   * Třída, která obsluhuje a řídí podvodné stránky a zachytává a zpracovává data na nich zadaná.
+   * Třída, která zajišťuje činnost podvodných stránek a zachytává a zpracovává data na nich zadaná.
    *
    * @author Martin Šebela
    */
   class WebsitePrependerModel {
+    /**
+     * @var string      Uživatelské jméno uživatele, který na podvodnou stránku přistoupil
+     *                  (pro personalizovaný výpis do podvodné stránky).
+     */
+    private $username;
+
+    /**
+     * @var string      E-mail uživatele, který na podvodnou stránku přistoupil
+     *                  (pro personalizovaný výpis do podvodné stránky).
+     */
+    private $email;
+
     /**
      * @var bool        Informace o tom, zdali má být uživateli zobrazena chybová zpráva, pokud cokoliv zadá
      *                  do formuláře na podvodné stránce a formulář odešle.
      */
     private $displayMessage;
 
+
+    /**
+     * Vrátí uživatelské jméno uživatele, který na podvodnou stránku přistoupil.
+     *
+     * @return string
+     */
+    public function getUsername() {
+      return $this->username;
+    }
+
+
+    /**
+     * Vrátí e-mail uživatele, který na podvodnou stránku přistoupil.
+     *
+     * @return string
+     */
+    public function getEmail() {
+      return $this->email;
+    }
+
+
     /**
      * Vrátí informaci o tom, zdali má být uživateli zobrazena chybová hláška při
      * odeslání formuláře na podvodné stránce.
      *
-     * @return bool                    TRUE pro zobrazení chybové hlášky, jinak FALSE.
+     * @return bool
      */
     public function getDisplayMessage() {
       return $this->displayMessage;
     }
+
 
     /**
      * Nastaví výchozí hodnoty a spustí metodu pro zpracování zobrazované podvodné stránky.
@@ -70,10 +104,10 @@
 
     /**
      * Zpracuje předaná data (typicky $_POST data z formuláře), nalezne v nich vstupní pole pro heslo
-     * a uživatelem zadaný řetězec anonymizuje (podle konfigurace systému).
+     * a uživatelem zadaný řetězec anonymizuje (podle konfigurace Phishingatoru).
      *
      * @param array $inputs            Data z formuláře.
-     * @param string $anonymLevel      Úroveň anonymizace (between, full nebo nevyplněno).
+     * @param string $anonymLevel      Úroveň anonymizace (viz konfigurace Phishingatoru).
      * @return array                   Původní data s anonymizovanými hesly.
      */
     private function anonymizePasswords($inputs, $anonymLevel) {
@@ -139,6 +173,7 @@
      * @param string $email            E-mail uživatele
      * @param string $group            Skupina uživatele
      * @param int $credentialsResult   1 pokud byly zadány platné přihlašovací údaje, jinak 0.
+     * @return void
      */
     private function logCapturedData($idCampaign, $idUser, $email, $group, $credentialsResult) {
       $record = [
@@ -239,19 +274,22 @@
      *
      * @param int $idCampaign          ID kampaně
      * @param int $idUser              ID uživatele
+     * @return void
      */
     private function checkCountUserRequests($idCampaign, $idUser) {
+      $maxUserRequests = 10;
+
       $requests = Database::queryMulti('
               SELECT visit_datetime
               FROM phg_captured_data
               WHERE id_campaign = ?
               AND id_user = ?
               ORDER BY id_captured_data DESC
-              LIMIT 10
-      ', [$idCampaign, $idUser]);
+              LIMIT ?
+      ', [$idCampaign, $idUser, $maxUserRequests]);
 
       // Pokud je počet požadavků u dané kampaně od jednoho uživatele větší než...
-      if (count($requests) >= 10) {
+      if (count($requests) >= $maxUserRequests) {
         // Zjistí se první záznam a poslední záznam aktivity.
         $latest_activity = $requests[0]['visit_datetime'];
         $latest_nineth_activity = $requests[count($requests) - 1]['visit_datetime'];
@@ -297,60 +335,36 @@
 
 
     /**
-     * Zpracuje požadavky a připraví podvodnou stránku na základě konfigurace u dané kampaně v databázi.
+     * Zpracuje požadavky a připraví podvodnou stránku na základě její konfigurace.
+     *
+     * @return void
      */
     private function process() {
       if (isset($_GET)) {
-        // Náhled podvodné stránky pro administrátory a správce testů.
-        if (isset($_GET[ACT_PREVIEW]) && mb_strlen($_GET[ACT_PREVIEW]) == PHISHING_WEBSITE_PREVIEW_HASH_BYTES * 2) {
-          $this->processPreview();
+        $args = $this->getUserWebsiteId($_GET);
+
+        // Ověření, zda má jít o náhled podvodné stránky pro administrátory a správce testů.
+        $preview = isset($_GET[ACT_PREVIEW]) && mb_strlen($_GET[ACT_PREVIEW]) == PHISHING_WEBSITE_PREVIEW_HASH_BYTES * 2;
+
+        if ($args == null) {
+          $args[] = self::getClientIp();
+
+          Logger::warning(
+            'Unauthorized access to' . (($preview) ? ' preview' : '') . ' a phishing website (invalid user/campaign argument).',
+            $args
+          );
+
+          header('Location: ' . WEB_BASE_URL);
+          exit();
         }
         else {
-          $args = $this->getUserWebsiteId($_GET);
-
-          if ($args == null) {
-            $args[] = self::getClientIp();
-            Logger::warning('Unauthorized access to a phishing website (invalid user/campaign argument).', $args);
-
-            header('Location: ' . WEB_BASE_URL);
-            exit();
-          }
-
           Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
 
-          $campaignModel = new CampaignModel();
-          $campaign = $campaignModel->getCampaign($args['id_campaign']);
-          $user = UsersModel::getUserByURL($args['id_user']);
-
-          // Kontrola existence záznamu.
-          if (empty($campaign) || empty($user) || $campaignModel->isUserRecipient($args['id_campaign'], $user['id_user']) != 1) {
-            $args[] = self::getClientIp();
-            Logger::warning('Unauthorized access to a phishing website.', $args);
-
-            header('Location: ' . WEB_BASE_URL);
-            exit();
+          if ($preview) {
+            $this->processAdminPreview($args);
           }
-
-          // Stránka bude přístupná a bude zaznamenávat aktivitu od/do zvoleného data a času.
-          if (strtotime($campaign['active_since']) > strtotime('now') || strtotime($campaign['active_to'] . ' ' . CAMPAIGN_END_TIME) < strtotime('now')) {
-            $args[] = self::getClientIp();
-            Logger::warning('Invalid access a phishing website for a phishing campaign that is not active.', $args);
-
-            header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
-            exit();
-          }
-
-          // Ověření, zda uživatel nezasílá příliš mnoho požadavků a nesnaží se vytížit aplikaci neustálým zápisem záznamů o návštěvě podvodné stránky.
-          $this->checkCountUserRequests($args['id_campaign'], $user['id_user']);
-
-          // Uložení získaných dat.
-          $credentialsResult = $this->areCredentialsValid($_POST[PHISHING_WEBSITE_INPUT_FIELD_USERNAME] ?? '', $_POST[PHISHING_WEBSITE_INPUT_FIELD_PASSWORD] ?? '');
-          $this->logCapturedData($args['id_campaign'], $user['id_user'], $user['email'], $user['primary_group'], $credentialsResult);
-
-          // Vykonání akce, ke které má dojít po odeslání formuláře.
-          if (!empty($_POST)) {
-            $action = $campaignModel->getWebsiteAction($campaign['id_onsubmit']);
-            $this->processForm($action['id_onsubmit'], $args, $credentialsResult);
+          else {
+            $this->processView($args);
           }
         }
       }
@@ -364,74 +378,60 @@
 
 
     /**
-     * Vykoná akci, ke které má dojít po odeslání formuláře na podvodné stránce.
+     * Obslouží požadavky zajišťující zobrazení podvodné stránky pro všechny účastníky kampaně.
      *
-     * @param int $onSubmitAction      ID akce, ke které má dojít po odeslání formuláře
-     * @param array $args              Další argumenty k akci, ke které má dojít (např. URL pro přesměrování)
-     * @param bool $credentialsResult  TRUE pokud byly zadány platné přihlašovací údaje, jinak FALSE
+     * @param array $args              Argumenty pro podvodnou stránku
+     * @return void
      */
-    private function processForm($onSubmitAction, $args, $credentialsResult) {
-      // Přesměrování na vzdělávací stránku s indiciemi (po zadání čehokoliv).
-      if ($onSubmitAction == 2) {
+    private function processView($args) {
+      $campaignModel = new CampaignModel();
+      $campaign = $campaignModel->getCampaign($args['id_campaign']);
+      $user = UsersModel::getUserByURL($args['id_user']);
+
+      // Kontrola existence záznamu.
+      if (empty($campaign) || empty($user) || $campaignModel->isUserRecipient($args['id_campaign'], $user['id_user']) != 1) {
+        $args[] = self::getClientIp();
+        Logger::warning('Unauthorized access to a phishing website.', $args);
+
+        header('Location: ' . WEB_BASE_URL);
+        exit();
+      }
+
+      // Stránka bude přístupná a bude zaznamenávat aktivitu od/do zvoleného data a času.
+      if (strtotime($campaign['active_since']) > strtotime('now') || strtotime($campaign['active_to'] . ' ' . CAMPAIGN_END_TIME) < strtotime('now')) {
+        $args[] = self::getClientIp();
+        Logger::warning('Invalid access a phishing website for a phishing campaign that is not active.', $args);
+
         header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
         exit();
       }
-      // Přesměrování na vzdělávací stránku s indiciemi (pouze po zadání platných přihlašovacích údajů).
-      elseif ($onSubmitAction == 3) {
-        if ($credentialsResult) {
-          header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
-          exit();
-        }
-        else {
-          $this->displayMessage = true;
-        }
-      }
-      // Neustálé zobrazování chybové zprávy.
-      elseif ($onSubmitAction == 4) {
-        $this->displayMessage = true;
-      }
-      // Po druhém zadání přihlašovacích údajů přesměrovat na vzdělávací stránku s indiciemi.
-      elseif ($onSubmitAction == 5) {
-        $countMaxSends = 2;
-        $sessionName = 'phishingMessage-' . $args['id_campaign'];
 
-        // Nastavení, kolikrát již uživatel odeslal formulář.
-        if (isset($_SESSION[$sessionName])) {
-          $_SESSION[$sessionName] += 1;
-        }
-        else {
-          $_SESSION[$sessionName] = 1;
-        }
+      // Data o uživateli pro možný, personalizovaný výpis na podvodné stránce.
+      $this->username = $user['username'];
+      $this->email = $user['email'];
 
-        $this->displayMessage = true;
+      // Ověření, zda uživatel nezasílá příliš mnoho požadavků a nesnaží se zatížit aplikaci neustálým zápisem záznamů o návštěvě podvodné stránky.
+      $this->checkCountUserRequests($args['id_campaign'], $user['id_user']);
 
-        // Při překročení nastaveného limitu přesměrovat na vzdělávací stránku s indiciemi.
-        if ($_SESSION[$sessionName] >= $countMaxSends) {
-          unset($_SESSION[$sessionName]);
+      // Uložení získaných dat.
+      $credentialsResult = $this->areCredentialsValid($_POST[PHISHING_WEBSITE_INPUT_FIELD_USERNAME] ?? '', $_POST[PHISHING_WEBSITE_INPUT_FIELD_PASSWORD] ?? '');
+      $this->logCapturedData($args['id_campaign'], $user['id_user'], $user['email'], $user['primary_group'], $credentialsResult);
 
-          header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
-          exit();
-        }
+      // Vykonání akce, ke které má dojít po odeslání formuláře.
+      if (!empty($_POST)) {
+        $action = $campaignModel->getWebsiteAction($campaign['id_onsubmit']);
+        $this->processForm($action['id_onsubmit'], $args, $credentialsResult);
       }
     }
 
 
     /**
      * Obslouží požadavky zajišťující náhled podvodné stránky pro administrátory a správce testů.
+     *
+     * @param array $args              Argumenty pro podvodnou stránku
+     * @return void
      */
-    private function processPreview() {
-      $args = $this->getUserWebsiteId($_GET);
-
-      if ($args == null) {
-        $args[] = self::getClientIp();
-        Logger::warning('Unauthorized access to preview a phishing website (invalid user/campaign argument).', $args);
-
-        header('Location: ' . WEB_URL);
-        exit();
-      }
-
-      Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
-
+    private function processAdminPreview($args) {
       // Zjištění informací o uživateli, který se snaží na náhled podvodné stránky přistoupit.
       $user = UsersModel::getUserByURL($args['id_user']);
       $userDetail = UsersModel::getUserByUsername($user['username']);
@@ -485,6 +485,10 @@
         // Vložení informační hlavičky s poznámkou, že se jedná o náhled podvodné stránky.
         require CORE_DOCUMENT_ROOT . '/' . CORE_DIR_VIEWS . '/preview-phishing-website' . CORE_VIEWS_FILE_EXTENSION;
 
+        // Data o uživateli pro možný, personalizovaný výpis na podvodné stránce.
+        $this->username = $user['username'];
+        $this->email = $user['email'];
+
         Logger::info('Access to a preview of the phishing website.', $args);
       }
       else {
@@ -493,6 +497,60 @@
 
         header('Location: ' . WEB_URL);
         exit();
+      }
+    }
+
+
+    /**
+     * Vykoná akci, ke které má dojít po odeslání formuláře na podvodné stránce.
+     *
+     * @param int $onSubmitAction      ID akce, ke které má dojít po odeslání formuláře
+     * @param array $args              Další argumenty k akci, ke které má dojít (např. URL pro přesměrování)
+     * @param bool $credentialsResult  TRUE pokud byly zadány platné přihlašovací údaje, jinak FALSE
+     * @return void
+     */
+    private function processForm($onSubmitAction, $args, $credentialsResult) {
+      // Přesměrování na vzdělávací stránku s indiciemi (po zadání čehokoliv).
+      if ($onSubmitAction == 2) {
+        header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
+        exit();
+      }
+      // Přesměrování na vzdělávací stránku s indiciemi (pouze po zadání platných přihlašovacích údajů).
+      elseif ($onSubmitAction == 3) {
+        if ($credentialsResult) {
+          header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
+          exit();
+        }
+        else {
+          $this->displayMessage = true;
+        }
+      }
+      // Neustálé zobrazování chybové zprávy.
+      elseif ($onSubmitAction == 4) {
+        $this->displayMessage = true;
+      }
+      // Po druhém zadání přihlašovacích údajů přesměrovat na vzdělávací stránku s indiciemi.
+      elseif ($onSubmitAction == 5) {
+        $countMaxSends = 2;
+        $sessionName = 'phishingMessage-' . $args['id_campaign'];
+
+        // Nastavení, kolikrát již uživatel odeslal formulář.
+        if (isset($_SESSION[$sessionName])) {
+          $_SESSION[$sessionName] += 1;
+        }
+        else {
+          $_SESSION[$sessionName] = 1;
+        }
+
+        $this->displayMessage = true;
+
+        // Při překročení nastaveného limitu přesměrovat na vzdělávací stránku s indiciemi.
+        if ($_SESSION[$sessionName] >= $countMaxSends) {
+          unset($_SESSION[$sessionName]);
+
+          header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
+          exit();
+        }
       }
     }
   }
