@@ -23,6 +23,7 @@ services:
       - WEB_URL
       - CSRF_KEY
       - PHISHINGATOR_TOKEN
+      - DOMAINER_ALLOWED_IP
       - APACHE_DOCUMENT_ROOT
       - FRAUDULENT_HOSTS
       - DB_HOST
