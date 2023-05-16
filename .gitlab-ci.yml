@@ -1,8 +1,6 @@
-
 workflow:
   rules:
     - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
-
 
 stages:
   - build
@@ -20,7 +18,6 @@ build:
     - docker-compose push
     - docker logout $CI_REGISTRY
 
-
 deploy:
   stage: deploy
   image: martinkylian/ci
@@ -31,12 +28,12 @@ deploy:
     - docker logout $CI_REGISTRY
   script:
     - docker-compose pull
-    - docker-compose up -d --no-build --force-recreate
+    - docker-compose up -d --no-build --force-recreate --remove-orphans
   variables:
-    COMPOSE_PROJECT_NAME: $CI_COMMIT_REF_SLUG
+    COMPOSE_PROJECT_NAME: ${CI_PROJECt_NAME}_${CI_COMMIT_REF_SLUG}
   environment:
     name: $CI_COMMIT_REF_SLUG
-    url: ${WEB_URL}
+    url: $WEB_URL
     on_stop: stop
 
 stop:
