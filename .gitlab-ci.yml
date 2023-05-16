@@ -28,9 +28,9 @@ deploy:
     - docker logout $CI_REGISTRY
   script:
     - docker-compose pull
-    - docker-compose up -d --no-build --force-recreate --remove-orphans
+    - docker-compose up -d --no-build --force-recreate
   variables:
-    COMPOSE_PROJECT_NAME: ${CI_PROJECt_NAME}_${CI_COMMIT_REF_SLUG}
+    COMPOSE_PROJECT_NAME: ${CI_PROJECT_NAME}_${CI_COMMIT_REF_SLUG}
   environment:
     name: $CI_COMMIT_REF_SLUG
     url: $WEB_URL
