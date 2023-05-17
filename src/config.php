@@ -42,19 +42,22 @@
   /** Cesta k seznamu uživatelů v LDAP. */
   define('LDAP_USERS_DN', getenv('LDAP_USERS_DN'));
 
-  /** Název atributu v LDAP (typicky "displayName" / "cn"), ve kterém je uloženo jméno a příjmení uživatele. */
+  /** Název atributu v LDAP, ve kterém je uložen identifikátor uživatele (typicky "uid" / "samaccountname"). */
+  define('LDAP_USER_ATTR_ID', (getenv('LDAP_USER_ATTR_ID')) ? getenv('LDAP_USER_ATTR_ID') : 'uid');
+
+  /** Název atributu v LDAP, ve kterém je uloženo jméno a příjmení uživatele (typicky "displayName" / "cn"). */
   define('LDAP_USER_ATTR_NAME', (getenv('LDAP_USER_ATTR_NAME')) ? getenv('LDAP_USER_ATTR_NAME') : 'displayName');
 
   /** Název atributu v LDAP, ve kterém je uložen e-mail uživatele. */
   define('LDAP_USER_ATTR_EMAIL', (getenv('LDAP_USER_ATTR_EMAIL')) ? getenv('LDAP_USER_ATTR_EMAIL') : 'mail');
 
-  /** Název atributu v LDAP, ze kterého lze získat členství uživatele v primární skupině (např. mateřské oddělení). */
+  /** Název atributu v LDAP, ze kterého lze získat název oddělení, do něhož je uživatel zařazen. */
   define('LDAP_USER_ATTR_PRIMARY_GROUP', (getenv('LDAP_USER_ATTR_PRIMARY_GROUP')) ? getenv('LDAP_USER_ATTR_PRIMARY_GROUP') : 'memberof');
 
   /** Cesta k seznamu uživatelských skupin v LDAP. */
   define('LDAP_GROUPS_DN', (getenv('LDAP_GROUPS_DN')) ? getenv('LDAP_GROUPS_DN') : 'ou=Groups');
 
-  /** Název atributu, ze kterého lze získat členství v uživatelské skupině. */
+  /** Název atributu v LDAP, který obsahuje identifikátor uživatele patřícího do dané skupiny. */
   define('LDAP_GROUPS_ATTR_MEMBER', getenv('LDAP_GROUPS_ATTR_MEMBER'));
 
   /** Cesta k seznamu pracovišť v LDAP. */

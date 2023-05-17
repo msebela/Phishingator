@@ -39,9 +39,9 @@
 
       $this->ldapConnection = ldap_connect(LDAP_HOSTNAME . (!empty(LDAP_PORT) ? ':' . LDAP_PORT : ''));
 
-      ldap_set_option($this->ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
-
       if ($this->ldapConnection) {
+        ldap_set_option($this->ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
+
         if ($username == null || $password == null) {
           $username = LDAP_USERNAME;
           $password = LDAP_PASSWORD;
@@ -51,7 +51,7 @@
       }
 
       if (!$this->ldapConnection || !$ldapBind) {
-        Logger::error('Failed to authenticate to LDAP.');
+        Logger::error('Failed to connect or authenticate to LDAP.');
       }
       else {
         $connected = true;
@@ -83,7 +83,11 @@
       $data = null;
 
       if ($this->ldapConnection && !empty($ldapDn) && !empty($filter)) {
-        $results = ldap_search($this->ldapConnection, $ldapDn . ',' . LDAP_BASE_DN, $filter);
+        if ($ldapDn != LDAP_BASE_DN) {
+          $ldapDn .= ',' . LDAP_BASE_DN;
+        }
+
+        $results = ldap_search($this->ldapConnection, $ldapDn, $filter);
 
         if ($results) {
           $countRecords = ldap_count_entries($this->ldapConnection, $results);
@@ -116,12 +120,11 @@
      */
     private function getAttributeValue($username, $attributeName, $onlyFirstRecord = 1) {
       $attrValue = null;
-      $attributeUid = 'uid';
 
-      $username = $this->getAttributeFromDN($attributeUid, $username);
+      $username = $this->getAttributeFromDN(LDAP_USER_ATTR_ID, $username);
 
       if (!empty($username)) {
-        $info = $this->getDataByFilter(LDAP_USERS_DN, ldap_escape($attributeUid, '', LDAP_ESCAPE_FILTER) . '=' . ldap_escape($username, '', LDAP_ESCAPE_FILTER));
+        $info = $this->getDataByFilter(LDAP_USERS_DN, ldap_escape(LDAP_USER_ATTR_ID, '', LDAP_ESCAPE_FILTER) . '=' . ldap_escape($username, '', LDAP_ESCAPE_FILTER));
 
         if (isset($info['count']) && $info['count'] > 0) {
           for ($i = 0; $i < $info[0][$attributeName]['count']; $i++) {
@@ -185,8 +188,8 @@
       if (!empty($email)) {
         $info = $this->getDataByFilter(LDAP_USERS_DN, 'mail=' . ldap_escape($email, '', LDAP_ESCAPE_FILTER));
 
-        if (isset($info[0]['uid'][0])) {
-          $username = $info[0]['uid'][0];
+        if (isset($info[0][LDAP_USER_ATTR_ID][0])) {
+          $username = $info[0][LDAP_USER_ATTR_ID][0];
         }
       }
 
@@ -264,23 +267,29 @@
       if (!empty($username)) {
         $group = $this->getAttributeValue($username, LDAP_USER_ATTR_PRIMARY_GROUP, null);
 
-        // Pokud je uživatel členem několika skupin...
         if (is_array($group)) {
-          if ($preferAdminLdapGroups) {
-            foreach ($group as $item) {
-              $item = $this->getDnPart($item, 0);
+          // Pokud je uživatel členem několika skupin...
+          if (count($group) > 1) {
+            if ($preferAdminLdapGroups) {
+              foreach ($group as $item) {
+                $item = $this->getDnPart($item, 0);
 
-              if (UserGroupsModel::existsAdminGroup($item)) {
-                $found = true;
-                $group = $item;
+                if (UserGroupsModel::existsAdminGroup($item)) {
+                  $found = true;
+                  $group = $item;
 
-                break;
+                  break;
+                }
               }
             }
-          }
 
-          if (!$preferAdminLdapGroups || !$found) {
-            $group = end($group);
+            if (!$preferAdminLdapGroups || !$found) {
+              $group = end($group);
+            }
+          }
+          else {
+            $group = $group[0];
+            $found = true;
           }
         }
 
