@@ -216,10 +216,7 @@
   /** Token nutný pro externí přístup (libovolný, náhodný řetězec). */
   define('PHISHINGATOR_TOKEN', (getenv('PHISHINGATOR_TOKEN')) ? getenv('PHISHINGATOR_TOKEN') : '');
 
-  /** IP adresa, které je jako jediné povoleno volat plánovač. */
-  define('SCHEDULER_ALLOWED_IP', '172.22.0.20');
-
-  /** IP adresa, které je jako jediné povoleno získat seznam podvodných domén. */
+  /** Lokální IP adresa, které je jako jediné povoleno získat seznam podvodných domén. */
   define('DOMAINER_ALLOWED_IP', (getenv('DOMAINER_ALLOWED_IP')) ? getenv('DOMAINER_ALLOWED_IP') : '');
 
 

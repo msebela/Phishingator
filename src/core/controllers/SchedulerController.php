@@ -35,12 +35,29 @@
 
 
     /**
+     * Vrátí, zdali je zdrojová IP adresa oprávněná k volání metod.
+     *
+     * @return bool
+     */
+    public static function isValidSourceIP() {
+      $valid = false;
+
+      if (!filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)
+          && $_SERVER['REMOTE_ADDR'] == gethostbyname('scheduler')) {
+        $valid = true;
+      }
+
+      return $valid;
+    }
+
+
+    /**
      * Ověří, zdali jsou pro volání metod dostatečná oprávnění.
      *
      * @return void
      */
     private function checkPermissionCall() {
-      if ($_SERVER['REMOTE_ADDR'] != SCHEDULER_ALLOWED_IP) {
+      if (!self::isValidSourceIP()) {
         Logger::error('Unauthorized access to call scheduler job.', $_SERVER['REMOTE_ADDR']);
         $invalid = true;
       }

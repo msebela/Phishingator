@@ -30,12 +30,29 @@ class DomainsController extends Controller {
 
 
   /**
+   * Vrátí, zdali je zdrojová IP adresa oprávněná k volání metod.
+   *
+   * @return bool
+   */
+  public static function isValidSourceIP() {
+    $valid = false;
+
+    if (!filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)
+      && $_SERVER['REMOTE_ADDR'] == DOMAINER_ALLOWED_IP) {
+      $valid = true;
+    }
+
+    return $valid;
+  }
+
+
+  /**
    * Ověří, zdali jsou pro volání metod dostatečná oprávnění.
    *
    * @return void
    */
   private function checkPermissionCall() {
-    if ($_SERVER['REMOTE_ADDR'] != DOMAINER_ALLOWED_IP) {
+    if (!self::isValidSourceIP()) {
       Logger::error('Unauthorized access to get fraudulent domains list.', $_SERVER['REMOTE_ADDR']);
       $invalid = true;
     }

@@ -68,10 +68,10 @@
       }
 
       if ($this->controller == null) {
-        if ($_SERVER['REMOTE_ADDR'] == SCHEDULER_ALLOWED_IP) {
+        if (SchedulerController::isValidSourceIP()) {
           $this->controller = new SchedulerController();
         }
-        elseif ($_SERVER['REMOTE_ADDR'] == DOMAINER_ALLOWED_IP) {
+        elseif (DomainsController::isValidSourceIP()) {
           $this->controller = new DomainsController();
         }
       }

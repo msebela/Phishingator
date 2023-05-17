@@ -120,8 +120,7 @@ services:
     environment:
       - PHISHINGATOR_TOKEN
     networks:
-      scheduler-net:
-        ipv4_address: 172.22.0.20
+      - scheduler-net
 
   waf:
     image: owasp/modsecurity-crs:apache
@@ -142,8 +141,5 @@ services:
 networks:
   database-net:
   scheduler-net:
-    ipam:
-      config:
-        - subnet: 172.22.0.0/16
   traefik:
     external: true
