@@ -48,7 +48,7 @@
         $this->processList($model);
       }
 
-      $this->setHelpLink('https://github.com/CESNET/Phishingator/blob/main/MANUAL.md#25-u%C5%BEivatel%C3%A9');
+      $this->setHelpLink('https://github.com/CESNET/Phishingator/blob/main/MANUAL.md#24-podvodn%C3%A9-str%C3%A1nky');
     }
 
 
