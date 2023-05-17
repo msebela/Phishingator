@@ -64,7 +64,7 @@
         $this->processList($model);
       }
 
-      $this->setHelpLink('https://github.com/CESNET/Phishingator/phishingator/blob/main/MANUAL.md#23-podvodn%C3%A9-e-maily-a-indicie');
+      $this->setHelpLink('https://github.com/CESNET/Phishingator/blob/main/MANUAL.md#23-podvodn%C3%A9-e-maily-a-indicie');
     }
 
 

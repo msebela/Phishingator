@@ -21,7 +21,7 @@
 
       $this->processList($model);
 
-      $this->setHelpLink('https://github.com/CESNET/Phishingator/phishingator/blob/main/MANUAL.md#13-p%C5%99ijat%C3%A9-phishingov%C3%A9-e-maily');
+      $this->setHelpLink('https://github.com/CESNET/Phishingator/blob/main/MANUAL.md#13-p%C5%99ijat%C3%A9-phishingov%C3%A9-e-maily');
     }
 
 

@@ -51,7 +51,7 @@
         $this->processList($model);
       }
 
-      $this->setHelpLink('https://github.com/CESNET/Phishingator/phishingator/blob/main/MANUAL.md#22-kampan%C4%9B');
+      $this->setHelpLink('https://github.com/CESNET/Phishingator/blob/main/MANUAL.md#22-kampan%C4%9B');
     }
 
 
