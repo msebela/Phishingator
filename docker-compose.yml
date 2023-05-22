@@ -36,6 +36,7 @@ services:
       - LDAP_PASSWORD
       - LDAP_BASE_DN
       - LDAP_USERS_DN
+      - LDAP_USER_ATTR_ID
       - LDAP_USER_ATTR_NAME
       - LDAP_USER_ATTR_EMAIL
       - LDAP_USER_ATTR_PRIMARY_GROUP
@@ -71,6 +72,7 @@ services:
       - traefik
       - database-net
       - scheduler-net
+      - ldap-net
     labels:
       - traefik.docker.network=traefik
       - traefik.enable=true
@@ -122,6 +124,25 @@ services:
     networks:
       - scheduler-net
 
+  ldap:
+    build:
+      context: .
+      dockerfile: docker/ldap/Dockerfile
+    image: ${CI_REGISTRY_IMAGE}/phishingator_ldap:${CI_COMMIT_REF_SLUG}
+    restart: always
+    container_name: phishingator-${ORG}-ldap
+    environment:
+      - LDAP_ADMIN_PASSWORD=${LDAP_CONFIG_ADMIN_PASSWORD}
+      - LDAP_CONFIG_PASSWORD
+      - LDAP_READONLY_USER=true
+      - LDAP_READONLY_USER_USERNAME
+      - LDAP_READONLY_USER_PASSWORD
+      - LDAP_BASE_DN=${LDAP_CONFIG_BASE_DN}
+      - LDAP_DOMAIN=${LDAP_CONFIG_DOMAIN}
+      - LDAP_ORGANISATION=${LDAP_CONFIG_ORGANISATION}
+    networks:
+      - ldap-net
+
   waf:
     image: owasp/modsecurity-crs:apache
     container_name: phishingator-${ORG}-waf
@@ -141,5 +162,6 @@ services:
 networks:
   database-net:
   scheduler-net:
+  ldap-net:
   traefik:
     external: true
