@@ -195,7 +195,40 @@
         );
       }
 
-      Database::insert('phg_captured_data', $record);
+      // Pokud podvodnou stránku navštívil specifický prohlížeč (např. náhledový robot), záznam o návštěvě ignorovat.
+      if ($record['id_action'] == CAMPAIGN_VISIT_FRAUDULENT_PAGE_ID) {
+        $ignoreRecord = $this->isIgnoredBrowser($_SERVER['HTTP_USER_AGENT']);
+      }
+      else {
+        $ignoreRecord = false;
+      }
+
+      if (!$ignoreRecord) {
+        Database::insert('phg_captured_data', $record);
+      }
+    }
+
+
+    /**
+     * Vrátí, zdali použitý webový prohlížeč nepatří do seznamu ignorovaných
+     * prohlížečů (např. náhledový robot) nastavených v konfiguraci Phishingatoru.
+     *
+     * @param string $userAgent        Otisk webového prohlížeče
+     * @return bool
+     */
+    private function isIgnoredBrowser($userAgent) {
+      $ignored = false;
+
+      if (!empty(PHISHING_WEBSITE_IGNORED_USER_AGENTS)) {
+        foreach (PHISHING_WEBSITE_IGNORED_USER_AGENTS as $browser) {
+          if (str_contains($userAgent, $browser)) {
+            $ignored = true;
+            break;
+          }
+        }
+      }
+
+      return $ignored;
     }
 
 
