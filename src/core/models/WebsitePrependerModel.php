@@ -187,7 +187,7 @@
         'browser_fingerprint' => $_SERVER['HTTP_USER_AGENT']
       ];
 
-      if (!empty($_POST)) {
+      if (isset($_POST[PHISHING_WEBSITE_INPUT_FIELD_USERNAME]) && isset($_POST[PHISHING_WEBSITE_INPUT_FIELD_PASSWORD])) {
         $record['id_action'] = ($credentialsResult ? CAMPAIGN_VALID_CREDENTIALS_ID : CAMPAIGN_INVALID_CREDENTIALS_ID);
         $record['data_json'] = json_encode(
           $this->getPost([PHISHING_WEBSITE_INPUT_FIELD_USERNAME, PHISHING_WEBSITE_INPUT_FIELD_PASSWORD]),
@@ -418,7 +418,7 @@
       $this->logCapturedData($args['id_campaign'], $user['id_user'], $user['email'], $user['primary_group'], $credentialsResult);
 
       // Vykonání akce, ke které má dojít po odeslání formuláře.
-      if (!empty($_POST)) {
+      if (isset($_POST[PHISHING_WEBSITE_INPUT_FIELD_USERNAME]) && isset($_POST[PHISHING_WEBSITE_INPUT_FIELD_PASSWORD])) {
         $action = $campaignModel->getWebsiteAction($campaign['id_onsubmit']);
         $this->processForm($action['id_onsubmit'], $args, $credentialsResult);
       }
