@@ -14,7 +14,7 @@ build:
   script:
     - . <(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | sed 's/^/export /')
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
-    - docker-compose build --pull
+    - docker-compose build --pull --no-cache
     - docker-compose push
     - docker logout $CI_REGISTRY
 
