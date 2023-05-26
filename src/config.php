@@ -40,7 +40,7 @@
   define('LDAP_BASE_DN', getenv('LDAP_BASE_DN'));
 
   /** Cesta k seznamu uživatelů v LDAP. */
-  define('LDAP_USERS_DN', getenv('LDAP_USERS_DN'));
+  define('LDAP_USERS_DN', (getenv('LDAP_USERS_DN')) ? getenv('LDAP_USERS_DN') : 'ou=People');
 
   /** Název atributu v LDAP, ve kterém je uložen identifikátor uživatele (typicky "uid" / "samaccountname"). */
   define('LDAP_USER_ATTR_ID', (getenv('LDAP_USER_ATTR_ID')) ? getenv('LDAP_USER_ATTR_ID') : 'uid');
@@ -52,13 +52,13 @@
   define('LDAP_USER_ATTR_EMAIL', (getenv('LDAP_USER_ATTR_EMAIL')) ? getenv('LDAP_USER_ATTR_EMAIL') : 'mail');
 
   /** Název atributu v LDAP, ze kterého lze získat název oddělení, do něhož je uživatel zařazen. */
-  define('LDAP_USER_ATTR_PRIMARY_GROUP', (getenv('LDAP_USER_ATTR_PRIMARY_GROUP')) ? getenv('LDAP_USER_ATTR_PRIMARY_GROUP') : 'memberof');
+  define('LDAP_USER_ATTR_PRIMARY_GROUP', (getenv('LDAP_USER_ATTR_PRIMARY_GROUP')) ? getenv('LDAP_USER_ATTR_PRIMARY_GROUP') : 'departmentnumber');
 
   /** Cesta k seznamu uživatelských skupin v LDAP. */
   define('LDAP_GROUPS_DN', (getenv('LDAP_GROUPS_DN')) ? getenv('LDAP_GROUPS_DN') : 'ou=Groups');
 
   /** Název atributu v LDAP, který obsahuje identifikátor uživatele patřícího do dané skupiny. */
-  define('LDAP_GROUPS_ATTR_MEMBER', getenv('LDAP_GROUPS_ATTR_MEMBER'));
+  define('LDAP_GROUPS_ATTR_MEMBER', (getenv('LDAP_GROUPS_ATTR_MEMBER')) ? getenv('LDAP_GROUPS_ATTR_MEMBER') : 'member');
 
   /** Cesta k seznamu pracovišť v LDAP. */
   define('LDAP_DEPARTMENTS_DN', getenv('LDAP_DEPARTMENTS_DN'));
@@ -95,6 +95,18 @@
    *    Možnosti: kerberos/ldap/imap
    */
   define('AUTHENTICATION_TYPE', getenv('AUTHENTICATION_TYPE'));
+
+  /** Pokud se použije LDAP autentizace, je nutné uvést hostitele LDAP, vůči kterému se budou přihlašovací údaje z podvodných stránek ověřovat. */
+  define('AUTHENTICATION_LDAP_HOST', (getenv('AUTHENTICATION_LDAP_HOST')) ? getenv('AUTHENTICATION_LDAP_HOST') : getenv('LDAP_HOSTNAME'));
+
+  /** Port k připojení k autentizačnímu LDAP serveru. */
+  define('AUTHENTICATION_LDAP_PORT', (getenv('AUTHENTICATION_LDAP_PORT')) ? getenv('AUTHENTICATION_LDAP_PORT') : getenv('LDAP_PORT'));
+
+  /** Prefix automaticky přidávaný k uživatelskému jménu (např. "uid="). */
+  define('AUTHENTICATION_LDAP_USER_PREFIX', getenv('AUTHENTICATION_LDAP_USER_PREFIX'));
+
+  /** Sufix automaticky přidávaný k uživatelskému jménu (pokud již v uživatelském jménu není obsažen). */
+  define('AUTHENTICATION_LDAP_USER_SUFFIX', getenv('AUTHENTICATION_LDAP_USER_SUFFIX'));
 
   /** Pokud se použije IMAP autentizace, je nutné uvést IMAP server (a port) a případné flagy (např. "{example.tld:993/imap/ssl/}"). */
   define('AUTHENTICATION_IMAP_ARGS', getenv('AUTHENTICATION_IMAP_ARGS'));
@@ -211,16 +223,16 @@
 
   /* --- CROSS-SITE REQUEST FORGERY --- */
   /** Klíč přidávaný ke generovanému CSRF tokenu (libovolný, náhodný řetězec). */
-  define('CSRF_KEY', (getenv('CSRF_KEY')) ? getenv('CSRF_KEY') : '');
+  define('CSRF_KEY', (getenv('CSRF_KEY')) ? getenv('CSRF_KEY') : base64_encode(openssl_random_pseudo_bytes(32)));
 
 
 
   /* --- EXTERNÍ PŘÍSTUP --- */
   /** Token nutný pro externí přístup (libovolný, náhodný řetězec). */
-  define('PHISHINGATOR_TOKEN', (getenv('PHISHINGATOR_TOKEN')) ? getenv('PHISHINGATOR_TOKEN') : '');
+  define('PHISHINGATOR_TOKEN', (getenv('PHISHINGATOR_TOKEN')) ? getenv('PHISHINGATOR_TOKEN') : base64_encode(openssl_random_pseudo_bytes(32)));
 
   /** Lokální IP adresa, které je jako jediné povoleno získat seznam podvodných domén. */
-  define('DOMAINER_ALLOWED_IP', (getenv('DOMAINER_ALLOWED_IP')) ? getenv('DOMAINER_ALLOWED_IP') : '');
+  define('DOMAINER_ALLOWED_IP', getenv('DOMAINER_ALLOWED_IP'));
 
 
 
@@ -310,6 +322,9 @@
 
   /** Název vstupního pole na podvodné stránce, do kterého uživatel zadává heslo. */
   define('PHISHING_WEBSITE_INPUT_FIELD_PASSWORD', 'password');
+
+  /** Pole obsahující názvy webových prohlížečů, jejichž akce nemají být ukládány při návštěvě podvodné stránky. */
+  define('PHISHING_WEBSITE_IGNORED_USER_AGENTS', ['MicrosoftPreview']);
 
   /** Délka hashe (v bajtech) pro náhled podvodné stránky. */
   define('PHISHING_WEBSITE_PREVIEW_HASH_BYTES', 32);

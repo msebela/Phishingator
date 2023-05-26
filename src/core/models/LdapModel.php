@@ -26,18 +26,25 @@
 
     /**
      * Připojí a autentizuje se k LDAP a nastaví verzi používaného protokolu.
-     * Při nepředání parametrů (uživatelské jméno a heslo) budou použity přihlašovací
-     * údaje z konfiguračního souboru.
+     * Při nepředání parametrů (uživatelské jméno a heslo, případně hostname a port)
+     * budou použity údaje z konfiguračního souboru.
      *
      * @param string $username         Uživatelské jméno pro připojení do LDAP [nepovinné]
      * @param string $password         Heslo pro připojení do LDAP [nepovinné]
+     * @param string $hostname         LDAP server [nepovinné]
+     * @param int $port                Port, na kterém LDAP běží [nepovinné]
      * @return bool                    TRUE pokud došlo k úspěšnému připojení, jinak FALSE
      */
-    public function connect($username = null, $password = null) {
+    public function connect($username = null, $password = null, $hostname = null, $port = null) {
       $connected = false;
       $ldapBind = false;
 
-      $this->ldapConnection = ldap_connect(LDAP_HOSTNAME . (!empty(LDAP_PORT) ? ':' . LDAP_PORT : ''));
+      if ($hostname == null) {
+        $hostname = LDAP_HOSTNAME;
+        $port = LDAP_PORT;
+      }
+
+      $this->ldapConnection = ldap_connect($hostname, $port);
 
       if ($this->ldapConnection) {
         ldap_set_option($this->ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -51,7 +58,7 @@
       }
 
       if (!$this->ldapConnection || !$ldapBind) {
-        Logger::error('Failed to connect or authenticate to LDAP.');
+        Logger::error('Failed to connect or authenticate to LDAP.', ldap_error($this->ldapConnection));
       }
       else {
         $connected = true;
@@ -126,7 +133,7 @@
       if (!empty($username)) {
         $info = $this->getDataByFilter(LDAP_USERS_DN, ldap_escape(LDAP_USER_ATTR_ID, '', LDAP_ESCAPE_FILTER) . '=' . ldap_escape($username, '', LDAP_ESCAPE_FILTER));
 
-        if (isset($info['count']) && $info['count'] > 0) {
+        if (isset($info['count']) && $info['count'] > 0 && isset($info[0][$attributeName])) {
           for ($i = 0; $i < $info[0][$attributeName]['count']; $i++) {
             $value = $info[0][$attributeName][$i];
 
@@ -387,9 +394,14 @@
      * @return string                  Požadovaná část
      */
     private function getDnPart($dnString, $index) {
-      $parts = ldap_explode_dn($dnString, 1);
+      $part = '';
 
-      return ($parts[$index]) ?? '';
+      if ($dnString != null) {
+        $parts = ldap_explode_dn($dnString, 1);
+        $part = $parts[$index];
+      }
+
+      return $part;
     }
 
 

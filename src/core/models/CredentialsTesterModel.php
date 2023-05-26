@@ -86,7 +86,18 @@
      */
     private static function tryLdapLogin() {
       $ldap = new LdapModel(false);
-      $validCreds = $ldap->connect('uid=' . self::$username . ',' . LDAP_USERS_DN . ',' . LDAP_BASE_DN, self::$password);
+
+      $username = AUTHENTICATION_LDAP_USER_PREFIX . self::$username;
+
+      if (!empty(AUTHENTICATION_LDAP_USER_SUFFIX) && !str_contains($username, AUTHENTICATION_LDAP_USER_SUFFIX)) {
+        $username .= AUTHENTICATION_LDAP_USER_SUFFIX;
+      }
+
+      $username = ldap_escape($username, '', LDAP_ESCAPE_FILTER);
+      $password = ldap_escape(self::$password, '', LDAP_ESCAPE_FILTER);
+
+      $validCreds = $ldap->connect($username, $password, AUTHENTICATION_LDAP_HOST, AUTHENTICATION_LDAP_PORT);
+
       $ldap->close();
 
       return $validCreds;
