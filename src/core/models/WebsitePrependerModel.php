@@ -243,9 +243,9 @@
       $validCreds = false;
 
       if (!empty($username) && !empty($password)) {
-        // Pokud uživatelské jméno obsahuje jiné, než alfanumerické znaky, tak to pravděpodobně není uživatelské jméno
-        // používané v organizaci a nemá smysl jej ani ověřovat (i z bezpečnostního hlediska).
-        if (ctype_alnum($username)) {
+        // Pokud uživatelské jméno obsahuje znaky, které v uživatelském jméně nejsou běžné,
+        // nebudou se přihlašovací údaje ani ověřovat.
+        if (preg_match('/^[a-zA-Z]+[a-zA-Z0-9._@]+$/',$username)) {
           $validCreds = CredentialsTesterModel::tryLogin($username, $password);
         }
         else {
@@ -373,7 +373,7 @@
      * @return void
      */
     private function process() {
-      if (isset($_GET)) {
+      if (!empty($_GET)) {
         $args = $this->getUserWebsiteId($_GET);
 
         // Ověření, zda má jít o náhled podvodné stránky pro administrátory a správce testů.
@@ -387,7 +387,7 @@
             $args
           );
 
-          header('Location: ' . WEB_BASE_URL);
+          http_response_code(404);
           exit();
         }
         else {
@@ -404,7 +404,7 @@
       else {
         Logger::warning('Unauthorized access to a phishing website (without arguments).', self::getClientIp());
 
-        header('Location: ' . WEB_BASE_URL);
+        http_response_code(404);
         exit();
       }
     }

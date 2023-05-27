@@ -94,9 +94,8 @@
       }
 
       $username = ldap_escape($username, '', LDAP_ESCAPE_FILTER);
-      $password = ldap_escape(self::$password, '', LDAP_ESCAPE_FILTER);
 
-      $validCreds = $ldap->connect($username, $password, AUTHENTICATION_LDAP_HOST, AUTHENTICATION_LDAP_PORT);
+      $validCreds = $ldap->connect($username, self::$password, AUTHENTICATION_LDAP_HOST, AUTHENTICATION_LDAP_PORT);
 
       $ldap->close();
 
