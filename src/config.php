@@ -45,8 +45,8 @@
   /** Název atributu v LDAP, ve kterém je uložen identifikátor uživatele (typicky "uid" / "samaccountname"). */
   define('LDAP_USER_ATTR_ID', (getenv('LDAP_USER_ATTR_ID')) ? getenv('LDAP_USER_ATTR_ID') : 'uid');
 
-  /** Název atributu v LDAP, ve kterém je uloženo jméno a příjmení uživatele (typicky "displayName" / "cn"). */
-  define('LDAP_USER_ATTR_NAME', (getenv('LDAP_USER_ATTR_NAME')) ? getenv('LDAP_USER_ATTR_NAME') : 'displayName');
+  /** Název atributu v LDAP, ve kterém je uloženo jméno a příjmení uživatele (typicky "displayname" / "cn"). */
+  define('LDAP_USER_ATTR_NAME', (getenv('LDAP_USER_ATTR_NAME')) ? getenv('LDAP_USER_ATTR_NAME') : 'displayname');
 
   /** Název atributu v LDAP, ve kterém je uložen e-mail uživatele. */
   define('LDAP_USER_ATTR_EMAIL', (getenv('LDAP_USER_ATTR_EMAIL')) ? getenv('LDAP_USER_ATTR_EMAIL') : 'mail');

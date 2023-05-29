@@ -63,10 +63,14 @@
         </td>
         <td>
           <?php if ($campaign['id_ticket']): ?>
-          <a href="<?= ITS_URL . $campaign['id_ticket'] ?>" target="_blank" class="btn btn-outline-secondary btn-sm" role="button">
-            <span data-feather="eye"></span>
-            RT <?= $campaign['id_ticket'] ?>
-          </a>
+            <?php if (!empty(ITS_URL)): ?>
+            <a href="<?= ITS_URL . $campaign['id_ticket'] ?>" target="_blank" class="btn btn-outline-secondary btn-sm" role="button">
+              <span data-feather="eye"></span>
+              RT <?= $campaign['id_ticket'] ?>
+            </a>
+            <?php else: ?>
+            <?= $campaign['id_ticket'] ?>
+            <?php endif; ?>
           <?php else: ?>
           &ndash;
           <?php endif; ?>
