@@ -71,7 +71,7 @@
         </td>
         <td>
           <?php if ($campaign['id_ticket']): ?>
-            <?php if (!empty(ITS_URL)): ?>
+            <?php if (!empty(ITS_URL) && ITS_URL != 'NULL'): ?>
             <a href="<?= ITS_URL . $campaign['id_ticket'] ?>" target="_blank" class="btn btn-outline-secondary btn-sm" role="button">
               <span data-feather="eye"></span>
               RT <?= $campaign['id_ticket'] ?>
