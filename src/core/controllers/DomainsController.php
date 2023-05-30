@@ -86,7 +86,7 @@ class DomainsController extends Controller {
     $domainsToActivate = [];
 
     foreach ($websites as $website) {
-      $domain = get_hostname_from_url($website['url_protocol'] . $website['url']);
+      $domain = mb_strtolower(get_hostname_from_url($website['url_protocol'] . $website['url']));
 
       if (!in_array($domain, $domainsActivated)) {
         $domainsToActivate[] = $domain;
@@ -115,7 +115,7 @@ class DomainsController extends Controller {
       $active = false;
 
       foreach ($websites as $website) {
-        $websiteDomain = get_hostname_from_url($website['url_protocol'] . $website['url']);
+        $websiteDomain = mb_strtolower(get_hostname_from_url($website['url_protocol'] . $website['url']));
 
         if ($websiteDomain == $domainActivated) {
           $active = true;

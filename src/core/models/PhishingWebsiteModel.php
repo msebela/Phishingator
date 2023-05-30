@@ -550,6 +550,8 @@
      */
     public static function isDomainRegisteredInProxy($website) {
       $registered = false;
+
+      $website = mb_strtolower($website);
       $proxyDomains = self::getDomainsRegisteredInProxy();
 
       if (!empty($proxyDomains)) {
@@ -586,7 +588,7 @@
       $proxyDomains = [];
 
       if (getenv('FRAUDULENT_HOSTS') !== null) {
-        $proxyDomains = explode(',', str_replace('`', '', getenv('FRAUDULENT_HOSTS')));
+        $proxyDomains = explode(',', str_replace('`', '', mb_strtolower(getenv('FRAUDULENT_HOSTS'))));
       }
 
       return $proxyDomains;
@@ -745,7 +747,7 @@
      * @throws UserError
      */
     private function isURLValidDNSRecord() {
-      if (!in_array(get_domain_from_url($this->url), PhishingWebsiteModel::getDomainsRegisteredInProxy()) &&
+      if (!in_array(mb_strtolower(get_domain_from_url($this->url)), PhishingWebsiteModel::getDomainsRegisteredInProxy()) &&
            gethostbyname(get_hostname_from_url($this->url)) != gethostbyname(get_hostname_from_url(getenv('WEB_URL')))) {
         throw new UserError('U zadané domény (popř. subdomény) není v DNS nasměrován záznam typu A na IP adresu serveru, kde běží Phishingator.', MSG_ERROR);
       }
