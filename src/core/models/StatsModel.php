@@ -136,8 +136,10 @@
               continue;
             }
 
-            if (($key = array_search($action['id_user'], $usersNoReaction)) !== false) {
-              unset($usersNoReaction[$key]);
+            // Pokud se uživatel ze stavu "bez reakce" dostal i do dalšího stavu,
+            // smazat uživatele ze seznamu uživatelů s konečným stavem "bez reakce".
+            if (($idUser = array_search($action['id_user'], $usersNoReaction)) !== false) {
+              unset($usersNoReaction[$idUser]);
             }
           }
 
