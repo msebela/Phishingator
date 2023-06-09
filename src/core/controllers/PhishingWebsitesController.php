@@ -19,7 +19,7 @@
 
       $model = new PhishingWebsiteModel();
       $formData = [
-        'inputsNames' => ['name', 'url', 'id-template', 'active'],
+        'inputsNames' => ['name', 'url', 'id-template', 'service-name', 'active'],
         'formPrefix' => 'phishing-website-',
         'dbTable' => 'phg_websites'
       ];

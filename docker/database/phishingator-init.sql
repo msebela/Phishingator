@@ -208,6 +208,7 @@ CREATE TABLE `phg_websites` (
   `id_template` tinyint(3) UNSIGNED NOT NULL,
   `name` varchar(128) COLLATE utf8mb3_czech_ci NOT NULL,
   `url` varchar(255) COLLATE utf8mb3_czech_ci NOT NULL,
+  `service_name` varchar(255) COLLATE utf8mb3_czech_ci NOT NULL,
   `date_added` datetime NOT NULL,
   `active` tinyint(1) NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT 1

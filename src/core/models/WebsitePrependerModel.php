@@ -18,6 +18,12 @@
     private $email;
 
     /**
+     * @var string      Název služby, ke které se uživatel na podvodné stránce přihlašuje
+     *                  (pro výpis do podvodné stránky).
+     */
+    private $serviceName;
+
+    /**
      * @var bool        Informace o tom, zdali má být uživateli zobrazena chybová zpráva, pokud cokoliv zadá
      *                  do formuláře na podvodné stránce a formulář odešle.
      */
@@ -41,6 +47,16 @@
      */
     public function getEmail() {
       return $this->email;
+    }
+
+
+    /**
+     * Vrátí název služby, ke které se uživatel na podvodné stránce přihlašuje.
+     *
+     * @return string
+     */
+    public function getServiceName() {
+      return $this->serviceName;
     }
 
 
@@ -393,11 +409,14 @@
         else {
           Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
 
+          $user = UsersModel::getUserByURL($args['id_user']);
+          $website = PhishingWebsiteModel::getPhishingWebsiteByPersonalizedUrl(get_current_url(), $args['url']);
+
           if ($preview) {
-            $this->processAdminPreview($args);
+            $this->processAdminPreview($user, $website, $args);
           }
           else {
-            $this->processView($args);
+            $this->processView($user, $website, $args);
           }
         }
       }
@@ -413,16 +432,17 @@
     /**
      * Obslouží požadavky zajišťující zobrazení podvodné stránky pro všechny účastníky kampaně.
      *
+     * @param array $user              Data o uživateli, který na podvodnou stránku přistupuje
+     * @param array $website           Data o zobrazované podvodné stránce
      * @param array $args              Argumenty pro podvodnou stránku
      * @return void
      */
-    private function processView($args) {
+    private function processView($user, $website, $args) {
       $campaignModel = new CampaignModel();
       $campaign = $campaignModel->getCampaign($args['id_campaign']);
-      $user = UsersModel::getUserByURL($args['id_user']);
 
       // Kontrola existence záznamu.
-      if (empty($campaign) || empty($user) || $campaignModel->isUserRecipient($args['id_campaign'], $user['id_user']) != 1) {
+      if (empty($campaign) || empty($user) || $campaignModel->isUserRecipient($campaign['id_campaign'], $user['id_user']) != 1) {
         $args[] = self::getClientIp();
         Logger::warning('Unauthorized access to a phishing website.', $args);
 
@@ -443,12 +463,14 @@
       $this->username = $user['username'];
       $this->email = $user['email'];
 
-      // Ověření, zda uživatel nezasílá příliš mnoho požadavků a nesnaží se zatížit aplikaci neustálým zápisem záznamů o návštěvě podvodné stránky.
-      $this->checkCountUserRequests($args['id_campaign'], $user['id_user']);
+      $this->serviceName = $website['service_name'];
+
+      // Ověření, zda uživatel nezasílá příliš mnoho požadavků.
+      $this->checkCountUserRequests($campaign['id_campaign'], $user['id_user']);
 
       // Uložení získaných dat.
       $credentialsResult = $this->areCredentialsValid($_POST[PHISHING_WEBSITE_INPUT_FIELD_USERNAME] ?? '', $_POST[PHISHING_WEBSITE_INPUT_FIELD_PASSWORD] ?? '');
-      $this->logCapturedData($args['id_campaign'], $user['id_user'], $user['email'], $user['primary_group'], $credentialsResult);
+      $this->logCapturedData($campaign['id_campaign'], $user['id_user'], $user['email'], $user['primary_group'], $credentialsResult);
 
       // Vykonání akce, ke které má dojít po odeslání formuláře.
       if (isset($_POST[PHISHING_WEBSITE_INPUT_FIELD_USERNAME]) && isset($_POST[PHISHING_WEBSITE_INPUT_FIELD_PASSWORD])) {
@@ -461,34 +483,13 @@
     /**
      * Obslouží požadavky zajišťující náhled podvodné stránky pro administrátory a správce testů.
      *
+     * @param array $user              Data o uživateli, který na podvodnou stránku přistupuje
+     * @param array $website           Data o zobrazované podvodné stránce
      * @param array $args              Argumenty pro podvodnou stránku
      * @return void
      */
-    private function processAdminPreview($args) {
-      // Zjištění informací o uživateli, který se snaží na náhled podvodné stránky přistoupit.
-      $user = UsersModel::getUserByURL($args['id_user']);
-      $userDetail = UsersModel::getUserByUsername($user['username']);
-
-      // Úprava URL adresy do původní podoby (odstranění parametrů pro náhled podvodné stránky).
-      $url = str_replace(
-        [$args['url'], '&' . ACT_PREVIEW . '=' . $_GET[ACT_PREVIEW]],
-        [VAR_RECIPIENT_URL, ''],
-        get_current_url()
-      );
-
-      // Zjištění informací o zobrazované podvodné stránce.
-      $website = PhishingWebsiteModel::getPhishingWebsiteByUrl($url);
-
-      // Pokud se nepodařilo zjistit informace o podvodné stránce a mělo by se jednat o stránku
-      // běžící na protokolu HTTP, ale prohlížeč předal adresu s HTTPS (např. z důvodu HSTS),
-      // načíst informace o stránce i pro variantu s HTTPS.
-      $https = 'https://';
-
-      if (!$website && mb_substr($url, 0, mb_strlen($https)) == $https) {
-        $website = PhishingWebsiteModel::getPhishingWebsiteByUrl(
-          str_replace($https, 'http://', $url)
-        );
-      }
+    private function processAdminPreview($user, $website, $args) {
+      $userRole = UsersModel::getUserRole($user['id_user']);
 
       // Zjištění, zdali je v databázi existující ticket pro přístup na náhled podvodné stránky.
       $previewAccess = Database::querySingle(
@@ -514,13 +515,15 @@
       }
 
       // Zjištění, zdali je uživatel správce testů, nebo administrátor.
-      if ($userDetail['role'] <= PERMISSION_TEST_MANAGER) {
+      if ($userRole == PERMISSION_TEST_MANAGER || $userRole == PERMISSION_ADMIN) {
         // Vložení informační hlavičky s poznámkou, že se jedná o náhled podvodné stránky.
         require CORE_DOCUMENT_ROOT . '/' . CORE_DIR_VIEWS . '/preview-phishing-website' . CORE_VIEWS_FILE_EXTENSION;
 
         // Data o uživateli pro možný, personalizovaný výpis na podvodné stránce.
         $this->username = $user['username'];
         $this->email = $user['email'];
+
+        $this->serviceName = $website['service_name'];
 
         Logger::info('Access to a preview of the phishing website.', $args);
       }

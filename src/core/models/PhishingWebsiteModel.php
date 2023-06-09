@@ -23,6 +23,11 @@
     protected $idTemplate;
 
     /**
+     * @var string      Název služby, ke které se uživatel na podvodné stránce přihlašuje.
+     */
+    protected $serviceName;
+
+    /**
      * @var int         Proměnná uchovávající stav o tom, zdali je podvodná webová stránka dostupná pro ostatní
      *                  uživatele (1 pokud ano, jinak 0).
      */
@@ -53,6 +58,7 @@
         'name' => $this->name,
         'url' => $this->makeWebsiteUrl($this->url),
         'id_template' => $this->idTemplate,
+        'service_name' => $this->serviceName,
         'active' => $this->active
       ];
     }
@@ -66,7 +72,7 @@
      */
     public function getPhishingWebsite($id) {
       $this->dbRecordData = Database::querySingle('
-              SELECT `id_website`, `name`, `url`, `id_template`, `active`
+              SELECT `id_website`, `name`, `url`, `service_name`, `id_template`, `active`
               FROM `phg_websites`
               WHERE `id_website` = ?
               AND `visible` = 1
@@ -88,11 +94,44 @@
      */
     public static function getPhishingWebsiteByUrl($url) {
       return Database::querySingle('
-              SELECT `id_website`
+              SELECT `id_website`, `service_name`
               FROM `phg_websites`
               WHERE `url` = ?
               AND `visible` = 1
       ', [$url]);
+    }
+
+
+    /**
+     * Vrátí informace o konkrétní podvodné stránce, a to na základě personalizované URL adresy
+     * (tj. včetně identifikátoru uživatele).
+     *
+     * @param string $url              URL adresa podvodné strnáky
+     * @param string $userUrl          Řetězec identifikující uživatele na podvodné stránce
+     * @return mixed                   Data o podvodné stránce
+     */
+    public static function getPhishingWebsiteByPersonalizedUrl($url, $userUrl) {
+      // Úprava URL adresy do původní podoby (odstranění identifikátoru uživatele, odstranění parametru pro náhled).
+      $url = str_replace(
+        [$userUrl, '&' . ACT_PREVIEW . '=' . $_GET[ACT_PREVIEW]],
+        [VAR_RECIPIENT_URL, ''],
+        $url
+      );
+
+      $website = PhishingWebsiteModel::getPhishingWebsiteByUrl($url);
+
+      // Pokud se nepodařilo zjistit informace o podvodné stránce a mělo by se jednat o stránku
+      // běžící na protokolu HTTP, ale prohlížeč předal adresu s HTTPS (např. z důvodu HSTS),
+      // načíst informace o stránce i pro variantu s HTTPS.
+      $https = 'https://';
+
+      if (!$website && mb_substr($url, 0, mb_strlen($https)) == $https) {
+        $website = PhishingWebsiteModel::getPhishingWebsiteByUrl(
+          str_replace($https, 'http://', $url)
+        );
+      }
+
+      return $website;
     }
 
 
@@ -671,6 +710,8 @@
       $this->isTemplateEmpty();
       $this->existTemplate();
 
+      $this->isServiceNameTooLong();
+
       $this->isWebsiteDeactivable();
     }
 
@@ -896,6 +937,19 @@
     private function existTemplate() {
       if (empty($this->getPhishingWebsiteTemplate($this->idTemplate))) {
         throw new UserError('Vybraná šablona stránky neexistuje.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali zadaný název služby není příliš dlouhý.
+     *
+     * @return void
+     * @throws UserError
+     */
+    private function isServiceNameTooLong() {
+      if (mb_strlen($this->serviceName) > $this->inputsMaxLengths['service-name']) {
+        throw new UserError('Název služby vypisovaný do šablony je příliš dlouhý.', MSG_ERROR);
       }
     }
 

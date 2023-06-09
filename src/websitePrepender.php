@@ -11,8 +11,12 @@
 
   spl_autoload_register('autoload_functions');
 
-  $prepender = new WebsitePrependerModel();
+  $template = new WebsitePrependerModel();
 
-  $message = $prepender->getDisplayMessage();
-  $username = Controller::escapeOutput($prepender->getUsername());
-  $email = Controller::escapeOutput($prepender->getEmail());
+  // Chybová hláška pro šablonu podvodné stránky.
+  $message = $template->getDisplayMessage();
+
+  // Data pro šablonu podvodné stránky.
+  $username = Controller::escapeOutput($template->getUsername());
+  $email = Controller::escapeOutput($template->getEmail());
+  $service = Controller::escapeOutput($template->getServiceName());

@@ -36,13 +36,13 @@
   </div>
 
   <div class="form-row">
-    <div class="form-group col-sm-9 col-lg-11 col-xl-13">
+    <div class="form-group col-lg-11 col-xl-13">
       <label for="<?= $formPrefix ?>url">URL</label>
       <input type="url" class="form-control" id="<?= $formPrefix ?>url" name="<?= $formPrefix ?>url" maxlength="<?= $inputsMaxLengths['url'] ?>" value="<?= $inputsValues['url'] ?>" required>
-      <small class="form-text text-muted">URL adresa včetně protokolu <span class="badge badge-success cursor-pointer phishing-domain-protocol" data-var="https">HTTPS</span> nebo <span class="badge badge-danger cursor-pointer phishing-domain-protocol" data-var="http">HTTP</span> (volitelně lze použít i&nbsp;adresáře a&nbsp;GET parametry), na které bude podvodná stránka přístupná. V&nbsp;parametrech adresy se musí uvést proměnná <code class="insert-variable cursor-pointer" data-input="#<?= $formPrefix ?>url" data-var="<?= VAR_RECIPIENT_URL ?>"><?= VAR_RECIPIENT_URL ?></code>, která bude nahrazena identifikátorem uživatele. Použít lze (sub)domény uvedené v&nbsp;seznamu <span class="badge badge-info">Registrované domény</span>.</small>
+      <small class="form-text text-muted">URL adresa včetně protokolu <span class="badge badge-success cursor-pointer phishing-domain-protocol" data-var="https">HTTPS</span> nebo <span class="badge badge-danger cursor-pointer phishing-domain-protocol" data-var="http">HTTP</span> (volitelně lze použít i&nbsp;adresáře a&nbsp;GET parametry), na které bude podvodná stránka přístupná. V&nbsp;parametrech adresy se musí uvést proměnná <code class="insert-variable cursor-pointer" data-input="#<?= $formPrefix ?>url" data-var="<?= VAR_RECIPIENT_URL ?>"><?= VAR_RECIPIENT_URL ?></code>, která bude nahrazena identifikátorem uživatele. Použít lze domény uvedené v&nbsp;seznamu <span class="badge badge-info">Registrované domény</span>, subdomény je možné volit právě z&nbsp;těchto domén.</small>
     </div>
 
-    <div class="form-group col-sm-7 col-lg-5 col-xl-3 text-right">
+    <div class="form-group col-lg-5 col-xl-3 text-right">
       <label class="d-none d-sm-block">&nbsp;</label>
       <div class="dropdown">
         <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -68,22 +68,30 @@
     </ul>
   </div>
 
-  <div class="form-group">
-    <label class="my-1 mr-2" for="<?= $formPrefix ?>id-template">Šablona</label>
-    <select class="custom-select my-1 mr-sm-2" id="<?= $formPrefix ?>id-template" name="<?= $formPrefix ?>id-template" required>
-      <option value="0">Vyberte&hellip;</option>
-      <?php foreach ($templates as $template): ?>
-      <option value="<?= $template['id_website_template']; ?>"<?= (($inputsValues['id-template'] == $template['id_website_template']) ? ' selected': ''); ?>><?= $template['name'] ?></option>
-      <?php endforeach; ?>
-    </select>
-    <small class="form-text text-muted">Šablona webové stránky s&nbsp;formulářem, která se zobrazí uživateli.</small>
+  <div class="form-row">
+    <div class="form-group col-xl-6">
+      <label for="<?= $formPrefix ?>id-template">Šablona</label>
+      <select class="custom-select" id="<?= $formPrefix ?>id-template" name="<?= $formPrefix ?>id-template" required>
+        <option value="0">Vyberte&hellip;</option>
+        <?php foreach ($templates as $template): ?>
+        <option value="<?= $template['id_website_template']; ?>"<?= (($inputsValues['id-template'] == $template['id_website_template']) ? ' selected': ''); ?>><?= $template['name'] ?></option>
+        <?php endforeach; ?>
+      </select>
+      <small class="form-text text-muted">Šablona webové stránky s&nbsp;formulářem, která se zobrazí uživateli.</small>
+    </div>
+
+    <div class="form-group col-xl-10">
+      <label for="<?= $formPrefix ?>service-name">Název služby vypisovaný do šablony (nepovinné)</label>
+      <input type="text" class="form-control" id="<?= $formPrefix ?>service-name" name="<?= $formPrefix ?>service-name" maxlength="<?= $inputsMaxLengths['service-name'] ?>" value="<?= $inputsValues['service-name'] ?>">
+      <small class="form-text text-muted">Název služby, ke které se uživatel přihlašuje. Název je zobrazen na podvodné stránce (pokud to šablona umožňuje).</small>
+    </div>
   </div>
 
   <div class="form-group">
     <div class="custom-control custom-checkbox my-1 mr-sm-2">
       <input type="checkbox" class="custom-control-input" id="<?= $formPrefix ?>active" name="<?= $formPrefix ?>active"<?= (($inputsValues['active']) ? ' checked' : ''); ?>>
       <label class="custom-control-label" for="<?= $formPrefix ?>active">Aktivovat podvodnou stránku na webovém serveru (do 5&nbsp;min.)</label>
-      <small class="form-text text-muted">Změna proběhne do 5&nbsp;minut. Předpokladem je, aby byl u&nbsp;domény (popř. subdomény) v&nbsp;DNS nasměrován záznam typu&nbsp;A na IP adresu serveru, kde běží Phishingator. Po aktivaci budou moci podvodnou stránku využívat ve svých phishingových kampaních i&nbsp;<span class="badge badge-warning">správci testů</span>.</small>
+      <small class="form-text text-muted">Změna proběhne do 5&nbsp;minut. Předpokladem je, aby byl u&nbsp;domény (popř. subdomény) v&nbsp;DNS nasměrován záznam typu&nbsp;A&nbsp;na IP adresu serveru, kde běží Phishingator. Po aktivaci budou moci podvodnou stránku využívat ve svých phishingových kampaních i&nbsp;<span class="badge badge-warning">správci testů</span>.</small>
     </div>
   </div>
 
