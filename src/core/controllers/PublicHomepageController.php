@@ -103,9 +103,12 @@
 
       $phishingEmail['url'] = PhishingWebsiteModel::makeWebsiteUrl($phishingEmail['url'], WebsitePrependerModel::makeUserWebsiteId($idCampaign, $idUser));
 
-      // Získání informací o podvodné stránce.
+      // Získání informací o podvodné stránce a její šabloně.
       $website['http'] = get_protocol_from_url($phishingEmail['url']) == 'http';
       $website['domain'] = get_domain_from_url($phishingEmail['url']);
+
+      $websiteTemplate = PhishingWebsiteModel::getPhishingWebsiteTemplate($phishingEmail['id_template']);
+      $website['cloned'] = $websiteTemplate['cloned'];
 
       $domainPosition = mb_strpos($phishingEmail['url'], $website['domain']);
 
@@ -114,15 +117,14 @@
 
       $website['image_src'] = '/' . ACT_PHISHING_TEST . '/' . self::escapeOutput($_GET['id']) . '?' . ACT_PHISHING_IMG;
 
-      // Vložení získaných dat do View.
       $this->setViewData('website', $website);
       $this->setViewData('email', $phishingEmail);
 
-      // Logování přístupu na stránku o absolvování cvičného phishingu.
+      // Logování přístupu na vzdělávací stránku o absolvování cvičného phishingu.
       $record = [
         'id_campaign' => $idCampaign,
         'id_user' => $user['id_user'],
-        'id_action' => 4, // TODO
+        'id_action' => CAMPAIGN_VISIT_EDUCATIONAL_SITE_ID,
         'used_email' => $user['email'],
         'used_group' => $user['primary_group'],
         'visit_datetime' => date('Y-m-d H:i:s'),

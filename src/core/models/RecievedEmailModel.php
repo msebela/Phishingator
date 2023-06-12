@@ -58,7 +58,7 @@
       return Database::querySingle('
               SELECT phg_sent_emails.id_campaign, `date_sent`,
               phg_emails.id_email, `sender_name`, `sender_email`, `subject`, `body`,
-              `url`,
+              `id_template`,`url`,
               DATE_FORMAT(date_sent, "%e. %c. %Y") AS `date_sent_formatted`,
               DATE_FORMAT(date_sent, "%e. %c. %Y (%k:%i)") AS `datetime_sent_formatted`,
               phg_campaigns.id_website

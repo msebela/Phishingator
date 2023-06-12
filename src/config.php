@@ -416,6 +416,9 @@
   /** Identifikátor akce "zadání platných (přihlašovacích) údajů". */
   define('CAMPAIGN_VALID_CREDENTIALS_ID', 4);
 
+  /** Identifikátor akce "přístup na vzdělávací stránku". */
+  define('CAMPAIGN_VISIT_EDUCATIONAL_SITE_ID', 5);
+
 
 
   /* --- ODESÍLÁNÍ E-MAILŮ --- */

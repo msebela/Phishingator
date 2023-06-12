@@ -225,7 +225,7 @@
      */
     public static function getPhishingWebsiteTemplate($id) {
       return Database::querySingle('
-              SELECT `server_dir`
+              SELECT `server_dir`, `cloned`
               FROM `phg_websites_templates`
               WHERE `id_website_template` = ?
               AND `visible` = 1

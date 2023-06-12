@@ -150,15 +150,42 @@
         </div>
       </a>
     </div>
+
     <?php if ($website['http']): ?>
-    <div class="card bg-light">
-      <div class="card-body">
-        <h5 class="card-title">
-          <span class="badge badge-pill badge-dark"><?= $i ?>.&nbsp;indicie</span>
-          Nezabezpečená stránka
-        </h5>
-        <p class="card-text">Adresa stránky začíná zkratkou <strong>HTTP</strong> místo zabezpečeného protokolu <strong>HTTP<span class="text-danger">S</span></strong>. Také může být vedle adresy vidět popisek <strong class="d-inline-block">&bdquo;<span data-feather="alert-triangle"></span>&nbsp;Nezabezpečeno&ldquo;</strong> &ndash; to znamená, že všechno, co na webu děláte a&nbsp;zadáte, může kdokoliv sledovat.</p>
-      </div>
+    <div class="card bg-light cursor-pointer mark-indication">
+      <a href="#indication-http" class="anchor-link">
+        <div class="card-body">
+          <h5 class="card-title">
+            <span class="badge badge-pill badge-dark"><?= $i++; ?>.&nbsp;indicie</span>
+            Nezabezpečeno
+          </h5>
+          <p class="card-text">
+            Adresa stránky začíná zkratkou protokolu <abbr title="Hypertext Transfer Protocol" class="font-weight-bold">HTTP</abbr>, vždy je ale nutné pro přihlašování přistupovat na stránku se zabezpečeným protokolem se zkratkou <abbr title="Hypertext Transfer Protocol Secure" class="font-weight-bold">HTTPS</abbr> (<strong>S</strong> ve zkratce znamená <i>secure</i>, tedy zabezpečeno).
+          </p>
+          <p class="card-text">
+            Vedle adresy může být také vidět popisek <strong class="d-inline-block">&bdquo;<span data-feather="alert-triangle"></span>&nbsp;Nezabezpečeno&ldquo;</strong> &ndash; to znamená, že všechno, co na webu děláte a&nbsp;zadáte, může kdokoliv sledovat.
+          </p>
+        </div>
+      </a>
+    </div>
+    <?php endif; ?>
+
+    <?php if ($website['cloned']): ?>
+    <div class="card bg-light cursor-pointer mark-indication">
+      <a href="#indication-cloned" class="anchor-link">
+        <div class="card-body">
+          <h5 class="card-title">
+            <span class="badge badge-pill badge-dark"><?= $i++; ?>.&nbsp;indicie</span>
+            Zkopírovaný vzhled
+          </h5>
+          <p class="card-text">
+            Útočníci jsou schopni vzhled stránek zkopírovat do posledního detailu. Podvodná (falešná) přihlašovací stránka se může chovat i&nbsp;<strong>vypadat úplně stejně</strong> jako ta správná (legitimní).
+          </p>
+          <p class="card-text">
+            Vždy si tedy především zkontrolujte adresu, na které stránka je.
+          </p>
+        </div>
+      </a>
     </div>
     <?php endif; ?>
   </div>
