@@ -247,7 +247,7 @@
 <?php if (count($capturedData) > 0): ?>
 <p>Výpis všech akcí provedených na podvodné stránce, která je přístupná ze zasílaného podvodného e-mailu. Zastoupení těchto akcí znázorňuje také graf <i>Všechny provedené akce</i>.</p>
 
-<script src="/<?= CORE_DIR_EXTENSIONS ?>/table-sort.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+<script src="/<?= CORE_DIR_EXTENSIONS ?>/table-sort.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
 <div class="table-responsive">
   <table class="table table-striped table-hover records-list table-sort table-arrows">
