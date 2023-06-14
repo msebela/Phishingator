@@ -256,7 +256,7 @@ Veškerá data z Phishingatoru se na hostitelském serveru ukládají do adresá
 
 ### 3.4 Zálohování databáze
 
-Data z databáze Phishingatoru lze zálohovat pomocí skriptu [`backup-db.sh`](scripts/backup-db.sh), který vytvoří mysqldump databáze pro zvolenou instanci (organizaci). Je nutné, aby při zálohování běžel databázový kontejner `phishingator_database` dané organizace.
+Data z databáze Phishingatoru lze zálohovat pomocí skriptu [`backup-db.sh`](scripts/backup-db.sh), který vytvoří mysqldump databáze pro zvolenou instanci (organizaci). Je nutné, aby při zálohování běžel databázový kontejner `phishingator-<organizace>-database`.
 
 Soubor se zálohou se vytvoří v adresáři `/phishingator-data/<organizace>/database-dumps`.
 
@@ -269,7 +269,7 @@ Příklad volání:
 
 ### 3.5 Obnovení databáze
 
-Data do databáze Phishingatoru lze importovat pomocí skriptu [`restore-db.sh`](scripts/restore-db.sh), který importuje strukturu a data z mysqldump souboru pro zvolenou instanci (organizaci). Je nutné, aby při obnovení databáze běžel databázový kontejner `phishingator_database` dané organizace. 
+Data do databáze Phishingatoru lze importovat pomocí skriptu [`restore-db.sh`](scripts/restore-db.sh), který importuje strukturu a data z mysqldump souboru pro zvolenou instanci (organizaci). Je nutné, aby při obnovení databáze běžel databázový kontejner `phishingator-<organizace>-database`. 
 
 Skript očekává, že mysqldump soubor (ve formátu `sql.gz`) je umístěn v adresáři `/phishingator-data/<organizace>/database-dumps/`.
 
@@ -295,23 +295,42 @@ Při vypnutí Phishingatoru, smazání všech podadresářů v adresáři `/phis
 
 ### 3.7 Přidání nové šablony podvodné stránky
 
-Novou šablonu podvodné stránky lze do Phishingatoru přidat pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh). Je nutné, aby při obnovení databáze běžel databázový kontejner `phishingator_database` dané organizace.
+Novou šablonu podvodné stránky lze do Phishingatoru přidat pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh). Je nutné, aby při přidávání nové šablony běžel databázový kontejner `phishingator-<organizace>-database`.
 
-Aby Phishingator zachytával data zadaná do formuláře na podvodné stránce, je nutné, aby šablona podvodné stránky splňovala následující podmínky:
+Aby Phishingator zachytával data zadaná do formuláře na podvodné stránce, musí šablona podvodné stránky splňovat následující podmínky:
 
 * vstupním souborem bude soubor `index.php` (může obsahovat přesměrování na jiný soubor)
 * formulář (HTML tag `<form>`) musí mít jako metodu odesílání nastaveno `method="post"` (povoleny jsou pouze POST požadavky)
-* vstupní pole pro zadání uživatelského jména musí obsahovat atribut `name="username"`
-* vstupní pole pro zadání hesla musí obsahovat atribut `name="password"`
-* ve formuláři musí existovat tlačítko obsahující atribut `type="submit"` sloužící pro odeslání formuláře (obvykle v rámci HTML tagu `<input>` nebo `<button>`)
-* pokud má formulář umožňovat zobrazení chybové hlášky (např. o nesprávných přihlašovacích údajích), musí být v souboru uvedena podmínka `<?php if ($message): ?> (...) <text chybové hlášky> (...) <?php endif; ?>`, která bude obalovat samotnou chybovou hlášku
+  * vstupní pole pro zadání uživatelského jména musí obsahovat atribut `name="username"`
+  * vstupní pole pro zadání hesla musí obsahovat atribut `name="password"`
+  * ve formuláři musí existovat tlačítko obsahující atribut `type="submit"` sloužící pro odeslání formuláře (obvykle uvnitř HTML tagu `<input>` nebo `<button>`)
+* pokud má podvodná stránka umožňovat zobrazení chybové hlášky (např. po zadání neplatného jména a hesla), musí být v souboru uvedena podmínka `<?php if ($message): ?> (...) <text chybové hlášky> (...) <?php endif; ?>`, která bude obalovat samotnou chybovou hlášku
   * chybová hláška se zobrazí pouze tehdy, pokud administrátor během vytváření kampaně nastaví jako *akci po odeslání formuláře* tu, která obsahuje text *zobrazit chybovou hlášku*
 
-Příklad části zdrojového kódu podvodné šablony včetně použití chybové hlášky:
+
+#### Proměnné
+
+Ve zdrojovém kódu podvodné stránky lze používat následující proměnné, které Phishingator při přístupu na podvodnou stránku automaticky předpřipraví a naplní obsahem:
+
+| Proměnná    | Datový typ | Význam                                                                                                                                                                      |
+|-------------|------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `$username` | string     | Uživatelské jméno uživatele, který na podvodnou stránku přistoupil                                                                                                          |
+| `$email`    | string     | E-mail uživatele, který na podvodnou stránku přistoupil                                                                                                                     |
+| `$service`  | string     | Název služby, ke které se uživatel přihlašuje (může se jednat o prázdný řetězec – hodnotu nastavuje administrátor při vytváření podvodné stránky přímo v GUI Phishingatoru) |
+| `$message`  | bool       | TRUE, pokud se má zobrazit na podvodné stránce chybová hláška (došlo k zadání neplatného jména a hesla), jinak FALSE                                                        |
+
+
+#### Příklad zdrojového kódu
+
+Příklad části zdrojového kódu podvodné šablony včetně použití proměnných:
 
 ```
 (...)
 <h1>Login</h1>
+
+<?php if ($service): ?>
+  <p>Please enter your credentials to access <?= $service ?>.</p>
+<?php endif; ?>
 
 <?php if ($message): ?>
   <p>Invalid username or password.</p>
@@ -329,24 +348,31 @@ Příklad části zdrojového kódu podvodné šablony včetně použití chybov
 (...)
 ```
 
-Součástí souborů podvodné šablony musí být její screenshot pojmenovaný `thumbnail.png` uložený v kořenovém adresáři šablony. Screenshot by měl být široký přesně `800 px` a na výšku by měl zabírat minimálně celý formulář. Screenshot je použit při zobrazování indicií k podvodné stránce.
+
+#### Adresářová struktura
+
+Součástí souborů podvodné šablony musí být její screenshot pojmenovaný `thumbnail.png` uložený v kořenovém adresáři šablony. Screenshot by měl být široký přesně `800 px` a na výšku by měl zabírat celý formulář. Screenshot je použit při zobrazení indicií na vzdělávací stránce.
 
 Typicky bude obsah adresáře podvodné šablony vypadat následovně:
 
 ```
-– images
-  – logo.svg
-– index.php
-– style.css
-– thumbnail.png
+.
+├── images/
+│   └── logo.svg
+├── index.php
+├── style.css
+└── thumbnail.png
 ```
 
-Na závěr je nutné přidat šablonu do Phishingatoru pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh), který záznam o nové šabloně vloží do databáze (do tabulky `phg_websites_templates`) a zkopíruje soubory podvodné stránky do dané instance Phishingatoru.
+
+#### Aktivace podvodné šablony
+
+Aktivovat šablonu přímo v GUI Phishingatoru je možné pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh), který záznam o nové šabloně vloží do databáze (do tabulky `phg_websites_templates`) a zkopíruje soubory podvodné stránky do dané instance Phishingatoru.
 
 Příklad volání:
 
 ```
-./scripts/add-website-template.sh cesnet "CESNET SSO" /root/cesnet-sso/
+./scripts/add-website-template.sh cesnet "CESNET SSO" /root/cesnet-sso/ 1
 ```
 
 ### 3.8 Možné problémy
