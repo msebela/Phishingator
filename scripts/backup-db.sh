@@ -9,13 +9,16 @@ if [ $# -ne 1 ]; then
   echo "  $(basename "$0") <organization-name>"
 else
   ORG=$1
+
   CONTAINER_NAME="phishingator-$ORG-database"
+
+  INSTANCE_DIR="/phishingator-data/$ORG"
+  BACKUP_DIR="$INSTANCE_DIR/database-dumps"
 
   if [ "$(docker container inspect -f '{{.State.Status}}' "$CONTAINER_NAME")" != "running" ]; then
     echo "Phishingator database container '$CONTAINER_NAME' is not running." >&2; exit 1
   fi
 
-  BACKUP_DIR="/phishingator-data/$ORG/database-dumps"
   BACKUP_FILENAME="$(date +"%Y-%m-%d-%H-%M-%S.sql.gz")"
 
   DB_USERNAME=$(docker exec "$CONTAINER_NAME" printenv MYSQL_USER)
@@ -28,11 +31,13 @@ else
   MESSAGE=": [$(basename "$0")]  - Backup file (dump) of Phishingator database for org. '$ORG'"
 
   if zgrep -q "INSERT INTO \`phg_websites_templates\`" "$BACKUP_DIR"/"$BACKUP_FILENAME"; then
-    echo "$MESSAGE_DATETIME [INFO ] $MESSAGE was successfully created."
+    LOG="$MESSAGE_DATETIME [INFO ] $MESSAGE was successfully created."
     RETURN_CODE=0
   else
-    echo "$MESSAGE_DATETIME [ERROR] $MESSAGE failed."
+    LOG="$MESSAGE_DATETIME [ERROR] $MESSAGE failed."
   fi
+
+  echo "$LOG" | tee -a "$INSTANCE_DIR"/logs/log.log
 fi
 
 exit $RETURN_CODE
