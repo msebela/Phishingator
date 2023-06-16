@@ -499,7 +499,7 @@
      *
      * @param int $idUser              ID uživatele
      * @param int $idGroup             ID skupiny
-     * @return mixed                   Výsledek změny
+     * @return int                     Výsledek změny
      */
     public static function changeUserGroup($idUser, $idGroup) {
       Logger::info(

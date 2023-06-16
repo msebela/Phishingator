@@ -49,7 +49,7 @@
      *
      * @param string $query            SQL dotaz
      * @param array $args              Parametry dotazu
-     * @return mixed                   Výsledek provedení SQL dotazu
+     * @return array|false             Výsledek provedení SQL dotazu
      */
     public static function queryMulti($query, $args = []) {
       $result = self::$connection->prepare($query);
@@ -92,7 +92,7 @@
     /**
      * Vrátí ID posledního záznamu vloženého do databáze.
      *
-     * @return mixed                   ID naposledy vloženého záznamu
+     * @return false|string            ID naposledy vloženého záznamu nebo FALSE
      */
     public static function getLastInsertId() {
       return self::$connection->lastInsertId();

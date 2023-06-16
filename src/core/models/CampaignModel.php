@@ -276,7 +276,7 @@
      * Vrátí seznam kampaní, které byly vytvořeny uživatelem nebo uživateli v určité skupině.
      *
      * @param int $idUser              ID uživatele, vůči kterému se seznam kampaní zjišťuje.
-     * @return array|int               Pole ID kampaní nebo -1, pokud nebyla nalezena žádná kampaň.
+     * @return array                   Pole ID kampaní.
      */
     public static function getIdCampaignsInUserGroup($idUser) {
       $idCampaigns = [];
@@ -661,8 +661,10 @@
     /**
      * Vloží k dané kampani nového příjemce.
      *
-     * @param int $idCampaign          ID kampaně
-     * @param string $email            E-mail příjemce
+     * @param int $idCampaign ID kampaně
+     * @param string $email E-mail příjemce
+     * @return void
+     * @throws UserError
      */
     public function insertRecipient($idCampaign, $email) {
       $username = get_email_part($email, 'username');
@@ -897,7 +899,7 @@
      * Vrátí všechny záznamy o navštívení stránky o absolvování phishingu pro konkrétní kampaň.
      *
      * @param int $idCampaign          ID kampaně
-     * @return mixed                   Pole zaznamenaných akcí
+     * @return array                   Pole zaznamenaných akcí
      */
     public static function getCapturedDataTestPage($idCampaign) {
       $data = null;

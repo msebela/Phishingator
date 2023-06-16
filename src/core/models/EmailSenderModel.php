@@ -113,15 +113,15 @@
             $campaign['subject'], $campaign['body_personalized']
           );
 
-          // Uložení záznamu o tom, zda se e-mail podařilo odeslat a případná dekrementace uživatelova omezení.
+          // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
           $this->logSentEmail($campaign['id_campaign'], $campaign['id_email'], $user['id_user'], $mailResult, $this->mailer->ErrorInfo);
 
           if ($mailResult) {
             ParticipationModel::decrementEmailLimit($user['id_user']);
-          }
 
-          // Vložení záznamu do databáze o tom, že uživatel zatím na kampaň nereagoval.
-          CampaignModel::insertNoReactionRecord($campaign['id_campaign'], $user['id_user'], $recipient, $user['primary_group']);
+            // Vložení záznamu do databáze o tom, že uživatel zatím na kampaň nereagoval.
+            CampaignModel::insertNoReactionRecord($campaign['id_campaign'], $user['id_user'], $recipient, $user['primary_group']);
+          }
 
           // Vyčištění pro další iteraci.
           $this->mailer->clearAddresses();

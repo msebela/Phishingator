@@ -158,7 +158,7 @@
      *
      * @param string $attributeName    Požadovaný atribut, jehož hodnotu je třeba získat
      * @param string $dn               Vstupní řetězec, ze kterého se bude hodnota atributu získávat
-     * @return false|string|null       Hodnota atributu nebo NULL, popř. FALSE.
+     * @return mixed|string            Hodnota atributu nebo NULL, popř. FALSE.
      */
     private function getAttributeFromDN($attributeName, $dn) {
       $attributeName = $attributeName . '=';

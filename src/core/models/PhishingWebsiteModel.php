@@ -466,6 +466,7 @@
      * @param int $idWebsite           ID podvodné stránky
      * @param int $idUser              ID uživatele, který chce zobrazit náhled podvodné stránky
      * @return string|null             URL pro náhled podvodné stránky nebo NULL
+     * @throws UserError
      */
     public static function getPreviewLink($idWebsite, $idUser) {
       $previewLink = null;
@@ -519,6 +520,7 @@
      *
      * @param string $url              URL adresa podvodné stránky (bez protokolu)
      * @return int                     Aktuální stav
+     * @throws UserError
      */
     private static function getPhishingWebsiteStatus($url) {
       $status = 0;

@@ -14,7 +14,6 @@
 
   Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
 
-  // TODO: Smazat
   if (getenv('DOCKER_REMOTE_USER')) {
     $_SERVER['REMOTE_USER'] = getenv('DOCKER_REMOTE_USER');
   }
