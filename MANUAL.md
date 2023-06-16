@@ -210,32 +210,44 @@ Formulář pro přidání nebo úpravu skupiny obsahuje následující vstupní 
 
 ### 3.1 Konfigurace Phishingatoru
 
-Řadu možností Phishingatoru (jako např. parametry pro připojení k databázi a k LDAP, rozmazání identit uživatelů ve statistikách kampaně, způsob anonymizace hesel z podvodných stránek apod.) lze nastavit v souboru [`config.php`](src/config.php), resp. pomocí **Environment variables** (`.env`), ze kterých `config.php` čerpá. Možnosti konfigurace jsou popsány v komentářích v souboru `config.php`.
+Řada možností Phishingatoru (jako např. parametry pro připojení k databázi a k LDAP, rozmazání identit uživatelů ve statistikách kampaně, způsob anonymizace hesel z podvodných stránek apod.) je určena nastaveními v souboru [`config.php`](src/config.php). Nastavení lze přepsat pomocí **Environment variables** (soubor `.env`), ze kterých `config.php` čerpá, v opačném případě bude využita výchozí konfigurace právě ze souboru `config.php`.
 
 Základní konfigurace, ze které lze vycházet, je umístěna v souboru [`.env.dist`](.env.dist). Tuto konfiguraci je nutné před spuštěním Phishingatoru doplnit a následně uložit pod názvem `.env`.
 
 
-### 3.2 Build Phishingatoru
+### 3.2 Build a spuštění Phishingatoru
 
-Před buildem Phishingatoru je nejprve nutné vytvořit [konfiguraci Phishingatoru](#31-konfigurace-phishingatoru) (soubor `.env`) na základě prostředí organizace.
+Před buildem a spuštěním Phishingatoru je nejprve nutné vytvořit [konfiguraci Phishingatoru](#31-konfigurace-phishingatoru) (soubor `.env`) na základě prostředí organizace.
 
 
 #### 3.2.1 Testovací instance
 
-Testovací instanci Phishingatoru lze spustit voláním skriptu `build-dev.sh`, a to například následovně:
+Pro spuštění testovací instance je třeba mít nainstalovaný a spuštěný Docker. Testovací instanci Phishingatoru určenou pro lokální prostředí lze spustit voláním skriptu [`build-dev.sh`](scripts/build-dev.sh), a to následovně:
 
 ```
 ./scripts/build-dev.sh
 ```
 
-Při testování na lokálním prostředí je Phishingator po úspěšném vykonání skriptu dostupný na URL adrese <http://localhost:8000>.
+Soubor `.env` bude pro lokální spuštění typicky obsahovat minimálně následující konfiguraci:
+
+```
+ORG=<nazev-organizace>
+ORG_DOMAIN=<domena-organizace>
+
+WEB_HOST=localhost:8000
+WEB_URL=http://${WEB_HOST}
+
+(...)
+```
+
+Phishingator je v takovémto případě po úspěšném vykonání skriptu dostupný na URL adrese <http://localhost:8000>.
 
 
-#### 3.2.2 Ostrá instance
+#### 3.2.2 Produkční instance
 
-Před nasazením ostré verze je nutné nainstalovat a nakonfigurovat proxy (např. Traefik), která bude požadavky cílené na podvodné domény předávat do Phishingatoru.
+Před nasazením ostré, produkční verze je nutné na cílový server nainstalovat Docker a zároveň nainstalovat a nakonfigurovat proxy server (např. Traefik), který bude požadavky cílené na podvodné domény předávat do kontejneru Phishingatoru.
 
-Samotný build ostré verze pak zajišťuje soubor `build.sh`:
+Samotný build ostré verze zajišťuje soubor [`build.sh`](scripts/build.sh):
 
 ```
 ./scripts/build.sh
@@ -247,7 +259,7 @@ Samotný build ostré verze pak zajišťuje soubor `build.sh`:
 Veškerá data z Phishingatoru se na hostitelském serveru ukládají do adresáře `/phishingator-data/`, kde jsou dále členěna do jednotlivých podadresářů následovně:
 
 - `database` – data databáze,
-- `database-dumps` – mysqldump soubory,
+- `database-dumps` – dump soubory databáze,
 - `logs` – logy,
 - `websites-templates`
   - `sites-config` – konfigurační soubory (Apache VirtualHost) podvodných stránek,
@@ -256,7 +268,7 @@ Veškerá data z Phishingatoru se na hostitelském serveru ukládají do adresá
 
 ### 3.4 Zálohování databáze
 
-Data z databáze Phishingatoru lze zálohovat pomocí skriptu [`backup-db.sh`](scripts/backup-db.sh), který vytvoří mysqldump databáze pro zvolenou instanci (organizaci). Je nutné, aby při zálohování běžel databázový kontejner `phishingator-<organizace>-database`.
+Data z databáze Phishingatoru lze zálohovat pomocí skriptu [`backup-db.sh`](scripts/backup-db.sh), který vytvoří dump databáze pro zvolenou instanci (organizaci). Pro provedení zálohy databáze musí běžet databázový kontejner `phishingator-<organizace>-database`.
 
 Soubor se zálohou se vytvoří v adresáři `/phishingator-data/<organizace>/database-dumps`.
 
@@ -269,9 +281,9 @@ Příklad volání:
 
 ### 3.5 Obnovení databáze
 
-Data do databáze Phishingatoru lze importovat pomocí skriptu [`restore-db.sh`](scripts/restore-db.sh), který importuje strukturu a data z mysqldump souboru pro zvolenou instanci (organizaci). Je nutné, aby při obnovení databáze běžel databázový kontejner `phishingator-<organizace>-database`. 
+Data do databáze Phishingatoru lze importovat pomocí skriptu [`restore-db.sh`](scripts/restore-db.sh), který importuje strukturu a data z dump souboru databáze pro zvolenou instanci (organizaci). Pro provedení obnovy databáze musí běžet databázový kontejner `phishingator-<organizace>-database`. 
 
-Skript očekává, že mysqldump soubor (ve formátu `sql.gz`) je umístěn v adresáři `/phishingator-data/<organizace>/database-dumps/`.
+Skript očekává, že soubor obsahující dump databáze (komprimovaný ve formátu `sql.gz`) je umístěn v adresáři `/phishingator-data/<organizace>/database-dumps/`.
 
 Příklad volání:
 
@@ -295,7 +307,7 @@ Při vypnutí Phishingatoru, smazání všech podadresářů v adresáři `/phis
 
 ### 3.7 Přidání nové šablony podvodné stránky
 
-Novou šablonu podvodné stránky lze do Phishingatoru přidat pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh). Je nutné, aby při přidávání nové šablony běžel databázový kontejner `phishingator-<organizace>-database`.
+Novou šablonu podvodné stránky lze do Phishingatoru přidat pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh). Pro přidání nové šablony musí běžet databázový kontejner `phishingator-<organizace>-database`.
 
 Aby Phishingator zachytával data zadaná do formuláře na podvodné stránce, musí šablona podvodné stránky splňovat následující podmínky:
 
@@ -375,16 +387,18 @@ Příklad volání:
 ./scripts/add-website-template.sh cesnet "CESNET SSO" /root/cesnet-sso/ 1
 ```
 
+
 ### 3.8 Možné problémy
 
 
 #### 3.8.1 Vyčištění fronty neodeslaných e-mailů
 
-Poštovní server pravděpodobně **zamítne** odeslání e-mailů, u kterých se nepodaří resolve adresy (domény, subdomény, ...), která je uvedena v poli odesílatele. Takové e-maily tedy nebudou odeslány, i když se ve Phishingatoru tváří, že odeslány byly (chybová hláška `Sender address rejected: Domain not found (in reply to RCPT TO command)` v souboru `/var/log/mail.log` a plná fronta napoví, že tomu tak není).
+Poštovní server pravděpodobně **zamítne** odeslání e-mailů, u kterých se nepodaří resolve adresy, která je uvedena v poli odesílatele. Takové e-maily tedy nebudou odeslány, i když se ve Phishingatoru tváří, že odeslány byly (chybová hláška `Sender address rejected: Domain not found (in reply to RCPT TO command)` v souboru `/var/log/mail.log` a plná fronta napoví, že tomu tak není).
+
 Následně je třeba ručně smazat neodeslané e-maily z fronty a kampaň smazat (aby se ve frontě znovu neobjevily), postup kroků je tedy následující:
 
-1. přihlásit se na server Phishingatoru
-2. zadáním příkazu `mailq` zjistit, kolik e-mailů nebylo odesláno (výstup by neměl být prázdný)
-3. zadáním příkazu `postsuper -d ALL` provést smazání všech neodeslaných e-mailů z fronty
-4. znovu zadat příkaz `mailq` – tentokrát by měl být výstup prázdný
-5. smazat problémovou kampaň ve Phishingatoru
+1. Přihlásit se na server, kde je nasazen Phishingator.
+2. Zadáním příkazu `mailq` zjistit, kolik e-mailů nebylo odesláno (výstup by neměl být prázdný).
+3. Zadáním příkazu `postsuper -d ALL` provést smazání všech neodeslaných e-mailů z fronty.
+4. Znovu zadat příkaz `mailq` – tentokrát by měl být výstup prázdný.
+5. Smazat problémovou kampaň ve Phishingatoru.
