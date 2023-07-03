@@ -226,13 +226,43 @@
 
 
     /**
+     * Vloží do databáze záznam o přístupu uživatele na vzdělávací stránku o absolvování cvičného phishingu.
+     *
+     * @param int $idCampaign          ID kampaně
+     * @param int $idUser              ID uživatele
+     * @param string $email            E-mail uživatele
+     * @param string $group            Skupina uživatele
+     * @return void
+     */
+    public static function logEducationSiteAccess($idCampaign, $idUser, $email, $group) {
+      $record = [
+        'id_campaign' => $idCampaign,
+        'id_user' => $idUser,
+        'id_action' => CAMPAIGN_VISIT_EDUCATIONAL_SITE_ID,
+        'used_email' => $email,
+        'used_group' => $group,
+        'visit_datetime' => date('Y-m-d H:i:s'),
+        'ip' => self::getClientIp(),
+        'browser_fingerprint' => $_SERVER['HTTP_USER_AGENT']
+      ];
+
+      $ignoreRecord = self::isIgnoredBrowser($_SERVER['HTTP_USER_AGENT']);
+
+      if (!$ignoreRecord) {
+        Logger::info('Access to the educational site.', $record);
+        Database::insert('phg_captured_data_end', $record);
+      }
+    }
+
+
+    /**
      * Vrátí, zdali použitý webový prohlížeč nepatří do seznamu ignorovaných
      * prohlížečů (např. náhledový robot) nastavených v konfiguraci Phishingatoru.
      *
      * @param string $userAgent        Otisk webového prohlížeče
      * @return bool
      */
-    private function isIgnoredBrowser($userAgent) {
+    private static function isIgnoredBrowser($userAgent) {
       $ignored = false;
 
       if (!empty(PHISHING_WEBSITE_IGNORED_USER_AGENTS)) {
@@ -387,6 +417,7 @@
      * Zpracuje požadavky a připraví podvodnou stránku na základě její konfigurace.
      *
      * @return void
+     * @throws Exception
      */
     private function process() {
       if (!empty($_GET)) {
@@ -407,7 +438,7 @@
           exit();
         }
         else {
-          Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
+          Database::connect();
 
           $user = UsersModel::getUserByURL($args['id_user']);
           $website = PhishingWebsiteModel::getPhishingWebsiteByPersonalizedUrl(get_current_url(), $args['url']);

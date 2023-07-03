@@ -84,7 +84,7 @@
      */
     private function sendEmails() {
       self::requirePhpMailerClasess();
-      Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
+      Database::connect();
 
       $mailer = new EmailSenderModel();
       $mailer->startSendingEmails();
@@ -99,7 +99,7 @@
      */
     private function sendNotifications() {
       self::requirePhpMailerClasess();
-      Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
+      Database::connect();
 
       $mailer = new NotificationsModel();
       $mailer->startSendingNotifications();
@@ -112,7 +112,7 @@
      * @return void
      */
     private function synchronizeUsersData() {
-      Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
+      Database::connect();
 
       UsersModel::synchronizeUsers();
     }

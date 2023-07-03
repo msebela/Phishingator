@@ -24,7 +24,7 @@
           }
 
           // Pokud parametry URL adresy odpovídají předpokladu, dojde k připojení k databázi.
-          Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
+          Database::connect();
 
           $this->processEmailDetail($args['id_campaign'], $args['id_user']);
 
@@ -120,19 +120,7 @@
       $this->setViewData('website', $website);
       $this->setViewData('email', $phishingEmail);
 
-      // Logování přístupu na vzdělávací stránku o absolvování cvičného phishingu.
-      $record = [
-        'id_campaign' => $idCampaign,
-        'id_user' => $user['id_user'],
-        'id_action' => CAMPAIGN_VISIT_EDUCATIONAL_SITE_ID,
-        'used_email' => $user['email'],
-        'used_group' => $user['primary_group'],
-        'visit_datetime' => date('Y-m-d H:i:s'),
-        'ip' => WebsitePrependerModel::getClientIp(),
-        'browser_fingerprint' => $_SERVER['HTTP_USER_AGENT']
-      ];
-
-      Logger::info('Access to the educational site.', $record);
-      Database::insert('phg_captured_data_end', $record);
+      // Logování přístupu na vzdělávací stránku.
+      WebsitePrependerModel::logEducationSiteAccess($idCampaign, $user['id_user'], $user['email'], $user['primary_group']);
     }
   }

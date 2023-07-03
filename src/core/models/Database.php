@@ -12,19 +12,25 @@
 
 
     /**
-     * Pokusí se připojit k databázi (pokud zatím k připojení nedošlo).
+     * Pokusí se navázat připojení s databázi (pokud již k připojení nedošlo).
      *
-     * @param string $pdoDns           Řetězec obsahující název databázového enginu, hostitele a název databáze
-     * @param string $dbUsername       Uživatelské jméno pro připojení k databázi
-     * @param string $dbPassword       Heslo pro připojení k databázi
+     * @return void
+     * @throws Exception
      */
-    public static function connect($pdoDns, $dbUsername, $dbPassword) {
-      if (!isset(self::$connection)) {
-        self::$connection = @new PDO($pdoDns, $dbUsername, $dbPassword);
+    public static function connect() {
+      try {
+        if (!isset(self::$connection)) {
+          self::$connection = new PDO(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
 
-        self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        self::$connection->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, 'SET NAMES ' . DB_ENCODING);
-        self::$connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+          self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+          self::$connection->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, 'SET NAMES ' . DB_ENCODING);
+          self::$connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        }
+      }
+      catch (PDOException $e) {
+        Logger::error('Failed to connect to database.', $e->getMessage());
+
+        echo 'Nepodařilo se navázat připojení s databází. Kontaktujte, prosím, administrátora.';
       }
     }
 

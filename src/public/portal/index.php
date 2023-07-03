@@ -1,6 +1,6 @@
 <?php
   error_reporting(E_ALL);
-  ini_set('display_errors', 1);
+  ini_set('display_errors', 0);
 
 
   require $_SERVER['DOCUMENT_ROOT'] . '../config.php';
@@ -12,8 +12,9 @@
   init_secure_session_start();
   init_http_security_headers();
 
-  Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
+  Database::connect();
 
+  // TODO:
   if (getenv('DOCKER_REMOTE_USER')) {
     $_SERVER['REMOTE_USER'] = getenv('DOCKER_REMOTE_USER');
   }

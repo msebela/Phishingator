@@ -301,8 +301,6 @@
 
       // Pokud byl vyplněn i tento nepovinný parametr, nahrazovat i proměnou pro URL podvodné stránky.
       if ($websiteUrl != null) {
-        $url = $websiteUrl;
-
         // Jestliže je specifikována i kampaň, vložit do URL podvodné stránky i identifikátor pro sledování uživatele.
         if ($idCampaign != null) {
           $url = PhishingWebsiteModel::makeWebsiteUrl($websiteUrl, WebsitePrependerModel::makeUserWebsiteId($idCampaign, $user['url']));

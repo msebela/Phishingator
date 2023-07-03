@@ -163,8 +163,6 @@
      * @return array|string            Ošetřený řetězec pro výstup do stránky
      */
     public static function escapeOutput($pattern) {
-      $escaped = '';
-
       if (is_array($pattern)) {
         foreach ($pattern as $key => $value) {
           $pattern[$key] = self::escapeOutput($value);

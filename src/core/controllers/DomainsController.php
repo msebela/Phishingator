@@ -78,7 +78,7 @@ class DomainsController extends Controller {
    * @return void
    */
   private function getDomainsToActivate() {
-    Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
+    Database::connect();
 
     $websites = PhishingWebsiteModel::getPhishingWebsites();
 
@@ -104,7 +104,7 @@ class DomainsController extends Controller {
    * @return void
    */
   private function getDomainsToDeactivate() {
-    Database::connect(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
+    Database::connect();
 
     $websites = PhishingWebsiteModel::getPhishingWebsites();
 
