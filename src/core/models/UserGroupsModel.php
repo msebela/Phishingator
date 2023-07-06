@@ -23,7 +23,7 @@
     protected $role;
 
     /**
-     * @var string      Povolené skupiny z LDAP
+     * @var string      Seznam zobrazených LDAP skupin
      */
     protected $ldapGroups;
 
@@ -31,10 +31,6 @@
      * @var int         ID rodičovské skupiny
      */
     protected $idParentGroup;
-
-    public function getName() {
-      return $this->name;
-    }
 
 
     /**
@@ -46,17 +42,17 @@
     public function load($data) {
       parent::load($data);
 
-      // Odstranění vícenásobných oddělovačů ze seznamu povolených LDAP skupin.
-      $this->ldapGroups = preg_replace(
-        '/' . LDAP_GROUPS_DELIMITER . LDAP_GROUPS_DELIMITER . '+/',
-        LDAP_GROUPS_DELIMITER,
-        $this->ldapGroups
-      );
+      if (is_array($this->ldapGroups)) {
+        $groups = '';
 
-      // Odstranění přebytečných oddělovačů z konce a začátku seznamu povolených LDAP skupin.
-      $this->ldapGroups = trim(
-        $this->ldapGroups, LDAP_GROUPS_DELIMITER
-      );
+        foreach ($this->ldapGroups as $group) {
+          $groups .= $group . LDAP_GROUPS_DELIMITER;
+        }
+
+        $this->ldapGroups = $groups;
+      }
+
+      $this->ldapGroups = trim($this->ldapGroups, LDAP_GROUPS_DELIMITER);
 
       // Jestliže se jedná o rodičovskou skupinu, nastavit hodnotu rodiče na -1,
       // abychom se vyhnuli následným kontrolám, které se vztahují na nově
@@ -87,12 +83,18 @@
         $group['id_parent_group'] = $this->role;
         $group['role'] = $this->role;
 
-        $role = $this->getRole($this->role);
+        $role = $this->role;
+      }
 
-        // Pokud není zvoleno oprávnění "administrátor" nebo "správce testů", nemá smysl uvažovat LDAP skupiny.
-        if ($role['value'] == PERMISSION_USER) {
-          $group['ldap_groups'] = '';
-        }
+      if (!isset($role)) {
+        $role = $this->dbRecordData['role'];
+      }
+
+      $role = $this->getRole($role);
+
+      // Pokud není zvoleno oprávnění "administrátor" nebo "správce testů", nedojde k uložení vybraných LDAP skupin.
+      if ($role['value'] != PERMISSION_ADMIN && $role['value'] != PERMISSION_TEST_MANAGER) {
+        $group['ldap_groups'] = '';
       }
 
       return $group;
@@ -132,10 +134,11 @@
               WHERE `visible` = 1
       ');
 
-      // Zjištění dalších údajů nutných pro výpis do seznamu.
       foreach ($result as $key => $group) {
         $result[$key]['role_color'] = self::getColorGroupRole($group['value']);
         $result[$key]['count_users'] = self::getCountOfUsersInGroup($group['id_user_group']);
+
+        $result[$key]['ldap_groups_sum'] = count(explode(LDAP_GROUPS_DELIMITER, $group['ldap_groups']));
       }
 
       return $result;
@@ -343,16 +346,12 @@
      * @return string|null             Název CSS třídy nebo NULL
      */
     public static function getColorGroupRole($role) {
-      switch ($role) {
-        case PERMISSION_ADMIN:
-          return MSG_CSS_ERROR;
-        case PERMISSION_TEST_MANAGER:
-          return MSG_CSS_WARNING;
-        case PERMISSION_USER:
-          return MSG_CSS_SUCCESS;
-      }
-
-      return null;
+      return match ($role) {
+        PERMISSION_ADMIN => MSG_CSS_ERROR,
+        PERMISSION_TEST_MANAGER => MSG_CSS_WARNING,
+        PERMISSION_USER => MSG_CSS_SUCCESS,
+        default => null,
+      };
     }
 
 
@@ -388,11 +387,12 @@
       $this->isDescriptionTooLong();
 
       $this->isRoleEmpty();
-      $this->existRole();
+      $this->existsRole();
 
       $this->isLdapGroupsValid();
       $this->isLdapGroupsTooLong();
       $this->isLdapGroupsUnique();
+      $this->existsLdapGroup();
     }
 
 
@@ -471,6 +471,27 @@
 
 
     /**
+     * Ověří, zdali skupiny ze seznamu zobrazovaných LDAP skupin skutečně v LDAPu existují.
+     *
+     * @throws UserError
+     */
+    private function existsLdapGroup() {
+      $ldap = new LdapModel();
+
+      $ldapGroups = $ldap->getGroupNames();
+      $inputGroups = explode(LDAP_GROUPS_DELIMITER, $this->ldapGroups);
+
+      $ldap->close();
+
+      foreach ($inputGroups as $group) {
+        if (!empty($group) && !in_array($group, $ldapGroups)) {
+          throw new UserError('Vybraná LDAP skupina (' . $group . ') neexistuje.', MSG_ERROR);
+        }
+      }
+    }
+
+
+    /**
      * Ověří, zdali je vybráno oprávnění uživatele.
      *
      * @throws UserError
@@ -487,7 +508,7 @@
      *
      * @throws UserError
      */
-    private function existRole() {
+    private function existsRole() {
       $role = $this->getRole($this->role);
 
       if ((empty($this->getRole($this->role)) || $role['value'] == PERMISSION_ADMIN) && $this->idParentGroup !== NULL) {

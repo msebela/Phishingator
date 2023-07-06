@@ -337,6 +337,28 @@
 
 
     /**
+     * Vrátí seznam názvů všech skupin z LDAP.
+     *
+     * @return array                   Pole názvů skupin
+     */
+    public function getGroupNames() {
+      $groupNames = [];
+
+      $groups = $this->getDataByFilter(LDAP_GROUPS_DN, 'cn=*');
+
+      foreach ($groups as $group) {
+        if (isset($group['cn'][0])) {
+          $groupNames[] = $group['cn'][0];
+        }
+      }
+
+      sort($groupNames);
+
+      return $groupNames;
+    }
+
+
+    /**
      * Vrátí seznam oddělení z LDAP (resp. fakulty a jejich katedry, oddělení apod.).
      *
      * @return array                   Asociativní pole, kde jsou jako klíče názvy rodičovských oddělení a jako

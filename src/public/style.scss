@@ -308,7 +308,7 @@ header {
 
 
 // SECTION: CAMPAIGNS
-.recipients-list-email {
+.list-recipients label {
   width: 210px;
 }
 
@@ -385,4 +385,10 @@ form.active .form-row {
 
 .form-control-plaintext {
   font-size: 1rem;
+}
+
+
+// SECTION: USER GROUPS
+.list-groups label {
+  width: 140px;
 }

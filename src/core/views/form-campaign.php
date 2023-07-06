@@ -204,9 +204,9 @@
               </div>
 
               <div id="group-<?= $groupName ?>" class="d-none">
-                <div class="d-flex flex-row flex-wrap justify-content-between mt-2">
+                <div class="d-flex flex-row flex-wrap justify-content-between mt-2 list-recipients">
                   <?php foreach ($group as $user): ?>
-                  <label class="recipients-list-email text-truncate">
+                  <label class="text-truncate">
                     <input type="checkbox" name="<?= $user['email'] ?>" value="<?= $user['email'] ?>" class="mark-same-checkboxes"<?php if ($user['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($user['color'])) ? '<span class="badge badge-' . $user['color'] . '">' . $user['username'] . '</span>@' . $user['domain'] : $user['email']); ?>
                   </label>
                   <?php endforeach; ?>

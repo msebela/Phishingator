@@ -113,15 +113,25 @@
      * @throws UserError               Výjimka platná tehdy, pokud CSRF token neodpovídá původně vygenerovanému.
      */
     public function load($data) {
-      /* Nejprve ověřit CSRF token, teprve poté začít (pokud byl token
-         validní) zpracovávat uživatelský vstup. */
+      // Nejprve ověřit CSRF token a pokud je validní, tak zpracovat uživatelský vstup.
       $this->isValidCsrfToken($data);
 
-      foreach ($this->inputNames as $input) {
-        $inputKey = $this->formPrefix . $input;
-        $input = $this->getClassAttributeName($input);
+      foreach ($this->inputNames as $inputName) {
+        $inputKey = $this->formPrefix . $inputName;
+        $inputName = $this->getClassAttributeName($inputName);
 
-        $this->{$input} = array_key_exists($inputKey, $data) ? trim($data[$inputKey]) : 0;
+        if (array_key_exists($inputKey, $data)) {
+          if (!is_array($data[$inputKey])) {
+            $data[$inputKey] = trim($data[$inputKey]);
+          }
+
+          $userInput = $data[$inputKey];
+        }
+        else {
+          $userInput = 0;
+        }
+
+        $this->{$inputName} = $userInput;
       }
     }
 

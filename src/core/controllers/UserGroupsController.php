@@ -62,8 +62,12 @@
       $model->initForm($formData['inputsNames'], $formData['formPrefix'], $formData['dbTable']);
       $this->initViewData($model, ACT_NEW, $formData['formPrefix']);
 
-      // Data z databáze (oprávnění skupin) pro vstupní pole.
+      $ldap = new LdapModel();
+
       $this->setViewData('roles', $model->getRoles(true));
+      $this->setViewData('groups', $ldap->getGroupNames());
+
+      $ldap->close();
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {
@@ -96,13 +100,19 @@
       $model->initForm($formData['inputsNames'], $formData['formPrefix'], $formData['dbTable']);
       $this->setViewData('group', $model->getUserGroup($idGroup));
 
-      // Ověření existence záznamu.
       $this->checkRecordExistence($this->getData('group'));
 
       $this->initViewData($model, ACT_EDIT, $formData['formPrefix']);
 
-      // Data z databáze (oprávnění skupin) pro vstupní pole.
+      $ldap = new LdapModel();
+
       $this->setViewData('roles', $model->getRoles(true));
+      $this->setViewData('groups', $ldap->getGroupNames());
+
+      $groupRole = $model->getRole($this->getData('group')['role']);
+      $this->setViewData('displayGroups', $groupRole['value'] == PERMISSION_ADMIN || $groupRole['value'] == PERMISSION_TEST_MANAGER);
+
+      $ldap->close();
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {

@@ -287,3 +287,17 @@ $('.phishing-domain-protocol').on('click', function() {
 
   domainInput.focus();
 });
+
+
+// USER GROUPS
+$('.user-groups-role').on('change', function() {
+  let groups = $('#groups');
+  let role = parseInt($(this).val());
+
+  if (role === 1 || role === 2) {
+    groups.removeClass('d-none');
+  }
+  else {
+    groups.addClass('d-none');
+  }
+});

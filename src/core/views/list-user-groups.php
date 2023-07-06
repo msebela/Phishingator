@@ -9,8 +9,7 @@
         <th scope="col">Oprávnění</th>
         <th scope="col">Popis</th>
         <th scope="col">Zobrazené LDAP skupiny příjemců</th>
-        <th scope="col">Počet uživatelů</th>
-        <th scope="col" class="disable-sort"></th>
+        <th scope="col" class="data-sort">Počet uživatelů</th>
         <th scope="col" colspan="2" class="disable-sort"></th>
       </tr>
     </thead>
@@ -25,14 +24,21 @@
         </td>
         <td><?= $group['description'] ?></td>
         <td class="maxw-20-rem text-truncate">
-          <?= ((!empty($group['ldap_groups'])) ? '<code>' . $group['ldap_groups'] . '</code>' : ''); ?>
+          <?php if (!empty($group['ldap_groups'])): ?>
+          <span class="badge badge-secondary cursor-help" title="Počet zobrazovaných LDAP skupin">
+            <?= $group['ldap_groups_sum'] ?>
+          </span>:
+          <?= str_replace(LDAP_GROUPS_DELIMITER, '; ', $group['ldap_groups']) ?>
+          <?php endif; ?>
         </td>
-        <td><?= $group['count_users'] ?></td>
-        <td>
+        <td data-sort="<?= $group['count_users'] ?>">
           <?php if ($group['count_users'] > 0): ?>
           <a href="/portal/users?group=<?= $group['id_user_group'] ?>" class="btn btn-info btn-sm" role="button">
             <span data-feather="users"></span>
             Seznam uživatelů
+            <span class="badge badge-light cursor-help" title="Počet uživatelů v této skupině">
+              <?= $group['count_users'] ?>
+            </span>
           </a>
           <?php endif; ?>
         </td>

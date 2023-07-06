@@ -14,11 +14,6 @@
 
   Database::connect();
 
-  // TODO:
-  if (getenv('DOCKER_REMOTE_USER')) {
-    $_SERVER['REMOTE_USER'] = getenv('DOCKER_REMOTE_USER');
-  }
-
   $model = new PermissionsModel();
 
   // Přihlášení uživatele dle parametrů z SSO (pokud již není přihlášen).
