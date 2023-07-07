@@ -434,9 +434,9 @@
 
 
 
-  /* --- DOMÉNA, Z NÍŽ MOHOU POCHÁZET PŘÍJEMCI --- */
-  /** Název povolené domény, ze které mohou pocházet příjemci. */
-  define('EMAILS_ALLOWED_DOMAIN', getenv('ORG_DOMAIN'));
+  /* --- DOMÉNY, ZE KTERÝCH MOHOU POCHÁZET PŘÍJEMCI --- */
+  /** Seznam povolených domén (oddělené čárkou), ze kterých mohou pocházet uživatelé a zároveň příjemci cvičného phishingu. */
+  define('EMAILS_ALLOWED_DOMAINS', getenv('EMAILS_ALLOWED_DOMAINS') ? getenv('EMAILS_ALLOWED_DOMAINS') : getenv('ORG_DOMAIN'));
 
 
 

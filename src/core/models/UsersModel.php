@@ -718,7 +718,7 @@
       $this->isEmailEmpty();
       $this->isEmailTooLong();
       $this->isEmailValid();
-      $this->isEmailInAllowedDomain();
+      $this->isEmailInAllowedDomains();
       $this->existsEmailInLdap();
 
       $this->isGroupEmpty();
@@ -763,12 +763,12 @@
 
 
     /**
-     * Ověří, zdali zadaný e-mail uživatele vede na povolenou doménu.
+     * Ověří, zdali zadaný e-mail uživatele vede na některou z povolených domén.
      *
      * @throws UserError
      */
-    private function isEmailInAllowedDomain() {
-      if (mb_substr($this->email, -mb_strlen(EMAILS_ALLOWED_DOMAIN)) !== EMAILS_ALLOWED_DOMAIN) {
+    private function isEmailInAllowedDomains() {
+      if (!PhishingEmailModel::isEmailInAllowedDomains($this->email)) {
         throw new UserError('E-mail uživatele vede na nepovolenou doménu.', MSG_ERROR);
       }
     }

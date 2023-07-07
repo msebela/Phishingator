@@ -32,7 +32,6 @@
           <?php endif; ?>
         </td>
         <td data-sort="<?= $group['count_users'] ?>">
-          <?php if ($group['count_users'] > 0): ?>
           <a href="/portal/users?group=<?= $group['id_user_group'] ?>" class="btn btn-info btn-sm" role="button">
             <span data-feather="users"></span>
             Seznam uživatelů
@@ -40,7 +39,6 @@
               <?= $group['count_users'] ?>
             </span>
           </a>
-          <?php endif; ?>
         </td>
         <td>
           <?php if (!empty($group['id_parent_group'])): ?>

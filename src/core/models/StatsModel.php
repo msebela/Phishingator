@@ -280,20 +280,25 @@
 
 
     /**
-     * Vrátí pouze subdomény (domény nižších řádů) ze zvoleného e-mailu (pokud e-mail obsahuje pouze název domény,
-     * pak se daná doména odstraňovat nebude).
+     * Vrátí název subdomény ze zvoleného e-mailu. Pokud e-mail neobsahuje žádnou subdoménu, vrátí název domény.
      *
      * @param string $email            E-mail
-     * @return string                  Subdomény (domény nižších řádů), které byly součástí původní e-mailu
+     * @return string                  Subdomény (domény nižších řádů), které byly součástí původního e-mailu
      */
-    public static function removeAllFromEmailExceptSubdomains($email) {
-      $domain = get_email_part($email, 'domain');
+    public static function getSubdomainFromEmail($email) {
+      $allowedDomains = PhishingEmailModel::getAllowedEmailDomains();
+      $domain = strtolower(get_email_part($email, 'domain'));
 
-      if (!empty($domain) && $domain != EMAILS_ALLOWED_DOMAIN) {
-        $domain = str_replace('.' . EMAILS_ALLOWED_DOMAIN, '', $domain);
+      if (!empty($domain) && !in_array($domain, $allowedDomains)) {
+        foreach ($allowedDomains as $allowedDomain) {
+          if (mb_substr($email, -mb_strlen($allowedDomain)) === $allowedDomain) {
+            $domain = str_replace('.' . $allowedDomain, '', $domain);
+            break;
+          }
+        }
       }
 
-      return strtolower($domain);
+      return $domain;
     }
 
 
@@ -512,7 +517,7 @@
      */
     private function getUserDepartment($recipient, $allDepartments) {
       // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.
-      $domain = $this->removeAllFromEmailExceptSubdomains($recipient);
+      $domain = $this->getSubdomainFromEmail($recipient);
 
       // Zjištění rodičovského pracoviště.
       $parentDepartment = $this->getParentDepartment($domain, $allDepartments);

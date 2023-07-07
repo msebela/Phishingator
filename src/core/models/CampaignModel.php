@@ -1327,11 +1327,11 @@
         if (empty($email)) continue;
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-          throw new UserError('Záznam "' . $email . '" zadaný v seznamu příjemců je v nesprávném formátu.', MSG_ERROR);
+          throw new UserError('E-mail "' . $email . '" zadaný v seznamu příjemců je v nesprávném formátu.', MSG_ERROR);
         }
 
-        if (mb_substr($email, -mb_strlen(EMAILS_ALLOWED_DOMAIN)) !== EMAILS_ALLOWED_DOMAIN) {
-          throw new UserError('Záznam "' . $email . '" zadaný v seznamu příjemců vede na nepovolenou doménu.', MSG_ERROR);
+        if (!PhishingEmailModel::isEmailInAllowedDomains($email)) {
+          throw new UserError('E-mail "' . $email . '" zadaný v seznamu příjemců vede na nepovolenou doménu.', MSG_ERROR);
         }
 
         /*

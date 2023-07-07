@@ -236,6 +236,54 @@
 
 
     /**
+     * Vrátí seznam domén, ze kterých mohou pocházet e-maily příjemců.
+     *
+     * @param bool $returnString       TRUE, pokud má být seznam vrácen jako řetězec (nepovinné)
+     * @return string[]|string         Pole (výchozí) nebo řetězec se seznamem povolených domén
+     */
+    public static function getAllowedEmailDomains($returnString = false) {
+      $domains = explode(',', EMAILS_ALLOWED_DOMAINS);
+      $domains = array_map('strtolower', $domains);
+
+      if ($returnString) {
+        $domainsString = '';
+        $separator = '/';
+
+        foreach ($domains as $domain) {
+          $domainsString .= '<code>' . Controller::escapeOutput($domain) . '</code>' . $separator;
+        }
+
+        $domains = trim($domainsString, $separator);
+      }
+
+       return $domains;
+    }
+
+
+    /**
+     * Vrátí informaci, zdali zadaný e-mail vede na některou z povolených domén.
+     *
+     * @param string $email            E-mail
+     * @return bool                    TRUE pokud je e-mail z povolené domény, jinak FALSE
+     */
+    public static function isEmailInAllowedDomains($email) {
+      $allowedDomains = self::getAllowedEmailDomains();
+      $prefix = '@';
+
+      $allowed = false;
+
+      foreach ($allowedDomains as $domain) {
+        if (mb_substr($email, -mb_strlen($domain) - mb_strlen($prefix)) === $prefix . $domain) {
+          $allowed = true;
+          break;
+        }
+      }
+
+      return $allowed;
+    }
+
+
+    /**
      * Pomocí HTML vyznačí v těle e-mailu proměnné a toto upravené tělo e-mailu vrátí.
      *
      * @param string $body             Tělo e-mailu, ve kterém mají být vyznačeny proměnné

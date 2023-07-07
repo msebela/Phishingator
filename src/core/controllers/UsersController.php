@@ -62,8 +62,8 @@
       $model->initForm($formData['inputsNames'], $formData['formPrefix'], $formData['dbTable']);
       $this->initViewData($model, ACT_NEW, $formData['formPrefix']);
 
-      // Data z databáze (seznam uživatelských skupin) pro vstupní pole.
       $this->setViewData('groups', UserGroupsModel::getUserGroups());
+      $this->setViewData('allowedDomains', PhishingEmailModel::getAllowedEmailDomains(true));
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {
@@ -97,7 +97,6 @@
 
       $user = $model->getUser($idUser);
 
-      // Ověření existence záznamu.
       $this->checkRecordExistence($user);
 
       $userDetails = UsersModel::getUserDetail($user['id_user']);
@@ -114,19 +113,17 @@
         $campaigns[$key]['user_response'] = CampaignModel::getUserResponse($campaign['id_campaign'], $user['id_user']);
       }
 
-      // Získaná data z databáze předat do View.
       $this->setViewData('user', $user);
       $this->setViewData('campaigns', $campaigns);
 
       $this->initViewData($model, ACT_EDIT, $formData['formPrefix']);
 
-      // Data z LDAP.
       $ldap = new LdapModel();
       $this->setViewData('name', $ldap->getFullnameByUsername($user['username']));
       $ldap->close();
 
-      // Data z databáze (seznam uživatelských skupin) pro vstupní pole.
       $this->setViewData('groups', UserGroupsModel::getUserGroups());
+      $this->setViewData('allowedDomains', PhishingEmailModel::getAllowedEmailDomains(true));
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {

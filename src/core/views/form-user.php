@@ -38,7 +38,7 @@
       <div class="form-group">
         <label for="<?= $formPrefix ?>email">E-mail</label>
         <input type="email" name="<?= $formPrefix ?>email" id="<?= $formPrefix ?>email" class="form-control" maxlength="<?= $inputsMaxLengths['email'] ?>" value="<?= $inputsValues['email'] ?>" required>
-        <small class="form-text text-muted">E-mail uživatele v&nbsp;doméně <code><?= EMAILS_ALLOWED_DOMAIN ?></code>, na který budou odesílány cvičné phishingové zprávy.</small>
+        <small class="form-text text-muted">E-mail uživatele, na který budou odesílány cvičné phishingové zprávy. E-mail musí pocházet z domény <?= $_allowedDomains ?>.</small>
       </div>
     </div>
 
