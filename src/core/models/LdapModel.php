@@ -44,7 +44,7 @@
         $port = LDAP_PORT;
       }
 
-      $this->ldapConnection = ldap_connect($hostname, $port);
+      $this->ldapConnection = ldap_connect($hostname . ':' . $port);
 
       if ($this->ldapConnection) {
         ldap_set_option($this->ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -446,5 +446,16 @@
       }
 
       return $output;
+    }
+
+
+    /**
+     * Ošetří speciální znaky v řetězci vstupujícího do "dn" v LDAP přidáním zpětného lomítka.
+     *
+     * @param string $string           Řetězec k ošetření
+     * @return string                  Ošetřený řetězec
+     */
+    public static function escape($string) {
+      return preg_replace('/([\\\,#+<>;"=*()])/', '\\\$1', $string);
     }
   }

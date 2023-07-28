@@ -389,6 +389,12 @@ form.active .form-row {
 
 
 // SECTION: USER GROUPS
-.list-groups label {
-  width: 140px;
+.list-groups {
+  &.group-names-lg label {
+    width: 350px;
+  }
+
+  label {
+    width: 155px;
+  }
 }

@@ -37,9 +37,9 @@
   <div class="form-group<?php if ($action == ACT_EDIT && !$displayGroups && empty($inputsValues['ldap-groups'])): ?> d-none<?php endif; ?>" id="groups">
     <label>LDAP skupiny zobrazené v&nbsp;dialogu se seznamem příjemců při <a href="/portal/campaigns/<?= ACT_NEW ?>">vytváření kampaně</a> (pouze pro oprávnění <span class="badge badge-danger">Administrátor</span> a&nbsp;<span class="badge badge-warning">Správce testů</span>)</label>
 
-    <div class="d-flex flex-row flex-wrap justify-content-between justify-content-sm-start list-groups">
+    <div class="d-flex flex-row flex-wrap justify-content-between justify-content-sm-start list-groups<?= (($groupsLongNames) ? ' group-names-lg' : '') ?>">
       <?php foreach ($groups as $group): ?>
-      <label class="text-truncate">
+      <label class="text-truncate"<?php if ($groupsLongNames): ?> title="<?= $group ?>"<?php endif; ?>>
         <input type="checkbox" name="<?= $formPrefix ?>ldap-groups[]" value="<?= $group ?>"<?php if ((!is_array($inputsValues['ldap-groups']) && in_array($group, explode(LDAP_GROUPS_DELIMITER, $inputsValues['ldap-groups']))) || (is_array($inputsValues['ldap-groups']) && in_array($group, $inputsValues['ldap-groups']))): ?> checked<?php endif; ?>>&nbsp;<?= $group ?>
       </label>
       <?php endforeach; ?>

@@ -24,7 +24,7 @@
 
 
   /* --- PŘIPOJENÍ K LDAP --- */
-  /** Hostitel LDAP. */
+  /** Hostitel LDAP (včetně uvedení protokolu ldaps:// nebo ldap://). */
   define('LDAP_HOSTNAME', getenv('LDAP_HOSTNAME'));
 
   /** Port k připojení k LDAP. */

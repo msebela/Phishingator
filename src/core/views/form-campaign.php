@@ -151,7 +151,7 @@
             <?php if ($recipientsVolunteers != null): ?>
             <div class="container-fluid pb-3 mb-3 border-bottom">
               <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-11">
                   <h6>
                     <label>
                       <input type="checkbox" class="mark-checkboxes" data-checkboxes-group="#cover-volunteers">
@@ -160,7 +160,7 @@
                   </h6>
                 </div>
 
-                <div class="col-md-8 text-right">
+                <div class="col-md-5 text-right">
                   <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-display" data-toggle="#cover-volunteers">
                     <span data-feather="user-check"></span>
                     Seznam příjemců <span class="badge badge-secondary"><?= count($recipientsVolunteers) ?></span>
@@ -182,30 +182,30 @@
 
             <?php endif; ?>
 
-            <?php foreach ($recipientsLdapGroups as $groupName => $group): ?>
+            <?php foreach ($recipientsLdapGroups as $groupName => $groupUsers): ?>
 
             <div class="container-fluid pb-3 mb-3 border-bottom">
               <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-11">
                   <h6>
                     <label>
-                      <input type="checkbox" class="mark-checkboxes" data-checkboxes-group="#group-<?= $groupName ?>">
-                      <span class="font-weight-normal text-muted">LDAP:</span> <?= $groupName ?>
+                      <input type="checkbox" class="mark-checkboxes" data-checkboxes-group="#group-<?= remove_special_chars($groupName) ?>">
+                      <span class="font-weight-normal text-muted">LDAP:</span> <?= stripcslashes($groupName) ?>
                     </label>
                   </h6>
                 </div>
 
-                <div class="col-md-8 text-right">
-                  <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-display" data-toggle="#group-<?= $groupName ?>">
+                <div class="col-md-5 text-right">
+                  <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-display" data-toggle="#group-<?= remove_special_chars($groupName) ?>">
                     <span data-feather="user-check"></span>
-                    Seznam příjemců <span class="badge badge-secondary"><?= count($group) ?></span>
+                    Seznam příjemců <span class="badge badge-secondary"><?= count($groupUsers) ?></span>
                   </button>
                 </div>
               </div>
 
-              <div id="group-<?= $groupName ?>" class="d-none">
+              <div id="group-<?= remove_special_chars($groupName) ?>" class="d-none">
                 <div class="d-flex flex-row flex-wrap justify-content-between mt-2 list-recipients">
-                  <?php foreach ($group as $user): ?>
+                  <?php foreach ($groupUsers as $user): ?>
                   <label class="text-truncate">
                     <input type="checkbox" name="<?= $user['email'] ?>" value="<?= $user['email'] ?>" class="mark-same-checkboxes"<?php if ($user['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($user['color'])) ? '<span class="badge badge-' . $user['color'] . '">' . $user['username'] . '</span>@' . $user['domain'] : $user['email']); ?>
                   </label>

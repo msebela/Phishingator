@@ -46,7 +46,7 @@
         $groups = '';
 
         foreach ($this->ldapGroups as $group) {
-          $groups .= $group . LDAP_GROUPS_DELIMITER;
+          $groups .= LdapModel::escape($group) . LDAP_GROUPS_DELIMITER;
         }
 
         $this->ldapGroups = $groups;
@@ -356,7 +356,7 @@
 
 
     /**
-     * Vrátí název CSS třídy v závislosti na tom, do jaké skupiny oprávnění spadá uživatelské jméno.
+     * Vrátí název CSS třídy v závislosti na tom, do jaké skupiny oprávnění spadá daný uživatel.
      *
      * @param string $username         Uživatelské jméno
      * @param array $groups            Skupiny administrátorů a správců testů (nezjišťují se, musí být předány),
@@ -364,14 +364,16 @@
      * @return string|null             Název CSS třídy nebo NULL
      */
     public static function getColorGroupRoleByUsername($username, $groups) {
+      $color = null;
+
       if (in_array($username, $groups['admin'])) {
-        return UserGroupsModel::getColorGroupRole(PERMISSION_ADMIN);
+        $color = UserGroupsModel::getColorGroupRole(PERMISSION_ADMIN);
       }
       elseif (in_array($username, $groups['testmanager'])) {
-        return UserGroupsModel::getColorGroupRole(PERMISSION_TEST_MANAGER);
+        $color = UserGroupsModel::getColorGroupRole(PERMISSION_TEST_MANAGER);
       }
 
-      return null;
+      return $color;
     }
 
 
@@ -438,7 +440,7 @@
      * @throws UserError
      */
     private function isLdapGroupsValid() {
-      if ($this->ldapGroups !== ldap_escape($this->ldapGroups, '', LDAP_ESCAPE_FILTER)) {
+      if ($this->ldapGroups !== ldap_escape($this->ldapGroups, '\\', LDAP_ESCAPE_FILTER)) {
         throw new UserError('Seznam zobrazovaných LDAP skupin obsahuje nepovolené znaky.', MSG_ERROR);
       }
     }

@@ -502,7 +502,7 @@
      * @return mixed                        Pole dobrovolných příjemců s informacemi o každém z nich.
      */
     public static function getVolunteersRecipients($allRecipients) {
-      /* Zjištění seznamu administrátorů a správců testů pro odlišení barvou. */
+      // Seznam administrátorů a správců testů pro odlišení barvou.
       $adminUsers = UsersModel::getUsersByPermission(PERMISSION_ADMIN, true);
       $testManagerUsers = UsersModel::getUsersByPermission(PERMISSION_TEST_MANAGER, true);
 
@@ -532,10 +532,10 @@
           $result[$key]['username'] = $username;
           $result[$key]['domain'] = $domain;
 
-          /* Ověření, zdali je daný uživatel vyplněn mezi příjemci. */
+          // Ověření, zdali je daný uživatel vyplněn mezi příjemci.
           $result[$key]['checked'] = (strpos($allRecipients, $recipient['email']) !== false) ? 1 : 0;
 
-          /* Určení barvy uživatele na základě předpřipravených skupin. */
+          // Určení barvy uživatele na základě oprávnění ve Phishingatoru.
           $result[$key]['color'] = UserGroupsModel::getColorGroupRoleByUsername(
             $recipient['email'], ['admin' => $adminUsers, 'testmanager' => $testManagerUsers]
           );
@@ -594,12 +594,15 @@
               // Ověření, zdali je daný uživatel vyplněn mezi příjemci.
               $checked = (strpos($allRecipients, $user) !== false) ? 1 : 0;
 
-              $usersInGroup[$key] = ['email' => $user, 'checked' => $checked, 'username' => $username, 'domain' => $domain];
-
               // Určení barvy uživatele na základě oprávnění ve Phishingatoru.
-              $usersInGroup[$key]['color'] = UserGroupsModel::getColorGroupRoleByUsername(
+              $color = UserGroupsModel::getColorGroupRoleByUsername(
                 $user, ['admin' => $adminUsers, 'testmanager' => $testManagerUsers]
               );
+
+              $usersInGroup[$key] = [
+                'email' => $user, 'username' => $username, 'domain' => $domain,
+                'color' => $color, 'checked' => $checked
+              ];
             }
 
             // Ověření, zdali má vůbec smysl skupinu uvažovat, pokud by došlo k tomu, že na základě uživatelova

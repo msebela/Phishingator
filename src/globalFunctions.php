@@ -202,11 +202,25 @@
 
 
   /**
-   * Nahradí klasické mezery v řetězci za pevné mezery.
+   * Nahradí v řetězci běžné mezery za pevné mezery.
    *
    * @param string $string             Upravovaný řetězec
    * @return string                    Upravený řetězec obsahující pevné mezery
    */
   function insert_nonbreaking_spaces($string) {
     return str_replace(' ', '&nbsp;', $string);
+  }
+
+
+  /**
+   * Odstraní z řetězce všechny speciální znaky.
+   *
+   * @param string $string             Řetězec, ze kterého mají být odstraněny speciální znaky
+   * @return string                    Řetězec bez speciálních symbolů
+   */
+  function remove_special_chars($string) {
+    $string = str_replace(' ', '-', $string);
+    $string = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+
+    return preg_replace('/-+/', '-', $string);
   }

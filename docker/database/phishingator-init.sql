@@ -167,7 +167,7 @@ CREATE TABLE `phg_users_groups` (
   `name` varchar(32) COLLATE utf8mb3_czech_ci NOT NULL,
   `description` varchar(32) COLLATE utf8mb3_czech_ci NOT NULL,
   `emails_restrictions` varchar(255) COLLATE utf8mb3_czech_ci NOT NULL DEFAULT '',
-  `ldap_groups` varchar(255) COLLATE utf8mb3_czech_ci NOT NULL,
+  `ldap_groups` varchar(512) COLLATE utf8mb3_czech_ci NOT NULL,
   `date_added` datetime NOT NULL,
   `visible` tinyint(1) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_czech_ci;
