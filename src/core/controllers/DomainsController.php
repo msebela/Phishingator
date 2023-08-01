@@ -10,8 +10,9 @@ class DomainsController extends Controller {
   /**
    * Zpracuje vstup z URL adresy a na základě toho zavolá odpovídající metodu.
    *
-   * @param array $arguments         Uživatelský vstup
+   * @param array $arguments           Uživatelský vstup
    * @return void
+   * @throws Exception
    */
   public function process($arguments) {
     $this->checkPermissionCall();
@@ -76,6 +77,7 @@ class DomainsController extends Controller {
    * které nejsou v aktuální konfiguraci Phishingatoru aktivovány.
    *
    * @return void
+   * @throws Exception
    */
   private function getDomainsToActivate() {
     Database::connect();
@@ -102,6 +104,7 @@ class DomainsController extends Controller {
    * v aktuální konfiguraci Phishingatoru aktivovány, ale už se dále nevyužívají.
    *
    * @return void
+   * @throws Exception
    */
   private function getDomainsToDeactivate() {
     Database::connect();

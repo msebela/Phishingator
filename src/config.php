@@ -139,7 +139,7 @@
 
   /* --- NASTAVENÍ WEBU --- */
   /** Verze Phishingatoru. */
-  define('WEB_VERSION', '1.3');
+  define('WEB_VERSION', '1.4');
 
   /** URL, na které Phishingator běží (slouží pro přesměrování v rámci systému). */
   define('WEB_URL', getenv('WEB_URL'));
@@ -233,6 +233,9 @@
 
   /** Lokální IP adresa, které je jako jediné povoleno získat seznam podvodných domén. */
   define('DOMAINER_ALLOWED_IP', getenv('DOMAINER_ALLOWED_IP'));
+
+  /** IP adresa, která má jako jediná přístup k zobrazení monitoringu. */
+  define('MONITORING_ALLOWED_IP', getenv('MONITORING_ALLOWED_IP'));
 
 
 

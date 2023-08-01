@@ -74,6 +74,9 @@
         elseif (DomainsController::isValidSourceIP()) {
           $this->controller = new DomainsController();
         }
+        elseif (MonitoringController::isValidSourceIP()) {
+          $this->controller = new MonitoringController();
+        }
       }
 
       // Ve všech ostatních případech se uživatel nalézá ve veřejné části aplikace (to se ovšem může
