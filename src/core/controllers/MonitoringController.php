@@ -100,23 +100,38 @@ class MonitoringController extends Controller {
    * @return array                     Výsledek testu určený pro výstup monitoringu
    */
   private function formalizeTestResult($name, $result) {
-    if ($result === true) {
-      // Success
-      $outputResult = 0;
+    return [
+      'name' => $name,
+      'result' => $this->getTestReturnCode($result)
+    ];
+  }
+
+
+  /**
+   * Vrátí návratový kód pro monitorující službu v závislosti na výsledku testu.
+   *
+   * @param int $testResult            Výsledek testu
+   * @return int                       Návratový kód
+   */
+  private function getTestReturnCode($testResult) {
+    if ($testResult === true) {
+      // OK
+      $returnCode = 0;
     }
-    elseif ($result === false) {
-      // Failed
-      $outputResult = 1;
+    elseif ($testResult === false) {
+      // Critical
+      $returnCode = 2;
+    }
+    elseif ($testResult === -1) {
+      // Warning
+      $returnCode = 1;
     }
     else {
       // Unknown
-      $outputResult = -1;
+      $returnCode = 3;
     }
 
-    return [
-      'name' => $name,
-      'result' => $outputResult
-    ];
+    return $returnCode;
   }
 
 
