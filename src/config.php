@@ -234,7 +234,7 @@
   /** Lokální IP adresa, které je jako jediné povoleno získat seznam podvodných domén. */
   define('DOMAINER_ALLOWED_IP', getenv('DOMAINER_ALLOWED_IP'));
 
-  /** IP adresa, která má jako jediná přístup k zobrazení monitoringu. */
+  /** IP adresy (oddělené čárkou), které mají přístup k zobrazení monitoringu. */
   define('MONITORING_ALLOWED_IP', getenv('MONITORING_ALLOWED_IP'));
 
 

@@ -33,7 +33,9 @@ class MonitoringController extends Controller {
   public static function isValidSourceIP() {
     $valid = false;
 
-    if ($_SERVER['HTTP_X_REAL_IP'] == MONITORING_ALLOWED_IP) {
+    $allowedIPs = explode(',', MONITORING_ALLOWED_IP);
+
+    if ($allowedIPs && in_array($_SERVER['HTTP_X_REAL_IP'], $allowedIPs)) {
       $valid = true;
     }
 
