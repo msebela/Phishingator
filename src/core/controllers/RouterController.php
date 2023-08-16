@@ -12,18 +12,23 @@
     protected $controller;
 
     /**
-     * @var array       Seznam všech dostupných Controllerů.
+     * @var string[]    Seznam všech dostupných Controllerů.
      */
-    private $existsControllers;
+    private $mainControllers;
+
+    /**
+     * @var string[]    Seznam Controllerů pro externí přístup.
+     */
+    private $apiControllers;
 
 
     /**
-     * Konstruktor nastavující výchozí hodnoty instance třídy (resp. seznam všech dostupných Controllerů).
+     * Konstruktor nastavující seznam všech dostupných Controllerů.
      */
     public function __construct() {
       $this->controller = null;
 
-      $this->existsControllers = [
+      $this->mainControllers = [
         'public-homepage'          => 'PublicHomepageController',
         'campaigns'                => 'CampaignsController',
         'phishing-emails'          => 'PhishingEmailsController',
@@ -34,6 +39,12 @@
         'my-participation'         => 'ParticipationController',
         'recieved-phishing-emails' => 'RecievedEmailsController',
         'help'                     => 'HelpController'
+      ];
+
+      $this->apiControllers = [
+        'SchedulerController',
+        'DomainsController',
+        'MonitoringController'
       ];
     }
 
@@ -67,15 +78,15 @@
         }
       }
 
-      if ($this->controller == null) {
-        if (SchedulerController::isValidSourceIP()) {
-          $this->controller = new SchedulerController();
-        }
-        elseif (DomainsController::isValidSourceIP()) {
-          $this->controller = new DomainsController();
-        }
-        elseif (MonitoringController::isValidSourceIP()) {
-          $this->controller = new MonitoringController();
+      // Externí přístupy do služeb Phishingatoru.
+      if ($this->controller == null && isset($_SERVER['HTTP_PHISHINGATOR_TOKEN'])) {
+        $validateFunc = 'isValidSourceIP';
+
+        foreach ($this->apiControllers as $controller) {
+          if ($controller::$validateFunc()) {
+            $this->controller = new $controller;
+            break;
+          }
         }
       }
 
@@ -102,8 +113,8 @@
       $controller = null;
 
       if (!empty($controllerName)) {
-        if (array_key_exists($controllerName, $this->existsControllers)) {
-          $controller = new $this->existsControllers[$controllerName]();
+        if (array_key_exists($controllerName, $this->mainControllers)) {
+          $controller = new $this->mainControllers[$controllerName]();
         }
         elseif (!$public) {
           // Chybová stránka o nenalezení sekce v neveřejné části aplikace.
