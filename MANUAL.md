@@ -307,17 +307,17 @@ Při vypnutí Phishingatoru, smazání všech podadresářů v adresáři `/phis
 
 ### 3.7 Přidání nové šablony podvodné stránky
 
-Novou šablonu podvodné stránky lze do Phishingatoru přidat pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh). Pro přidání nové šablony musí běžet databázový kontejner `phishingator-<organizace>-database`.
+Podvodnou šablonu ve Phishingatoru představuje přihlašovací formulář (v PHP) společně s dalšími, nepovinnými zdrojovými soubory jako jsou obrázky, CSS, JS apod. (v závislosti na tom, jak má výsledná podvodná stránka vypadat). Může se jednat o zkopírovaný vzhled již existující přihlašovací stránky (tj. stačí zkopírovat zdrojový HTML kód existující stránky a umístit ho do souboru `index.php`) nebo vytvořit úplně novou podvodnou stránku (např. triviální napodobeninu přihlášení s logem organizace).
 
-Aby Phishingator zachytával data zadaná do formuláře na podvodné stránce, musí šablona podvodné stránky splňovat následující podmínky:
+Aby Phishingator správně zachytával data zadaná do formuláře na podvodné stránce, musí šablona podvodné stránky splňovat následující kritéria:
 
-* vstupním souborem bude soubor `index.php` (může obsahovat přesměrování na jiný soubor)
-* formulář (HTML tag `<form>`) musí mít jako metodu odesílání nastaveno `method="post"` (povoleny jsou pouze POST požadavky)
+* vstupním souborem bude soubor `index.php` (může obsahovat přesměrování na jiný soubor), ve kterém bude HTML formulář
+* formulář (HTML tag `<form>`) musí mít jako metodu odesílání nastaveno `method="post"` (povoleny jsou pouze POST požadavky) a atribut `action` nebude uveden
   * vstupní pole pro zadání uživatelského jména musí obsahovat atribut `name="username"`
   * vstupní pole pro zadání hesla musí obsahovat atribut `name="password"`
   * ve formuláři musí existovat tlačítko obsahující atribut `type="submit"` sloužící pro odeslání formuláře (obvykle uvnitř HTML tagu `<input>` nebo `<button>`)
 * pokud má podvodná stránka umožňovat zobrazení chybové hlášky (např. po zadání neplatného jména a hesla), musí být v souboru uvedena podmínka `<?php if ($message): ?> (...) <text chybové hlášky> (...) <?php endif; ?>`, která bude obalovat samotnou chybovou hlášku
-  * chybová hláška se zobrazí pouze tehdy, pokud administrátor během vytváření kampaně nastaví jako *akci po odeslání formuláře* tu, která obsahuje text *zobrazit chybovou hlášku*
+  * chybová hláška se zobrazí pouze tehdy, pokud administrátor během vytváření kampaně nastaví jako *akci po odeslání formuláře* volbu, která obsahuje text *zobrazit chybovou hlášku*
 
 
 #### Proměnné
@@ -329,7 +329,7 @@ Ve zdrojovém kódu podvodné stránky lze používat následující proměnné,
 | `$username` | string     | Uživatelské jméno uživatele, který na podvodnou stránku přistoupil                                                                                                          |
 | `$email`    | string     | E-mail uživatele, který na podvodnou stránku přistoupil                                                                                                                     |
 | `$service`  | string     | Název služby, ke které se uživatel přihlašuje (může se jednat o prázdný řetězec – hodnotu nastavuje administrátor při vytváření podvodné stránky přímo v GUI Phishingatoru) |
-| `$message`  | bool       | TRUE, pokud se má zobrazit na podvodné stránce chybová hláška (došlo k zadání neplatného jména a hesla), jinak FALSE                                                        |
+| `$message`  | bool       | TRUE, pokud se má zobrazit na podvodné stránce chybová hláška o zadání neplatného jména a hesla, jinak FALSE                                                                |
 
 
 #### Příklad zdrojového kódu
@@ -379,7 +379,7 @@ Typicky bude obsah adresáře podvodné šablony vypadat následovně:
 
 #### Aktivace podvodné šablony
 
-Aktivovat šablonu přímo v GUI Phishingatoru je možné pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh), který záznam o nové šabloně vloží do databáze (do tabulky `phg_websites_templates`) a zkopíruje soubory podvodné stránky do dané instance Phishingatoru.
+Aktivovat šablonu přímo v GUI Phishingatoru je možné pomocí skriptu [`add-website-template.sh`](scripts/add-website-template.sh), který záznam o nové šabloně vloží do databáze (do tabulky `phg_websites_templates`) a zkopíruje soubory podvodné stránky do dané instance Phishingatoru. Pro přidání nové šablony musí běžet databázový kontejner `phishingator-<organizace>-database`.
 
 Příklad volání:
 
