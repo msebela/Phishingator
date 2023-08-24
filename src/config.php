@@ -92,7 +92,7 @@
 
   /* --- OVĚŘENÍ PŘIHLAŠOVACÍ ÚDAJŮ ZADANÝCH NA PODVODNÝCH STRÁNKÁCH --- */
   /** Typ autentizace, který se bude používat při ověřování přihlašovací údajů:
-   *    Možnosti: kerberos/ldap/imap
+   *    Možnosti: ldap/web/kerberos/imap
    */
   define('AUTHENTICATION_TYPE', getenv('AUTHENTICATION_TYPE'));
 
@@ -108,7 +108,22 @@
   /** Sufix automaticky přidávaný k uživatelskému jménu (pokud již v uživatelském jménu není obsažen). */
   define('AUTHENTICATION_LDAP_USER_SUFFIX', getenv('AUTHENTICATION_LDAP_USER_SUFFIX'));
 
-  /** Pokud se použije IMAP autentizace, je nutné uvést IMAP server (a port) a případné flagy (např. "{example.tld:993/imap/ssl/}"). */
+  /** Pokud se použije autentizace přes web, je nutné uvést URL adresu, na které dojde k ověření přihlašovacích údajů. */
+  define('AUTHENTICATION_WEB_URL', getenv('AUTHENTICATION_WEB_URL'));
+
+  /** Název vstupního pole na webu pro autentizaci, do kterého uživatel zadává uživatelské jméno. */
+  define('AUTHENTICATION_WEB_INPUT_USERNAME', getenv('AUTHENTICATION_WEB_INPUT_USERNAME'));
+
+  /** Název vstupního pole na webu pro autentizaci, do kterého uživatel zadává heslo. */
+  define('AUTHENTICATION_WEB_INPUT_PASSWORD', getenv('AUTHENTICATION_WEB_INPUT_PASSWORD'));
+
+  /** HTTP kód, pokud dojde na webu pro autentizaci k úspěšnému přihlášení. */
+  define('AUTHENTICATION_WEB_RESPONSE_CODE', getenv('AUTHENTICATION_WEB_RESPONSE_CODE'));
+
+  /** Vrácený výstup, pokud dojde na webu pro autentizaci k úspěšnému přihlášení. */
+  define('AUTHENTICATION_WEB_RESPONSE_OUTPUT', getenv('AUTHENTICATION_WEB_RESPONSE_OUTPUT'));
+
+  /** Pokud se použije IMAP autentizace, je nutné uvést IMAP server (a port) a případné flagy (např. "{domain.tld:993/imap/ssl/}"). */
   define('AUTHENTICATION_IMAP_ARGS', getenv('AUTHENTICATION_IMAP_ARGS'));
 
 
