@@ -341,6 +341,8 @@
         }
       }
 
+      natcasesort($users);
+
       return $users;
     }
 
@@ -361,7 +363,7 @@
         }
       }
 
-      sort($groupNames);
+      natcasesort($groupNames);
 
       return $groupNames;
     }
