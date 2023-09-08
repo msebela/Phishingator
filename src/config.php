@@ -270,13 +270,12 @@
 
 
   /* --- ANONYMIZACE HESEL Z PODVODNÝCH STRÁNEK --- */
-  /** Úroveň anonymizace hesel, které se získávají na podvodných stránkách.
-     Možnosti:
-       between - první a poslední písmeno nebude anonymizováno (počet znaků zachován)
-       between3stars - první a poslední písmeno nebude anonymizováno (počet znaků bude vždy 5 - ostatní
-                       znaky budou hvězdičky, i když bylo zadáno kratší heslo)
-       full - kompletní anonymizace (bude zachován pouze počet znaků)
-       nevyplněno - heslo bude zachováno v plain textu
+  /** Úroveň anonymizace hesel, které se získávají odesláním přihlašovacího formuláře na podvodných stránkách.
+        Možnosti:
+          between       - první a poslední znak nebude anonymizován, zbytek hesla anonymizován (počet znaků hesla zůstane zachován)
+          between3stars - první a poslední znak nebude anonymizován, zbytek hesla anonymizován a zkrácen na 3 znaky (tj. počet znaků hesla bude vždy 5)
+          full          - kompletní anonymizace (počet znaků hesla zůstane zachován)
+          none          - žádná anonymizace, heslo bude zachováno v plain textu
   */
   define('PASSWORD_LEVEL_ANONYMIZATION', (getenv('PASSWORD_LEVEL_ANONYMIZATION')) ? getenv('PASSWORD_LEVEL_ANONYMIZATION') : 'between3stars');
 

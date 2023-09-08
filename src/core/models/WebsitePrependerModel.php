@@ -256,16 +256,26 @@
 
 
     /**
-     * Vrátí, zdali použitý webový prohlížeč nepatří do seznamu ignorovaných
-     * prohlížečů (např. náhledový robot) nastavených v konfiguraci Phishingatoru.
+     * Vrátí, zdali použitý webový prohlížeč nepatří do seznamu ignorovaných prohlížečů
+     * (např. náhledový robot, prefetching) nastavených v konfiguraci Phishingatoru.
      *
      * @param string $userAgent        Otisk webového prohlížeče
-     * @return bool
+     * @return bool                    TRUE pokud má být prohlížeč ignorován, jinak FALSE
      */
     private static function isIgnoredBrowser($userAgent) {
       $ignored = false;
 
-      if (!empty(PHISHING_WEBSITE_IGNORED_USER_AGENTS)) {
+      $headers = apache_request_headers();
+      $prefetchHeaders = ['Sec-Purpose', 'Purpose'];
+
+      foreach ($headers as $header => $value) {
+        if (in_array($header, $prefetchHeaders) && str_contains(mb_strtolower($value), 'prefetch')) {
+          $ignored = true;
+          break;
+        }
+      }
+
+      if (!empty(PHISHING_WEBSITE_IGNORED_USER_AGENTS) && !$ignored) {
         foreach (PHISHING_WEBSITE_IGNORED_USER_AGENTS as $browser) {
           if (str_contains($userAgent, $browser)) {
             $ignored = true;
