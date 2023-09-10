@@ -233,7 +233,8 @@ CREATE TABLE `phg_websites_templates` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_czech_ci;
 
 INSERT INTO `phg_websites_templates` (`id_website_template`, `name`, `server_dir`, `cloned`, `visible`) VALUES
-(1, 'Univerzální přihlašovací formulář', '/var/www/phishingator/templates/websites/1-universal-login/', 0, 1);
+(1, 'Univerzální přihlašovací formulář', '/var/www/phishingator/templates/websites/1-generic-login/', 0, 1),
+(2, 'Ubohý přihlašovací formulář s logem', '/var/www/phishingator/templates/websites/2-unstyled-login/', 0, 1);
 
 
 ALTER TABLE `phg_campaigns`

@@ -1,38 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-</head>
+  <head>
+    <meta charset="utf-8">
+    <title>Login</title>
 
-<body>
-  <form method="post">
-    <a href="#">
-      <img src="org.png" alt="">
-    </a>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  </head>
 
-    <?php if ($message): ?>
-    <div>Nesprávné jméno nebo heslo!</div>
-    <?php endif; ?>
+  <body>
+    <form method="post">
+      <p>
+        <a href="#">
+          <img src="organization-logo.png" alt="" style="max-height: 200px;">
+        </a>
+      </p>
 
-    <div>
-      <div>
-        <strong>Vaše uživatelské jméno:</strong>
-        <input type="text" name="username" size="18" required autofocus><br>
-      </div>
+      <?php if ($message): ?>
+      <div>Nesprávné jméno nebo heslo!</div>
+      <?php endif; ?>
 
       <div>
-        <strong>Heslo:</strong>
-        <input type="password" name="password" size="18" required>
-      </div>
+        <div>
+          <strong>Uživatelské jméno:</strong>
+          <input type="text" name="username" size="18" required autofocus><br>
+        </div>
 
-      <input type="submit" value="Přihlásit">
+        <div>
+          <strong>Heslo:</strong>
+          <input type="password" name="password" size="18" required>
+        </div>
 
-      <div>
-        <a href="#">Nápověda</a> | <a href="#">Nechci se přihlásit</a>
+        <p>
+          <input type="submit" value="Přihlásit">
+        </p>
+
+        <p>
+          <a href="#">Zapomenuté heslo</a> | <a href="#">Nápověda</a>
+        </p>
       </div>
-    </div>
-  </form>
-</body>
+    </form>
+  </body>
 </html>
