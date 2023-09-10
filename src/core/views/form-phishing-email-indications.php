@@ -44,7 +44,7 @@
     <div class="form-group col-lg-3">
       <label for="<?= $formPrefix ?>expression">Indicie (podezřelý řetězec)</label>
       <input type="text" class="form-control" id="<?= $formPrefix ?>expression" name="<?= $formPrefix ?>expression" maxlength="<?= $inputsMaxLengths['expression'] ?>" value="<?= $inputsValues['expression'] ?>" required>
-      <small class="form-text text-muted">Pro označení jména odesílatele lze použít proměnnou <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SENDER_NAME ?>"><?= VAR_INDICATION_SENDER_NAME ?></code>, pro e-mail odesílatele <code class="replace-variable cursor-pointer" data-input="<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SENDER_EMAIL ?>"><?= VAR_INDICATION_SENDER_EMAIL ?></code> a&nbsp;pro předmět pak <code class="replace-variable cursor-pointer" data-input="<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SUBJECT ?>"><?= VAR_INDICATION_SUBJECT ?></code>.</small>
+      <small class="form-text text-muted">Pro označení jména odesílatele lze použít proměnnou <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SENDER_NAME ?>"><?= VAR_INDICATION_SENDER_NAME ?></code>, pro e-mail odesílatele <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SENDER_EMAIL ?>"><?= VAR_INDICATION_SENDER_EMAIL ?></code> a&nbsp;pro předmět pak <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SUBJECT ?>"><?= VAR_INDICATION_SUBJECT ?></code>.</small>
     </div>
 
     <div class="form-group col-lg-3">

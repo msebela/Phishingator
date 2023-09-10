@@ -270,9 +270,12 @@
       $allowedDomains = self::getAllowedEmailDomains();
       $prefix = '@';
 
+      $email = mb_strtolower($email);
       $allowed = false;
 
       foreach ($allowedDomains as $domain) {
+        $domain = mb_strtolower($domain);
+
         if (mb_substr($email, -mb_strlen($domain) - mb_strlen($prefix)) === $prefix . $domain) {
           $allowed = true;
           break;
