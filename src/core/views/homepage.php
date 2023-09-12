@@ -231,7 +231,7 @@
   <?php if (PermissionsModel::getUserRole() <= PERMISSION_TEST_MANAGER): ?>
 
   let chartUsersResponsesGroups = new Chart(document.getElementById('chart-users-responses-groups'), {
-    plugins: [ChartDataLabels],
+    <?php if (${"barChartSumGroups$year"} < 20): ?>plugins: [ChartDataLabels],<?php endif; ?>
     type: 'bar',
     data: {
       labels: [<?= $_barChartLegendDesc ?>],
@@ -263,7 +263,12 @@
       },
       scales: {
         x: {
-          stacked: true, ticks: {autoSkip: false}
+          stacked: true, ticks: {
+            autoSkip: false,
+            <?php if ($barChartSumGroups > 20): ?>
+            callback: function() { return ''; }
+            <?php endif; ?>
+          }
         },
         y: {
           stacked: true, min: 0, max: 100, ticks: {callback: function(value, index, values) {return value + ' %';}}

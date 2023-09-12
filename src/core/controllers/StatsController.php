@@ -38,15 +38,6 @@
       $this->setViewData('statsStartYear', $this->startStatsYear);
 
       $model = new StatsModel();
-
-      // Data a legenda pro sloupcový graf (reakce uživatelů dle oddělení).
-      $barChart = $model->getUsersResponsesByGroups();
-
-      $this->setViewData('barChartLegend', $model->legend);
-      $this->setViewData('barChartLegendColors', $model->colors);
-      $this->setViewData('barChartLegendDesc', $barChart['legend']);
-      $this->setViewData('barChartLegendData', $barChart['data']);
-
       $yearsStats = [];
 
       for ($year = $this->startStatsYear; $year <= date('Y'); $year++) {
@@ -132,10 +123,11 @@
         // Data a legenda pro sloupcový graf (reakce uživatelů dle oddělení).
         $barChart = $model->getUsersResponsesByGroups($campaingsId);
 
-        $this->setViewData('barChartLegend' . $year, $model->legend);
-        $this->setViewData('barChartLegendColors' . $year, $model->colors);
+        $this->setViewData('barChartLegend', $model->legend);
+        $this->setViewData('barChartLegendColors', $model->colors);
         $this->setViewData('barChartLegendDesc' . $year, $barChart['legend']);
         $this->setViewData('barChartLegendData' . $year, $barChart['data']);
+        $this->setViewData('barChartSumGroups' . $year, count(explode('", "', $barChart['legend'])));
       }
     }
 

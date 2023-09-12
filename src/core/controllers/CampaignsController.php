@@ -227,6 +227,7 @@
       $this->setViewData('barChartLegendColors', $statsModel->colors);
       $this->setViewData('barChartLegendDesc', $barChart['legend']);
       $this->setViewData('barChartLegendData', $barChart['data']);
+      $this->setViewData('barChartSumGroups', count(explode('", "', $barChart['legend'])));
     }
 
 

@@ -196,14 +196,14 @@
   });
 
   let chartUsersResponsesGroups<?= $year ?> = new Chart(document.getElementById('chart-users-responses-groups-<?= $year ?>'), {
-    plugins: [ChartDataLabels],
+    <?php if (${"barChartSumGroups$year"} < 20): ?>plugins: [ChartDataLabels],<?php endif; ?>
     type: 'bar',
     data: {
       labels: [<?= ${"_barChartLegendDesc$year"} ?>],
       datasets: [
         <?php for ($i = 1; $i <= count($barChartLegend); $i++): ?>
         {
-          label: '<?= ${"barChartLegend$year"}[$i] ?>',
+          label: '<?= $barChartLegend[$i] ?>',
           data: [<?= ${"barChartLegendData$year"}[$i] ?? 0 ?>],
           backgroundColor: '#<?= $barChartLegendColors[$i] ?>'
         },
@@ -228,7 +228,12 @@
       },
       scales: {
         x: {
-          stacked: true, ticks: {autoSkip: false}
+          stacked: true, ticks: {
+            autoSkip: false,
+            <?php if (${"barChartSumGroups$year"} > 20): ?>
+            callback: function() { return ''; }
+            <?php endif; ?>
+          }
         },
         y: {
           stacked: true, min: 0, max: 100, ticks: {callback: function(value, index, values) {return value + ' %';}}

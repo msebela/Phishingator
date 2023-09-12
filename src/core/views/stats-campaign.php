@@ -204,7 +204,7 @@
               <?php endif; ?>
             </td>
             <td>
-              <small><?= strtoupper((CAMPAIGN_STATS_AGGREGATION == 2) ? StatsModel::getSubdomainFromEmail($data['used_email']) : $data['used_group']) ?></small>
+              <small><?= mb_strtoupper((CAMPAIGN_STATS_AGGREGATION == 2) ? StatsModel::getSubdomainFromEmail($data['used_email']) : $data['used_group']) ?></small>
             </td>
             <td>
               <form method="post" action="/portal/<?= $urlSection . '/' . ACT_STATS . '/' . $campaign['id_campaign'] ?>">
@@ -280,7 +280,7 @@
           <?php endif; ?>
         </td>
         <td>
-          <small><?= strtoupper((CAMPAIGN_STATS_AGGREGATION == 2) ? StatsModel::getSubdomainFromEmail($data['used_email']) : $data['used_group']) ?></small>
+          <small><?= mb_strtoupper((CAMPAIGN_STATS_AGGREGATION == 2) ? StatsModel::getSubdomainFromEmail($data['used_email']) : $data['used_group']) ?></small>
         </td>
         <td>
           <span class="badge badge-<?= $data['css_color_class'] ?>"><?= $data['name'] ?></span>
@@ -475,11 +475,16 @@
       tooltips: {mode: 'index', intersect: false},
       maintainAspectRatio: true,
       plugins: {
-        legend: {position: '<?= ((count(explode(',', $barChartLegendDesc)) > 1) ? 'bottom' : 'right') ?>'}
+        legend: {position: '<?= (($barChartSumGroups > 1) ? 'bottom' : 'right') ?>'}
       },
       scales: {
         x: {
-          stacked: true, ticks: {autoSkip: false}
+          stacked: true, ticks: {
+            autoSkip: false,
+            <?php if ($barChartSumGroups > 20): ?>
+            callback: function() { return ''; }
+            <?php endif; ?>
+          }
         },
         y: {
           stacked: true, ticks: {min: 0, precision: 0}
