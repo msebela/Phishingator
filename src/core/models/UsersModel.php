@@ -788,7 +788,7 @@
         $username = $ldap->getUsernameByEmail($this->email);
       }
 
-      if (!in_array($this->email, $ldap->getEmailsByUsername($username))) {
+      if (!in_array(mb_strtolower($this->email), $ldap->getEmailsByUsername($username))) {
         throw new UserError('Zadaný e-mail neexistuje nebo není s tímto uživatele svázán.', MSG_ERROR);
       }
 

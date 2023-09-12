@@ -291,7 +291,11 @@
           <?php endif; ?>
         </td>
         <td data-sort="<?= $data['visit_datetime'] ?>"><?= $data['visit_datetime_formatted'] ?></td>
-        <td class="identity <?= $blurIdentities ?>"><?= $data['ip'] ?></td>
+        <td class="identity <?= $blurIdentities ?>">
+          <span title="<?= $data['ip'] ?>" data-toggle="tooltip">
+            <?= $data['ip'] ?>
+          </span>
+        </td>
         <td class="maxw-40-rem text-truncate">
           <small class="cursor-help" title="<?= $data['browser_fingerprint'] ?>" data-toggle="tooltip" data-placement="left">
             <?= $data['browser_fingerprint'] ?>

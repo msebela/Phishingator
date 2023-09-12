@@ -247,7 +247,7 @@
         $emails = [$emails];
       }
 
-      return $emails;
+      return array_map('mb_strtolower', $emails);
     }
 
 
