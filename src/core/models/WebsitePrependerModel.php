@@ -430,9 +430,14 @@
      * @throws Exception
      */
     private function process() {
-      if (!empty($_GET)) {
+      if (isset($_COOKIE[PHISHING_WEBSITE_COOKIE])) {
+        $args = $this->parseWebsiteUrl($_COOKIE[PHISHING_WEBSITE_COOKIE]);
+      }
+      elseif (isset($_GET)) {
         $args = $this->getUserWebsiteId($_GET);
+      }
 
+      if (isset($args)) {
         // Ověření, zda má jít o náhled podvodné stránky pro administrátory a správce testů.
         $preview = isset($_GET[ACT_PREVIEW]) && mb_strlen($_GET[ACT_PREVIEW]) == PHISHING_WEBSITE_PREVIEW_HASH_BYTES * 2;
 
@@ -450,8 +455,18 @@
         else {
           Database::connect();
 
+          $url = get_current_url();
           $user = UsersModel::getUserByURL($args['id_user']);
-          $website = PhishingWebsiteModel::getPhishingWebsiteByPersonalizedUrl(get_current_url(), $args['url']);
+          $website = PhishingWebsiteModel::getPhishingWebsiteByPersonalizedUrl($url, $args['url']);
+
+          $url = str_replace($args['url'],$args['url'] . USER_ID_WEBSITE_SUFFIX, $url);
+
+          if (!isset($_COOKIE[PHISHING_WEBSITE_COOKIE]) && isset($website['id_website'])) {
+            setcookie(PHISHING_WEBSITE_COOKIE, $args['url'], time() + 1800);
+
+            header('Location: ' . $url);
+            exit();
+          }
 
           if ($preview) {
             $this->processAdminPreview($user, $website, $args);

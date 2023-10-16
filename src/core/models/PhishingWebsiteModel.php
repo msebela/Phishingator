@@ -111,10 +111,12 @@
      * @return mixed                   Data o podvodné stránce
      */
     public static function getPhishingWebsiteByPersonalizedUrl($url, $userUrl) {
+      $previewToken = $_GET[ACT_PREVIEW] ?? '';
+
       // Úprava URL adresy do původní podoby (odstranění identifikátoru uživatele, odstranění parametru pro náhled).
       $url = str_replace(
-        [$userUrl, '&' . ACT_PREVIEW . '=' . $_GET[ACT_PREVIEW]],
-        [VAR_RECIPIENT_URL, ''],
+        [$userUrl . USER_ID_WEBSITE_SUFFIX, $userUrl, '&' . ACT_PREVIEW . '=' . $previewToken],
+        [VAR_RECIPIENT_URL, VAR_RECIPIENT_URL, ''],
         $url
       );
 

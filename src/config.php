@@ -289,6 +289,9 @@
    *  Pozor, musí se jednat o sudé číslo! */
   define('USER_ID_WEBSITE_LENGTH', 6);
 
+  /** Suffix k identifikátoru uživatele na podvodné stránce. */
+  define('USER_ID_WEBSITE_SUFFIX', '1');
+
 
 
   /* --- EXPORTY SOUBORŮ --- */
@@ -345,6 +348,9 @@
 
   /** Délka hashe (v bajtech) pro náhled podvodné stránky. */
   define('PHISHING_WEBSITE_PREVIEW_HASH_BYTES', 32);
+
+  /** Název cookie identifikující uživatele na podvodné stránce. */
+  define('PHISHING_WEBSITE_COOKIE', 'phishingator');
 
 
 
