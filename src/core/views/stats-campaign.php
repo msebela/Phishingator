@@ -194,13 +194,13 @@
             <td>
               <small><?= $i++; ?></small>
             </td>
-            <td class="identity <?= $blurIdentities ?>">
+            <td>
               <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
               <a href="/portal/users/<?= ACT_EDIT . '/' . $data['id_user'] ?>">
-                <span title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></span>
+                <span class="identity <?= $blurIdentities ?>" title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></span>
               </a>
               <?php else: ?>
-              <abbr title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></abbr>
+              <abbr class="identity <?= $blurIdentities ?>" title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></abbr>
               <?php endif; ?>
             </td>
             <td>
@@ -270,13 +270,13 @@
             <abbr title="Identifikátor a odkaz na tento záznam v rámci této kampaně" class="initialism cursor-help"><?= $i--; ?></abbr>
           </a>
         </td>
-        <td class="identity <?= $blurIdentities ?>">
+        <td>
           <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
           <a href="/portal/users/<?= ACT_EDIT . '/' . $data['id_user'] ?>">
-            <span title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></span>
+            <span class="identity <?= $blurIdentities ?>" title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></span>
           </a>
           <?php else: ?>
-          <abbr title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></abbr>
+          <abbr class="identity <?= $blurIdentities ?>" title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></abbr>
           <?php endif; ?>
         </td>
         <td>
@@ -290,9 +290,9 @@
           </div>
           <?php endif; ?>
         </td>
-        <td data-sort="<?= $data['visit_datetime'] ?>"><?= $data['visit_datetime_formatted'] ?></td>
-        <td class="identity <?= $blurIdentities ?>">
-          <span title="<?= $data['ip'] ?>" data-toggle="tooltip">
+        <td class="text-nowrap" data-sort="<?= $data['visit_datetime'] ?>"><?= $data['visit_datetime_formatted'] ?></td>
+        <td>
+          <span class="identity <?= $blurIdentities ?>" title="<?= $data['ip'] ?>" data-toggle="tooltip">
             <?= $data['ip'] ?>
           </span>
         </td>
@@ -301,9 +301,9 @@
             <?= $data['browser_fingerprint'] ?>
           </small>
         </td>
-        <td class="minw-15-rem maxw-20-rem text-truncate identity <?= $blurIdentities ?>">
+        <td class="minw-15-rem maxw-20-rem text-truncate">
           <?php if (!empty($data['data_json'])): ?>
-          <code class="cursor-help" title="<?= $data['data_json'] ?>" data-toggle="tooltip" data-placement="left">
+          <code class="identity <?= $blurIdentities ?> cursor-help" title="<?= $data['data_json'] ?>" data-toggle="tooltip" data-placement="left">
             <?= $data['data_json'] ?>
           </code>
           <?php endif; ?>

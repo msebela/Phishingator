@@ -58,6 +58,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin
+    container_name: phishingator-${ORG}-phpmyadmin
     restart: always
     environment:
       - PMA_HOST=${DB_HOST}
@@ -66,8 +67,9 @@ services:
     networks:
       - database-net
 
-  smtp:
+  mailhog:
     image: mailhog/mailhog
+    container_name: phishingator-${ORG}-mailhog
     ports:
       - '25:25'
       - '8025:8025'

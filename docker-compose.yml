@@ -16,7 +16,6 @@ services:
       - /phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
       - /phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
     environment:
-      - DOCKER_REMOTE_USER
       - ORG
       - ORG_DOMAIN
       - WEB_HOST
