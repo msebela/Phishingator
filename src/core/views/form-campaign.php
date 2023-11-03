@@ -147,9 +147,26 @@
             </button>
           </div>
           <div class="modal-body">
+            <div class="container-fluid">
+              <?php if ($recipientsVolunteers == null && count($recipientsLdapGroups) == 0): ?>
+              Administrátorem nebyly nastaveny žádné skupiny.
+              <?php else: ?>
+              <div class="text-right">
+                <button type="button" class="btn btn-outline-secondary btn-sm mark-checkboxes" data-checkboxes-group="">
+                  <span data-feather="user-check"></span>
+                  Vybrat všechny příjemce
+                </button>
+
+                <button type="button" class="btn btn-outline-secondary btn-sm expand-all-groups" data-toggle="button" aria-pressed="false">
+                  <span data-feather="users"></span>
+                  Rozbalit všechny skupiny
+                </button>
+              </div>
+              <?php endif; ?>
+            </div>
 
             <?php if ($recipientsVolunteers != null): ?>
-            <div class="container-fluid pb-3 mb-3 border-bottom">
+            <div class="container-fluid pt-3 mt-3 border-top">
               <div class="row">
                 <div class="col-md-11">
                   <h6>
@@ -168,7 +185,7 @@
                 </div>
               </div>
 
-              <div id="cover-volunteers" class="d-none">
+              <div id="cover-volunteers" class="group-recipients d-none">
                 <small>Číslo u&nbsp;příjemce udává zbývající počet e-mailů, o&nbsp;které má zájem.</small>
                 <div class="d-flex flex-row flex-wrap justify-content-between mt-2">
                   <?php foreach ($recipientsVolunteers as $volunteer): ?>
@@ -184,7 +201,7 @@
 
             <?php foreach ($recipientsLdapGroups as $groupName => $groupUsers): ?>
 
-            <div class="container-fluid pb-3 mb-3 border-bottom">
+            <div class="container-fluid pt-3 mt-3 border-top">
               <div class="row">
                 <div class="col-md-11">
                   <h6>
@@ -203,8 +220,8 @@
                 </div>
               </div>
 
-              <div id="group-<?= remove_special_chars($groupName) ?>" class="d-none">
-                <div class="d-flex flex-row flex-wrap justify-content-between mt-2 list-recipients">
+              <div id="group-<?= remove_special_chars($groupName) ?>" class="group-recipients d-none">
+                <div class="d-flex flex-row flex-wrap justify-content-between mt-2">
                   <?php foreach ($groupUsers as $user): ?>
                   <label class="text-truncate">
                     <input type="checkbox" name="<?= $user['email'] ?>" value="<?= $user['email'] ?>" class="mark-same-checkboxes"<?php if ($user['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($user['color'])) ? '<span class="badge badge-' . $user['color'] . '">' . $user['username'] . '</span>@' . $user['domain'] : $user['email']); ?>
@@ -214,17 +231,6 @@
               </div>
             </div>
             <?php endforeach; ?>
-
-            <div class="container-fluid pb-3 mb-3">
-              <?php if ($recipientsVolunteers == null && count($recipientsLdapGroups) == 0): ?>
-              Administrátorem nebyly nastaveny žádné skupiny.
-              <?php else: ?>
-              <button type="button" class="btn btn-outline-secondary btn-sm float-right mark-checkboxes" data-checkboxes-group="">
-                <span data-feather="users"></span>
-                Vybrat všechny příjemce
-              </button>
-              <?php endif; ?>
-            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">

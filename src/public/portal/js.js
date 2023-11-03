@@ -132,6 +132,17 @@ function markSameCheckboxes(recipient) {
   $('.modal-body input[value="' + recipient.val() + '" i]').prop('checked', recipient.prop('checked'));
 }
 
+$('.expand-all-groups').on('click', function() {
+  let groups = $('.group-recipients');
+
+  if ($(this).attr('aria-pressed') === 'true') {
+    groups.addClass('d-none');
+  }
+  else {
+    groups.removeClass('d-none');
+  }
+});
+
 $('.import-recipients').on('click', function() {
   let recipientsList = $('#campaign-recipients');
   let inputImport = document.createElement('input');
