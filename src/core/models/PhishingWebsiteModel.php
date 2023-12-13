@@ -473,7 +473,7 @@
     public static function getPreviewLink($idWebsite, $idUser) {
       $previewLink = null;
 
-      // Zjištění, zdali nejsou v databázi pro daného uživatele ještě nějaké aktivní tickety pro náhled podvodné stránky.
+      // Zjištění, zdali není v databázi pro daného uživatele ještě nějaký aktivní token pro náhled podvodné stránky.
       $access = Database::querySingle(
         'SELECT `hash` FROM `phg_websites_preview` WHERE `id_website` = ? AND `id_user` = ? AND `active_to` > now()',
         [$idWebsite, $idUser]
@@ -489,16 +489,16 @@
 
       // Pokud podvodná stránka existuje a je nastavena jako skutečně aktivní na webovém serveru.
       if ($user != null && $website != null && $website['active'] == 1 && PhishingWebsiteConfigs::isConfigReady($website['url'])) {
-        // Pokud v databázi nejsou aktivní žádné tickety pro přístup na náhled podvodné stránky...
+        // Pokud v databázi není žádný aktivní token pro přístup na náhled podvodné stránky, vygenerovat nový.
         if (empty($access)) {
           $activeSince = date('Y-m-d H:i:s');
-          $activeTo = date('Y-m-d H:i:s', strtotime('+1 min'));
-          $hash = bin2hex(openssl_random_pseudo_bytes(PHISHING_WEBSITE_PREVIEW_HASH_BYTES));
+          $activeTo = date('Y-m-d H:i:s', time() + PHISHING_WEBSITE_PREVIEW_TOKEN_VALIDITY_S);
+          $token = bin2hex(openssl_random_pseudo_bytes(PHISHING_WEBSITE_PREVIEW_TOKEN_LENGTH_B));
 
           $access = [
             'id_website' => $idWebsite,
             'id_user' => $idUser,
-            'hash' => $hash,
+            'hash' => $token,
             'active_since' => $activeSince,
             'active_to' => $activeTo
           ];
@@ -506,11 +506,11 @@
           Database::insert('phg_websites_preview', $access);
         }
         else {
-          // Jinak použít již existující...
-          $hash = $access['hash'];
+          // Jinak použít již existující token.
+          $token = $access['hash'];
         }
 
-        $previewLink = self::makeWebsiteUrl($website['url'], WebsitePrependerModel::makeUserWebsiteId(0, $user['url'])) . '&' . ACT_PREVIEW . '=' . $hash;
+        $previewLink = self::makeWebsiteUrl($website['url'], WebsitePrependerModel::makeUserWebsiteId(PHISHING_WEBSITE_PREVIEW_ID, $user['url'])) . '&' . ACT_PREVIEW . '=' . $token;
       }
 
       return $previewLink;

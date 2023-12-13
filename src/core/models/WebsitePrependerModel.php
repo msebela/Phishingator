@@ -291,17 +291,18 @@
     /**
      * Ověří, zdali byly zadány platné přihlašovací údaje.
      *
-     * @param string $username         Uživatelské jméno.
-     * @param string $password         Heslo uživatele.
-     * @return bool                    TRUE pokud byly zadány platné přihlašovací údaje, jinak FALSE.
+     * @param string $username         Uživatelské jméno
+     * @param string $password         Heslo uživatele
+     * @return bool                    TRUE pokud byly zadány platné přihlašovací údaje, jinak FALSE
      */
     public function areCredentialsValid($username, $password) {
       $validCreds = false;
+      $username = trim($username);
 
       if (!empty($username) && !empty($password)) {
-        // Pokud uživatelské jméno obsahuje znaky, které v uživatelském jméně nejsou běžné,
-        // nebudou se přihlašovací údaje ani ověřovat.
-        if (preg_match('/^[a-zA-Z]+[a-zA-Z0-9._@]+$/',$username)) {
+        // Pokud uživatelské jméno obsahuje nebo začíná znaky, které v uživatelském
+        // jméně nejsou povolené, nebudou se přihlašovací údaje ani ověřovat.
+        if (preg_match(PHISHING_WEBSITE_USERNAME_REGEXP, $username)) {
           $validCreds = CredentialsTesterModel::tryLogin($username, $password);
         }
         else {
@@ -329,7 +330,11 @@
         $idUser = mb_substr($url, 0, $halfLength) . mb_substr($url, -mb_strlen(USER_ID_WEBSITE_LENGTH) - $halfLength + 1);
 
         if (mb_strlen($idUser) == USER_ID_WEBSITE_LENGTH && is_numeric($idCampaign)) {
-          $args = ['id_campaign' => $idCampaign, 'id_user' => $idUser, 'url' => $url];
+          $args = [
+            'id_campaign' => $idCampaign,
+            'id_user' => $idUser,
+            'url' => $url
+          ];
         }
       }
 
@@ -394,6 +399,7 @@
             ['id_campaign' => $idCampaign, 'id_user' => $idUser]
           );
 
+          http_response_code(403);
           exit();
         }
       }
@@ -424,47 +430,93 @@
 
 
     /**
+     * Ověří, zdali má jít o náhled podvodné stránky pro administrátory, popř. správce testů.
+     *
+     * @param array $args              Argumenty pro podvodnou stránku
+     * @return bool                    TRUE pokud argumenty odpovdající náhledu, jinak FALSE
+     */
+    private function isPreviewRequest($args) {
+      $previewToken = '';
+
+      if (isset($args['id_campaign']) && $args['id_campaign'] == PHISHING_WEBSITE_PREVIEW_ID) {
+        if (isset($_GET[ACT_PREVIEW])) {
+          $previewToken = $_GET[ACT_PREVIEW];
+        }
+        elseif (isset($_COOKIE[ACT_PREVIEW])) {
+          $previewToken = $_COOKIE[ACT_PREVIEW];
+        }
+      }
+
+      return !empty($previewToken) && mb_strlen($previewToken) == PHISHING_WEBSITE_PREVIEW_TOKEN_LENGTH_B * 2;
+    }
+
+
+    /**
+     * Vrátí URL adresu podvodné stránky, na kterou bude uživatel přesměrován po vytvoření cookie.
+     *
+     * @param string $url              Aktuální URL adresa
+     * @param string $userId           Identifikátor uživatele na podvodných stránkách
+     * @return string                  URL adresa, na kterou bude uživatel přesměrován
+     */
+    private function getRedirectUrl($url, $userId) {
+      $previewToken = $_GET[ACT_PREVIEW] ?? '';
+
+      return str_replace(
+        [$userId, '&' . ACT_PREVIEW . '=' . $previewToken],
+        [$userId . USER_ID_WEBSITE_SUFFIX, ''],
+        $url
+      );
+    }
+
+
+    /**
      * Zpracuje požadavky a připraví podvodnou stránku na základě její konfigurace.
      *
      * @return void
      * @throws Exception
      */
     private function process() {
-      if (isset($_COOKIE[PHISHING_WEBSITE_COOKIE])) {
-        $args = $this->parseWebsiteUrl($_COOKIE[PHISHING_WEBSITE_COOKIE]);
-      }
-      elseif (isset($_GET)) {
+      $redirect = true;
+
+      if (isset($_GET)) {
         $args = $this->getUserWebsiteId($_GET);
+
+        // Uživatel už na podvodnou stránku předtím přistoupil (existuje cookie s identifikátorem).
+        if (isset($_COOKIE[PHISHING_WEBSITE_COOKIE])) {
+          $cookieData = $_COOKIE[PHISHING_WEBSITE_COOKIE];
+          $cookiesArgs = $this->parseWebsiteUrl($cookieData);
+
+          $getArgWithoutSuffix = mb_substr($args['url'], 0, -mb_strlen(USER_ID_WEBSITE_SUFFIX));
+
+          // Ověření, zdali už došlo k přesměrování z personalizovaného odkazu
+          // (tj. už existuje cookie a neuvažovat tak GET, protože obsahuje suffix).
+          if (mb_strlen($cookieData) != mb_strlen($args['url']) && $cookieData == $getArgWithoutSuffix) {
+            $args = $cookiesArgs;
+            $redirect = false;
+          }
+        }
       }
 
       if (isset($args)) {
         // Ověření, zda má jít o náhled podvodné stránky pro administrátory a správce testů.
-        $preview = isset($_GET[ACT_PREVIEW]) && mb_strlen($_GET[ACT_PREVIEW]) == PHISHING_WEBSITE_PREVIEW_HASH_BYTES * 2;
+        $preview = $this->isPreviewRequest($args);
 
-        if ($args == null) {
-          $args[] = self::getClientIp();
-
-          Logger::warning(
-            'Unauthorized access to' . (($preview) ? ' preview' : '') . ' a phishing website (invalid user/campaign argument).',
-            $args
-          );
-
-          http_response_code(404);
-          exit();
-        }
-        else {
+        if ($args != null) {
           Database::connect();
 
           $url = get_current_url();
           $user = UsersModel::getUserByURL($args['id_user']);
           $website = PhishingWebsiteModel::getPhishingWebsiteByPersonalizedUrl($url, $args['url']);
 
-          $url = str_replace($args['url'],$args['url'] . USER_ID_WEBSITE_SUFFIX, $url);
+          // Vytvoření cookie a přesměrování z personalizovaného odkazu (pokud již k tomu nedošlo).
+          if (isset($website['id_website']) && $redirect) {
+            setcookie(PHISHING_WEBSITE_COOKIE, $args['url'], time() + PHISHING_WEBSITE_COOKIE_VALIDITY_S);
 
-          if (!isset($_COOKIE[PHISHING_WEBSITE_COOKIE]) && isset($website['id_website'])) {
-            setcookie(PHISHING_WEBSITE_COOKIE, $args['url'], time() + 1800);
+            if (isset($_GET[ACT_PREVIEW])) {
+              setcookie(ACT_PREVIEW, $_GET[ACT_PREVIEW], time() + PHISHING_WEBSITE_PREVIEW_TOKEN_VALIDITY_S);
+            }
 
-            header('Location: ' . $url);
+            header('Location: ' . $this->getRedirectUrl($url, $args['url']));
             exit();
           }
 
@@ -474,6 +526,12 @@
           else {
             $this->processView($user, $website, $args);
           }
+        }
+        else {
+          Logger::warning('Unauthorized access to' . (($preview) ? ' preview' : '') . ' a phishing website (invalid user/campaign argument).', [$args, self::getClientIp()]);
+
+          http_response_code(404);
+          exit();
         }
       }
       else {
@@ -547,24 +605,24 @@
     private function processAdminPreview($user, $website, $args) {
       $userRole = UsersModel::getUserRole($user['id_user']);
 
-      // Zjištění, zdali je v databázi existující ticket pro přístup na náhled podvodné stránky.
+      // Zjištění, zdali je v databázi existující token pro přístup na náhled podvodné stránky.
       $previewAccess = Database::querySingle(
         'SELECT `active_since`, `active_to` FROM `phg_websites_preview` WHERE id_website = ? AND id_user = ? AND hash = ?',
-        [$website['id_website'], $user['id_user'], $_GET[ACT_PREVIEW]]
+        [$website['id_website'], $user['id_user'], $_COOKIE[ACT_PREVIEW]]
       );
 
-      // V databázi neexistuje ticket k přístupu na náhled podvodné stránky.
+      // V databázi neexistuje token k přístupu na náhled podvodné stránky.
       if (empty($user) || !$previewAccess) {
         $args[] = self::getClientIp();
-        Logger::warning('Unauthorized access to preview a phishing website (non-existent ticket).', $args);
+        Logger::warning('Unauthorized access to preview a phishing website (non-existent token).', $args);
 
         header('Location: ' . WEB_URL);
         exit();
       }
-      // Pokud platnost ticketu k přístupu na náhled podvodné stránky vypršela.
+      // Pokud platnost tokenu k přístupu na náhled podvodné stránky vypršela.
       elseif (strtotime('now') > strtotime($previewAccess['active_to'])) {
         $args[] = self::getClientIp();
-        Logger::warning('Invalid access a preview of a phishing website with an expired ticket.', $args);
+        Logger::warning('Invalid access a preview of a phishing website with an expired token.', $args);
 
         echo 'Interval pro zobrazení náhledu podvodné stránky vypršel.';
         exit();
@@ -575,13 +633,19 @@
         // Vložení informační hlavičky s poznámkou, že se jedná o náhled podvodné stránky.
         require CORE_DOCUMENT_ROOT . '/' . CORE_DIR_VIEWS . '/preview-phishing-website' . CORE_VIEWS_FILE_EXTENSION;
 
-        // Data o uživateli pro možný, personalizovaný výpis na podvodné stránce.
+        // Data o uživateli pro personalizovaný výpis na podvodné stránce.
         $this->username = $user['username'];
         $this->email = $user['email'];
 
         $this->serviceName = $website['service_name'];
 
         Logger::info('Access to a preview of the phishing website.', $args);
+
+        // Při odeslání formuláře zobrazovat pro možnost otestování si hlášku o nesprávných
+        // přihlašovacích údajích (pokud je hláška součástí šablony podvodné stránky).
+        if (isset($_POST[PHISHING_WEBSITE_INPUT_FIELD_USERNAME]) && isset($_POST[PHISHING_WEBSITE_INPUT_FIELD_PASSWORD])) {
+          $this->processForm(4);
+        }
       }
       else {
         $args[] = self::getClientIp();
@@ -597,11 +661,11 @@
      * Vykoná akci, ke které má dojít po odeslání formuláře na podvodné stránce.
      *
      * @param int $onSubmitAction      ID akce, ke které má dojít po odeslání formuláře
-     * @param array $args              Další argumenty k akci, ke které má dojít (např. URL pro přesměrování)
+     * @param array $args              Další argumenty k akci, ke které má dojít (např. URL pro přesměrování), jinak NULL
      * @param bool $credentialsResult  TRUE pokud byly zadány platné přihlašovací údaje, jinak FALSE
      * @return void
      */
-    private function processForm($onSubmitAction, $args, $credentialsResult) {
+    private function processForm($onSubmitAction, $args = null, $credentialsResult = false) {
       // Přesměrování na vzdělávací stránku s indiciemi (po zadání čehokoliv).
       if ($onSubmitAction == 2) {
         header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);

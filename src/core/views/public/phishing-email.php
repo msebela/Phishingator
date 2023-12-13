@@ -3,7 +3,7 @@
     <div class="col-md-10 col-lg-11">
       <h2 class="mb-3">Právě jste absolvovali <strong>cvičný phishing</strong></h2>
       <?php if ($campaign_ended == 0): ?>
-      <p class="par-intro"><strong>Kdyby</strong> se jednalo o&nbsp;<strong>skutečný phishing</strong>, <strong>útočníci</strong> by v&nbsp;tuto chvíli již velmi pravděpodobně <strong>znali údaje</strong>, které jste vyplnili do formuláře na <strong>podvodné stránce</strong>.</p>
+      <p class="par-intro"><strong>Kdyby</strong> se jednalo o&nbsp;<strong>skutečný phishing</strong>, <strong>útočníci</strong> by v&nbsp;tuto chvíli již velmi pravděpodobně <strong>znali údaje</strong>, které jste vyplnili do přihlašovacího formuláře na <strong>podvodné stránce</strong>.</p>
       <?php endif; ?>
       <?php if ($volunteer == 1): ?>
       <p class="par-intro"><strong>Děkujeme</strong>, že máte zájem <strong>vzdělávat se</strong> v&nbsp;oblasti <strong>phishingu</strong>. Jakékoliv změny včetně nastavení <strong>limitu cvičných e-mailů</strong> můžete provést po <a href="/portal">přihlášení</a> do Phishingatoru.</p>
@@ -13,7 +13,7 @@
     </div>
 
     <div class="col-md-6 col-lg-5 mb-3 mb-md-0 d-flex align-items-center justify-content-end">
-      <a href="<?= WEB_BASE_URL ?>" class="btn btn-primary with-icon" role="button">
+      <a href="<?= WEB_BASE_URL ?>" class="btn btn-primary with-icon mt-4 mt-md-0" role="button">
         Více informací&hellip;
       </a>
     </div>
@@ -69,18 +69,18 @@
 
   <?php if (!empty($email['indications'])): ?>
   <div class="card-columns pb-5 mb-5 border-bottom text-dark">
-    <?php for ($i = 0; $i < count($email['indications']); $i++): ?>
-    <div id="indication-<?= $email['indications'][$i]['id_indication'] ?>-text" class="card bg-light cursor-pointer mark-indication" data-indication="<?= $email['indications'][$i]['id_indication'] ?>">
-      <a href="#indication-<?= $email['indications'][$i]['id_indication'] ?>" class="anchor-link">
+    <?php foreach ($email['indications'] as $i => $indication): ?>
+    <div id="indication-<?= $indication['id_indication'] ?>-text" class="card bg-light cursor-pointer mark-indication" data-indication="<?= $indication['id_indication'] ?>">
+      <a href="#indication-<?= $indication['id_indication'] ?>" class="anchor-link">
         <div class="card-body">
           <h5 class="card-title">
             <span class="badge badge-pill badge-dark"><?= ($i + 1) ?>.&nbsp;indicie</span>
-            <?= $email['indications'][$i]['title'] ?>
+            <?= $indication['title'] ?>
           </h5>
-          <p class="card-text"><?= $email['indications'][$i]['description'] ?></p>
+          <p class="card-text"><?= $indication['description'] ?></p>
 
           <div class="clearfix">
-            <button type="button" id="indication-<?= $email['indications'][$i]['id_indication'] ?>-btn" class="btn btn-sm btn-info float-right mark-indication" data-indication="<?= $email['indications'][$i]['id_indication'] ?>">
+            <button type="button" id="indication-<?= $indication['id_indication'] ?>-btn" class="btn btn-sm btn-info float-right mark-indication" data-indication="<?= $indication['id_indication'] ?>">
               <span data-feather="chevron-up"></span>
               <span>Označit</span>
             </button>
@@ -88,7 +88,7 @@
         </div>
       </a>
     </div>
-    <?php endfor; ?>
+    <?php endforeach; ?>
   </div>
   <?php endif; ?>
 
@@ -195,7 +195,7 @@
       <div class="col">
         <h3>Důležité informace</h3>
         <ul class="mb-lg-5">
-          <li>Zadané heslo nebylo <strong>nikde uloženo</strong>. Jestli nám však nevěříte, změňte si ho standardní cestou.</li>
+          <li>Zadané heslo nebylo <strong>nikde uloženo</strong>. Doporučujeme ale, abyste si ho změnili.</li>
           <li>Praktické phishingové testy probíhají ve spolupráci s&nbsp;Vaším IT oddělením.</li>
         </ul>
       </div>

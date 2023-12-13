@@ -20,6 +20,7 @@ services:
       - ORG_DOMAIN
       - WEB_HOST
       - WEB_URL
+      - EMAILS_ALLOWED_DOMAINS
       - CSRF_KEY
       - PHISHINGATOR_TOKEN
       - DOMAINER_ALLOWED_IP

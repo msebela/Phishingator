@@ -54,12 +54,14 @@
 .window {
   font-size: 13pt;
   position: relative;
+  word-wrap: break-word;
   color: $black;
   border: 3px solid #f1f1f1;
   border-radius: 10px;
   background: #f1f1f1;
 
   @include media-breakpoint-down(xs) {
+    width: 100%;
     font-size: 12pt;
   }
 

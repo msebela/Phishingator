@@ -24,6 +24,7 @@ body {
 // LINKS
 a {
   color: $text-color;
+  text-decoration: underline;
   outline: none;
 
   &:hover {
@@ -49,6 +50,13 @@ h1 {
     background: $secondary-bg-color;
   }
 }
+
+
+// LISTS
+ul {
+  list-style-type: square;
+}
+
 
 .navbar-collapse {
   h2 {
@@ -83,6 +91,7 @@ header {
 
   a, a:hover {
     color: $white;
+    text-decoration: none;
   }
 
   nav.navbar {
@@ -213,15 +222,15 @@ footer {
 // BUTTONS
 a.btn {
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .btn-primary {
-  width: 300px;
   height: 50px;
   line-height: 32px;
   position: relative;
   padding-left: 30px;
-  margin-top: 40px;
+  padding-right: 30px;
   text-align: left;
   font-size: 16px;
   text-transform: uppercase;
@@ -229,13 +238,6 @@ a.btn {
   border-radius: 30px;
   border: 1px solid $primary-bg-color;
   background: $primary-bg-color;
-
-  @include media-breakpoint-down(xs) {
-    width: 100%;
-    max-width: 270px;
-    height: auto;
-    margin-top: 20px;
-  }
 
   &:hover, &:focus, &:active {
     color: $primary-bg-color !important;
@@ -248,6 +250,8 @@ a.btn {
   }
 
   &.with-icon {
+    padding-right: 50px;
+
     &:after {
       content: "";
       display: inline-block;

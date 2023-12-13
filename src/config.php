@@ -154,7 +154,7 @@
 
   /* --- NASTAVENÍ WEBU --- */
   /** Verze Phishingatoru. */
-  define('WEB_VERSION', '1.4');
+  define('WEB_VERSION', '1.5');
 
   /** URL, na které Phishingator běží (slouží pro přesměrování v rámci systému). */
   define('WEB_URL', getenv('WEB_URL'));
@@ -337,6 +337,9 @@
   /** Povolené znaky v názvech subdomén u podvodných stránek v proxy Phishingatoru. */
   define('PHISHING_WEBSITE_SUBDOMAINS_REGEXP', '/[^a-z0-9]/');
 
+  /** Regulární výraz specifikující, čím může začínat a jaké znaky může obsahovat uživatelské jméno. */
+  define('PHISHING_WEBSITE_USERNAME_REGEXP', '/^[a-zA-Z]+[a-zA-Z0-9._@-]+$/');
+
   /** Název vstupního pole na podvodné stránce, do kterého uživatel zadává uživatelské jméno. */
   define('PHISHING_WEBSITE_INPUT_FIELD_USERNAME', 'username');
 
@@ -346,11 +349,20 @@
   /** Pole obsahující názvy webových prohlížečů, jejichž akce nemají být ukládány při návštěvě podvodné stránky. */
   define('PHISHING_WEBSITE_IGNORED_USER_AGENTS', ['MicrosoftPreview']);
 
-  /** Délka hashe (v bajtech) pro náhled podvodné stránky. */
-  define('PHISHING_WEBSITE_PREVIEW_HASH_BYTES', 32);
+  /** Identifikátor pro náhled podvodné stránky nahrazující identifikátor phishingové kampaně. */
+  define('PHISHING_WEBSITE_PREVIEW_ID', 0);
+
+  /** Délka tokenu (v bajtech) pro náhled podvodné stránky. */
+  define('PHISHING_WEBSITE_PREVIEW_TOKEN_LENGTH_B', 32);
+
+  /** Doba platnosti tokenu (v sekundách) pro náhled podvodné stránky. */
+  define('PHISHING_WEBSITE_PREVIEW_TOKEN_VALIDITY_S', 60);
 
   /** Název cookie identifikující uživatele na podvodné stránce. */
   define('PHISHING_WEBSITE_COOKIE', 'phishingator');
+
+  /** Doba platnosti cookie (v sekundách) identifikující uživatele na podvodné stránce. */
+  define('PHISHING_WEBSITE_COOKIE_VALIDITY_S', 1800);
 
 
 
@@ -380,7 +392,7 @@
   define('PAGING_MIN_RECORDS_ON_PAGE', 5);
 
   /** Maximální počet záznamů, které si může uživatel nechat vypsat na stránce. */
-  define('PAGING_MAX_RECORDS_ON_PAGE', 200);
+  define('PAGING_MAX_RECORDS_ON_PAGE', 1000);
 
   /** Výchozí počet záznamů na jedné stránce. */
   define('PAGING_DEFAULT_COUNT_RECORDS_ON_PAGE', 20);

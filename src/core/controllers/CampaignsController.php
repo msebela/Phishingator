@@ -175,7 +175,7 @@
 
       // Ověření, zdali se uživatel nepokouší zobrazit statistiku pro kampaň, která zatím nebyla spuštěna.
       if (strtotime($campaign['active_since'] . ' ' . $campaign['time_send_since']) >= strtotime('now')) {
-        $this->addMessage(MSG_ERROR, 'Nelze zobrazit statistiku pro kampaň, u které zatím nedošlo k odeslání e-mailů.');
+        $this->addMessage(MSG_WARNING, 'Nelze zobrazit statistiku pro kampaň, u které zatím nedošlo k zahájení a odeslání e-mailů.');
         $this->redirect($this->urlSection);
       }
 
