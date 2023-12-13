@@ -92,7 +92,7 @@
 
   /* --- OVĚŘENÍ PŘIHLAŠOVACÍ ÚDAJŮ ZADANÝCH NA PODVODNÝCH STRÁNKÁCH --- */
   /** Typ autentizace, který se bude používat při ověřování přihlašovací údajů:
-   *    Možnosti: ldap/web/kerberos/imap
+   *    Možnosti: ldap/web/kerberos/imap/policy
    */
   define('AUTHENTICATION_TYPE', getenv('AUTHENTICATION_TYPE'));
 
@@ -125,6 +125,12 @@
 
   /** Pokud se použije IMAP autentizace, je nutné uvést IMAP server (a port) a případné flagy (např. "{domain.tld:993/imap/ssl/}"). */
   define('AUTHENTICATION_IMAP_ARGS', getenv('AUTHENTICATION_IMAP_ARGS'));
+
+  /** Minimální délka hesla, kterou stanovuje heslová politika. */
+  define('AUTHENTICATION_POLICY_MIN_LENGTH', getenv('AUTHENTICATION_POLICY_MIN_LENGTH'));
+
+  /** Minimální počet sad znaků, které musí heslo podle heslové politiky obsahovat. */
+  define('AUTHENTICATION_POLICY_MIN_CHARS_GROUPS', getenv('AUTHENTICATION_POLICY_MIN_CHARS_GROUPS'));
 
 
 

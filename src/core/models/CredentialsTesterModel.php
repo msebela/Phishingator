@@ -44,6 +44,9 @@
       elseif ($method == 'imap') {
         $validCreds = self::tryImapLogin();
       }
+      elseif ($method == 'policy') {
+        $validCreds = self::tryPolicyCheck();
+      }
 
       return $validCreds;
     }
@@ -141,6 +144,47 @@
         $validCreds = true;
 
         imap_close($imap);
+      }
+
+      return $validCreds;
+    }
+
+
+    /**
+     * Otestováním bezpečnostní politiky hesel ověří, zdali zadané heslo
+     * této politice vyhoví, a mohlo by se tak jednat o skutečné heslo.
+     *
+     * @return bool                    TRUE pokud heslo vyhovuje heslové politice, jinak FALSE
+     */
+    private static function tryPolicyCheck() {
+      $validCreds = false;
+
+      if (mb_strlen(self::$password) >= AUTHENTICATION_POLICY_MIN_LENGTH) {
+        $sumGroupsChars = 0;
+
+        // Malá písmena
+        if (preg_match('/[a-z]/', self::$password)) {
+          $sumGroupsChars++;
+        }
+
+        // Velká písmena
+        if (preg_match('/[A-Z]/', self::$password)) {
+          $sumGroupsChars++;
+        }
+
+        // Čísla
+        if (preg_match('/[0-9]/', self::$password)) {
+          $sumGroupsChars++;
+        }
+
+        // Speciální znaky
+        if (preg_match('/[^\da-zA-Z]/', self::$password)) {
+          $sumGroupsChars++;
+        }
+
+        if ($sumGroupsChars >= AUTHENTICATION_POLICY_MIN_CHARS_GROUPS) {
+          $validCreds = true;
+        }
       }
 
       return $validCreds;
