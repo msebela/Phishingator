@@ -131,7 +131,7 @@
         'username', 'email', 'group', 'action', 'action_datetime', 'reported', 'ip', 'user_agent', 'http_post_data_json'
       ];
       $csvDataIndexes = [
-        'username', 'used_email', 'used_group', 'name', 'visit_datetime', 'reported', 'ip', 'browser_fingerprint', 'data_json'
+        'username', 'used_email', 'used_group', 'name', 'visit_datetime_iso', 'reported', 'ip', 'browser_fingerprint', 'data_json'
       ];
 
       $data = [
