@@ -460,16 +460,6 @@
         $phishingEmail = self::insertHTMLIndications($phishingEmail, $emailIndications);
       }
 
-      // Zformátování hlavičky odesílatele podle toho, co bylo vyplněno.
-      $phishingEmail['sender'] = PhishingEmailModel::formatEmailSender(
-        $phishingEmail['sender_email'], $phishingEmail['sender_name']
-      );
-
-      if (isset($phishingEmail['body'])) {
-        // Vložení odřádkování do těla e-mailu.
-        $phishingEmail['body'] = self::insertHTMLnewLines($phishingEmail['body']);
-      }
-
       // Personalizace e-mailu.
       if (isset($user['email']) && isset($user['id_user'])) {
         // Nahrazení proměnné odesílatele za e-mail uživatele (pokud byla proměnná použita).
@@ -495,6 +485,16 @@
             $phishingEmail['id_campaign'], $user['id_user']
           );
         }
+      }
+
+      // Zformátování hlavičky odesílatele podle toho, co bylo vyplněno.
+      $phishingEmail['sender'] = PhishingEmailModel::formatEmailSender(
+        $phishingEmail['sender_email'], $phishingEmail['sender_name']
+      );
+
+      if (isset($phishingEmail['body'])) {
+        // Vložení odřádkování do těla e-mailu.
+        $phishingEmail['body'] = self::insertHTMLnewLines($phishingEmail['body']);
       }
 
       // Vyznačení proměnných v těle e-mailu.
