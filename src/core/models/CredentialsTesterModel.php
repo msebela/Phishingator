@@ -185,6 +185,14 @@
         if ($sumGroupsChars >= AUTHENTICATION_POLICY_MIN_CHARS_GROUPS) {
           $validCreds = true;
         }
+
+        if (!AUTHENTICATION_POLICY_ALLOW_CONTAIN_USERNAME) {
+          $username = str_contains(self::$username, '@') ? get_email_part(self::$username, 'username') : self::$username;
+
+          if (str_contains(mb_strtolower(self::$password), mb_strtolower($username))) {
+            $validCreds = false;
+          }
+        }
       }
 
       return $validCreds;

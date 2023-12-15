@@ -132,6 +132,9 @@
   /** Minimální počet sad znaků, které musí heslo podle heslové politiky obsahovat. */
   define('AUTHENTICATION_POLICY_MIN_CHARS_GROUPS', getenv('AUTHENTICATION_POLICY_MIN_CHARS_GROUPS'));
 
+  /** Nastavení, zdali heslo může podle heslové politiky obsahovat uživatelské jméno. */
+  define('AUTHENTICATION_POLICY_ALLOW_CONTAIN_USERNAME', (getenv('AUTHENTICATION_POLICY_ALLOW_CONTAIN_USERNAME') && getenv('AUTHENTICATION_POLICY_ALLOW_CONTAIN_USERNAME') == 1));
+
 
 
   /* --- LOGOVÁNÍ --- */
@@ -380,7 +383,7 @@
   define('CAMPAIGN_STATS_AGGREGATION', (getenv('CAMPAIGN_STATS_AGGREGATION')) ? getenv('CAMPAIGN_STATS_AGGREGATION') : 1);
 
   /** Rozmazání identit uživatelů ve statistikách kampaně. */
-  define('CAMPAIGN_STATS_BLUR_IDENTITIES', (getenv('CAMPAIGN_STATS_BLUR_IDENTITIES') !== false) ? getenv('CAMPAIGN_STATS_BLUR_IDENTITIES') : true);
+  define('CAMPAIGN_STATS_BLUR_IDENTITIES', (getenv('CAMPAIGN_STATS_BLUR_IDENTITIES') && getenv('CAMPAIGN_STATS_BLUR_IDENTITIES') == 1));
 
   /** Identifikátor výchozí akce po odeslání formuláře (bude ve formuláři při vytváření kampaně předvybrána). */
   define('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION', (getenv('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION')) ? getenv('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION') : 0);
