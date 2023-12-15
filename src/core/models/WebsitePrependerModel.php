@@ -327,6 +327,11 @@
 
       if (ctype_alnum($url) && mb_strlen($url) > USER_ID_WEBSITE_LENGTH) {
         $idCampaign = mb_substr($url, $halfLength, mb_strlen(USER_ID_WEBSITE_LENGTH) - $halfLength - 1);
+
+        if (!is_numeric($idCampaign) && mb_substr($url, -mb_strlen(USER_ID_WEBSITE_SUFFIX)) == USER_ID_WEBSITE_SUFFIX) {
+          $idCampaign = mb_substr($idCampaign, 0, -mb_strlen(USER_ID_WEBSITE_SUFFIX));
+        }
+
         $idUser = mb_substr($url, 0, $halfLength) . mb_substr($url, -mb_strlen(USER_ID_WEBSITE_LENGTH) - $halfLength + 1);
 
         if (mb_strlen($idUser) == USER_ID_WEBSITE_LENGTH && is_numeric($idCampaign)) {
