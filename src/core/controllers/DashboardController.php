@@ -9,7 +9,8 @@
     /**
      * Zpracuje vstup z URL adresy a na základě toho zavolá odpovídající metodu.
      *
-     * @param array $arguments         Uživatelský vstup.
+     * @param array $arguments         Uživatelský vstup
+     * @return void
      */
     public function process($arguments) {
       $this->setTitle('Úvodní stránka');
@@ -37,9 +38,10 @@
 
 
     /**
-     * Vypíše statistiku a grafy pro nejvyšší administrátorské oprávnění.
+     * Vypíše statistiku a grafy pro administrátorské (nejvyšší) oprávnění.
      *
      * @param StatsModel $model        Instance třídy
+     * @return void
      */
     private function setStatsAdminData($model) {
       // Počet běžících kampaní.
@@ -95,9 +97,10 @@
 
 
     /**
-     * Vypíše statistiku a grafy pro uživatelské oprávnění správce testů.
+     * Vypíše statistiku a grafy pro oprávnění správce testů.
      *
      * @param StatsModel $model        Instance třídy
+     * @return void
      */
     private function setStatsTestManagerData($model) {
       // Zjištění ID přihlášeného uživatele pro konkretizování statistiky a grafů.
@@ -135,16 +138,17 @@
 
 
     /**
-     * Vypíše statistiku a grafy pro nejnižší oprávnění, tzn. pro uživatele.
+     * Vypíše statistiku a grafy pro nejnižší oprávnění, tzn. pro běžného uživatele.
      *
      * @param StatsModel $model        Instance třídy
+     * @return void
      */
     private function setStatsUserData($model) {
       // Zjištění ID přihlášeného uživatele pro konkretizování statistiky a grafů.
       $idUser = PermissionsModel::getUserId();
 
       // Počet přijatých e-mailů.
-      $countRecievedEmails = RecievedEmailModel::getCountOfRecievedPhishingEmails($idUser);
+      $countRecievedEmails = RecievedEmailModel::getCountOfRecievedPhishingEmails($idUser, true);
 
       $this->setViewData('countRecievedEmails', get_formatted_number($countRecievedEmails));
       $this->setViewData('countRecievedEmailsText', $model->getStatsText($countRecievedEmails, 'recievedEmails'));

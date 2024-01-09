@@ -37,8 +37,7 @@
       $modelUser = new UsersModel();
       $user = $modelUser->getUser(PermissionsModel::getUserId());
 
-      // Získání všech e-mailů, které byly uživateli odeslány.
-      $records = $model->getRecievedPhishingEmails($user['id_user']);
+      $records = $model->getRecievedPhishingEmails($user['id_user'], true);
 
       // Personalizace a dodatečné úpravy každého z e-mailů.
       foreach ($records as $key => $email) {
