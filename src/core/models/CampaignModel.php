@@ -473,9 +473,9 @@
               FROM `phg_campaigns_recipients`
               JOIN `phg_users`
               ON phg_campaigns_recipients.id_user = phg_users.id_user
-              WHERE `sign_date`
+              WHERE `id_recipient`
               IN (
-                SELECT MAX(`sign_date`) FROM `phg_campaigns_recipients` WHERE `id_campaign` = ? GROUP BY `id_user`
+                SELECT MAX(`id_recipient`) FROM `phg_campaigns_recipients` WHERE `id_campaign` = ? GROUP BY `id_user`
               )
               AND `signed` = 1
         ', $idCampaign);
