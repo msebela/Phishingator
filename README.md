@@ -23,7 +23,8 @@ Phishingator byl navržen jako co nejvíce **intuitivní a automatizovaný syst�
   - Způsob vkládání příjemců
     - Dobrovolná registrace uživatelů přihlášením do Phishingatoru
     - Výběr administrátorem systému
-      - Manuálním vložením seznamu uživatelů
+      - Vypsáním seznamu uživatelů
+      - Importem ze souboru
       - Interaktivním výběrem z LDAP
   - Předpřipravené šablony podvodných stránek
 - **Průběh phishingové kampaně**
@@ -33,11 +34,13 @@ Phishingator byl navržen jako co nejvíce **intuitivní a automatizovaný syst�
     - Obratem po vyplnění údajů na podvodné stránce (uživatel se má šanci ihned poučit)
 - **Statistiky**
   - Podrobné statistiky u každé phishingové kampaně
-  - Osobní a globální statistiky za celou organizaci
+  - Osobní statistiky uživatelů
+  - Globální statistiky za celou organizaci
 - **Modulární systém**
   - Jednoduché přidání nového podvodného e-mailu a podvodné stránky
-  - Napojení na různé autentizační systémy pro ověření platnosti jména a hesla zadaného na cvičné podvodné stránce
-    - Kerberos, LDAP, IMAP, případně další
+  - Ověření platnosti jména a hesla zadaného na cvičné podvodné stránce
+    - Podle různých autentizačních systémů – LDAP, webová služba, Kerberos, IMAP
+    - Podle heslové politiky
 - **Intuitivní**, téměř automatizovaný systém **vyžadující minimální obsluhu**
   - Optimalizováno pro mobilní zařízení
   - Živý vývoj
@@ -48,19 +51,19 @@ Phishingator byl navržen jako co nejvíce **intuitivní a automatizovaný syst�
 
 Phishingator **Vám můžeme nasadit** a pomoct s jeho **ovládáním a prvotním nastavením**, nebo si můžete Phishingator **nasadit sami** díky veřejně dostupným zdrojovým kódům. Pokud si Phishingator necháte nasadit od nás, budou v systému **předpřipravené** i cvičné podvodné e-maily a podvodné šablony podvodných stránek (včetně **zakoupených domén**).
 
-**Možnosti konzultací**, **správy systému** ze strany CESNETu a **školení** pak ukazuje následující tabulka:
+**Možnosti konzultací**, **správy systému** ze strany sdružení CESNET a **školení** pak ukazuje následující tabulka:
 
 
-|                                                | Samostatný provoz | Standardní služba Phishingator |
-|------------------------------------------------|:-----------------:|:------------------------------:|
-| Dostupnost zdrojových kódů                     |     &#10003;      |            &#10003;            |
-| Instanci provozuje CESNET                      |                   |            &#10003;            |
-| Konzultace technických problémů                |     &#10003;      |            &#10003;            |
-| Konzultace s napojením na autentizační systém  |                   |            &#10003;            |
-| Vytvoření nových podvodných e-mailů (3&times;) |                   |            &#10003;            |
-| Vytvoření nových podvodných stránek (3&times;) |                   |            &#10003;            |
-| Příprava vzorové phishingové kampaně           |                   |            &#10003;            |
-| Úvodní školení administrátorů systému          |                   |            &#10003;            |
+|                                                | Samostatný provoz | Služba Phishingator |
+|------------------------------------------------|:-----------------:|:-------------------:|
+| Dostupnost zdrojových kódů                     |     &#10003;      |      &#10003;       |
+| Instanci provozuje sdružení CESNET             |                   |      &#10003;       |
+| Konzultace technických problémů                |     &#10003;      |      &#10003;       |
+| Konzultace s napojením na autentizační systém  |                   |      &#10003;       |
+| Vytvoření nových podvodných e-mailů (3&times;) |                   |      &#10003;       |
+| Vytvoření nových podvodných stránek (3&times;) |                   |      &#10003;       |
+| Příprava vzorové phishingové kampaně           |                   |      &#10003;       |
+| Úvodní školení administrátorů systému          |                   |      &#10003;       |
 
 
 
