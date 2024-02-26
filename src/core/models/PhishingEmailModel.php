@@ -520,6 +520,7 @@
       $this->isSenderEmailEmpty();
       $this->isSenderEmailTooLong();
       $this->isSenderEmailValid();
+      $this->isSenderEmailDomainValid();
 
       $this->isSubjectEmpty();
       $this->isSubjectTooLong();
@@ -598,6 +599,20 @@
     private function isSenderEmailValid() {
       if (!filter_var($this->senderEmail, FILTER_VALIDATE_EMAIL) && $this->senderEmail != VAR_RECIPIENT_EMAIL) {
         throw new UserError('E-mail odesílatele je v nesprávném formátu.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali existuje doména použitá v zadaném e-mailu odesílatele.
+     *
+     * @throws UserError
+     */
+    private function isSenderEmailDomainValid() {
+      $domain = get_email_part($this->senderEmail, 'domain');
+
+      if (gethostbyname($domain) == $domain) {
+        throw new UserError('Doména použitá v e-mailu odesílatele neexistuje.', MSG_ERROR);
       }
     }
 
