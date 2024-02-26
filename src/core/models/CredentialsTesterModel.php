@@ -29,6 +29,10 @@
     public static function tryLogin($username, $password, $method = AUTHENTICATION_TYPE) {
       $validCreds = false;
 
+      if (str_contains($username, '@')) {
+        $username = get_email_part($username, 'username');
+      }
+
       self::$username = $username;
       self::$password = $password;
 

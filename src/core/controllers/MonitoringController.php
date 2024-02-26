@@ -85,8 +85,12 @@ class MonitoringController extends Controller {
         $this->formalizeTestResult('database-backup', $this->databaseBackupTest()),
         $this->formalizeTestResult('database-connection', $this->databaseTest()),
         $this->formalizeTestResult('ldap-connection', $this->ldapTest()),
+
         $this->formalizeTestResult('credentials-valid', $this->credentialsTest()),
-        $this->formalizeTestResult('credentials-invalid', $this->credentialsTest(true))
+        $this->formalizeTestResult('credentials-invalid', $this->credentialsTest(true)),
+
+        $this->formalizeTestResult('credentials-email-valid', $this->credentialsTest(false, '@' . getenv('ORG_DOMAIN'))),
+        $this->formalizeTestResult('credentials-email-invalid', $this->credentialsTest(true, '@' . getenv('ORG_DOMAIN')))
       ]
     ];
 
@@ -199,19 +203,20 @@ class MonitoringController extends Controller {
   /**
    * Pokusí se provést přihlášení do autentizační služby s přihlašovacími údaji testovací identity.
    *
-   * @param bool $invalidCredentials   TRUE pokud má dojít k přihlášení s nesprávným heslem, jinak FALSE (výchozí)
-   * @return bool                      TRUE pokud bylo přihlášení úspěšné, jinak FALSE
+   * @param bool $wrongPassword        TRUE pokud má dojít k přihlášení s nesprávným heslem, jinak FALSE (výchozí)
+   * @param string $usernameSuffix     Nepovinný suffix přidávaný k uživatelskému jménu (např. doména)
+   * @return bool                      TRUE pokud byl výsledek správný, jinak FALSE
    */
-  private function credentialsTest($invalidCredentials = false) {
+  private function credentialsTest($wrongPassword = false, $usernameSuffix = '') {
     $password = getenv('TEST_PASSWORD');
 
-    if ($invalidCredentials) {
-      $password .= '-invalid';
+    if ($wrongPassword) {
+      $password = 'test-wrong-password';
     }
 
-    $result = CredentialsTesterModel::tryLogin(getenv('TEST_USERNAME'), $password);
+    $result = CredentialsTesterModel::tryLogin(getenv('TEST_USERNAME') . $usernameSuffix, $password);
 
-    if ($invalidCredentials) {
+    if ($wrongPassword) {
       $result = !$result;
     }
 
