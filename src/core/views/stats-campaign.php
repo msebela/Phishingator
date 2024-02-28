@@ -253,7 +253,7 @@
   <table class="table table-striped table-hover records-list table-sort table-arrows">
     <thead>
       <tr>
-        <th class="order-by-desc">#</th>
+        <th class="order-by-asc">#</th>
         <th colspan="2" class="minw-5-rem">Uživatel</th>
         <th>Akce</th>
         <th class="data-sort datetime">Datum a&nbsp;čas</th>

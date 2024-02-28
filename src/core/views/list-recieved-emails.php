@@ -5,7 +5,7 @@
   <table class="table table-striped table-hover records-list table-sort table-arrows">
     <thead>
       <tr>
-        <th scope="col" class="order-by-desc">#</th>
+        <th scope="col" class="order-by-asc">#</th>
         <th scope="col">Předmět</th>
         <th scope="col">Jméno odesílatele</th>
         <th scope="col">E-mail odesílatele</th>

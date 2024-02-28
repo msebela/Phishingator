@@ -160,7 +160,7 @@ header {
 // TABLE STYLE
 .records-list {
   th {
-    &.order-by-desc {
+    &.order-by-asc, &.order-by-desc {
       min-width: 50px;
     }
 
