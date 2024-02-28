@@ -73,7 +73,7 @@
     $email = filter_var(trim($email), FILTER_SANITIZE_EMAIL);
     $emailParts = explode($symbol, $email);
 
-    if (strpos($email, $symbol) !== false) {
+    if (str_contains($email, $symbol)) {
       if ($requiredPart == 'username') {
         $returnPart = $emailParts[0] ?? null;
       }

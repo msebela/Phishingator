@@ -31,7 +31,7 @@ else
     DB_DATABASE=$(docker exec "$CONTAINER_NAME" printenv MYSQL_DATABASE)
 
     MESSAGE_DATETIME="$(date +"%Y-%m-%d %H:%M:%S")"
-    MESSAGE=": [$(basename "$0")]  - Restoring Phishingator database for org. '$ORG'."
+    MESSAGE=": [$(basename "$0")]  - Restoring Phishingator database for org. '$ORG'"
 
     if gunzip < "$BACKUP_FILE" | docker exec -i "$CONTAINER_NAME" /usr/bin/mariadb -u"$DB_USERNAME" -p"$DB_PASSWORD" -D"$DB_DATABASE"; then
       LOG="$MESSAGE_DATETIME [INFO ] $MESSAGE was successfully completed from file '$BACKUP_FILE'."

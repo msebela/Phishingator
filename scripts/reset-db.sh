@@ -20,7 +20,7 @@ else
 
   if [[ $response =~ ^[Yy]$ ]]; then
     MESSAGE_DATETIME="$(date +"%Y-%m-%d %H:%M:%S")"
-    MESSAGE=": [$(basename "$0")]  - Deleting Phishingator database for org. '$ORG'."
+    MESSAGE=": [$(basename "$0")]  - Deleting Phishingator database for org. '$ORG'"
 
     if rm -rf "$INSTANCE_DIR"/database/phishingator/*; then
       LOG="$MESSAGE_DATETIME [INFO ] $MESSAGE was successful."
