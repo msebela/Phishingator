@@ -142,13 +142,32 @@
      * @param string $url              Identifikátor uživatele na podvodných stránkách.
      * @return mixed                   Pole s informacemi o uživateli.
      */
-    public static function getUserByUrl($url) {
+    public static function getUserByURL($url) {
       return Database::querySingle('
               SELECT `id_user`, `id_user_group`, `url`, `username`, `email`, `primary_group`
               FROM `phg_users`
               WHERE `url` = ?
               AND `visible` = 1
       ', $url);
+    }
+
+
+    /**
+     * Projde data a upraví uživatelská jména do podoby určené pro výpis do GUI, a to dle konfigurace.
+     *
+     * @param array $data              Data, ve kterých bude docházet k nalezení a případné úpravě uživatelského jména
+     * @return mixed                   Data obsahující uživatelské jméno v podobě dle konfigurace
+     */
+    public static function setUsernamesByConfig($data) {
+      if (USER_PREFER_EMAIL) {
+        foreach ($data as $key => $record) {
+          if (isset($record['username']) && isset($record['email'])) {
+            $data[$key]['username'] = get_email_part($record['email'], 'username');
+          }
+        }
+      }
+
+      return $data;
     }
 
 

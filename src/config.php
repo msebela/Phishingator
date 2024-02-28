@@ -187,35 +187,39 @@
 
 
 
-  /* --- VÝCHOZÍ HODNOTY NOVÝCH UŽIVATELŮ --- */
+  /* --- VÝCHOZÍ HODNOTY UŽIVATELŮ --- */
+  /** Určuje, zdali se bude při výpisech v GUI Phishingatoru preferovat uživatelské jméno získané z LDAP (0),
+   * nebo uživatelské jméno získané z e-mailu z LDAP (1).
+   */
+  define('USER_PREFER_EMAIL', (getenv('USER_PREFER_EMAIL') && getenv('USER_PREFER_EMAIL') == 1));
+
   /** Určuje, zdali je uživatel ve výchozím stavu po registraci přihlášen k odebírání cvičných
    *  phishingových zpráv (1 nebo 0).
    */
   define('NEW_USER_PARTICIPATION', 1);
 
-  /** Určuje, zdali je uživatel ve výchozím stavu po nucené registraci v kampani (tzn. do systému se uživatel
+  /** Určuje, zdali je uživatel ve výchozím stavu po nucené registraci v kampani (tzn. do Phishingatoru se uživatel
    *  nepřihlásil sám, ale byl registrován někým jiným) přihlášen k odebírání cvičných phishingových zpráv (1 nebo 0).
    */
   define('NEW_USER_BY_CAMPAIGN_PARTICIPATION', 0);
 
 
-  /** Výchozí limit počtu e-mailů, který mají uživatelé po registraci nastaven (pozn. jedná se o dobrovolný limit,
-   *  tzn. pokud bude uživatel zapojen do kampaně někým, kdo má vyšší oprávnění, jeho limit počtu přijatých e-mailů
-   *  nehraje roli.
+  /** Výchozí limit počtu e-mailů, který mají uživatelé po registraci nastaven (jedná se o dobrovolný limit, tzn. pokud
+   *  bude uživatel zapojen do kampaně někým, kdo má vyšší oprávnění, tento limit počtu přijatých e-mailů nehraje roli).
    */
   define('NEW_USER_PARTICIPATION_EMAILS_LIMIT', 10);
 
-  /** Výchozí limit počtu e-mailů, který mají uživatelé po nucené registraci (tzn. do systému se uživatel
-   *  nepřihlásil sám, ale byl registrován někým jiným) nastaven (pozn. jedná se o dobrovolný limit, tzn. pokud bude
-   *  uživatel zapojen do kampaně někým, kdo má vyšší oprávnění, jeho limit počtu přijatých e-mailů nehraje roli).
+  /** Výchozí limit počtu e-mailů, který mají uživatelé po nucené registraci (tzn. do Phishingatoru se uživatel
+   *  nepřihlásil sám, ale byl registrován někým jiným) nastaven (jedná se o dobrovolný limit, tzn. pokud bude
+   *  uživatel zapojen do kampaně někým, kdo má vyšší oprávnění, tento limit počtu přijatých e-mailů nehraje roli).
    */
   define('NEW_USER_BY_CAMPAIGN_PARTICIPATION_EMAILS_LIMIT', NULL);
 
 
-  /** Výchozí skupina, která jsou uživatelům při registraci přidělena. */
+  /** Výchozí skupina, která je uživatelům při registraci přidělena. */
   define('NEW_USER_DEFAULT_GROUP_ID', 3);
 
-  /** Výchozí skupina, která jsou uživatelům při nucené registraci přidělena (tzn. do systému se uživatel
+  /** Výchozí skupina, která je uživatelům při nucené registraci přidělena (tzn. do Phishingatoru se uživatel
       nepřihlásil sám, ale byl registrován někým jiným). */
   define('NEW_USER_BY_CAMPAIGN_DEFAULT_GROUP_ID', 3);
 

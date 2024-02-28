@@ -98,9 +98,9 @@
     public static function getPhishingEmails() {
       $whereFilter = (PermissionsModel::getUserRole() == PERMISSION_TEST_MANAGER) ? 'AND `hidden` = 0' : '';
 
-      return Database::queryMulti('
+      $records = Database::queryMulti('
               SELECT `id_email`, phg_emails.id_by_user, `name`, `subject`, phg_emails.date_added, `hidden`,
-              `username`, phg_emails.date_added,
+              `username`, `email`,
               DATE_FORMAT(phg_emails.date_added, "%e. %c. %Y") AS date_added_formatted
               FROM `phg_emails`
               JOIN `phg_users`
@@ -109,6 +109,8 @@
               ' . $whereFilter . '
               ORDER BY `id_email` DESC
       ');
+
+      return UsersModel::setUsernamesByConfig($records);
     }
 
 

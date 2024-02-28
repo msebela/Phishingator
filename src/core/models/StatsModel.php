@@ -696,7 +696,7 @@
       if ($count == 1) {
         switch ($type) {
           case 'campaignsCount': return $new . $running . 'kampaň';
-          case 'recipientsCount': return $overall . 'registrovaný příjemce';
+          case 'recipientsCount': return 'registrovaný příjemce' . $overall;
           case 'volunteersCount': return 'dobrovolník' . $overall;
           case 'sentEmails': return 'odeslaný e-mail' . $overall;
           case 'websitesCount': return $new . 'podvodná stránka';

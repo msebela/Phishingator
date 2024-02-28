@@ -79,6 +79,7 @@ services:
       - CAMPAIGN_STATS_AGGREGATION
       - CAMPAIGN_STATS_BLUR_IDENTITIES
       - CAMPAIGN_DEFAULT_ONSUBMIT_ACTION
+      - USER_PREFER_EMAIL
     depends_on:
       - database
     networks:

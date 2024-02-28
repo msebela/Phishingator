@@ -225,7 +225,7 @@
 
       $result = Database::queryMulti('
               SELECT `id_campaign`, phg_campaigns.id_by_user, phg_campaigns.id_email, phg_campaigns.id_website, phg_campaigns.id_ticket, phg_campaigns.name, `active_since`, `active_to`, phg_campaigns.date_added,
-              `username`, `id_user_role`, phg_users_roles.value,
+              `username`, `email`, `id_user_role`, phg_users_roles.value,
               phg_users.id_user_group,
               phg_emails.name AS `email_name`,
               phg_websites.name AS `website_name`, phg_websites.url,
@@ -268,7 +268,7 @@
         $result[$key]['active_to_color'] = $this->getColorDateByToday($campaign['active_to'], 'date-to');
       }
 
-      return $result;
+      return UsersModel::setUsernamesByConfig($result);
     }
 
 
@@ -852,16 +852,17 @@
      * Vrátí všechny zaznamenané akce, které uživatelé provedli na podvodné stránce přiřazené ke konkrétní kampani.
      *
      * @param int $idCampaign          ID kampaně
-     * @param bool $orderDesc          TRUE, pokud mají být akce řazeny od nejnovější po nejstarší
+     * @param bool $orderAsc           TRUE, pokud mají být akce řazeny od nejstarší, jinak FALSE (výchozí)
+     * @param bool $replaceUsernames   TRUE (výchozí) pokud má dojít k nahrazení uživatelských jmen podle konfigurace
      * @return mixed                   Pole zaznamenaných akcí
      */
-    public static function getCapturedDataInCampaign($idCampaign, $orderDesc = false) {
-      return Database::queryMulti('
+    public static function getCapturedDataInCampaign($idCampaign, $orderAsc = false, $replaceUsernames = true) {
+      $records = Database::queryMulti('
               SELECT `id_captured_data`, phg_captured_data.id_user, `used_email`, `used_group`, `visit_datetime`, `ip`, `browser_fingerprint`, `data_json`, `reported`,
               DATE_FORMAT(visit_datetime, "%e. %c. %Y %k:%i:%s") AS `visit_datetime_formatted`,
               DATE_FORMAT(visit_datetime, "%Y-%m-%dT%TZ") AS `visit_datetime_iso`,
               `name`, `css_color_class`,
-              `username`
+              `username`, `email`
               FROM `phg_captured_data`
               JOIN `phg_captured_data_actions`
               ON phg_captured_data.id_action = phg_captured_data_actions.id_action
@@ -869,8 +870,14 @@
               ON phg_captured_data.id_user = phg_users.id_user
               WHERE `id_campaign` = ?
               AND phg_captured_data.id_action != ?
-              ORDER BY `id_captured_data` ' . (($orderDesc) ? 'DESC' : '')
+              ORDER BY `id_captured_data` ' . ((!$orderAsc) ? 'DESC' : '')
       , [$idCampaign, CAMPAIGN_NO_REACTION_ID]);
+
+      if ($replaceUsernames) {
+        $records = UsersModel::setUsernamesByConfig($records);
+      }
+
+      return $records;
     }
 
 
@@ -878,14 +885,15 @@
      * Vrátí reakce uživatelů na phishing pro konkrétní kampaň.
      *
      * @param int $idCampaign          ID kampaně
+     * @param bool $replaceUsernames   TRUE (výchozí) pokud má dojít k nahrazení uživatelských jmen podle konfigurace
      * @return mixed                   Reakce uživatelů
      */
-    public static function getUsersResponsesInCampaign($idCampaign) {
-      return Database::queryMulti('
+    public static function getUsersResponsesInCampaign($idCampaign, $replaceUsernames = true) {
+      $records = Database::queryMulti('
               SELECT
               worstAct.id_user, worstAct.id_captured_data, worstAct.used_email, worstAct.used_group, worstAct.id_action, worstAct.reported,
               phg_captured_data_actions.name,
-              `username`
+              `username`, `email`
               FROM `phg_captured_data_actions`
               JOIN 
                 (SELECT MAX(id_captured_data) AS `id_captured_data`, `id_user`, `used_email`, `used_group`, MAX(phg_captured_data.id_action) AS `id_action`, MAX(reported) AS `reported`
@@ -896,6 +904,12 @@
               JOIN `phg_users`
               ON worstAct.id_user = phg_users.id_user
       ', $idCampaign);
+
+      if ($replaceUsernames) {
+        $records = UsersModel::setUsernamesByConfig($records);
+      }
+
+      return $records;
     }
 
 

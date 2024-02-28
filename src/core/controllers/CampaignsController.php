@@ -192,7 +192,7 @@
       // Získání nasbíraných dat.
       if (isset($_GET[ACT_STATS_WEBSITE_ACTIONS])) {
         // Data uživatelů zaznamenané na podvodné stránce a akce "bez reakce".
-        $capturedData = $model->getCapturedDataInCampaign($idCampaign, true);
+        $capturedData = $model->getCapturedDataInCampaign($idCampaign);
         $this->setViewData('capturedData', $capturedData);
       }
       elseif (isset($_GET[ACT_STATS_USERS_RESPONSES])) {

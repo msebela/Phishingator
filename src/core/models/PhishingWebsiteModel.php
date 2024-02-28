@@ -145,7 +145,7 @@
     public static function getPhishingWebsites() {
       $result = Database::queryMulti('
               SELECT `id_website`, phg_websites.id_by_user, `name`, phg_websites.url, `active`, phg_websites.date_added,
-              `username`,
+              `username`, `email`,
               DATE_FORMAT(phg_websites.date_added, "%e. %c. %Y") AS date_added_formatted
               FROM `phg_websites`
               JOIN `phg_users`
@@ -169,7 +169,7 @@
         $result[$key]['status_color'] = $statusText['color'];
       }
 
-      return $result;
+      return UsersModel::setUsernamesByConfig($result);
     }
 
 

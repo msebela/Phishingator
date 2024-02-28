@@ -19,7 +19,7 @@
       Logger::info('Request to export phishing campaign data (users responses).', $id);
 
       $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-users-responses';
-      $csvData = CampaignModel::getUsersResponsesInCampaign($id);
+      $csvData = CampaignModel::getUsersResponsesInCampaign($id, false);
 
       // Informace o datech pro CSV export.
       $csvHeader = ['username', 'email', 'group', 'action', 'reported'];
@@ -124,7 +124,7 @@
       Logger::info('Request to export all phishing campaign data.', $id);
 
       $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-website-actions';
-      $csvData = CampaignModel::getCapturedDataInCampaign($id);
+      $csvData = CampaignModel::getCapturedDataInCampaign($id, true, false);
 
       // Informace o datech pro CSV export.
       $csvHeader = [
