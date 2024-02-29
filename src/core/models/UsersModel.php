@@ -160,14 +160,36 @@
      */
     public static function setUsernamesByConfig($data) {
       if (USER_PREFER_EMAIL) {
-        foreach ($data as $key => $record) {
-          if (isset($record['username']) && isset($record['email'])) {
-            $data[$key]['username'] = get_email_part($record['email'], 'username');
+        if (is_array($data[0])) {
+          foreach ($data as $key => $record) {
+            $data[$key] = self::replaceUsernameWithEmailUsername($record);
           }
+        }
+        else {
+          $data = self::replaceUsernameWithEmailUsername($data);
         }
       }
 
       return $data;
+    }
+
+
+    /**
+     * Nahradí v datech uživatelské jméno za uživatelské jméno z e-mailu (bez doménové části).
+     *
+     * @param array $record            Data obsahující uživatelské jméno a e-mail
+     * @return mixed                   Původní data s případně pozměněným uživatelským jménem
+     */
+    private static function replaceUsernameWithEmailUsername($record) {
+      if (isset($record['username']) && isset($record['email'])) {
+        $emailUsername = get_email_part($record['email'], 'username');
+
+        if ($emailUsername != null) {
+          $record['username'] = $emailUsername;
+        }
+      }
+
+      return $record;
     }
 
 

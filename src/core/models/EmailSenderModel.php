@@ -67,7 +67,7 @@
       $campaigns = CampaignModel::getActiveCampaignsToSend();
 
       foreach ($campaigns as $campaign) {
-        $campaign = CampaignModel::getCampaignDetail($campaign['id_campaign']);
+        $campaign = CampaignModel::getCampaignDetail($campaign['id_campaign'], false);
         $recipients = CampaignModel::getCampaignRecipients($campaign['id_campaign']);
 
         foreach ($recipients as $recipient) {

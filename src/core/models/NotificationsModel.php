@@ -87,7 +87,7 @@
       $campaigns = CampaignModel::getNewAddedCampaigns();
 
       foreach ($campaigns as $campaign) {
-        $campaignDetail = CampaignModel::getCampaignDetail($campaign['id_campaign']);
+        $campaignDetail = CampaignModel::getCampaignDetail($campaign['id_campaign'], false);
         $recipients = UsersModel::getUsersByPermission(PERMISSION_ADMIN);
 
         // Pokud je tvůrce kampaně uživatel s rolí správce testů, přidat mezi příjemce i jeho.
@@ -110,7 +110,7 @@
           'Organizace:               ' . $campaignOrg . "\n\n" .
           'Název:                    ' . $campaignDetail['name'] . "\n" .
           'Přidáno:                  ' . $campaign['date_added'] . "\n" .
-          'Přidal:                   ' . $campaignDetail['username'] . "\n\n" .
+          'Přidal:                   ' . $campaignDetail['username'] . ' ('  . $campaignDetail['email'] . ')' . "\n\n" .
           'Podvodný e-mail:          ' . $campaignDetail['email_name'] . "\n" .
           'URL podvodné stránky:     ' . $campaignDetail['url_protocol'] . $campaignDetail['url'] . "\n" .
           'Šablona podvodné stránky: ' . $campaignDetail['website_name'] . "\n" .
@@ -152,7 +152,7 @@
       $campaigns = CampaignModel::getFinishedCampaigns();
 
       foreach ($campaigns as $campaign) {
-        $campaignDetail = CampaignModel::getCampaignDetail($campaign['id_campaign']);
+        $campaignDetail = CampaignModel::getCampaignDetail($campaign['id_campaign'], false);
         $recipients = UsersModel::getUsersByPermission(PERMISSION_ADMIN);
 
         // Pokud je tvůrce kampaně uživatel s rolí správce testů, přidat mezi příjemce i jeho.
@@ -178,7 +178,7 @@
           'Organizace:               ' . $campaignOrg . "\n\n" .
           'Název:                    ' . $campaignDetail['name'] . "\n" .
           'Přidáno:                  ' . $campaign['date_added'] . "\n" .
-          'Přidal:                   ' . $campaignDetail['username'] . "\n\n" .
+          'Přidal:                   ' . $campaignDetail['username'] . ' ('  . $campaignDetail['email'] . ')' . "\n\n" .
           'Podvodný e-mail:          ' . $campaignDetail['email_name'] . "\n" .
           'URL podvodné stránky:     ' . $campaignDetail['url_protocol'] . $campaignDetail['url'] . "\n" .
           'Šablona podvodné stránky: ' . $campaignDetail['website_name'] . "\n" .
@@ -232,7 +232,7 @@
       $campaigns = CampaignModel::getFinishedCampaigns();
 
       foreach ($campaigns as $campaign) {
-        $campaignDetail = CampaignModel::getCampaignDetail($campaign['id_campaign']);
+        $campaignDetail = CampaignModel::getCampaignDetail($campaign['id_campaign'], false);
         $recipients = CampaignModel::getCampaignRecipients($campaign['id_campaign']);
 
         // Pokud byl tvůrce kampaně uživatel s rolí spráce testů, dojde ke zjištěního jeho

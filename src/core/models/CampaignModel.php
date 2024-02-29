@@ -162,10 +162,11 @@
      * Vrátí detailní informace o konkrétní kampani.
      *
      * @param int $id                  ID kampaně
+     * @param bool $replaceUsernames   TRUE (výchozí) pokud má dojít k nahrazení uživatelských jmen podle konfigurace
      * @return array|null              Pole s informace o kampani nebo NULL, pokud uživatel k dané kampani
      *                                 nemá právo.
      */
-    public static function getCampaignDetail($id) {
+    public static function getCampaignDetail($id, $replaceUsernames = true) {
       if (self::isCampaignInUserGroup($id) !== true) {
         return null;
       }
@@ -173,7 +174,7 @@
       $result = Database::querySingle('
               SELECT `id_campaign`, phg_campaigns.id_by_user, phg_campaigns.id_email, phg_campaigns.id_website, phg_campaigns.id_ticket, phg_campaigns.name,
               `time_send_since`, `active_since`, `active_to`, phg_campaigns.date_added,
-              `username`,
+              `username`, `email`,
               phg_emails.name AS `email_name`, phg_emails.sender_name, phg_emails.sender_email, `subject`, `body`,
               phg_websites.name AS `website_name`, phg_websites.url AS `url`,
               `server_dir`,
@@ -207,6 +208,10 @@
 
         $result['active_since_color'] = self::getColorDateByToday($result['active_since'], 'date-since');
         $result['active_to_color'] = self::getColorDateByToday($result['active_to'], 'date-to');
+      }
+
+      if ($replaceUsernames) {
+        $result = UsersModel::setUsernamesByConfig($result);
       }
 
       return $result;
