@@ -319,24 +319,21 @@
 
 
     /**
-     * Vrátí seznam uživatelů (resp. jejich e-maily) ze zvolené LDAP skupiny.
+     * Vrátí seznam e-mailů všech uživatelů ze zvolené LDAP skupiny.
      *
      * @param string $group            Název skupiny
-     * @return array|null              Seznam uživatelů nebo NULL
+     * @return array                   Seznam uživatelů
      */
-    public function getUsersInGroup($group) {
-      $users = null;
+    public function getUsersEmailsInGroup($group) {
+      $users = [];
 
       if (!empty($group)) {
-        $info = $this->getDataByFilter(LDAP_GROUPS_DN, 'cn=' . ldap_escape($group, '', LDAP_ESCAPE_FILTER));
+        $data = $this->getDataByFilter(LDAP_GROUPS_DN, 'cn=' . ldap_escape($group, '', LDAP_ESCAPE_FILTER));
 
-        if (isset($info[0][LDAP_GROUPS_ATTR_MEMBER]['count'])) {
-          // Seznam uživatelů ve skupině.
-          $users = [];
-
+        if (isset($data[0][LDAP_GROUPS_ATTR_MEMBER]['count'])) {
           // Projít všechny uživatele dané skupiny a u každého uživatele zjistit jeho e-mail.
-          for ($i = 0; $i < $info[0][LDAP_GROUPS_ATTR_MEMBER]['count']; $i++) {
-            $users[] = $this->getEmailByUsername($info[0][LDAP_GROUPS_ATTR_MEMBER][$i]);
+          for ($user = 0; $user < $data[0][LDAP_GROUPS_ATTR_MEMBER]['count']; $user++) {
+            $users[] = $this->getEmailByUsername($data[0][LDAP_GROUPS_ATTR_MEMBER][$user]);
           }
         }
       }

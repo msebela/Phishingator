@@ -583,9 +583,9 @@
           }
 
           // Seznam uživatelů v dané LDAP skupině.
-          $usersInGroup = $ldapModel->getUsersInGroup($group);
+          $usersInGroup = $ldapModel->getUsersEmailsInGroup($group);
 
-          if ($usersInGroup != null) {
+          if (!empty($usersInGroup)) {
             foreach ($usersInGroup as $key => $user) {
               $username = get_email_part($user, 'username');
               $domain = get_email_part($user, 'domain');
@@ -597,9 +597,9 @@
               }
 
               // Ověření, zdali je daný uživatel vyplněn mezi příjemci.
-              $checked = (strpos($allRecipients, $user) !== false) ? 1 : 0;
+              $checked = str_contains($allRecipients, $user);
 
-              // Určení barvy uživatele na základě oprávnění ve Phishingatoru.
+              // Určení barvy uživatele na základě jeho oprávnění.
               $color = UserGroupsModel::getColorGroupRoleByUsername(
                 $user, ['admin' => $adminUsers, 'testmanager' => $testManagerUsers]
               );
