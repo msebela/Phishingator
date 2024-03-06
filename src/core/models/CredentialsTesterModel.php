@@ -118,15 +118,9 @@
       $username = escapeshellarg(self::$username);
       $password = escapeshellarg(self::$password);
 
-      $output = shell_exec(
-        escapeshellcmd(CORE_DOCUMENT_ROOT . '/verify-credentials.kerberos.sh ' . $username . ' ' . $password)
-      );
+      exec('echo ' . $password . ' | kinit ' . $username, $output, $returnCode);
 
-      // Získání pouze posledního znaku, který skript vrátí.
-      $output = substr(remove_new_line_symbols($output), -1);
-
-      // Pokud je výstupem skriptu "0", jsou přihlašovací údaje platné.
-      if (mb_strlen($output) == 1 && $output === '0') {
+      if ($returnCode === 0) {
         $validCreds = true;
       }
 
