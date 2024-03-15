@@ -38,8 +38,9 @@ class DomainsController extends Controller {
   public static function isValidSourceIP() {
     $valid = false;
 
-    if (!filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)
-      && $_SERVER['REMOTE_ADDR'] == DOMAINER_ALLOWED_IP) {
+    $allowedIPs = explode(',', DOMAINER_ALLOWED_IP);
+
+    if ($allowedIPs && in_array($_SERVER['HTTP_X_REAL_IP'], $allowedIPs)) {
       $valid = true;
     }
 
