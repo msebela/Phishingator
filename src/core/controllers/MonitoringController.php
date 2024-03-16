@@ -50,7 +50,7 @@ class MonitoringController extends Controller {
    */
   private function checkPermissionCall() {
     if (!self::isValidSourceIP()) {
-      Logger::error('Unauthorized access to display monitoring status.', $_SERVER['REMOTE_ADDR']);
+      Logger::error('Unauthorized access to display monitoring status.', $_SERVER['HTTP_X_REAL_IP']);
       $invalid = true;
     }
 
