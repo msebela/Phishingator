@@ -76,7 +76,7 @@
       }
 
       // Zjištění, zdali už byla kampaň ukončena (pro úpravu textů na stránce).
-      $this->setViewData('campaign_ended', (date('Y-m-d') > $campaign['active_to']));
+      $this->setViewData('campaign_ended', (int) (date('Y-m-d') > $campaign['active_to']));
 
       // Zjištění, zdali je uživatel dobrovolník (pro úpravu textů na stránce).
       $volunteer = UsersModel::getUserEmailLimit($user['id_user']);
