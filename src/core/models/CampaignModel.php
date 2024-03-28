@@ -135,6 +135,11 @@
         return true;
       }
 
+      // Uživatel je přihlášen a vstupuje na vzdělávací stránku s informacemi o kampani, ve které byl mezi příjemci.
+      if ($userPermission == PERMISSION_USER) {
+        return CampaignModel::isUserRecipient($idCampaign, $user['id_user']) == 1;
+      }
+
       $campaign = Database::querySingle('
               SELECT phg_users.id_user_group
               FROM `phg_campaigns`
