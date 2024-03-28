@@ -913,6 +913,7 @@
               ON phg_captured_data_actions.id_action = worstAct.id_action
               JOIN `phg_users`
               ON worstAct.id_user = phg_users.id_user
+              ORDER BY worstAct.used_group, `username`
       ', $idCampaign);
 
       if ($replaceUsernames) {
