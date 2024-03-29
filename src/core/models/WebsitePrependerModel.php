@@ -75,6 +75,9 @@
      * Nastaví výchozí hodnoty a spustí metodu pro zpracování zobrazované podvodné stránky.
      */
     public function __construct() {
+      ini_set('display_errors', 0);
+      self::setHeaders();
+
       $this->displayMessage = false;
       $this->process();
     }
@@ -713,5 +716,21 @@
           exit();
         }
       }
+    }
+
+
+    /**
+     * Nastaví HTTP hlavičky na podvodné stránce.
+     *
+     * @return void
+     */
+    private function setHeaders() {
+      header('X-Frame-Options: DENY');
+      header('X-XSS-Protection: 1; mode=block');
+      header('X-Content-Type-Options: nosniff');
+      header('Referrer-Policy: strict-origin-when-cross-origin');
+      header("Permissions-Policy: accelerometer=(); ambient-light-sensor=(); autoplay=(); battery=(); camera=(); display-capture=(); document-domain=(); encrypted-media=(); fullscreen=(); gamepad=(); geolocation=(); gyroscope=(); layout-animations=(); magnetometer=(); microphone=(); midi=(); payment=(); picture-in-picture=(); speaker-selection=(); usb=(); web-share=(); xr-spatial-tracking=()");
+
+      header_remove('X-Powered-By');
     }
   }
