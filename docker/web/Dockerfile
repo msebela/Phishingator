@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y libapache2-mod-auth-openidc
 COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/000-default.conf
 COPY docker/web/security.conf /etc/apache2/conf-enabled/
 RUN chown -R phishingator /etc/apache2/sites-available/ /etc/apache2/sites-enabled/ /var/lib/apache2/site/ && \
-    a2enmod rewrite
+    a2enmod rewrite headers
 
 # LDAP
 COPY docker/web/ldap.conf /etc/ldap
