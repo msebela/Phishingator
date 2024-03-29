@@ -100,8 +100,8 @@
 
           // Hodnoty za proměnné pro šablonu konfiguračního souboru podvodné stránky (ve správném pořadí).
           $values = [
-            $port, get_hostname_from_url($url), PHISHING_WEBSITE_SERVER_ADMIN,
-            $template['server_dir'], self::getUrlAlias($url), PHISHING_WEBSITE_PREPENDER
+            $port, get_hostname_from_url($url), $template['server_dir'],
+            self::getUrlAlias($url), PHISHING_WEBSITE_PREPENDER
           ];
 
           $config = str_replace(self::getConfigVarsToReplace(), $values, $config);
@@ -156,7 +156,7 @@
           $urlAlias = self::getUrlAlias($url);
 
           // Pokud se nejedná o alias, je třeba změnit DocumentRoot.
-          if ($action == ACT_EDIT && $urlAlias == '.') {
+          if ($action == ACT_EDIT && $urlAlias == '/') {
             $config = preg_replace(
               '/DocumentRoot .*/',
               'DocumentRoot ' . $newTemplate['server_dir'],
@@ -318,8 +318,8 @@
      */
     private static function getConfigVarsToReplace() {
       return [
-        'PHISHINGATOR_SERVER_PORT', 'PHISHINGATOR_SERVER_NAME', 'PHISHINGATOR_SERVER_ADMIN',
-        'PHISHINGATOR_DOCUMENT_ROOT', 'PHISHINGATOR_SERVER_ALIAS', 'PHISHINGATOR_WEBSITE_PREPENDER'
+        'PHISHINGATOR_SERVER_PORT', 'PHISHINGATOR_SERVER_NAME', 'PHISHINGATOR_DOCUMENT_ROOT',
+        'PHISHINGATOR_SERVER_ALIAS', 'PHISHINGATOR_WEBSITE_PREPENDER'
       ];
     }
 
@@ -346,7 +346,7 @@
       $url = PhishingWebsiteModel::makeWebsiteUrl($url);
       $urlPath = parse_url($url, PHP_URL_PATH);
 
-      return (!empty($urlPath) && $urlPath != '/') ? $urlPath : '.';
+      return (!empty($urlPath) && $urlPath != '/') ? $urlPath : '/';
     }
 
 

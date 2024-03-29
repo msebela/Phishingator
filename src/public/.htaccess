@@ -42,3 +42,6 @@ ErrorDocument 504 "Error 504: Gateway Timeout"
 
 # Hide script name in sent emails
 php_flag mail.add_x_header Off
+
+# Hide PHP version
+Header unset X-Powered-By

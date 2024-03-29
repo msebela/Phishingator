@@ -326,9 +326,6 @@
   /** Cesta k souboru, který slouží jako šablona konfiguračního souboru podvodné stránky. */
   define('PHISHING_WEBSITE_TEMPLATE_CONF_FILE', '/var/www/phishingator/templates/000-default.conf');
 
-  /** ServerAdmin v konfiguračním souboru pro Apache VirtualHost pro podvodné stránky. */
-  define('PHISHING_WEBSITE_SERVER_ADMIN', getenv('PHISHING_WEBSITE_SERVER_ADMIN'));
-
   /** Přípona konfiguračního souboru podvodné stránky. */
   define('PHISHING_WEBSITE_CONF_EXT', '.conf');
 
