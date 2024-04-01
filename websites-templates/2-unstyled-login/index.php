@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Login</title>
-
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Login</title>
   </head>
 
   <body>
@@ -14,6 +14,10 @@
           <img src="organization-logo.png" alt="" style="max-height: 200px;">
         </a>
       </p>
+
+      <?php if ($service): ?>
+      <h2><?= $service ?></h2>
+      <?php endif; ?>
 
       <?php if ($message): ?>
       <div>Nesprávné jméno nebo heslo!</div>

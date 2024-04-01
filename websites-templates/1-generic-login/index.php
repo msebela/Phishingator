@@ -2,9 +2,9 @@
 <html lang="cs">
   <head>
     <meta charset="utf-8">
-    <title>Přihlášení</title>
-
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Přihlášení</title>
 
     <link href="style.css" rel="stylesheet">
     <link href="login.css" rel="stylesheet">
@@ -13,6 +13,10 @@
   <body class="text-center">
     <form method="post" class="form-wrapper">
       <h1 class="h3 mb-3 font-weight-normal">Přihlášení</h1>
+      <?php if ($service): ?>
+      <h2 class="h5 font-weight-normal mb-4"><?= $service ?></h2>
+      <?php endif; ?>
+
       <p class="text-muted">Pro pokračování je nutno se přihlásit.</p>
 
       <?php if ($message): ?>
