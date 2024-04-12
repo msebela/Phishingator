@@ -265,7 +265,7 @@
 
           // Úprava znění notifikace podle reakce příjemce - pokud uživatel (ne)vyplnil platné přihlašovací údaje.
           if ($user['response']['id_action'] != CAMPAIGN_VALID_CREDENTIALS_ID) {
-            $userResponseText = 'Gratulujeme, v testu jste obstáli :)' . "\n\n";
+            $userResponseText = 'Gratulujeme, ve cvičení jste obstáli :-)' . "\n\n";
           }
           else {
             $userResponseText = '';
@@ -277,13 +277,13 @@
             'Automatická notifikace systému Phishingator' . "\n" .
             '-------------------------------------------' . "\n\n" .
             'Dne ' . $emailSent['datetime_sent_formatted'] . ' Vám byl odeslán e-mail "' . $campaignDetail['subject'] . '".' . "\n" .
-            'Jednalo se o cvičný phishing (podvodnou zprávu) s typickými znaky, které útočníci' . "\n" .
+            'Jednalo se o cvičný phishing (podvodný e-mail) s typickými znaky, které útočníci' . "\n" .
             'používají při snaze získat Vaše heslo, osobní údaje nebo číslo platební karty.' . "\n\n" .
             $userResponseText .
-            'E-mail včetně indicií pro jeho rozpoznání si můžete prohlédnout zde:' . "\n" .
+            'E-mail včetně indicií, podle kterých bylo možné podvod rozpoznat, si můžete prohlédnout zde:' . "\n" .
             WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $code . "\n\n\n";
 
-          // Pokud je uživatel dobrovolník...
+          // Pokud je uživatel dobrovolník.
           if ($user['recieve_email'] == 1) {
             $notificationBody .=
               'Děkujeme, že máte zájem vzdělávat se v oblasti phishingu.' . "\n\n" .
@@ -292,14 +292,16 @@
               WEB_URL;
           }
           else {
-            // Pokud uživatel není dobrovolník...
+            // Pokud uživatel není dobrovolník.
             $notificationBody .=
-              'Cílem bylo ukázat Vám, čeho jsou útočníci schopni a jak podvodný e-mail' . "\n" .
-              '(phishing) rozpoznat. Chcete-li podobné cvičné podvodné zprávy dostávat' . "\n" .
-              'pravidelně, zapojte se do projektu Phishingator. Pomůže Vám lépe' . "\n" .
-              'poznat skutečné phishingové útoky s falešnými fakturami, falešnými' . "\n" .
-              'přihlašovacími formuláři apod. a budete vědět, na co se v e-mailu' . "\n" .
-              'zaměřit a podle čeho rozpoznat typický phishing.';
+              'Cílem je zvýšit povědomí o phishingu a ukázat Vám, čeho jsou dnes útočníci schopni a hlavně,' . "\n" .
+              'podle čeho můžete podvodný e-mail (phishing) rozpoznat. Ne každý podvodný e-mail totiž zachytí' . "\n" .
+              'filtry a antiviry a je tak možné, že narazíte i na skutečný phishing.' . "\n" .
+              "\n" .
+              'Další informace naleznete na stránkách Phishingatoru, kde se můžete přihlásit i k dobrovolnému' . "\n" .
+              'odebírání cvičných phishingových zpráv od bezpečnostního oddělení tak, abyste vždy věděli, co je' . "\n" .
+              'právě aktuální a na co si dát pozor, více na:' . "\n" .
+              WEB_BASE_URL;
           }
 
           if ($testManager != null) {
