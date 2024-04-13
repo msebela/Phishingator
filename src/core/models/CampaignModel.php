@@ -870,7 +870,7 @@
       $records = Database::queryMulti('
               SELECT `id_captured_data`, phg_captured_data.id_user, `used_email`, `used_group`, `visit_datetime`, `ip`, `browser_fingerprint`, `data_json`, `reported`,
               DATE_FORMAT(visit_datetime, "%e. %c. %Y %k:%i:%s") AS `visit_datetime_formatted`,
-              DATE_FORMAT(visit_datetime, "%Y-%m-%dT%TZ") AS `visit_datetime_iso`,
+              DATE_FORMAT(CONVERT_TZ(`visit_datetime`, @@session.time_zone, "+00:00"), "%Y-%m-%dT%TZ") AS `visit_datetime_utc`,
               `name`, `css_color_class`,
               `username`, `email`
               FROM `phg_captured_data`
