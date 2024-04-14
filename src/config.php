@@ -25,10 +25,10 @@
 
   /* --- PŘIPOJENÍ K LDAP --- */
   /** Hostitel LDAP (včetně uvedení protokolu ldaps:// nebo ldap://). */
-  define('LDAP_HOSTNAME', getenv('LDAP_HOSTNAME'));
+  define('LDAP_HOSTNAME', (getenv('LDAP_HOSTNAME')) ? getenv('LDAP_HOSTNAME') : 'ldap://ldap');
 
   /** Port k připojení k LDAP. */
-  define('LDAP_PORT', (getenv('LDAP_PORT')) ? getenv('LDAP_PORT') : 636);
+  define('LDAP_PORT', (getenv('LDAP_PORT')) ? getenv('LDAP_PORT') : 389);
 
   /** Uživatelské jméno pro přístup do LDAP. */
   define('LDAP_USERNAME', getenv('LDAP_USERNAME'));
@@ -90,7 +90,7 @@
 
 
 
-  /* --- OVĚŘENÍ PŘIHLAŠOVACÍ ÚDAJŮ ZADANÝCH NA PODVODNÝCH STRÁNKÁCH --- */
+  /* --- OVĚŘENÍ PŘIHLAŠOVACÍCH ÚDAJŮ ZADANÝCH NA PODVODNÝCH STRÁNKÁCH --- */
   /** Typ autentizace, který se bude používat při ověřování přihlašovací údajů:
    *    Možnosti: ldap/web/kerberos/imap/policy
    */
@@ -387,7 +387,7 @@
   define('CAMPAIGN_STATS_BLUR_IDENTITIES', (getenv('CAMPAIGN_STATS_BLUR_IDENTITIES') && getenv('CAMPAIGN_STATS_BLUR_IDENTITIES') == 1));
 
   /** Identifikátor výchozí akce po odeslání formuláře (bude ve formuláři při vytváření kampaně předvybrána). */
-  define('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION', (getenv('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION')) ? getenv('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION') : 0);
+  define('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION', (getenv('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION')) ? getenv('CAMPAIGN_DEFAULT_ONSUBMIT_ACTION') : 2);
 
   /** Znak používaný k oddělování příjemců v kampani. */
   define('CAMPAIGN_EMAILS_DELIMITER', "\n");

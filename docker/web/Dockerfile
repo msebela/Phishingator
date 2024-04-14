@@ -1,7 +1,7 @@
 FROM php:8.2-apache
 
 ENV TZ="Europe/Prague"
-ARG APACHE_DOCUMENT_ROOT
+ENV APACHE_DOCUMENT_ROOT="/var/www/phishingator/public/"
 ARG SMTP_HOST
 
 RUN apt-get update && apt-get install -y sudo && \

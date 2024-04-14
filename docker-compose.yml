@@ -6,7 +6,6 @@ services:
       context: .
       dockerfile: docker/web/Dockerfile
       args:
-        APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT}
         SMTP_HOST: ${SMTP_HOST}
     image: ${CI_REGISTRY_IMAGE}/phishingator_web:${CI_COMMIT_REF_SLUG}
     restart: always
@@ -25,7 +24,6 @@ services:
       - PHISHINGATOR_TOKEN
       - DOMAINER_ALLOWED_IP
       - MONITORING_ALLOWED_IP
-      - APACHE_DOCUMENT_ROOT
       - FRAUDULENT_HOSTS
       - DB_HOST
       - DB_USERNAME

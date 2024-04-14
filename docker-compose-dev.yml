@@ -6,7 +6,6 @@ services:
       context: .
       dockerfile: docker/web/Dockerfile
       args:
-        APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT}
         SMTP_HOST: ${SMTP_HOST}
     restart: always
     container_name: phishingator-${ORG}-web
