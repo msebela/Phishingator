@@ -148,7 +148,7 @@
       $idUser = PermissionsModel::getUserId();
 
       // Počet přijatých e-mailů.
-      $countRecievedEmails = RecievedEmailModel::getCountOfRecievedPhishingEmails($idUser, true);
+      $countRecievedEmails = RecievedEmailModel::getCountOfRecievedPhishingEmails($idUser, CAMPAIGN_ACTIVE_HIDE_EMAILS);
 
       $this->setViewData('countRecievedEmails', get_formatted_number($countRecievedEmails));
       $this->setViewData('countRecievedEmailsText', $model->getStatsText($countRecievedEmails, 'recievedEmails'));

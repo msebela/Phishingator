@@ -37,7 +37,7 @@
       $modelUser = new UsersModel();
       $user = $modelUser->getUser(PermissionsModel::getUserId());
 
-      $records = $model->getRecievedPhishingEmails($user['id_user'], true);
+      $records = $model->getRecievedPhishingEmails($user['id_user'], CAMPAIGN_ACTIVE_HIDE_EMAILS);
 
       // Personalizace a dodatečné úpravy každého z e-mailů.
       foreach ($records as $key => $email) {

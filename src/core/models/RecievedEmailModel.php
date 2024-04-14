@@ -29,13 +29,13 @@
     /**
      * Vrátí celkový počet všech cvičných podvodných e-mailů, které obdržel konkrétní uživatel.
      *
-     * @param int $idUser                 ID uživatele, pro kterého se počet přijatých e-mailů zjišťuje
-     * @param bool $onlyFinishedCampaigns TRUE, pokud se mají uvažovat pouze e-maily, které byly rozeslány
-     *                                    v rámci již ukončených kampaní, jinak FALSE (výchozí)
-     * @return int                        Celkový počet přijatých cvičných podvodných e-mailů
+     * @param int $idUser                     ID uživatele
+     * @param bool $hideEmailsActiveCampaigns TRUE, pokud mají být skryty e-maily, které byly rozeslány v rámci
+   * *                                        kampaní, které zatím ještě běží, jinak FALSE (výchozí)
+     * @return int                            Celkový počet přijatých cvičných podvodných e-mailů
      */
-    public static function getCountOfRecievedPhishingEmails($idUser, $onlyFinishedCampaigns = false) {
-      $queryFilter = ($onlyFinishedCampaigns) ? 'AND phg_campaigns.active_to < CURRENT_DATE()' : '';
+    public static function getCountOfRecievedPhishingEmails($idUser, $hideEmailsActiveCampaigns = false) {
+      $queryFilter = ($hideEmailsActiveCampaigns) ? 'AND phg_campaigns.active_to < CURRENT_DATE()' : '';
 
       return Database::queryCount('
               SELECT COUNT(*)
@@ -87,13 +87,13 @@
     /**
      * Vrátí seznam všech cvičných podvodných e-mailů, které obdržel konkrétní uživatel.
      *
-     * @param int $idUser                 ID uživatele
-     * @param bool $onlyFinishedCampaigns TRUE, pokud se mají uvažovat pouze e-maily, které byly rozeslány
-     *                                    v rámci již ukončených kampaní, jinak FALSE (výchozí)
-     * @return mixed                      Pole e-mailů s informacemi o každém z nich
+     * @param int $idUser                     ID uživatele
+     * @param bool $hideEmailsActiveCampaigns TRUE, pokud mají být skryty e-maily, které byly rozeslány v rámci
+     *                                        kampaní, které zatím ještě běží, jinak FALSE (výchozí)
+     * @return mixed                          Pole e-mailů s informacemi o každém z nich
      */
-    public static function getRecievedPhishingEmails($idUser, $onlyFinishedCampaigns = false) {
-      $queryFilter = ($onlyFinishedCampaigns) ? 'AND phg_campaigns.active_to < CURRENT_DATE()' : '';
+    public static function getRecievedPhishingEmails($idUser, $hideEmailsActiveCampaigns = false) {
+      $queryFilter = ($hideEmailsActiveCampaigns) ? 'AND phg_campaigns.active_to < CURRENT_DATE()' : '';
 
       return Database::queryMulti('
               SELECT phg_sent_emails.id_campaign, `date_sent`,
