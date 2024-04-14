@@ -333,8 +333,10 @@
       $this->setView('list-campaigns');
 
       $records = $model->getCampaigns();
+      $recordsWithTicketId = $model->getCampaignsWithTicketId();
 
       $this->setViewData('campaigns', $records);
+      $this->setViewData('displayTicketIdColumn', count($recordsWithTicketId) > 0);
       $this->setViewData('countRecordsText', self::getTableFooter(count($records)));
     }
   }

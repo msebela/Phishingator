@@ -28,7 +28,9 @@
         <th>Spuštění rozesílání</th>
         <th>Aktivní od</th>
         <th>Aktivní do</th>
+        <?php if ($campaign['id_ticket']): ?>
         <th>RT kampaně</th>
+        <?php endif; ?>
       </tr>
     </thead>
     <tbody>
@@ -69,20 +71,18 @@
         <td>
           <span class="badge badge-<?= $campaign['active_to_color'] ?>"><?= insert_nonbreaking_spaces($campaign['active_to_formatted']) ?></span>
         </td>
+        <?php if ($campaign['id_ticket']): ?>
         <td>
-          <?php if ($campaign['id_ticket']): ?>
-            <?php if (!empty(ITS_URL) && ITS_URL != 'NULL'): ?>
-            <a href="<?= ITS_URL . $campaign['id_ticket'] ?>" target="_blank" class="btn btn-outline-secondary btn-sm" role="button">
-              <span data-feather="eye"></span>
-              RT <?= $campaign['id_ticket'] ?>
-            </a>
-            <?php else: ?>
-            <?= $campaign['id_ticket'] ?>
-            <?php endif; ?>
+          <?php if (!empty(ITS_URL)): ?>
+          <a href="<?= ITS_URL . $campaign['id_ticket'] ?>" target="_blank" class="btn btn-outline-secondary btn-sm" role="button">
+            <span data-feather="eye"></span>
+            RT <?= $campaign['id_ticket'] ?>
+          </a>
           <?php else: ?>
-          &ndash;
+          <?= $campaign['id_ticket'] ?>
           <?php endif; ?>
         </td>
+        <?php endif; ?>
       </tr>
     </tbody>
   </table>

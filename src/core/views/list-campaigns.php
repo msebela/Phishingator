@@ -14,7 +14,9 @@
         <th scope="col" class="minw-110-px">Příjemců</th>
         <th scope="col" class="data-sort minw-110-px">Aktivní od</th>
         <th scope="col" class="data-sort minw-110-px">Aktivní do</th>
+        <?php if ($displayTicketIdColumn): ?>
         <th scope="col" class="minw-8-rem">RT kampaně</th>
+        <?php endif; ?>
         <th scope="col" colspan="3" class="disable-sort"></th>
       </tr>
     </thead>
@@ -61,9 +63,10 @@
             <?= insert_nonbreaking_spaces($campaign['active_to_formatted']) ?>
           </span>
         </td>
+        <?php if ($displayTicketIdColumn): ?>
         <td>
           <?php if ($campaign['id_ticket']): ?>
-            <?php if (!empty(ITS_URL) && ITS_URL != 'NULL'): ?>
+            <?php if (!empty(ITS_URL)): ?>
             <a href="<?= ITS_URL . $campaign['id_ticket'] ?>" target="_blank" class="btn btn-outline-secondary btn-sm" role="button">
               <span data-feather="eye"></span>
               RT <?= $campaign['id_ticket'] ?>
@@ -75,6 +78,7 @@
           &ndash;
           <?php endif; ?>
         </td>
+        <?php endif; ?>
         <td>
           <a href="/portal/<?= $urlSection . '/' . ACT_STATS . '/' . $campaign['id_campaign'] ?>" class="btn btn-info btn-sm text-nowrap" role="button">
             <span data-feather="bar-chart-2"></span>

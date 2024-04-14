@@ -420,6 +420,22 @@
 
 
     /**
+     * Vrátí seznam všech kampaní, které mají vyplněn ID požadavku
+     * souvisejícího s kampaní ze systému pro správu požadavků.
+     *
+     * @return array|false             Pole s daty o kampaních
+     */
+    public static function getCampaignsWithTicketId() {
+      return Database::queryMulti('
+              SELECT `id_campaign`
+              FROM `phg_campaigns`
+              WHERE `id_ticket` IS NOT NULL
+              AND `visible` = 1
+      ');
+    }
+
+
+    /**
      * Vrátí počet příjemců v konkrétní kampani, nebo v množině kampaní nebo ve všech kampaních.
      *
      * @param int|array|null $idCampaign ID kampaně nebo pole ID kampaní nebo NULL pro všechny kampaně.

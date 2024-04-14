@@ -174,10 +174,10 @@
 
 
   /* --- SYSTÉM PRO SPRÁVU POŽADAVKŮ --- */
-  /** URL obsahující parametr pro identifikátor do interního systému pro správu požadavků (např. Request Tracker),
-   *  ve kterém mohou být evidovany phishingové kampaně.
+  /** URL obsahující parametr pro identifikátor do interního ticketovacího systému pro správu požadavků
+   *  (např. Request Tracker), ve kterém mohou být evidovány phishingové kampaně.
    */
-  define('ITS_URL', (getenv('ITS_URL')) ? getenv('ITS_URL') : 'https://rt.' . getenv('ORG_DOMAIN') . '/rt/Ticket/Display.html?id=');
+  define('ITS_URL', getenv('ITS_URL'));
 
 
 
