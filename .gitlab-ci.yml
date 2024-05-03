@@ -9,14 +9,16 @@ stages:
 build:
   image: docker:cli
   stage: build
-  environment:
-    name: $CI_COMMIT_REF_SLUG
+  before_script:
+    - apk add --update --no-cache git
   script:
     - . <(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | sed 's/^/export /')
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - docker compose build --pull --no-cache
     - docker compose push
     - docker logout $CI_REGISTRY
+  environment:
+    name: $CI_COMMIT_REF_SLUG
 
 deploy:
   image: docker:cli
@@ -24,11 +26,11 @@ deploy:
   before_script:
     - . <(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | sed 's/^/export /')
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
-  after_script:
-    - docker logout $CI_REGISTRY
   script:
     - docker compose pull
     - docker compose up -d --no-build --force-recreate
+  after_script:
+    - docker logout $CI_REGISTRY
   variables:
     COMPOSE_PROJECT_NAME: ${CI_PROJECT_NAME}_${CI_COMMIT_REF_SLUG}
   environment:
@@ -39,9 +41,16 @@ deploy:
 stop:
   image: docker:cli
   stage: deploy
-  when: manual
+  before_script:
+    - . <(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | sed 's/^/export /')
   script:
     - docker compose down
+    - docker stop phishingator-${ORG}-web
+    - docker stop phishingator-${ORG}-waf
+    - docker stop phishingator-${ORG}-database
+    - docker stop phishingator-${ORG}-ldap
+    - docker stop phishingator-${ORG}-scheduler
   environment:
     name: $CI_COMMIT_REF_SLUG
     action: stop
+  when: manual
