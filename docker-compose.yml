@@ -161,6 +161,7 @@ services:
       - ANOMALY_INBOUND=10
       - ANOMALY_OUTBOUND=5
       - BACKEND=http://dummy
+      - PORT=80
     networks:
       - traefik
 
