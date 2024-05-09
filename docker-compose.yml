@@ -154,7 +154,7 @@ services:
       - ldap-net
 
   waf:
-    image: owasp/modsecurity-crs:apache
+    image: owasp/modsecurity-crs:3.3.5-apache-202402140602
     container_name: phishingator-${ORG}-waf
     environment:
       - PARANOIA=1
