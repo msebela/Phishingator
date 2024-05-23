@@ -38,7 +38,7 @@
       if (!$registrated) {
         Logger::error('Failed to retrieve data about user from LDAP during registration.', $identity);
 
-        echo 'Nepodařilo se získat informace o Vaší identitě. Kontaktujte, prosím, administrátora.';
+        echo 'Nepodařilo se získat informace o Vaší identitě (neznámá identita "' . Controller::escapeOutput($identity). '"). Kontaktujte, prosím, administrátora.';
         exit();
       }
     }
@@ -99,7 +99,7 @@
       if (!$this->isRemoteUserFromOrganization($identity)) {
         Logger::error('The user identity provided by SSO does not match this Phishingator instance.', $identity);
 
-        echo 'Jste přihlášeni jinou identitou, která nespadá do organizace ' . Controller::escapeOutput(getenv('ORG_DOMAIN')) . '. Odhlaste se, prosím, a přihlaste správnou identitou.';
+        echo 'Jste přihlášeni identitou "' . Controller::escapeOutput($identity). '", která nespadá do organizace ' . Controller::escapeOutput(getenv('ORG_DOMAIN')) . '. Odhlaste se, prosím, a přihlaste správnou identitou.';
         exit();
       }
 
