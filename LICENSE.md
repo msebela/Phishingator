@@ -3,7 +3,7 @@
 
 ## MIT License
 
-Copyright (C) 2019–2023, Martin Šebela (msebela@phishingator.cz), University of West Bohemia in Pilsen <https://www.zcu.cz>
+Copyright (C) 2019–2024, Martin Šebela (msebela@phishingator.cz), University of West Bohemia in Pilsen <https://www.zcu.cz>
 
 
 ### About notice
@@ -30,12 +30,12 @@ Phishingator uses, incorporates or may be acompanied by Open Source Software (OS
 | Component name           | Version | Copyright (provided for informational purposes only)                                                                                           |
 |:-------------------------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------|
 | Bootstrap                | 4.6.2   | Copyright (c) 2011-2024 The Bootstrap Authors<br/>https://github.com/twbs/bootstrap/blob/main/LICENSE                                          |
-| Feather                  | 4.29.1  | Copyright (c) 2013-2023 Cole Bemis<br/>https://github.com/feathericons/feather/blob/master/LICENSE                                             |
+| Feather                  | 4.29.2  | Copyright (c) 2013-2023 Cole Bemis<br/>https://github.com/feathericons/feather/blob/master/LICENSE                                             |
 | jQuery                   | 3.7.1   | Copyright jQuery Foundation and other contributors<br/>https://jquery.org/license/                                                             |
-| Chart.js                 | 4.4.2   | Copyright (c) 2014-2022 Chart.js Contributors<br/>https://github.com/chartjs/Chart.js/blob/master/LICENSE.md                                   |
+| Chart.js                 | 4.4.3   | Copyright (c) 2014-2024 Chart.js Contributors<br/>https://github.com/chartjs/Chart.js/blob/master/LICENSE.md                                   |
 | Chart.js DataLabels      | 2.2.0   | Copyright (c) 2017-2021 chartjs-plugin-datalabels contributors<br/>https://github.com/chartjs/chartjs-plugin-datalabels/blob/master/LICENSE.md |
 | jQuery highlightTextarea | 3.1.3   | Copyright 2014-2016 Damien "Mistic" Sorel<br/>https://garysieling.github.io/jquery-highlighttextarea/                                          |
-| TABLE-SORT-JS.           | 1.20.0  | Copyright (c) 2021 Lee Wannacott<br/>https://github.com/LeeWannacott/table-sort-js/blob/master/LICENSE                                         |
+| TABLE-SORT-JS.           | 1.21.0  | Copyright (c) 2021 Lee Wannacott<br/>https://github.com/LeeWannacott/table-sort-js/blob/master/LICENSE                                         |
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -48,7 +48,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 | Component name | Version | Copyright (provided for informational purposes only)                                           |
 |----------------|:--------|:-----------------------------------------------------------------------------------------------|
-| PHP            | 8.2.17  | Copyright (c) 1999 - 2019 The PHP Group. All rights reserved.<br/>https://www.php.net/license/ |
+| PHP            | 8.2.19  | Copyright (c) 1999 - 2019 The PHP Group. All rights reserved.<br/>https://www.php.net/license/ |
 
 The PHP License, version 3.01  
 Copyright (c) 1999 - 2019 The PHP Group. All rights reserved.
