@@ -49,14 +49,27 @@
      * na základě které bude uživatel identifikován.
      *
      * @param string $identity         Identita/identity uživatele získané z SSO
-     * @return string|null             Identita, kterou bude aplikace používat pro identifikaci daného uživatele
+     * @return string|null             Identita, kterou bude Phishingator používat pro identifikaci daného uživatele
      */
-    private function getRemoteUser($identity) {
+    private function getUserIdentity($identity) {
       $primaryIdentity = null;
-      $identities = explode(';', $identity);
 
-      if (!empty($identity)) {
-        // Pokud má uživatel více identit, využít tu první z nich.
+      $serverIdentities = explode(';', $identity);
+      $externalIdentities = explode(',', $_SERVER['OIDC_CLAIM_voperson_external_id']);
+      $identities = array_merge($serverIdentities, $externalIdentities);
+
+      // U uživatele s více identitami použít tu, která už je evidována v databázi Phishingatoru z LDAP.
+      foreach ($identities as $email) {
+        $user = UsersModel::getUserByEmail($email);
+
+        if (!empty($user)) {
+          $primaryIdentity = $email;
+          break;
+        }
+      }
+
+      if ($primaryIdentity == null && !empty($identity)) {
+        // Pokud se identita uživatele nepodařilo v databázi dohledat, použít tu první z nich.
         $primaryIdentity = (isset($identities[0]) && filter_var($identities[0], FILTER_VALIDATE_EMAIL)) ? $identities[0] : $identity;
       }
 
@@ -84,9 +97,9 @@
      * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele
      */
     public function login($identity) {
-      $identity = $this->getRemoteUser($identity);
+      $identity = $this->getUserIdentity($identity);
 
-      // Ověření, zdali získaná identita není prázdná, tzn. zdali SSO něco předalo.
+      // Ověření, zdali se podařilo získat nějakou identitu z SSO.
       if ($identity == null) {
         Logger::error('Failed to retrieve user identity from SSO.');
 
@@ -110,18 +123,18 @@
         $_SESSION['user']['id'] = $user['id_user'];
         $_SESSION['user']['email'] = $user['email'];
 
-        // Nejvyšší oprávnění, které si může uživatel v systému vybrat (v rámci změny role).
+        // Nejvyšší oprávnění, které si může uživatel vybrat (v rámci funkce změny role).
         $_SESSION['user']['permission'] = $user['role'];
 
         // Aktuálně zvolená role v systému.
         $_SESSION['user']['role'] = $user['role'];
 
-        // Vytvoření unikátního CSRF tokenu pro jednu relaci přihlášení.
+        // Vygenerování CSRF tokenu pro přihlášenou relaci.
         $_SESSION['csrf_token'] = $this->generateCsrfToken($user['id_user']);
 
         session_regenerate_id();
 
-        // Zjištění, zdali se jedná o uživatele, který se zatím do systému nikdy v minulosti nepřihlásil.
+        // Zjištění, zdali se jedná o uživatele, který se zatím do Phishingatoru nikdy v minulosti nepřihlásil.
         $countUserLogins = $this->getCountOfUserLogins($user['id_user']);
 
         // Zaznamenat přihlášení uživatele do databáze (pokud se nejedná o testovacího uživatele - sondu).
