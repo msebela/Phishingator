@@ -53,17 +53,6 @@ services:
     networks:
       - scheduler-net
 
-  phpmyadmin:
-    image: phpmyadmin
-    container_name: phishingator-${ORG}-phpmyadmin
-    restart: always
-    environment:
-      - PMA_HOST=${DB_HOST}
-    ports:
-     - '8080:80'
-    networks:
-      - database-net
-
   mailhog:
     image: mailhog/mailhog
     container_name: phishingator-${ORG}-mailhog

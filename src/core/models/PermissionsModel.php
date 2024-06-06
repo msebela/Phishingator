@@ -36,7 +36,7 @@
 
       // Pokud se nepodaří získat informace o uživateli z LDAP.
       if (!$registrated) {
-        Logger::error('Failed to retrieve data about user from LDAP during registration.', $identity);
+        Logger::error('Failed to retrieve data about user from LDAP during registration.', [$identity, $_SERVER['REMOTE_USER'], $_SERVER['OIDC_CLAIM_voperson_external_id']]);
 
         echo 'Nepodařilo se získat informace o Vaší identitě (neznámá identita "' . Controller::escapeOutput($identity). '"). Kontaktujte, prosím, administrátora.';
         exit();

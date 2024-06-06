@@ -37,7 +37,6 @@
    */
   function init_http_security_headers() {
     header('X-Frame-Options: DENY');
-    header('X-XSS-Protection: 1; mode=block');
     header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
     header('X-Content-Type-Options: nosniff');
     header('Referrer-Policy: strict-origin-when-cross-origin');
