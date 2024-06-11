@@ -524,7 +524,7 @@
      * @return int                     Aktuální stav
      * @throws UserError
      */
-    private static function getPhishingWebsiteStatus($url) {
+    public static function getPhishingWebsiteStatus($url) {
       $status = 0;
 
       $websiteHostname = get_hostname_from_url($url);

@@ -73,7 +73,8 @@ class DomainsController extends Controller {
 
   /**
    * Vypíše ve formátu JSON seznam (sub)domén podvodných stránek,
-   * které nejsou v aktuální konfiguraci Phishingatoru aktivovány.
+   * které nejsou v aktuální konfiguraci Phishingatoru aktivovány
+   * a zároveň mají korektně nastaveny DNS záznamy na Phishingator.
    *
    * @return void
    * @throws Exception
@@ -87,9 +88,10 @@ class DomainsController extends Controller {
     $domainsToActivate = [];
 
     foreach ($websites as $website) {
-      $domain = mb_strtolower(get_hostname_from_url($website['url_protocol'] . $website['url']));
+      $websiteUrl = mb_strtolower($website['url_protocol'] . $website['url']);
+      $domain = get_hostname_from_url($websiteUrl);
 
-      if (!in_array($domain, $domainsActivated)) {
+      if (!in_array($domain, $domainsActivated) && PhishingWebsiteModel::getPhishingWebsiteStatus($websiteUrl) != 1) {
         $domainsToActivate[] = $domain;
       }
     }
@@ -99,8 +101,9 @@ class DomainsController extends Controller {
 
 
   /**
-   * Vypíše ve formátu JSON seznam (sub)domén podvodných stránek, které jsou
-   * v aktuální konfiguraci Phishingatoru aktivovány, ale už se dále nevyužívají.
+   * Vypíše ve formátu JSON seznam (sub)domén podvodných stránek, které
+   * jsou v aktuální konfiguraci Phishingatoru aktivovány,
+   * ale už expirovaly a je možné je deaktivovat.
    *
    * @return void
    * @throws Exception
@@ -114,18 +117,18 @@ class DomainsController extends Controller {
     $domainsToDeactivate = [];
 
     foreach ($domainsActivated as $domainActivated) {
-      $active = false;
+      $expired = false;
 
       foreach ($websites as $website) {
-        $websiteDomain = mb_strtolower(get_hostname_from_url($website['url_protocol'] . $website['url']));
+        $websiteUrl = mb_strtolower($website['url_protocol'] . $website['url']);
 
-        if ($websiteDomain == $domainActivated) {
-          $active = true;
+        if (get_hostname_from_url($websiteUrl) == $domainActivated && PhishingWebsiteModel::getPhishingWebsiteStatus($websiteUrl) == 1) {
+          $expired = true;
           break;
         }
       }
 
-      if (!$active) {
+      if ($expired) {
         $domainsToDeactivate[] = $domainActivated;
       }
     }
