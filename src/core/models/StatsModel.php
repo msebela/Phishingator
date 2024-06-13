@@ -475,17 +475,24 @@
      * Transformuje data a legendu pro sloupcový graf do struktury požadované knihovnou Chart.js.
      *
      * @param array $data              Pole s hodnotami pro sloupcový graf
-     * @return array                   Pole obsahující na indexu "legend" legendu a na indexu "data"
-     *                                 pole s hodnotami pro sloupcový graf.
+     * @return array                   Pole obsahující na jednotlivých indexech legendu,
+     *                                 data a další informace pro sloupcový graf
      */
     private function getFormattedDataForBarChart($data) {
       $legend = '';
+      $legendItemMaxLength = 0;
+
       $formattedData = [];
 
       ksort($data);
 
-      foreach ($data as $groupKey => $groupActions) {
-        $legend .= '"' . mb_strtoupper($groupKey) . '", ';
+      foreach ($data as $groupName => $groupActions) {
+        $legend .= '"' . mb_strtoupper($groupName) . '", ';
+        $legendItemLength = mb_strlen($groupName);
+
+        if ($legendItemLength > $legendItemMaxLength) {
+          $legendItemMaxLength = $legendItemLength;
+        }
 
         // Procházení akcí u každé skupiny.
         foreach ($groupActions as $actionKey => $count) {
@@ -497,14 +504,20 @@
         }
       }
 
-      $legend = rtrim($legend, ', ');
-
       // Pole s hodnotami v každém z indexů transformujeme na řetězec hodnot (jak je požadováno knihovnou Chart.js).
       foreach ($formattedData as $actionKey => $count) {
         $formattedData[$actionKey] = implode(', ', $count);
       }
 
-      return ['legend' => $legend, 'data' => $formattedData];
+      $legend = rtrim($legend, ', ');
+      $cols = count($data);
+
+      return [
+        'legend' => $legend,
+        'legendDisplay' => $cols <= 20 && $legendItemMaxLength <= 12,
+        'data' => $formattedData,
+        'cols' => $cols
+      ];
     }
 
 

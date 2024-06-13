@@ -475,13 +475,13 @@
       tooltips: {mode: 'index', intersect: false},
       maintainAspectRatio: true,
       plugins: {
-        legend: {position: '<?= (($barChartSumGroups > 1) ? 'bottom' : 'right') ?>'}
+        legend: {position: '<?= (($barChartCols > 1) ? 'bottom' : 'right') ?>'}
       },
       scales: {
         x: {
           stacked: true, ticks: {
             autoSkip: false,
-            <?php if ($barChartSumGroups > 20): ?>
+            <?php if (!$barChartLegendDisplay): ?>
             callback: function() { return ''; }
             <?php endif; ?>
           }

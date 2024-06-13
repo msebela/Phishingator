@@ -127,7 +127,7 @@
         $this->setViewData('barChartLegendColors', $model->colors);
         $this->setViewData('barChartLegendDesc' . $year, $barChart['legend']);
         $this->setViewData('barChartLegendData' . $year, $barChart['data']);
-        $this->setViewData('barChartSumGroups' . $year, count(explode('", "', $barChart['legend'])));
+        $this->setViewData('barChartLegendDisplay' . $year, $barChart['legendDisplay']);
       }
     }
 

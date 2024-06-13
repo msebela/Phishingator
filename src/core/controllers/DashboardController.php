@@ -84,7 +84,7 @@
       $this->setViewData('barChartLegendColors', $model->colors);
       $this->setViewData('barChartLegendDesc', $barChart['legend']);
       $this->setViewData('barChartLegendData', $barChart['data']);
-      $this->setViewData('barChartSumGroups', count(explode('", "', $barChart['legend'])));
+      $this->setViewData('barChartLegendDisplay', $barChart['legendDisplay']);
 
       // Data a legenda pro sloupcový graf obsahující informace o dobrovolnících dle skupin.
       $barChart = $model->getVolunteersStats();
@@ -131,7 +131,7 @@
       $this->setViewData('barChartLegendColors', $model->colors);
       $this->setViewData('barChartLegendDesc', $barChart['legend']);
       $this->setViewData('barChartLegendData', $barChart['data']);
-      $this->setViewData('barChartSumGroups', count(explode('", "', $barChart['legend'])));
+      $this->setViewData('barChartLegendDisplay', $barChart['legendDisplay']);
 
       $this->setHelpLink('https://github.com/CESNET/Phishingator/blob/main/MANUAL.md#2-p%C5%99%C3%ADru%C4%8Dka-pro-administr%C3%A1tory');
     }

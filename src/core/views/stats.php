@@ -196,7 +196,7 @@
   });
 
   let chartUsersResponsesGroups<?= $year ?> = new Chart(document.getElementById('chart-users-responses-groups-<?= $year ?>'), {
-    <?php if (${"barChartSumGroups$year"} < 20): ?>plugins: [ChartDataLabels],<?php endif; ?>
+    <?php if (${"barChartLegendDisplay$year"}): ?>plugins: [ChartDataLabels],<?php endif; ?>
     type: 'bar',
     data: {
       labels: [<?= ${"_barChartLegendDesc$year"} ?>],
@@ -230,7 +230,7 @@
         x: {
           stacked: true, ticks: {
             autoSkip: false,
-            <?php if (${"barChartSumGroups$year"} > 20): ?>
+            <?php if (!${"barChartLegendDisplay$year"}): ?>
             callback: function() { return ''; }
             <?php endif; ?>
           }
