@@ -152,16 +152,28 @@ class MonitoringController extends Controller {
 
 
   /**
-   * Pokusí se vyhledat v posledním logu záznam o úspěšném provedení zálohy databáze k dnešnímu dni.
+   * Pokusí se vyhledat v aktuálním logu a logu z předchozího dne záznam o úspěšném provedení zálohy databáze.
    *
    * @return bool                      TRUE pokud záloha proběhla úspěšně, jinak FALSE
    */
   private function databaseBackupTest() {
-    $date = date('Y-m-d');
+    $backupMesssageFound = false;
+
     $type = '\[' . Logger::INFO;
     $message = 'Backup file \(dump\) of Phishingator database for org. \'' . getenv('ORG') . '\' was successfully created.';
 
-    return preg_match('/' . $date . ' (.*) ' . $type . ' (.*) ' . $message . '/', file_get_contents(LOGGER_FILEPATH)) === 1;
+    $logs = [LOGGER_FILEPATH, LOGGER_FILEPATH . '.1'];
+
+    for ($i = 0; $i < count($logs); $i++) {
+      $date = date('Y-m-d', strtotime('-' . $i . ' day'));
+      $logContent = file_get_contents($logs[$i]);
+
+      if ($logContent !== false && preg_match('/' . $date . ' (.*) ' . $type . ' (.*) ' . $message . '/', $logContent) === 1) {
+        $backupMesssageFound = true;
+      }
+    }
+
+    return $backupMesssageFound;
   }
 
 
