@@ -55,7 +55,7 @@
       $primaryIdentity = null;
 
       $serverIdentities = explode(';', $identity);
-      $externalIdentities = explode(',', $_SERVER['OIDC_CLAIM_voperson_external_id']);
+      $externalIdentities = explode(',', $_SERVER['OIDC_CLAIM_voperson_external_id'] ?? '');
       $identities = array_merge($serverIdentities, $externalIdentities);
 
       // U uživatele s více identitami použít tu, která už je evidována v databázi Phishingatoru z LDAP.
@@ -131,6 +131,9 @@
 
         // Vygenerování CSRF tokenu pro přihlášenou relaci.
         $_SESSION['csrf_token'] = $this->generateCsrfToken($user['id_user']);
+
+        // Další případná nastavení.
+        PermissionsModel::setUserSetting('blur-identities', CAMPAIGN_STATS_BLUR_IDENTITIES);
 
         session_regenerate_id();
 
@@ -346,5 +349,28 @@
      */
     public static function getUserRole() {
       return $_SESSION['user']['role'] ?? null;
+    }
+
+
+    /**
+     * Vrátí nastavení konkrétní položky pro právě přihlášeného uživatele.
+     *
+     * @param string $key              Položka k nastavení
+     * @return mixed|null              Hodnota položky v nastavení
+     */
+    public static function getUserSetting($key) {
+      return $_SESSION['user']['settings'][$key] ?? null;
+    }
+
+
+    /**
+     * Nastaví konkrétní položku nastavení pro právě přihlášeného uživatele.
+     *
+     * @param string $key              Položka k nastavení
+     * @param mixed $value             Hodnota položky v nastavení
+     * @return void
+     */
+    public static function setUserSetting($key, $value) {
+      $_SESSION['user']['settings'][$key] = $value;
     }
   }

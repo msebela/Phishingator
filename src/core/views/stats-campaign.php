@@ -129,8 +129,12 @@
 
   <div class="btn-toolbar mb-2 mb-md-0 align-items-center">
     <div class="custom-control custom-checkbox mr-2">
-      <input type="checkbox" class="custom-control-input" id="blur-identities"<?= ((!empty($blurIdentities)) ? ' checked' : '') ?>>
-      <label class="custom-control-label" for="blur-identities">Rozmazat identity</label>
+      <form method="post" action="/portal/<?= $urlSection . '/' . ACT_STATS_BLUR_IDENTITIES ?>" id="blur-identities-form">
+        <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+
+        <input type="checkbox" name="<?= ACT_STATS_BLUR_IDENTITIES ?>" id="blur-identities" class="custom-control-input" data-form="blur-identities-form"<?= ((!empty($blurIdentities)) ? ' checked' : '') ?>>
+        <label class="custom-control-label" for="blur-identities">Rozmazat identity</label>
+      </form>
     </div>
 
     <button type="button" id="exportDropdown" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

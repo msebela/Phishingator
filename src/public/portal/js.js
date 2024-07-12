@@ -207,7 +207,10 @@ function importValuesFromCSV(csvLines) {
 }
 
 $('#blur-identities').on('click', function() {
+  let form = $('#' + $(this).attr('data-form'));
+
   $('.identity').toggleClass('blur-text');
+  $.post(form.attr('action'), form.serialize());
 });
 
 $('.export-chart').on('click', function() {

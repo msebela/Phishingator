@@ -42,6 +42,9 @@
         elseif ($_GET['action'] == ACT_EXPORT && $id !== false && isset($_GET['data'])) {
           $this->processExportStats($model, $id, $_GET['data']);
         }
+        elseif ($_GET['action'] == ACT_STATS_BLUR_IDENTITIES) {
+          $this->processBlurIdentities($model);
+        }
         else {
           $this->addMessage(MSG_ERROR, 'Zvolená akce neexistuje.');
           $this->redirect($this->urlSection);
@@ -187,7 +190,7 @@
       $this->setViewData('campaign', $campaign);
 
       // Rozmazání identit uživatelů dle konfigurace.
-      $this->setViewData('blurIdentities', (CAMPAIGN_STATS_BLUR_IDENTITIES ? 'blur-text' : ''));
+      $this->setViewData('blurIdentities', (PermissionsModel::getUserSetting(ACT_STATS_BLUR_IDENTITIES) ? 'blur-text' : ''));
 
       // Získání nasbíraných dat.
       if (isset($_GET[ACT_STATS_WEBSITE_ACTIONS])) {
@@ -277,6 +280,7 @@
      *
      * @param CampaignModel $model     Instance třídy
      * @param int $idCampaign          ID kampaně
+     * @return void
      */
     private function processReportPhish($model, $idCampaign) {
       if (isset($_POST)) {
@@ -295,6 +299,27 @@
         }
 
         $this->redirect($this->urlSection . '/' . ACT_STATS . '/' . $idCampaign . '?' . ACT_STATS_USERS_RESPONSES . '#list');
+      }
+    }
+
+
+    /**
+     * Zavolá metodu pro zapnutí/vypnutí rozmazání identit
+     * ve statistice kampaně u právě přihlášeného uživatele.
+     *
+     * @param CampaignModel $model     Instance třídy
+     * @return void
+     */
+    private function processBlurIdentities($model) {
+      if (isset($_POST)) {
+        try {
+          $model->isValidCsrfToken($_POST);
+
+          PermissionsModel::setUserSetting(ACT_STATS_BLUR_IDENTITIES, !empty($_POST[ACT_STATS_BLUR_IDENTITIES]));
+        }
+        catch (UserError $error) {
+          $this->addMessage($error->getCode(), $error->getMessage());
+        }
       }
     }
 

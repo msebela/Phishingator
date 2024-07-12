@@ -383,7 +383,7 @@
    */
   define('CAMPAIGN_STATS_AGGREGATION', (getenv('CAMPAIGN_STATS_AGGREGATION')) ? getenv('CAMPAIGN_STATS_AGGREGATION') : 1);
 
-  /** Rozmazání identit uživatelů ve statistikách kampaně. */
+  /** Výchozí nastavení rozmazání identit uživatelů ve statistikách kampaně. */
   define('CAMPAIGN_STATS_BLUR_IDENTITIES', (getenv('CAMPAIGN_STATS_BLUR_IDENTITIES') && getenv('CAMPAIGN_STATS_BLUR_IDENTITIES') == 1));
 
   /** Identifikátor výchozí akce po odeslání formuláře (bude ve formuláři při vytváření kampaně předvybrána). */
@@ -580,6 +580,9 @@
 
   /** Úprava nastavení uživatelského hlášení o phishingu. */
   define('ACT_STATS_REPORT_PHISH', 'report');
+
+  /** Rozmazání identit ve statistikách kampaně. */
+  define('ACT_STATS_BLUR_IDENTITIES', 'blur-identities');
 
   /** Export dat. */
   define('ACT_EXPORT', 'export');
