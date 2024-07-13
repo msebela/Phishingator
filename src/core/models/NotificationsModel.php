@@ -183,8 +183,8 @@
           'URL podvodné stránky:     ' . $campaignDetail['url_protocol'] . $campaignDetail['url'] . "\n" .
           'Šablona podvodné stránky: ' . $campaignDetail['website_name'] . "\n" .
           'Počet příjemců:           ' . $campaignDetail['count_recipients'] . "\n\n" .
-          'Aktivní od:               ' . $campaignDetail['date_active_since_formatted'] . "\n" .
-          'Aktivní do:               ' . $campaignDetail['date_active_to_formatted'] . "\n\n" .
+          'Aktivní od:               ' . $campaignDetail['date_active_since_formatted'] . ' (' . $campaignDetail['time_active_since'] . ')' . "\n" .
+          'Aktivní do:               ' . $campaignDetail['date_active_to_formatted'] . ' (' . $campaignDetail['time_active_to'] . ')' . "\n\n" .
           '-------------------------------------------' . "\n\n" .
           'Reakce příjemců byly následující:' . "\n\n";
 

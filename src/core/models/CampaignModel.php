@@ -35,12 +35,12 @@
     /**
      * @var string      Čas, od kterého dojde k odesílání podvodných e-mailů.
      */
-    public $timeSendSince;
+    public $timeActiveSince;
 
     /**
      * @var string      Čas, do kterého bude kampaň aktivní a podvodná stránka dostupná.
      */
-    public $timeSendTo;
+    public $timeActiveTo;
 
     /**
      * @var string      Datum, od kterého bude kampaň aktivní (tzn. začnou se odesílat podvodné e-maily a podvodná
@@ -92,8 +92,8 @@
         'id_onsubmit' => $this->idOnsubmit,
         'id_ticket' => $this->idTicket,
         'name' => $this->name,
-        'time_active_since' => $this->timeSendSince,
-        'time_active_to' => $this->timeSendTo,
+        'time_active_since' => $this->timeActiveSince,
+        'time_active_to' => $this->timeActiveTo,
         'date_active_since' => $this->dateActiveSince,
         'date_active_to' => $this->dateActiveTo
       ];
@@ -1278,7 +1278,7 @@
      * @throws UserError
      */
     private function isEmptyTimeSince() {
-      if (empty($this->timeSendSince)) {
+      if (empty($this->timeActiveSince)) {
         throw new UserError('Není vyplněn čas zahájení.', MSG_ERROR);
       }
     }
@@ -1290,7 +1290,7 @@
      * @throws UserError
      */
     private function isTimeSinceValid() {
-      if (!$this->isTimeValid($this->timeSendSince)) {
+      if (!$this->isTimeValid($this->timeActiveSince)) {
         throw new UserError('Čas zahájení je v nesprávném formátu.', MSG_ERROR);
       }
     }
@@ -1302,7 +1302,7 @@
      * @throws UserError
      */
     private function isEmptyTimeTo() {
-      if (empty($this->timeSendTo)) {
+      if (empty($this->timeActiveTo)) {
         throw new UserError('Není vyplněn čas ukončení.', MSG_ERROR);
       }
     }
@@ -1314,7 +1314,7 @@
      * @throws UserError
      */
     private function isTimeToValid() {
-      if (!$this->isTimeValid($this->timeSendTo)) {
+      if (!$this->isTimeValid($this->timeActiveTo)) {
         throw new UserError('Čas ukončení je v nesprávném formátu.', MSG_ERROR);
       }
     }
