@@ -1,11 +1,11 @@
 <hr>
-<?php if ($action == ACT_EDIT && strtotime($campaign['active_since']) <= strtotime(date('Y-m-d'))): ?>
+<?php if ($action == ACT_EDIT && strtotime($campaign['date_active_since']) <= strtotime(date('Y-m-d'))): ?>
 <div class="alert alert-with-icon alert-warning" role="alert">
   <div class="alert-icon pr-1">
     <span data-feather="activity"></span>
   </div>
   <div>
-    <h4 class="alert-heading">Pozor, kampaň již <?= ((strtotime($campaign['active_to']) >= strtotime(date('Y-m-d'))) ? 'běží' : 'proběhla') ?>!</h4>
+    <h4 class="alert-heading">Pozor, kampaň již <?= ((strtotime($campaign['date_active_to']) >= strtotime(date('Y-m-d'))) ? 'běží' : 'proběhla') ?>!</h4>
     Jakákoliv zásadní úprava kampaně po jejím spuštění (tedy po odeslání prvních e-mailů) může způsobit nevratné změny a&nbsp;zkreslení ve statistice a&nbsp;hodnocení kampaně!
   </div>
 </div>
@@ -41,7 +41,7 @@
             <option value="<?= $email['id_email']; ?>"<?= (($inputsValues['id-email'] == $email['id_email']) ? ' selected': ''); ?>><?= $email['name'] ?></option>
             <?php endforeach; ?>
           </select>
-          <small class="form-text text-muted">Podvodný e-mail, který účastníci kampaně dostanou do svých e-mailových schránek a&nbsp;ze kterého se budou moci dostat na podvodnou stránku.</small>
+          <small class="form-text text-muted">Podvodný e-mail, který bude doručen zvoleným příjemcům a&nbsp;ze kterého se budou moci dostat na podvodnou stránku.</small>
         </div>
 
         <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-3 text-right">
@@ -62,7 +62,7 @@
             <option value="<?= $website['id_website'] ?>"<?= (($inputsValues['id-website'] == $website['id_website']) ? ' selected': ''); ?>><?= $website['name'] . ' &ndash; ' . $website['url'] ?></option>
             <?php endforeach; ?>
           </select>
-          <small class="form-text text-muted">Podvodná stránka, na kterou se uživatel dostane z&nbsp;podvodného e-mailu.</small>
+          <small class="form-text text-muted">Podvodná stránka, na kterou se uživatel dostane přes odkaz v&nbsp;podvodném e-mailu.</small>
         </div>
 
         <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-3 text-right">
@@ -87,34 +87,40 @@
 
       <div class="form-row">
         <div class="form-group col-md-8">
-          <label for="<?= $formPrefix ?>active-since">Start kampaně</label>
-          <input type="date" class="form-control" id="<?= $formPrefix ?>active-since" name="<?= $formPrefix ?>active-since" maxlength="<?= $inputsMaxLengths['active-since'] ?>" value="<?= $inputsValues['active-since']; ?>" min="<?= (($action == ACT_NEW) ? date('Y-m-d') : $inputsValues['active-since']) ?>" required>
-          <small class="form-text text-muted">V&nbsp;jaký den započne rozesílání e-mailů zvoleným příjemcům a&nbsp;zároveň den, od kterého bude přístupná podvodná stránka.</small>
+          <label for="<?= $formPrefix ?>date-active-since">Datum zahájení kampaně</label>
+          <input type="date" class="form-control" id="<?= $formPrefix ?>date-active-since" name="<?= $formPrefix ?>date-active-since" maxlength="<?= $inputsMaxLengths['date-active-since'] ?>" value="<?= $inputsValues['date-active-since']; ?>" min="<?= (($action == ACT_NEW) ? date('Y-m-d') : $inputsValues['date-active-since']) ?>" required>
+          <small class="form-text text-muted">Den, kdy započne rozesílání e-mailů zvoleným příjemcům a&nbsp;zároveň den, od kterého bude přístupná podvodná stránka.</small>
         </div>
 
         <div class="form-group col-md-8">
-          <label for="<?= $formPrefix ?>time-send-since">Spustit rozesílání e-mailů v&nbsp;čase</label>
-          <input type="time" class="form-control" id="<?= $formPrefix ?>time-send-since" name="<?= $formPrefix ?>time-send-since" maxlength="<?= $inputsMaxLengths['time-send-since'] ?>" value="<?= $inputsValues['time-send-since'] ?>" required>
-          <small class="form-text text-muted">Od jakého času se zahájí rozesílání vybraného e-mailu zvoleným příjemcům.</small>
+          <label for="<?= $formPrefix ?>time-active-since">Čas zahájení</label>
+          <input type="time" class="form-control" id="<?= $formPrefix ?>time-active-since" name="<?= $formPrefix ?>time-active-since" maxlength="<?= $inputsMaxLengths['time-active-since'] ?>" value="<?= $inputsValues['time-active-since'] ?>" required>
+          <small class="form-text text-muted">Čas, kdy se zahájí rozesílání vybraného e-mailu zvoleným příjemcům a&nbsp;kdy začne být dostupná podvodná stránka.</small>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group col-md-8">
-          <label for="<?= $formPrefix ?>active-to">Ukončení kampaně (včetně)</label>
-          <input type="date" class="form-control" id="<?= $formPrefix ?>active-to" name="<?= $formPrefix ?>active-to" maxlength="<?= $inputsMaxLengths['active-to'] ?>" value="<?= $inputsValues['active-to']; ?>" min="<?= (($action == ACT_NEW) ? date('Y-m-d') : $inputsValues['active-since']) ?>" required>
+          <label for="<?= $formPrefix ?>date-active-to">Datum ukončení kampaně</label>
+          <input type="date" class="form-control" id="<?= $formPrefix ?>date-active-to" name="<?= $formPrefix ?>date-active-to" maxlength="<?= $inputsMaxLengths['date-active-to'] ?>" value="<?= $inputsValues['date-active-to']; ?>" min="<?= (($action == ACT_NEW) ? date('Y-m-d') : $inputsValues['date-active-since']) ?>" required>
           <small class="form-text text-muted">Do jakého data bude kampaň aktivní, tzn. do jakého data budou sbírány výsledky a&nbsp;do jakého data bude přístupná zvolená podvodná stránka.</small>
+        </div>
+
+        <div class="form-group col-md-8">
+          <label for="<?= $formPrefix ?>time-active-to">Čas ukončení</label>
+          <input type="time" class="form-control" id="<?= $formPrefix ?>time-active-to" name="<?= $formPrefix ?>time-active-to" maxlength="<?= $inputsMaxLengths['time-active-to'] ?>" value="<?= ($action == ACT_NEW && empty($inputsValues['time-active-to'])) ? '23:59' : $inputsValues['time-active-to'] ?>" required>
+          <small class="form-text text-muted">Čas, kdy přestane být podvodná stránka dostupná a&nbsp;uživatel bude při jejím navštívení obratem přesměrován na vzdělávací stránku.</small>
         </div>
       </div>
     </div>
 
     <div class="col-lg-6 col-xl-5">
       <div class="form-group">
-        <label for="<?= $formPrefix ?>recipients">Seznam účastníků kampaně</label>
+        <label for="<?= $formPrefix ?>recipients">Seznam příjemců</label>
         <span class="float-right">
           Celkem: <strong id="countRecipients"><?= $countRecipients ?></strong>
         </span>
-        <textarea class="form-control text-monospace" id="<?= $formPrefix ?>recipients" name="<?= $formPrefix ?>recipients" rows="20" required><?= $recipients ?></textarea>
+        <textarea name="<?= $formPrefix ?>recipients" id="<?= $formPrefix ?>recipients" class="form-control text-monospace" rows="24" required><?= $recipients ?></textarea>
         <div class="form-text text-muted">
           <div>
             <small>Každý z&nbsp;příjemců musí být umístěn na samostatném řádku.</small>
@@ -137,7 +143,7 @@
       </div>
     </div>
 
-    <div class="modal fade bd-example-modal-lg" id="recipientsDialog" tabindex="-1" role="dialog" aria-labelledby="recipientsDialogTitle" aria-hidden="true">
+    <div class="modal fade" id="recipientsDialog" tabindex="-1" role="dialog" aria-labelledby="recipientsDialogTitle" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -250,7 +256,7 @@
   </div>
 
   <div class="text-center">
-    <button type="submit" class="btn btn-primary btn-lg btn-confirm" name="<?= $formPrefix . $action; ?>"<?php if ($action == ACT_EDIT && strtotime($campaign['active_since']) <= strtotime(date('Y-m-d'))): ?> data-confirm="Opravdu chcete upravit kampaň i přesto, že může mít vliv na statistiku a hodnocení kampaně?"<?php endif; ?>>
+    <button type="submit" class="btn btn-primary btn-lg btn-confirm" name="<?= $formPrefix . $action; ?>"<?php if ($action == ACT_EDIT && strtotime($campaign['date_active_since']) <= strtotime(date('Y-m-d'))): ?> data-confirm="Opravdu chcete upravit kampaň i přesto, že může mít vliv na statistiku a hodnocení kampaně?"<?php endif; ?>>
       <span data-feather="save"></span>
       <?= ($action == ACT_NEW) ? 'Přidat' : 'Uložit změny'; ?>
     </button>

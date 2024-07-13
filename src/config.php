@@ -392,9 +392,6 @@
   /** Znak používaný k oddělování příjemců v kampani. */
   define('CAMPAIGN_EMAILS_DELIMITER', "\n");
 
-  /** Čas (HH:MM:SS), kdy dochází k ukončení phishingových kampaní. */
-  define('CAMPAIGN_END_TIME', '23:59:59');
-
   /** Nastavení, zdali má být v uživatelské sekci "Přijaté phishingové e-maily" skryt e-mail, pokud daná kampaň zatím ještě neskončila. */
   define('CAMPAIGN_ACTIVE_HIDE_EMAILS', (getenv('CAMPAIGN_ACTIVE_HIDE_EMAILS') && getenv('CAMPAIGN_ACTIVE_HIDE_EMAILS') == 1));
 

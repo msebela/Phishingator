@@ -35,7 +35,7 @@
      * @return int                            Celkový počet přijatých cvičných podvodných e-mailů
      */
     public static function getCountOfRecievedPhishingEmails($idUser, $hideEmailsActiveCampaigns = false) {
-      $queryFilter = ($hideEmailsActiveCampaigns) ? 'AND phg_campaigns.active_to < CURRENT_DATE()' : '';
+      $queryFilter = ($hideEmailsActiveCampaigns) ? 'AND phg_campaigns.date_active_to < CURRENT_DATE()' : '';
 
       return Database::queryCount('
               SELECT COUNT(*)
@@ -93,7 +93,7 @@
      * @return mixed                          Pole e-mailů s informacemi o každém z nich
      */
     public static function getRecievedPhishingEmails($idUser, $hideEmailsActiveCampaigns = false) {
-      $queryFilter = ($hideEmailsActiveCampaigns) ? 'AND phg_campaigns.active_to < CURRENT_DATE()' : '';
+      $queryFilter = ($hideEmailsActiveCampaigns) ? 'AND phg_campaigns.date_active_to < CURRENT_DATE()' : '';
 
       return Database::queryMulti('
               SELECT phg_sent_emails.id_campaign, `date_sent`,

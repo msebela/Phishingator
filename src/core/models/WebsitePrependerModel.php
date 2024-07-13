@@ -573,7 +573,7 @@
       }
 
       // Stránka bude přístupná a bude zaznamenávat aktivitu od/do zvoleného data a času.
-      if (strtotime($campaign['active_since']) > strtotime('now') || strtotime($campaign['active_to'] . ' ' . CAMPAIGN_END_TIME) < strtotime('now')) {
+      if (strtotime($campaign['date_active_since'] . ' ' . $campaign['time_active_since']) > strtotime('now') || strtotime($campaign['date_active_to'] . ' ' . $campaign['time_active_to']) < strtotime('now')) {
         $args[] = self::getClientIp();
         Logger::warning('Invalid access a phishing website for a phishing campaign that is not active.', $args);
 
@@ -615,7 +615,7 @@
 
       // Zjištění, zdali je v databázi existující token pro přístup na náhled podvodné stránky.
       $previewAccess = Database::querySingle(
-        'SELECT `active_since`, `active_to` FROM `phg_websites_preview` WHERE id_website = ? AND id_user = ? AND hash = ?',
+        'SELECT `date_active_since`, `date_active_to` FROM `phg_websites_preview` WHERE id_website = ? AND id_user = ? AND hash = ?',
         [$website['id_website'], $user['id_user'], $_COOKIE[ACT_PREVIEW]]
       );
 
@@ -628,7 +628,7 @@
         exit();
       }
       // Pokud platnost tokenu k přístupu na náhled podvodné stránky vypršela.
-      elseif (strtotime('now') > strtotime($previewAccess['active_to'])) {
+      elseif (strtotime('now') > strtotime($previewAccess['date_active_to'])) {
         $args[] = self::getClientIp();
         Logger::warning('Invalid access a preview of a phishing website with an expired token.', $args);
 

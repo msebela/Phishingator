@@ -53,14 +53,14 @@
           </span>://<?= get_hostname_from_url($campaign['url_protocol'] . $campaign['url']) ?>
         </td>
         <td><?= $campaign['count_recipients'] ?></td>
-        <td data-sort="<?= $campaign['active_since'] ?>">
-          <span class="badge badge-<?= $campaign['active_since_color'] ?>">
-            <?= insert_nonbreaking_spaces($campaign['active_since_formatted']) ?>
+        <td data-sort="<?= $campaign['date_active_since'] ?>">
+          <span class="badge badge-<?= $campaign['date_active_since_color'] ?>">
+            <?= insert_nonbreaking_spaces($campaign['date_active_since_formatted']) ?>
           </span>
         </td>
-        <td data-sort="<?= $campaign['active_to'] ?>">
-          <span class="badge badge-<?= $campaign['active_to_color'] ?>">
-            <?= insert_nonbreaking_spaces($campaign['active_to_formatted']) ?>
+        <td data-sort="<?= $campaign['date_active_to'] ?>">
+          <span class="badge badge-<?= $campaign['date_active_to_color'] ?>">
+            <?= insert_nonbreaking_spaces($campaign['date_active_to_formatted']) ?>
           </span>
         </td>
         <?php if ($displayTicketIdColumn): ?>

@@ -475,7 +475,7 @@
 
       // Zjištění, zdali není v databázi pro daného uživatele ještě nějaký aktivní token pro náhled podvodné stránky.
       $access = Database::querySingle(
-        'SELECT `hash` FROM `phg_websites_preview` WHERE `id_website` = ? AND `id_user` = ? AND `active_to` > now()',
+        'SELECT `hash` FROM `phg_websites_preview` WHERE `id_website` = ? AND `id_user` = ? AND `date_active_to` > now()',
         [$idWebsite, $idUser]
       );
 
@@ -499,8 +499,8 @@
             'id_website' => $idWebsite,
             'id_user' => $idUser,
             'hash' => $token,
-            'active_since' => $activeSince,
-            'active_to' => $activeTo
+            'date_active_since' => $activeSince,
+            'date_active_to' => $activeTo
           ];
 
           Database::insert('phg_websites_preview', $access);

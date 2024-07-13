@@ -19,7 +19,7 @@
 
       $model = new CampaignModel();
       $formData = [
-        'inputsNames' => ['id-email', 'id-website', 'id-onsubmit', 'id-ticket', 'name', 'time-send-since', 'active-since', 'active-to'],
+        'inputsNames' => ['id-email', 'id-website', 'id-onsubmit', 'id-ticket', 'name', 'time-active-since', 'time-active-to', 'date-active-since', 'date-active-to'],
         'formPrefix' => 'campaign-',
         'dbTable' => 'phg_campaigns'
       ];
@@ -177,7 +177,7 @@
       $this->checkRecordExistence($campaign);
 
       // Ověření, zdali se uživatel nepokouší zobrazit statistiku pro kampaň, která zatím nebyla spuštěna.
-      if (strtotime($campaign['active_since'] . ' ' . $campaign['time_send_since']) >= strtotime('now')) {
+      if (strtotime($campaign['date_active_since'] . ' ' . $campaign['time_active_since']) >= strtotime('now')) {
         $this->addMessage(MSG_WARNING, 'Nelze zobrazit statistiku pro kampaň, u které zatím nedošlo k zahájení a odeslání e-mailů.');
         $this->redirect($this->urlSection);
       }

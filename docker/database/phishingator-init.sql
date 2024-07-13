@@ -18,9 +18,10 @@ CREATE TABLE `phg_campaigns` (
   `id_onsubmit` tinyint(3) UNSIGNED NOT NULL,
   `id_ticket` int(10) UNSIGNED DEFAULT NULL,
   `name` varchar(128) COLLATE utf8mb3_czech_ci NOT NULL,
-  `time_send_since` time NOT NULL,
-  `active_since` date NOT NULL,
-  `active_to` date NOT NULL,
+  `time_active_since` time NOT NULL,
+  `time_active_to` time NOT NULL,
+  `date_active_since` date NOT NULL,
+  `date_active_to` date NOT NULL,
   `date_added` datetime NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_czech_ci;
@@ -220,8 +221,8 @@ CREATE TABLE `phg_websites_preview` (
   `id_user` mediumint(8) UNSIGNED NOT NULL,
   `id_campaign` smallint(5) UNSIGNED DEFAULT NULL,
   `hash` varchar(64) COLLATE utf8mb3_czech_ci NOT NULL,
-  `active_since` datetime NOT NULL,
-  `active_to` datetime NOT NULL
+  `date_active_since` datetime NOT NULL,
+  `date_active_to` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_czech_ci;
 
 CREATE TABLE `phg_websites_templates` (

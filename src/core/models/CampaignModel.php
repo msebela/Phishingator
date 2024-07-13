@@ -38,16 +38,21 @@
     public $timeSendSince;
 
     /**
+     * @var string      Čas, do kterého bude kampaň aktivní a podvodná stránka dostupná.
+     */
+    public $timeSendTo;
+
+    /**
      * @var string      Datum, od kterého bude kampaň aktivní (tzn. začnou se odesílat podvodné e-maily a podvodná
      *                  stránka se stane přístupnou přes speciální identifikátor.
      */
-    public $activeSince;
+    public $dateActiveSince;
 
     /**
      * @var string      Datum, do kterého bude přístupná podvodná stránka a do kterého tedy budou sbírána data
      *                  z této podvodné stránky.
      */
-    public $activeTo;
+    public $dateActiveTo;
 
     /**
      * @var array       Seznam příjemců.
@@ -87,9 +92,10 @@
         'id_onsubmit' => $this->idOnsubmit,
         'id_ticket' => $this->idTicket,
         'name' => $this->name,
-        'time_send_since' => $this->timeSendSince,
-        'active_since' => $this->activeSince,
-        'active_to' => $this->activeTo
+        'time_active_since' => $this->timeSendSince,
+        'time_active_to' => $this->timeSendTo,
+        'date_active_since' => $this->dateActiveSince,
+        'date_active_to' => $this->dateActiveTo
       ];
     }
 
@@ -107,8 +113,9 @@
       }
 
       $this->dbRecordData = Database::querySingle('
-              SELECT `id_campaign`, `id_by_user`, `id_email`, `id_website`, `id_onsubmit`, `id_ticket`, `name`, `active_since`, `active_to`,
-              `time_send_since`, DATE_FORMAT(time_send_since, "%H:%i") AS `time_send_since`
+              SELECT `id_campaign`, `id_by_user`, `id_email`, `id_website`, `id_onsubmit`, `id_ticket`, `name`, `date_active_since`, `date_active_to`,
+              `time_active_since`, DATE_FORMAT(time_active_since, "%H:%i") AS `time_active_since`,
+              `time_active_to`, DATE_FORMAT(time_active_to, "%H:%i") AS `time_active_to`
               FROM `phg_campaigns`
               WHERE `id_campaign` = ?
               AND `visible` = 1
@@ -178,15 +185,16 @@
 
       $result = Database::querySingle('
               SELECT `id_campaign`, phg_campaigns.id_by_user, phg_campaigns.id_email, phg_campaigns.id_website, phg_campaigns.id_ticket, phg_campaigns.name,
-              `time_send_since`, `active_since`, `active_to`, phg_campaigns.date_added,
+              `time_active_since`, `time_active_to`, `date_active_since`, `date_active_to`, phg_campaigns.date_added,
               `username`, `email`,
               phg_emails.name AS `email_name`, phg_emails.sender_name, phg_emails.sender_email, `subject`, `body`,
               phg_websites.name AS `website_name`, phg_websites.url AS `url`,
               `server_dir`,
               DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y") AS `date_added`,
-              DATE_FORMAT(active_since, "%e. %c. %Y") AS `active_since_formatted`,
-              DATE_FORMAT(active_to, "%e. %c. %Y") AS `active_to_formatted`,
-              DATE_FORMAT(time_send_since, "%k:%i") AS `time_send_since`
+              DATE_FORMAT(date_active_since, "%e. %c. %Y") AS `date_active_since_formatted`,
+              DATE_FORMAT(date_active_to, "%e. %c. %Y") AS `date_active_to_formatted`,
+              DATE_FORMAT(time_active_since, "%k:%i") AS `time_active_since`,
+              DATE_FORMAT(time_active_to, "%k:%i") AS `time_active_to`
               FROM `phg_campaigns`
               JOIN `phg_users`
               ON phg_campaigns.id_by_user = phg_users.id_user
@@ -211,8 +219,8 @@
         $result['count_recipients'] = self::getCountOfRecipients($result['id_campaign']);
         $result['sent_emails'] = RecievedEmailModel::getCountOfSentEmailsInCampaign($result['id_campaign']);
 
-        $result['active_since_color'] = self::getColorDateByToday($result['active_since'], 'date-since');
-        $result['active_to_color'] = self::getColorDateByToday($result['active_to'], 'date-to');
+        $result['date_active_since_color'] = self::getColorDateByToday($result['date_active_since'], 'date-since');
+        $result['date_active_to_color'] = self::getColorDateByToday($result['date_active_to'], 'date-to');
       }
 
       if ($replaceUsernames) {
@@ -234,14 +242,14 @@
       $userPermission = PermissionsModel::getUserPermission();
 
       $result = Database::queryMulti('
-              SELECT `id_campaign`, phg_campaigns.id_by_user, phg_campaigns.id_email, phg_campaigns.id_website, phg_campaigns.id_ticket, phg_campaigns.name, `active_since`, `active_to`, phg_campaigns.date_added,
+              SELECT `id_campaign`, phg_campaigns.id_by_user, phg_campaigns.id_email, phg_campaigns.id_website, phg_campaigns.id_ticket, phg_campaigns.name, `date_active_since`, `date_active_to`, phg_campaigns.date_added,
               `username`, `email`, `id_user_role`, phg_users_roles.value,
               phg_users.id_user_group,
               phg_emails.name AS `email_name`,
               phg_websites.name AS `website_name`, phg_websites.url,
               DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y") AS `date_added_formatted`,
-              DATE_FORMAT(active_since, "%e. %c. %Y") AS `active_since_formatted`,
-              DATE_FORMAT(active_to, "%e. %c. %Y") AS `active_to_formatted`
+              DATE_FORMAT(date_active_since, "%e. %c. %Y") AS `date_active_since_formatted`,
+              DATE_FORMAT(date_active_to, "%e. %c. %Y") AS `date_active_to_formatted`
               FROM `phg_campaigns`
               JOIN `phg_users`
               ON phg_campaigns.id_by_user = phg_users.id_user
@@ -274,8 +282,8 @@
 
         $result[$key]['count_recipients'] = $this->getCountOfRecipients($campaign['id_campaign']);
 
-        $result[$key]['active_since_color'] = $this->getColorDateByToday($campaign['active_since'], 'date-since');
-        $result[$key]['active_to_color'] = $this->getColorDateByToday($campaign['active_to'], 'date-to');
+        $result[$key]['date_active_since_color'] = $this->getColorDateByToday($campaign['date_active_since'], 'date-since');
+        $result[$key]['date_active_to_color'] = $this->getColorDateByToday($campaign['date_active_to'], 'date-to');
       }
 
       return UsersModel::setUsernamesByConfig($result);
@@ -330,7 +338,7 @@
         $query = 'YEAR(`date_added`) = ?';
       }
       else {
-        $query = '`active_since` <= CURDATE() AND `active_to` >= CURDATE()';
+        $query = '`date_active_since` <= CURDATE() AND `date_active_to` >= CURDATE()';
       }
 
       return Database::queryMulti('
@@ -351,9 +359,8 @@
       return Database::queryMulti('
               SELECT `id_campaign`
               FROM `phg_campaigns`
-              WHERE `time_send_since` <= TIME(NOW())
-              AND `active_since` <= CURDATE()
-              AND `active_to` >= CURDATE()
+              WHERE TIMESTAMP(`date_active_since`, `time_active_since`) <= NOW()
+              AND TIMESTAMP(`date_active_to`, `time_active_to`) >= NOW()
               AND `visible` = 1
       ');
     }
@@ -386,14 +393,14 @@
      */
     public static function getFinishedCampaigns() {
       return Database::queryMulti('
-              SELECT `id_campaign`, phg_campaigns.id_by_user, `active_to`,
+              SELECT `id_campaign`, phg_campaigns.id_by_user, `date_active_to`,
               `username`, `email`,
               DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y (%k:%i)") AS `date_added`,
-              DATE_FORMAT(active_to, "%e. %c. %Y") AS `active_to`
+              DATE_FORMAT(date_active_to, "%e. %c. %Y") AS `date_active_to`
               FROM `phg_campaigns`
               JOIN `phg_users`
               ON phg_campaigns.id_by_user = phg_users.id_user
-              WHERE `active_to` = DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+              WHERE `date_active_to` = DATE_ADD(CURDATE(), INTERVAL -1 DAY)
               AND phg_campaigns.visible = 1
       ');
     }
@@ -455,7 +462,7 @@
               FROM `phg_campaigns_recipients`
               JOIN phg_campaigns
               ON phg_campaigns.id_campaign = phg_campaigns_recipients.id_campaign
-              WHERE active_since <= CURDATE()
+              WHERE date_active_since <= CURDATE()
               AND phg_campaigns.visible = 1
               ORDER BY `id_recipient`
         ');
@@ -1133,16 +1140,19 @@
       $this->isOnSubmitActionEmpty();
       $this->existOnSubmitAction();
 
-      $this->isEmptyActiveSince();
-      $this->isActiveSinceValid();
+      $this->isEmptyDateActiveSince();
+      $this->isDateActiveSinceValid();
 
       $this->isEmptyTimeSince();
       $this->isTimeSinceValid();
 
-      $this->isEmptyActiveTo();
-      $this->isActiveToValid();
+      $this->isEmptyTimeTo();
+      $this->isTimeToValid();
 
-      $this->isActiveSinceGreatherThanActiveTo();
+      $this->isEmptyDateActiveTo();
+      $this->isDateActiveToValid();
+
+      $this->isDateActiveSinceGreatherThanDateActiveTo();
 
       $this->isRecipientsEmpty();
       $this->isRecipientsValid();
@@ -1269,7 +1279,7 @@
      */
     private function isEmptyTimeSince() {
       if (empty($this->timeSendSince)) {
-        throw new UserError('Není vyplněn čas rozesílání (od).', MSG_ERROR);
+        throw new UserError('Není vyplněn čas zahájení.', MSG_ERROR);
       }
     }
 
@@ -1281,7 +1291,31 @@
      */
     private function isTimeSinceValid() {
       if (!$this->isTimeValid($this->timeSendSince)) {
-        throw new UserError('Čas rozesílání (od) je v nesprávném formátu.', MSG_ERROR);
+        throw new UserError('Čas zahájení je v nesprávném formátu.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali byl vyplněn čas, ve kterém dojde k ukončení kampaně.
+     *
+     * @throws UserError
+     */
+    private function isEmptyTimeTo() {
+      if (empty($this->timeSendTo)) {
+        throw new UserError('Není vyplněn čas ukončení.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali je vyplněný čas ukončení kampaně ve správném formátu.
+     *
+     * @throws UserError
+     */
+    private function isTimeToValid() {
+      if (!$this->isTimeValid($this->timeSendTo)) {
+        throw new UserError('Čas ukončení je v nesprávném formátu.', MSG_ERROR);
       }
     }
 
@@ -1291,8 +1325,8 @@
      *
      * @throws UserError
      */
-    private function isEmptyActiveSince() {
-      if (empty($this->activeSince)) {
+    private function isEmptyDateActiveSince() {
+      if (empty($this->dateActiveSince)) {
         throw new UserError('Není vyplněno datum startu kampaně.', MSG_ERROR);
       }
     }
@@ -1303,8 +1337,8 @@
      *
      * @throws UserError
      */
-    private function isActiveSinceValid() {
-      if (!$this->isDateValid($this->activeSince)) {
+    private function isDateActiveSinceValid() {
+      if (!$this->isDateValid($this->dateActiveSince)) {
         throw new UserError('Start kampaně je v nesprávném formátu.', MSG_ERROR);
       }
     }
@@ -1315,8 +1349,8 @@
      *
      * @throws UserError
      */
-    private function isEmptyActiveTo() {
-      if (empty($this->activeTo)) {
+    private function isEmptyDateActiveTo() {
+      if (empty($this->dateActiveTo)) {
         throw new UserError('Není vyplněno datum ukončení kampaně.', MSG_ERROR);
       }
     }
@@ -1327,8 +1361,8 @@
      *
      * @throws UserError
      */
-    private function isActiveToValid() {
-      if (!$this->isDateValid($this->activeTo)) {
+    private function isDateActiveToValid() {
+      if (!$this->isDateValid($this->dateActiveTo)) {
         throw new UserError('Ukončení kampaně je v nesprávném formátu.', MSG_ERROR);
       }
     }
@@ -1339,8 +1373,8 @@
      *
      * @throws UserError
      */
-    private function isActiveSinceGreatherThanActiveTo() {
-      if (strtotime($this->activeSince) > strtotime($this->activeTo)) {
+    private function isDateActiveSinceGreatherThanDateActiveTo() {
+      if (strtotime($this->dateActiveSince) > strtotime($this->dateActiveTo)) {
         throw new UserError('Start kampaně nemůže být později než datum ukončení kampaně.', MSG_ERROR);
       }
     }
