@@ -338,7 +338,7 @@
         $query = 'YEAR(`date_added`) = ?';
       }
       else {
-        $query = '`date_active_since` <= CURDATE() AND `date_active_to` >= CURDATE()';
+        $query = 'TIMESTAMP(`date_active_since`, `time_active_since`) <= NOW() AND TIMESTAMP(`date_active_to`, `time_active_to`) >= NOW()';
       }
 
       return Database::queryMulti('
@@ -400,7 +400,7 @@
               FROM `phg_campaigns`
               JOIN `phg_users`
               ON phg_campaigns.id_by_user = phg_users.id_user
-              WHERE `date_active_to` = DATE_ADD(CURDATE(), INTERVAL -1 DAY)
+              WHERE NOW() > TIMESTAMP(`date_active_to`, `time_active_to`)
               AND phg_campaigns.visible = 1
       ');
     }

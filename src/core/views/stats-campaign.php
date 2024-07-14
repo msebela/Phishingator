@@ -1,6 +1,6 @@
 <hr>
 
-<?php if (strtotime($campaign['date_active_to']) >= strtotime(date('Y-m-d'))): ?>
+<?php if (strtotime($campaign['date_active_to'] . ' ' . $campaign['time_active_to']) >= strtotime('now')): ?>
 <div class="alert alert-with-icon alert-warning" role="alert">
   <div class="alert-icon pr-1">
     <span data-feather="activity"></span>

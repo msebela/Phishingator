@@ -1,11 +1,11 @@
 <hr>
-<?php if ($action == ACT_EDIT && strtotime($campaign['date_active_since']) <= strtotime(date('Y-m-d'))): ?>
+<?php if ($action == ACT_EDIT && strtotime($campaign['date_active_since'] . ' ' . $campaign['time_active_since']) <= strtotime('now')): ?>
 <div class="alert alert-with-icon alert-warning" role="alert">
   <div class="alert-icon pr-1">
     <span data-feather="activity"></span>
   </div>
   <div>
-    <h4 class="alert-heading">Pozor, kampaň již <?= ((strtotime($campaign['date_active_to']) >= strtotime(date('Y-m-d'))) ? 'běží' : 'proběhla') ?>!</h4>
+    <h4 class="alert-heading">Pozor, kampaň již <?= ((strtotime($campaign['date_active_to'] . ' ' . $campaign['time_active_to']) >= strtotime('now')) ? 'běží' : 'proběhla') ?>!</h4>
     Jakákoliv zásadní úprava kampaně po jejím spuštění (tedy po odeslání prvních e-mailů) může způsobit nevratné změny a&nbsp;zkreslení ve statistice a&nbsp;hodnocení kampaně!
   </div>
 </div>
@@ -256,7 +256,7 @@
   </div>
 
   <div class="text-center">
-    <button type="submit" class="btn btn-primary btn-lg btn-confirm" name="<?= $formPrefix . $action; ?>"<?php if ($action == ACT_EDIT && strtotime($campaign['date_active_since']) <= strtotime(date('Y-m-d'))): ?> data-confirm="Opravdu chcete upravit kampaň i přesto, že může mít vliv na statistiku a hodnocení kampaně?"<?php endif; ?>>
+    <button type="submit" class="btn btn-primary btn-lg btn-confirm" name="<?= $formPrefix . $action; ?>"<?php if ($action == ACT_EDIT && strtotime($campaign['date_active_since'] . ' ' . $campaign['time_active_since']) <= strtotime('now')): ?> data-confirm="Opravdu chcete upravit kampaň i přesto, že může mít vliv na statistiku a hodnocení kampaně?"<?php endif; ?>>
       <span data-feather="save"></span>
       <?= ($action == ACT_NEW) ? 'Přidat' : 'Uložit změny'; ?>
     </button>
