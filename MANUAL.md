@@ -56,10 +56,11 @@ Umožňuje **přidávat nové a upravovat jakékoliv existující kampaně**. U 
 
 #### 2.2.1 Seznam kampaní
 
-Obsahuje stručný přehled o všech přidaných kampaních. Data (sloupec *Aktivní od* a *Aktivní do*) svým barevným podbarvením znázorňují, zdali datum již proběhlo či nikoliv, a to následujícím způsobem:
-* **zelené podbarvení** – datum ještě nenastalo (tzn. start kampaně ještě neproběhl nebo kampaň stále běží)
-* **šedé podbarvení** – datum již nastalo (tzn. start kampaně již proběhl nebo byla kampaň již ukončena)
-* **žluté podbarvení** – poslední den, během kterého bude kampaň aktivní
+Obsahuje stručný přehled o všech přidaných kampaních. Data (sloupec *Aktivní od* a *Aktivní do*) svým barevným podbarvením napovídají, zdali datum již proběhlo či nikoliv, a to následujícím způsobem:
+
+* **zelené podbarvení** – zahájení nebo ukončení kampaně je v nadcházejících dnech,
+* **žluté podbarvení** – v den startu kampaně do času zahájení nebo poslední den do času ukončení kampaně,
+* **šedé podbarvení** – datum a čas zahájení nebo ukončení kampaně již proběhlo.
 
 
 #### 2.2.2 Přidání nebo úprava kampaně

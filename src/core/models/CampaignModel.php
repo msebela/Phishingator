@@ -219,8 +219,8 @@
         $result['count_recipients'] = self::getCountOfRecipients($result['id_campaign']);
         $result['sent_emails'] = RecievedEmailModel::getCountOfSentEmailsInCampaign($result['id_campaign']);
 
-        $result['date_active_since_color'] = self::getColorDateByToday($result['date_active_since'], 'date-since');
-        $result['date_active_to_color'] = self::getColorDateByToday($result['date_active_to'], 'date-to');
+        $result['date_active_since_color'] = self::getColorDate($result['date_active_since'], $result['time_active_since']);
+        $result['date_active_to_color'] = self::getColorDate($result['date_active_to'], $result['time_active_to']);
       }
 
       if ($replaceUsernames) {
@@ -242,7 +242,7 @@
       $userPermission = PermissionsModel::getUserPermission();
 
       $result = Database::queryMulti('
-              SELECT `id_campaign`, phg_campaigns.id_by_user, phg_campaigns.id_email, phg_campaigns.id_website, phg_campaigns.id_ticket, phg_campaigns.name, `date_active_since`, `date_active_to`, phg_campaigns.date_added,
+              SELECT `id_campaign`, phg_campaigns.id_by_user, phg_campaigns.id_email, phg_campaigns.id_website, phg_campaigns.id_ticket, phg_campaigns.name, `time_active_since`, `time_active_to`, `date_active_since`, `date_active_to`, phg_campaigns.date_added,
               `username`, `email`, `id_user_role`, phg_users_roles.value,
               phg_users.id_user_group,
               phg_emails.name AS `email_name`,
@@ -282,8 +282,8 @@
 
         $result[$key]['count_recipients'] = $this->getCountOfRecipients($campaign['id_campaign']);
 
-        $result[$key]['date_active_since_color'] = $this->getColorDateByToday($campaign['date_active_since'], 'date-since');
-        $result[$key]['date_active_to_color'] = $this->getColorDateByToday($campaign['date_active_to'], 'date-to');
+        $result[$key]['date_active_since_color'] = self::getColorDate($campaign['date_active_since'], $campaign['time_active_since']);
+        $result[$key]['date_active_to_color'] = self::getColorDate($campaign['date_active_to'], $campaign['time_active_to']);
       }
 
       return UsersModel::setUsernamesByConfig($result);
@@ -1062,33 +1062,27 @@
 
 
     /**
-     * Vrátí CSS třídu k odlišení data v závislosti na počtu dní,
-     * které zbývají do začátku, nebo do konce kampaně.
+     * Vrátí CSS třídu určenou k podbarvení data zahájení/ukončení kampaně závislou
+     * na tom, kolik dní a času do zahájení nebo ukončení kampaně zbývá.
      *
-     * @param string $date             Testované datum.
-     * @param $dateSinceOrTo           "date-since" pro datum startu, "date-to" pro datum konce kampaně.
-     * @return string|null             Název CSS třídy nebo NULL.
+     * @param string $date             Datum zahájení/ukončení kampaně
+     * @param string $time             Čas zahájení/ukončení kampaně
+     * @return string                  Název CSS třídy
      */
-    private static function getColorDateByToday($date, $dateSinceOrTo) {
-      $today = strtotime(date('Y-m-d'));
-      $date = strtotime($date);
+    private static function getColorDate($date, $time) {
+      $color = MSG_CSS_DEFAULT;
 
-      if ($dateSinceOrTo == 'date-since') {
-        return ($date >= $today) ? MSG_CSS_SUCCESS : MSG_CSS_DEFAULT;
+      $campaignDate = strtotime($date);
+      $currentDate = strtotime(date('Y-m-d'));
+
+      if ($campaignDate > $currentDate) {
+        $color = MSG_CSS_SUCCESS;
       }
-      elseif ($dateSinceOrTo == 'date-to') {
-        if ($date > $today) {
-          return MSG_CSS_SUCCESS;
-        }
-        elseif ($date == $today) {
-          return MSG_CSS_WARNING;
-        }
-        else {
-          return MSG_CSS_DEFAULT;
-        }
+      elseif ($campaignDate == $currentDate && strtotime($date . ' ' . $time) >= strtotime('now')) {
+        $color = MSG_CSS_WARNING;
       }
 
-      return null;
+      return $color;
     }
 
 
@@ -1096,7 +1090,7 @@
      * Ověří, zdali je daný čas ve správném formátu.
      *
      * @param string $time             Testovaný čas
-     * @return bool                    TRUE pokud je ve správném formátu, jinak FALSE.
+     * @return bool                    TRUE pokud je čas ve správném formátu, jinak FALSE
      */
     private function isTimeValid($time) {
       return preg_match("/^(?:2[0-3]|[01][0-9]):[0-5][0-9]$/", $time) === 1;
@@ -1106,17 +1100,18 @@
     /**
      * Ověří, zdali zadané datum existuje a odpovídá formátu YYYY-MM-DD.
      *
-     * @param string $date             Testované datum.
-     * @return bool                    TRUE pokud je validní, jinak FALSE.
+     * @param string $date             Testované datum
+     * @return bool                    TRUE pokud je datum validní, jinak FALSE
      */
     private function isDateValid($date) {
+      $valid = false;
       $dateParts = explode(DATE_DELIMETER, $date);
 
       if (count($dateParts) == 3) {
-        return checkdate($dateParts[1], $dateParts[2], $dateParts[0]);
+        $valid = checkdate($dateParts[1], $dateParts[2], $dateParts[0]);
       }
 
-      return false;
+      return $valid;
     }
 
 
@@ -1153,6 +1148,7 @@
       $this->isDateActiveToValid();
 
       $this->isDateActiveSinceGreatherThanDateActiveTo();
+      $this->isTimeActiveSinceGreatherThanTimeActiveTo();
 
       $this->isRecipientsEmpty();
       $this->isRecipientsValid();
@@ -1273,25 +1269,25 @@
 
 
     /**
-     * Ověří, zdali byl vyplněn čas, ve kterém se spustí rozesílání podvodných e-mailů.
+     * Ověří, zdali byl vyplněn čas, ve kterém dojde k zahájení kampaně.
      *
      * @throws UserError
      */
     private function isEmptyTimeSince() {
       if (empty($this->timeActiveSince)) {
-        throw new UserError('Není vyplněn čas zahájení.', MSG_ERROR);
+        throw new UserError('Není vyplněn čas zahájení kampaně.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali je vyplněný čas startu rozesílání podvodných e-mailů ve správném formátu.
+     * Ověří, zdali je vyplněný čas zahájení kampaně ve správném formátu.
      *
      * @throws UserError
      */
     private function isTimeSinceValid() {
       if (!$this->isTimeValid($this->timeActiveSince)) {
-        throw new UserError('Čas zahájení je v nesprávném formátu.', MSG_ERROR);
+        throw new UserError('Čas zahájení kampaně je v nesprávném formátu.', MSG_ERROR);
       }
     }
 
@@ -1303,7 +1299,7 @@
      */
     private function isEmptyTimeTo() {
       if (empty($this->timeActiveTo)) {
-        throw new UserError('Není vyplněn čas ukončení.', MSG_ERROR);
+        throw new UserError('Není vyplněn čas ukončení kampaně.', MSG_ERROR);
       }
     }
 
@@ -1315,37 +1311,37 @@
      */
     private function isTimeToValid() {
       if (!$this->isTimeValid($this->timeActiveTo)) {
-        throw new UserError('Čas ukončení je v nesprávném formátu.', MSG_ERROR);
+        throw new UserError('Čas ukončení kampaně je v nesprávném formátu.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali bylo vyplněno datum startu kampaně.
+     * Ověří, zdali bylo vyplněno datum zahájení kampaně.
      *
      * @throws UserError
      */
     private function isEmptyDateActiveSince() {
       if (empty($this->dateActiveSince)) {
-        throw new UserError('Není vyplněno datum startu kampaně.', MSG_ERROR);
+        throw new UserError('Není vyplněno datum zahájení kampaně.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali je vyplněné datum startu kampaně ve správném formátu.
+     * Ověří, zdali je vyplněné datum zahájení kampaně ve správném formátu.
      *
      * @throws UserError
      */
     private function isDateActiveSinceValid() {
       if (!$this->isDateValid($this->dateActiveSince)) {
-        throw new UserError('Start kampaně je v nesprávném formátu.', MSG_ERROR);
+        throw new UserError('Datum zahájení kampaně je v nesprávném formátu.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali bylo vyplněno datum konce kampaně.
+     * Ověří, zdali bylo vyplněno datum ukončení kampaně.
      *
      * @throws UserError
      */
@@ -1363,19 +1359,31 @@
      */
     private function isDateActiveToValid() {
       if (!$this->isDateValid($this->dateActiveTo)) {
-        throw new UserError('Ukončení kampaně je v nesprávném formátu.', MSG_ERROR);
+        throw new UserError('Datum ukončení kampaně je v nesprávném formátu.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali je datum startu kampaně dříve než datum ukončení kampaně.
+     * Ověří, zdali je datum zahájení kampaně dříve než datum ukončení kampaně.
      *
      * @throws UserError
      */
     private function isDateActiveSinceGreatherThanDateActiveTo() {
       if (strtotime($this->dateActiveSince) > strtotime($this->dateActiveTo)) {
-        throw new UserError('Start kampaně nemůže být později než datum ukončení kampaně.', MSG_ERROR);
+        throw new UserError('Datum zahájení kampaně nemůže být později než datum ukončení kampaně.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali je ve stejném datu čas zahájení kampaně dříve než čas ukončení kampaně.
+     *
+     * @throws UserError
+     */
+    private function isTimeActiveSinceGreatherThanTimeActiveTo() {
+      if (strtotime($this->dateActiveSince . ' ' . $this->timeActiveSince) > strtotime($this->dateActiveTo . ' ' . $this->timeActiveTo)) {
+        throw new UserError('Čas zahájení kampaně nemůže být ve stejném dni později než čas ukončení kampaně.', MSG_ERROR);
       }
     }
 
@@ -1393,7 +1401,7 @@
 
 
     /**
-     * Ověří, zdali jsou e-maily všech zadaných příjemců ve správné formátu, zdali e-maily vedou na povolenou doménu
+     * Ověří, zdali jsou e-maily všech zadaných příjemců ve správném formátu, zdali e-maily vedou na povolenou doménu
      * a jestli má uživatel povolení k tomu, aby danému uživateli e-mail rozeslal.
      *
      * @throws UserError

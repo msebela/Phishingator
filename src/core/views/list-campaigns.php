@@ -53,12 +53,12 @@
           </span>://<?= get_hostname_from_url($campaign['url_protocol'] . $campaign['url']) ?>
         </td>
         <td><?= $campaign['count_recipients'] ?></td>
-        <td data-sort="<?= $campaign['date_active_since'] ?>">
+        <td data-sort="<?= $campaign['date_active_since'] . ' ' . $campaign['time_active_since'] ?>">
           <span class="badge badge-<?= $campaign['date_active_since_color'] ?>">
             <?= insert_nonbreaking_spaces($campaign['date_active_since_formatted']) ?>
           </span>
         </td>
-        <td data-sort="<?= $campaign['date_active_to'] ?>">
+        <td data-sort="<?= $campaign['date_active_to'] . ' ' . $campaign['time_active_to'] ?>">
           <span class="badge badge-<?= $campaign['date_active_to_color'] ?>">
             <?= insert_nonbreaking_spaces($campaign['date_active_to_formatted']) ?>
           </span>
