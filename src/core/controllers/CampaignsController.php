@@ -19,7 +19,7 @@
 
       $model = new CampaignModel();
       $formData = [
-        'inputsNames' => ['id-email', 'id-website', 'id-onsubmit', 'id-ticket', 'name', 'time-active-since', 'time-active-to', 'date-active-since', 'date-active-to'],
+        'inputsNames' => ['id-email', 'id-website', 'id-onsubmit', 'id-ticket', 'name', 'time-active-since', 'time-active-to', 'date-active-since', 'date-active-to', 'send-users-notification'],
         'formPrefix' => 'campaign-',
         'dbTable' => 'phg_campaigns'
       ];

@@ -148,7 +148,6 @@
     private function sendFinishedCampaignsNotifications() {
       $statsModel = new StatsModel();
 
-      // Seznam kampaní, které ke včerejšímu dni skončily.
       $campaigns = CampaignModel::getFinishedCampaigns();
 
       foreach ($campaigns as $campaign) {
@@ -228,14 +227,18 @@
     private function sendFinishedCampaignsNotificationsToUsers() {
       $countSentMails = 0;
 
-      // Seznam kampaní, které ke včerejšímu dni skončily.
       $campaigns = CampaignModel::getFinishedCampaigns();
 
       foreach ($campaigns as $campaign) {
+        // Ověření, zdali se má příjemcům kampaně posílat notifikace o jejím ukončení.
+        if ($campaign['send_users_notification'] == 0) {
+          continue;
+        }
+
         $campaignDetail = CampaignModel::getCampaignDetail($campaign['id_campaign'], false);
         $recipients = CampaignModel::getCampaignRecipients($campaign['id_campaign']);
 
-        // Pokud byl tvůrce kampaně uživatel s rolí spráce testů, dojde ke zjištěního jeho
+        // Pokud byl tvůrce kampaně uživatel s rolí správce testů, dojde ke zjištění jeho
         // jména a příjmení a k jeho doplnění do obsahu notifikace.
         if (UsersModel::getUserRole($campaign['id_by_user']) == PERMISSION_TEST_MANAGER) {
           $ldapModel = new LdapModel();

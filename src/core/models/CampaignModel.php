@@ -59,6 +59,12 @@
      */
     public $recipients;
 
+    /**
+     * @var int         Proměnná uchovávající informaci o tom, zdali má po ukončení kampaně
+     *                  dojít k odeslání notifikací příjemcům kampaně.
+     */
+    public $sendUsersNotification;
+
 
     /**
      * Načte a zpracuje předaná data.
@@ -75,6 +81,8 @@
       else {
         $this->recipients = '';
       }
+
+      $this->sendUsersNotification = (empty($this->sendUsersNotification) ? 0 : 1);
     }
 
 
@@ -95,7 +103,8 @@
         'time_active_since' => $this->timeActiveSince,
         'time_active_to' => $this->timeActiveTo,
         'date_active_since' => $this->dateActiveSince,
-        'date_active_to' => $this->dateActiveTo
+        'date_active_to' => $this->dateActiveTo,
+        'send_users_notification' => $this->sendUsersNotification
       ];
     }
 
@@ -113,7 +122,7 @@
       }
 
       $this->dbRecordData = Database::querySingle('
-              SELECT `id_campaign`, `id_by_user`, `id_email`, `id_website`, `id_onsubmit`, `id_ticket`, `name`, `date_active_since`, `date_active_to`,
+              SELECT `id_campaign`, `id_by_user`, `id_email`, `id_website`, `id_onsubmit`, `id_ticket`, `name`, `date_active_since`, `date_active_to`, `send_users_notification`,
               `time_active_since`, DATE_FORMAT(time_active_since, "%H:%i") AS `time_active_since`,
               `time_active_to`, DATE_FORMAT(time_active_to, "%H:%i") AS `time_active_to`
               FROM `phg_campaigns`
@@ -386,14 +395,13 @@
 
 
     /**
-     * Vrátí seznam všech kampaní, které ke včerejšímu dni skončily.
+     * Vrátí seznam všech kampaní, které již skončily.
      *
-     * @return mixed                   Pole obsahující informace o všech kampaních,
-     *                                 které ke včerejšímu dni vypršely.
+     * @return mixed                   Pole obsahující informace o všech kampaních, které již skončily
      */
     public static function getFinishedCampaigns() {
       return Database::queryMulti('
-              SELECT `id_campaign`, phg_campaigns.id_by_user, `date_active_to`,
+              SELECT `id_campaign`, phg_campaigns.id_by_user, `date_active_to`, `send_users_notification`,
               `username`, `email`,
               DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y (%k:%i)") AS `date_added`,
               DATE_FORMAT(date_active_to, "%e. %c. %Y") AS `date_active_to`

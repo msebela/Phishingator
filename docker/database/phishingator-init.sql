@@ -23,6 +23,7 @@ CREATE TABLE `phg_campaigns` (
   `date_active_since` date NOT NULL,
   `date_active_to` date NOT NULL,
   `date_added` datetime NOT NULL,
+  `send_users_notification` tinyint(1) NOT NULL DEFAULT 1,
   `visible` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_czech_ci;
 

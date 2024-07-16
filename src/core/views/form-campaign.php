@@ -112,6 +112,14 @@
           <small class="form-text text-muted">Čas, kdy přestane být podvodná stránka dostupná a&nbsp;uživatel bude při jejím navštívení obratem přesměrován na vzdělávací stránku.</small>
         </div>
       </div>
+
+      <div class="form-group">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="<?= $formPrefix ?>send-users-notification" name="<?= $formPrefix ?>send-users-notification"<?= (($action == ACT_NEW && empty($inputsValues['send-users-notification']) || $inputsValues['send-users-notification']) ? ' checked' : ''); ?>>
+          <label class="custom-control-label" for="<?= $formPrefix ?>send-users-notification">Po ukončení kampaně odeslat příjemcům notifikaci</label>
+          <small class="form-text text-muted">Notifikace obsahuje informaci o&nbsp;absolvování cvičného phishingu a&nbsp;odkaz na vzdělávací stránku s&nbsp;indiciemi.</small>
+        </div>
+      </div>
     </div>
 
     <div class="col-lg-6 col-xl-5">

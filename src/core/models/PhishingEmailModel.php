@@ -13,8 +13,7 @@
     protected $name;
 
     /**
-     * @var int         Proměnná uchovávají informaci o tom, zdali je podvodný e-mail skryt pro správce testů
-     *                  (1 pokud ano, jinak 0).
+     * @var int         Proměnná uchovávající informaci o tom, zdali je podvodný e-mail skryt pro správce testů.
      */
     protected $hidden;
 
