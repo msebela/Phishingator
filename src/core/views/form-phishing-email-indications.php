@@ -41,25 +41,28 @@
   <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
   <div class="form-row">
+    <?php $input = 'expression'; ?>
     <div class="form-group col-lg-3">
-      <label for="<?= $formPrefix ?>expression">Indicie (podezřelý řetězec)</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>expression" name="<?= $formPrefix ?>expression" maxlength="<?= $inputsMaxLengths['expression'] ?>" value="<?= $inputsValues['expression'] ?>" required>
-      <small class="form-text text-muted">Pro označení jména odesílatele lze použít proměnnou <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SENDER_NAME ?>"><?= VAR_INDICATION_SENDER_NAME ?></code>, pro e-mail odesílatele <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SENDER_EMAIL ?>"><?= VAR_INDICATION_SENDER_EMAIL ?></code> a&nbsp;pro předmět pak <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>expression" data-var="<?= VAR_INDICATION_SUBJECT ?>"><?= VAR_INDICATION_SUBJECT ?></code>.</small>
+      <label for="<?= $formPrefix . $input ?>">Indicie (podezřelý řetězec)</label>
+      <input type="text" class="form-control" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
+      <small class="form-text text-muted">Pro označení jména odesílatele lze použít proměnnou <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix . $input ?>" data-var="<?= VAR_INDICATION_SENDER_NAME ?>"><?= VAR_INDICATION_SENDER_NAME ?></code>, pro e-mail odesílatele <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix . $input ?>" data-var="<?= VAR_INDICATION_SENDER_EMAIL ?>"><?= VAR_INDICATION_SENDER_EMAIL ?></code> a&nbsp;pro předmět pak <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix . $input ?>" data-var="<?= VAR_INDICATION_SUBJECT ?>"><?= VAR_INDICATION_SUBJECT ?></code>.</small>
     </div>
 
+    <?php $input = 'title'; ?>
     <div class="form-group col-lg-3">
-      <label for="<?= $formPrefix ?>title">Nadpis</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>title" name="<?= $formPrefix ?>title" maxlength="<?= $inputsMaxLengths['title'] ?>" value="<?= $inputsValues['title'] ?>" required>
+      <label for="<?= $formPrefix . $input ?>">Nadpis</label>
+      <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
     </div>
 
+    <?php $input = 'description'; ?>
     <div class="form-group col-lg-7">
-      <label for="<?= $formPrefix ?>description">Popis (nepovinné)</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>description" name="<?= $formPrefix ?>description" maxlength="<?= $inputsMaxLengths['description'] ?>" value="<?= $inputsValues['description'] ?>">
+      <label for="<?= $formPrefix . $input ?>">Popis (nepovinné)</label>
+      <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>">
     </div>
 
     <div class="form-group col-md-3 text-right">
       <label>&nbsp;</label><br>
-      <button type="submit" class="btn btn-primary" name="<?= $formPrefix . ACT_NEW; ?>">
+      <button type="submit" name="<?= $formPrefix . ACT_NEW ?>" class="btn btn-primary">
         <span data-feather="plus"></span>
         Přidat
       </button>
@@ -77,30 +80,33 @@
   <input type="hidden" name="<?= $formPrefix . ACT_EDIT ?>-id" value="<?= $indication['id_indication'] ?>">
 
   <div class="form-row">
+    <?php $input = 'expression'; ?>
     <div class="form-group col-lg-3">
-      <label for="<?= $formPrefix ?>expression-<?= $i ?>">Indicie (podezřelý řetězec)</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>expression-<?= $i ?>" name="<?= $formPrefix . ACT_EDIT ?>-expression" maxlength="<?= $inputsMaxLengths['expression'] ?>" value="<?= $indication['expression'] ?>" required>
+      <label for="<?= $formPrefix . $input . '-' . $i ?>">Indicie (podezřelý řetězec)</label>
+      <input type="text" class="form-control" id="<?= $formPrefix . $input . '-' . $i ?>" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $indication[$input] ?>" required>
     </div>
 
+    <?php $input = 'title'; ?>
     <div class="form-group col-lg-3">
-      <label for="<?= $formPrefix ?>title-<?= $i ?>">Nadpis</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>title-<?= $i ?>" name="<?= $formPrefix . ACT_EDIT ?>-title" maxlength="<?= $inputsMaxLengths['title'] ?>" value="<?= $indication['title'] ?>" required>
+      <label for="<?= $formPrefix . $input . '-' . $i ?>">Nadpis</label>
+      <input type="text" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $indication[$input] ?>" required>
     </div>
 
+    <?php $input = 'description'; ?>
     <div class="form-group col-lg-7">
-      <label for="<?= $formPrefix ?>description-<?= $i ?>">Popis (nepovinné)</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>description-<?= $i ?>" name="<?= $formPrefix . ACT_EDIT ?>-description" maxlength="<?= $inputsMaxLengths['description'] ?>" value="<?= $indication['description'] ?>">
+      <label for="<?= $formPrefix . $input . '-' . $i ?>">Popis (nepovinné)</label>
+      <input type="text" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $indication[$input] ?>">
     </div>
 
     <div class="form-group col-lg-3 text-right">
       <label>&nbsp;</label><br>
 
-      <button type="submit" class="btn btn-primary float-right ml-1" name="<?= $formPrefix . ACT_EDIT; ?>">
+      <button type="submit" name="<?= $formPrefix . ACT_EDIT ?>" class="btn btn-primary float-right ml-1">
         <span data-feather="edit-2"></span>
         Uložit změny
       </button>
 
-      <button type="submit" class="btn btn-secondary btn-confirm" name="<?= $formPrefix . ACT_DEL; ?>" data-confirm="Opravdu chcete odstranit tento záznam?">
+      <button type="submit" name="<?= $formPrefix . ACT_DEL ?>" class="btn btn-secondary btn-confirm" data-confirm="Opravdu chcete odstranit tento záznam?">
         <span data-feather="trash"></span>
         Smazat
       </button>

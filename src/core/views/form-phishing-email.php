@@ -4,45 +4,51 @@
   <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
   <div class="form-row">
+    <?php $input = 'name'; ?>
     <div class="form-group col-md-9 col-xl-11">
-      <label for="<?= $formPrefix ?>name">Název</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>name" name="<?= $formPrefix ?>name" maxlength="<?= $inputsMaxLengths['name'] ?>" value="<?= $inputsValues['name'] ?>" required>
+      <label for="<?= $formPrefix . $input ?>">Název</label>
+      <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
       <small class="form-text text-muted">Název slouží pouze pro vlastní pojmenování e-mailu.</small>
     </div>
 
+    <?php $input = 'hidden'; ?>
     <div class="form-group col-md-7 col-xl-5 pl-md-5">
       <label class="d-none d-md-block">&nbsp;</label>
       <div class="custom-control custom-checkbox">
-        <input type="checkbox" class="custom-control-input" id="<?= $formPrefix ?>hidden" name="<?= $formPrefix ?>hidden"<?= (($inputsValues['hidden']) ? ' checked' : ''); ?>>
-        <label class="custom-control-label" for="<?= $formPrefix ?>hidden">Skrýt před správci testů</label>
+        <input type="checkbox" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="custom-control-input"<?= (($inputsValues[$input]) ? ' checked' : ''); ?>>
+        <label for="<?= $formPrefix . $input ?>" class="custom-control-label">Skrýt před správci testů</label>
         <small class="form-text text-muted">E-mail uvidí a&nbsp;mohou rozesílat pouze administrátoři.</small>
       </div>
     </div>
   </div>
 
   <div class="form-row">
+    <?php $input = 'sender-name'; ?>
     <div class="form-group col-md-8">
-      <label for="<?= $formPrefix ?>sender-name">Jméno odesílatele (nepovinné)</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>sender-name" name="<?= $formPrefix ?>sender-name" maxlength="<?= $inputsMaxLengths['sender-name'] ?>" value="<?= $inputsValues['sender-name'] ?>">
+      <label for="<?= $formPrefix . $input ?>">Jméno odesílatele (nepovinné)</label>
+      <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>">
       <small class="form-text text-muted">Při nevyplnění bude použit e-mail odesílatele z&nbsp;následujícího pole, v&nbsp;opačném případě bude odesílatel uveden ve tvaru <code>Jméno &lt;email@domain.tld&gt;</code>.</small>
     </div>
 
+    <?php $input = 'sender-email'; ?>
     <div class="form-group col-md-8">
-      <label for="<?= $formPrefix ?>sender-email">E-mail odesílatele</label>
-      <input type="text" class="form-control" id="<?= $formPrefix ?>sender-email" name="<?= $formPrefix ?>sender-email" maxlength="<?= $inputsMaxLengths['sender-email'] ?>" value="<?= $inputsValues['sender-email'] ?>" required>
-      <small class="form-text text-muted">Při použití proměnné <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>sender-email" data-var="<?= VAR_RECIPIENT_EMAIL ?>"><?= VAR_RECIPIENT_EMAIL ?></code> bude jako odesílatel uveden e-mail příjemce.</small>
+      <label for="<?= $formPrefix . $input ?>">E-mail odesílatele</label>
+      <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
+      <small class="form-text text-muted">Při použití proměnné <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix . $input ?>" data-var="<?= VAR_RECIPIENT_EMAIL ?>"><?= VAR_RECIPIENT_EMAIL ?></code> bude jako odesílatel uveden e-mail příjemce.</small>
     </div>
   </div>
 
+  <?php $input = 'subject'; ?>
   <div class="form-group">
-    <label for="<?= $formPrefix ?>subject">Předmět</label>
-    <input type="text" class="form-control" id="<?= $formPrefix ?>subject" name="<?= $formPrefix ?>subject" maxlength="<?= $inputsMaxLengths['subject'] ?>" value="<?= $inputsValues['subject'] ?>" required>
+    <label for="<?= $formPrefix . $input ?>">Předmět</label>
+    <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
   </div>
 
   <div class="form-row">
+    <?php $input = 'body'; ?>
     <div class="form-group col-lg-10 col-xl-12">
-      <label for="<?= $formPrefix ?>body">Tělo</label>
-      <textarea class="form-control text-monospace" rows="11" id="<?= $formPrefix ?>body" name="<?= $formPrefix ?>body" maxlength="<?= $inputsMaxLengths['body'] ?>" required><?= $inputsValues['body'] ?></textarea>
+      <label for="<?= $formPrefix . $input ?>">Tělo</label>
+      <textarea name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control text-monospace" rows="11" maxlength="<?= $inputsMaxLengths[$input] ?>" required><?= $inputsValues[$input] ?></textarea>
       <small class="form-text text-muted">V&nbsp;těle e-mailu lze používat proměnné, které budou při odeslání e-mailu nahrazeny zvoleným obsahem.</small>
     </div>
     <div class="form-group col-lg-6 col-xl-4">
@@ -58,15 +64,15 @@
     </div>
   </div>
 
-  <div class="text-center">
-    <button type="submit" formtarget="_blank" class="btn btn-secondary btn-lg" name="<?= $formPrefix . ACT_PREVIEW; ?>">
-      <span data-feather="eye"></span>
-      Náhled
-    </button>
-
-    <button type="submit" class="btn btn-primary btn-lg" name="<?= $formPrefix . $action; ?>">
+  <div class="d-flex justify-content-center">
+    <button type="submit" name="<?= $formPrefix . $action ?>" class="btn btn-primary btn-lg ml-1 order-2">
       <span data-feather="save"></span>
       <?= ($action == ACT_NEW) ? 'Přidat' : 'Uložit změny'; ?>
+    </button>
+
+    <button type="submit" name="<?= $formPrefix . ACT_PREVIEW ?>" formtarget="_blank" class="btn btn-secondary btn-lg">
+      <span data-feather="eye"></span>
+      Náhled
     </button>
   </div>
 </form>

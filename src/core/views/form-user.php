@@ -6,16 +6,18 @@
   <?php if ($action == ACT_EDIT && !empty($name)): ?>
   <div class="row mb-2">
     <div class="col-md">
+      <?php $input = 'name'; ?>
       <div class="form-group">
-        <label for="<?= $formPrefix ?>name">Jméno a&nbsp;příjmení</label>
-        <input type="text" id="<?= $formPrefix ?>name" class="form-control-plaintext" value="<?= $name ?>" readonly>
+        <label for="<?= $formPrefix . $input ?>">Jméno a&nbsp;příjmení</label>
+        <input type="text" id="<?= $formPrefix . $input ?>" class="form-control-plaintext" value="<?= $name ?>" readonly>
       </div>
     </div>
 
     <div class="col-md">
+      <?php $input = 'group'; ?>
       <div class="form-group">
-        <label for="<?= $formPrefix ?>group">Primární skupina/oddělení</label>
-        <input type="text" id="<?= $formPrefix ?>group" class="form-control-plaintext" value="<?= $user['primary_group'] ?>" readonly>
+        <label for="<?= $formPrefix . $input ?>">Primární skupina/oddělení</label>
+        <input type="text" id="<?= $formPrefix . $input ?>" class="form-control-plaintext" value="<?= $user['primary_group'] ?>" readonly>
       </div>
     </div>
   </div>
@@ -35,20 +37,22 @@
 
   <div class="row mb-2">
     <div class="col-md">
+      <?php $input = 'email'; ?>
       <div class="form-group">
-        <label for="<?= $formPrefix ?>email">E-mail</label>
-        <input type="email" name="<?= $formPrefix ?>email" id="<?= $formPrefix ?>email" class="form-control" maxlength="<?= $inputsMaxLengths['email'] ?>" value="<?= $inputsValues['email'] ?>" required>
-        <small class="form-text text-muted">E-mail uživatele, na který budou odesílány cvičné phishingové zprávy. E-mail musí pocházet z domény <?= $_allowedDomains ?>.</small>
+        <label for="<?= $formPrefix . $input ?>">E-mail</label>
+        <input type="email" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
+        <small class="form-text text-muted">E-mail, přes který se uživatel do Phishingatoru přihlašuje a&nbsp;na který mu budou odesílány cvičné phishingové zprávy. E-mail musí pocházet z domény <?= $_allowedDomains ?>.</small>
       </div>
     </div>
 
     <div class="col-md">
+      <?php $input = 'id-user-group'; ?>
       <div class="form-group">
-        <label for="<?= $formPrefix ?>id-user-group">Skupina</label>
-        <select name="<?= $formPrefix ?>id-user-group" id="<?= $formPrefix ?>id-user-group" class="custom-select" required>
+        <label for="<?= $formPrefix . $input ?>">Skupina</label>
+        <select name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="custom-select" required>
           <option value="nothing">Vyberte&hellip;</option>
           <?php foreach ($groups as $group): ?>
-          <option value="<?= $group['id_user_group'] ?>"<?= (($inputsValues['id-user-group'] == $group['id_user_group']) ? ' selected': ''); ?>><?= $group['name'] ?> (opr. <?= $group['role_name'] ?>)</option>
+          <option value="<?= $group['id_user_group'] ?>"<?= (($inputsValues[$input] == $group['id_user_group']) ? ' selected': ''); ?>><?= $group['name'] ?> (opr. <?= $group['role_name'] ?>)</option>
           <?php endforeach; ?>
         </select>
         <small class="form-text text-muted">Skupina, na základě které uživatel zdědí oprávnění do systému.</small>
@@ -153,7 +157,7 @@
   <?php endif; ?>
 
   <div class="text-center">
-    <button type="submit" class="btn btn-primary btn-lg" name="<?= $formPrefix . $action; ?>">
+    <button type="submit" name="<?= $formPrefix . $action ?>" class="btn btn-primary btn-lg">
       <span data-feather="save"></span>
       <?= ($action == ACT_NEW) ? 'Přidat' : 'Uložit změny'; ?>
     </button>

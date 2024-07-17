@@ -19,26 +19,29 @@
       <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
       <div class="row">
+        <?php $input = 'name'; ?>
         <div class="form-group col-xl-10">
-          <label for="<?= $formPrefix ?>name">Název</label>
-          <input type="text" class="form-control" id="<?= $formPrefix ?>name" name="<?= $formPrefix ?>name" maxlength="<?= $inputsMaxLengths['name'] ?>" value="<?= $inputsValues['name'] ?>" required>
+          <label for="<?= $formPrefix . $input ?>">Název</label>
+          <input type="text" class="form-control" id="<?= $formPrefix . $input ?>" name="<?= $formPrefix . $input ?>" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
           <small class="form-text text-muted">Název slouží pouze pro vlastní pojmenování kampaně.</small>
         </div>
 
+        <?php $input = 'id-ticket'; ?>
         <div class="form-group col-xl-6">
-          <label for="<?= $formPrefix ?>id-ticket">Číslo lístku s&nbsp;kampaní (nepovinné)</label>
-          <input type="number" class="form-control" id="<?= $formPrefix ?>id-ticket" name="<?= $formPrefix ?>id-ticket" maxlength="<?= $inputsMaxLengths['id-ticket'] ?>" value="<?= $inputsValues['id-ticket'] ?>" min="1">
+          <label for="<?= $formPrefix . $input ?>">Číslo lístku s&nbsp;kampaní (nepovinné)</label>
+          <input type="number" class="form-control" id="<?= $formPrefix . $input ?>" name="<?= $formPrefix . $input ?>" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" min="1">
           <small class="form-text text-muted">Číslo lístku (ticketu) v&nbsp;RT systému ohledně vytvoření phishingové kampaně.</small>
         </div>
       </div>
 
       <div class="row">
+        <?php $input = 'id-email'; ?>
         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-13">
-          <label for="<?= $formPrefix ?>id-email">Rozesílaný podvodný e-mail</label>
-          <select name="<?= $formPrefix ?>id-email" id="<?= $formPrefix ?>id-email" class="custom-select set-preview-btn" data-preview-btn="#btn-email-preview" data-preview-link="/portal/phishing-emails" required>
+          <label for="<?= $formPrefix . $input ?>">Rozesílaný podvodný e-mail</label>
+          <select name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="custom-select set-preview-btn" data-preview-btn="#btn-email-preview" data-preview-link="/portal/phishing-emails" required>
             <option value="0">Vyberte&hellip;</option>
             <?php foreach ($emails as $email): ?>
-            <option value="<?= $email['id_email']; ?>"<?= (($inputsValues['id-email'] == $email['id_email']) ? ' selected': ''); ?>><?= $email['name'] ?></option>
+            <option value="<?= $email['id_email']; ?>"<?= (($inputsValues[$input] == $email['id_email']) ? ' selected': ''); ?>><?= $email['name'] ?></option>
             <?php endforeach; ?>
           </select>
           <small class="form-text text-muted">Podvodný e-mail, který bude doručen zvoleným příjemcům a&nbsp;ze kterého se budou moci dostat na podvodnou stránku.</small>
@@ -46,7 +49,7 @@
 
         <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-3 text-right">
           <label class="d-none d-sm-block">&nbsp;</label>
-          <a href="/portal/phishing-emails<?= (($inputsValues['id-email']) ? '/' . ACT_PREVIEW . '/' . $inputsValues['id-email'] : '') ?>" target="_blank" class="btn btn-outline-secondary" id="btn-email-preview">
+          <a href="/portal/phishing-emails<?= (($inputsValues[$input]) ? '/' . ACT_PREVIEW . '/' . $inputsValues[$input] : '') ?>" target="_blank" class="btn btn-outline-secondary" id="btn-email-preview">
             <span data-feather="eye"></span>
             Náhled
           </a>
@@ -54,12 +57,13 @@
       </div>
 
       <div class="row">
+        <?php $input = 'id-website'; ?>
         <div class="form-group col-sm-12 col-md-12 col-lg-12 col-xl-13">
-          <label for="<?= $formPrefix ?>id-website">Podvodná webová stránka přístupná z&nbsp;e-mailu</label>
-          <select name="<?= $formPrefix ?>id-website" id="<?= $formPrefix ?>id-website" class="custom-select set-preview-btn" data-preview-btn="#btn-website-preview" data-preview-link="/portal/phishing-websites" required>
+          <label for="<?= $formPrefix . $input ?>">Podvodná webová stránka přístupná z&nbsp;e-mailu</label>
+          <select name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="custom-select set-preview-btn" data-preview-btn="#btn-website-preview" data-preview-link="/portal/phishing-websites" required>
             <option value="0">Vyberte&hellip;</option>
             <?php foreach ($websites as $website): ?>
-            <option value="<?= $website['id_website'] ?>"<?= (($inputsValues['id-website'] == $website['id_website']) ? ' selected': ''); ?>><?= $website['name'] . ' &ndash; ' . $website['url'] ?></option>
+            <option value="<?= $website['id_website'] ?>"<?= (($inputsValues[$input] == $website['id_website']) ? ' selected': ''); ?>><?= $website['name'] . ' &ndash; ' . $website['url'] ?></option>
             <?php endforeach; ?>
           </select>
           <small class="form-text text-muted">Podvodná stránka, na kterou se uživatel dostane přes odkaz v&nbsp;podvodném e-mailu.</small>
@@ -67,68 +71,75 @@
 
         <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-3 text-right">
           <label class="d-none d-sm-block">&nbsp;</label>
-          <a href="/portal/phishing-websites<?= (($inputsValues['id-website']) ? '/' . ACT_PREVIEW . '/' . $inputsValues['id-website'] : '') ?>" target="_blank" class="btn btn-outline-secondary" id="btn-website-preview">
+          <a href="/portal/phishing-websites<?= (($inputsValues[$input]) ? '/' . ACT_PREVIEW . '/' . $inputsValues[$input] : '') ?>" target="_blank" class="btn btn-outline-secondary" id="btn-website-preview">
             <span data-feather="eye"></span>
             Náhled
           </a>
         </div>
       </div>
 
+      <?php $input = 'id-onsubmit'; ?>
       <div class="form-group">
-        <label for="<?= $formPrefix ?>id-onsubmit">Akce po odeslání formuláře</label>
-        <select class="custom-select" id="<?= $formPrefix ?>id-onsubmit" name="<?= $formPrefix ?>id-onsubmit" required>
+        <label for="<?= $formPrefix . $input ?>">Akce po odeslání formuláře</label>
+        <select class="custom-select" id="<?= $formPrefix . $input ?>" name="<?= $formPrefix . $input ?>" required>
           <option value="0">Vyberte&hellip;</option>
           <?php foreach ($websiteActions as $onsubmit): ?>
-          <option value="<?= $onsubmit['id_onsubmit'] ?>"<?= (($inputsValues['id-onsubmit'] == $onsubmit['id_onsubmit'] || ($action == ACT_NEW && empty($inputsValues['id-onsubmit']) && $onsubmit['id_onsubmit'] == CAMPAIGN_DEFAULT_ONSUBMIT_ACTION)) ? ' selected': ''); ?>><?= $onsubmit['name'] ?></option>
+          <option value="<?= $onsubmit['id_onsubmit'] ?>"<?= (($inputsValues[$input] == $onsubmit['id_onsubmit'] || ($action == ACT_NEW && empty($inputsValues[$input]) && $onsubmit['id_onsubmit'] == CAMPAIGN_DEFAULT_ONSUBMIT_ACTION)) ? ' selected': ''); ?>><?= $onsubmit['name'] ?></option>
           <?php endforeach; ?>
         </select>
         <small class="form-text text-muted">Co se stane tehdy, pokud uživatel na podvodné stránce vyplní formulář a&nbsp;klikne na tlačítko pro jeho odeslání.</small>
       </div>
 
       <div class="form-row">
+        <?php $input = 'date-active-since'; ?>
         <div class="form-group col-md-8">
-          <label for="<?= $formPrefix ?>date-active-since">Datum zahájení kampaně</label>
-          <input type="date" class="form-control" id="<?= $formPrefix ?>date-active-since" name="<?= $formPrefix ?>date-active-since" maxlength="<?= $inputsMaxLengths['date-active-since'] ?>" value="<?= $inputsValues['date-active-since']; ?>" min="<?= (($action == ACT_NEW) ? date('Y-m-d') : $inputsValues['date-active-since']) ?>" required>
+          <label for="<?= $formPrefix . $input ?>">Datum zahájení kampaně</label>
+          <input type="date" class="form-control" id="<?= $formPrefix . $input ?>" name="<?= $formPrefix . $input ?>" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input]; ?>" min="<?= (($action == ACT_NEW) ? date('Y-m-d') : $inputsValues[$input]) ?>" required>
           <small class="form-text text-muted">Den, kdy započne rozesílání e-mailů zvoleným příjemcům a&nbsp;zároveň den, od kterého bude přístupná podvodná stránka.</small>
         </div>
 
         <div class="form-group col-md-8">
-          <label for="<?= $formPrefix ?>time-active-since">Čas zahájení</label>
-          <input type="time" class="form-control" id="<?= $formPrefix ?>time-active-since" name="<?= $formPrefix ?>time-active-since" maxlength="<?= $inputsMaxLengths['time-active-since'] ?>" value="<?= $inputsValues['time-active-since'] ?>" required>
+          <?php $input = 'time-active-since'; ?>
+          <label for="<?= $formPrefix . $input ?>">Čas zahájení</label>
+          <input type="time" class="form-control" id="<?= $formPrefix . $input ?>" name="<?= $formPrefix . $input ?>" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
           <small class="form-text text-muted">Čas, kdy se zahájí rozesílání vybraného e-mailu zvoleným příjemcům a&nbsp;kdy začne být dostupná podvodná stránka.</small>
         </div>
       </div>
 
       <div class="form-row">
+        <?php $input = 'date-active-to'; ?>
         <div class="form-group col-md-8">
-          <label for="<?= $formPrefix ?>date-active-to">Datum ukončení kampaně</label>
-          <input type="date" class="form-control" id="<?= $formPrefix ?>date-active-to" name="<?= $formPrefix ?>date-active-to" maxlength="<?= $inputsMaxLengths['date-active-to'] ?>" value="<?= $inputsValues['date-active-to']; ?>" min="<?= (($action == ACT_NEW) ? date('Y-m-d') : $inputsValues['date-active-since']) ?>" required>
+          <label for="<?= $formPrefix . $input ?>">Datum ukončení kampaně</label>
+          <input type="date" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input]; ?>" min="<?= (($action == ACT_NEW) ? date('Y-m-d') : $inputsValues['date-active-since']) ?>" required>
           <small class="form-text text-muted">Do jakého data bude kampaň aktivní, tzn. do jakého data budou sbírány výsledky a&nbsp;do jakého data bude přístupná zvolená podvodná stránka.</small>
         </div>
 
+        <?php $input = 'time-active-to'; ?>
         <div class="form-group col-md-8">
-          <label for="<?= $formPrefix ?>time-active-to">Čas ukončení</label>
-          <input type="time" class="form-control" id="<?= $formPrefix ?>time-active-to" name="<?= $formPrefix ?>time-active-to" maxlength="<?= $inputsMaxLengths['time-active-to'] ?>" value="<?= ($action == ACT_NEW && empty($inputsValues['time-active-to'])) ? '23:59' : $inputsValues['time-active-to'] ?>" required>
+          <label for="<?= $formPrefix . $input ?>">Čas ukončení</label>
+          <input type="time" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= ($action == ACT_NEW && empty($inputsValues[$input])) ? '23:59' : $inputsValues[$input] ?>" required>
           <small class="form-text text-muted">Čas, kdy přestane být podvodná stránka dostupná a&nbsp;uživatel bude při jejím navštívení obratem přesměrován na vzdělávací stránku.</small>
         </div>
       </div>
 
       <div class="form-group">
+        <?php $input = 'send-users-notification'; ?>
         <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="<?= $formPrefix ?>send-users-notification" name="<?= $formPrefix ?>send-users-notification"<?= (($action == ACT_NEW && empty($inputsValues['send-users-notification']) || $inputsValues['send-users-notification']) ? ' checked' : ''); ?>>
-          <label class="custom-control-label" for="<?= $formPrefix ?>send-users-notification">Po ukončení kampaně odeslat příjemcům notifikaci</label>
+          <input type="checkbox" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="custom-control-input"<?= (($action == ACT_NEW && empty($inputsValues[$input]) || $inputsValues[$input]) ? ' checked' : ''); ?>>
+          <label for="<?= $formPrefix . $input ?>" class="custom-control-label">Po ukončení kampaně odeslat příjemcům notifikaci</label>
           <small class="form-text text-muted">Notifikace obsahuje informaci o&nbsp;absolvování cvičného phishingu a&nbsp;odkaz na vzdělávací stránku s&nbsp;indiciemi.</small>
         </div>
       </div>
     </div>
 
     <div class="col-lg-6 col-xl-5">
+      <?php $input = 'recipients'; ?>
       <div class="form-group">
-        <label for="<?= $formPrefix ?>recipients">Seznam příjemců</label>
+        <label for="<?= $formPrefix . $input ?>">Seznam příjemců</label>
         <span class="float-right">
           Celkem: <strong id="countRecipients"><?= $countRecipients ?></strong>
         </span>
-        <textarea name="<?= $formPrefix ?>recipients" id="<?= $formPrefix ?>recipients" class="form-control text-monospace" rows="24" required><?= $recipients ?></textarea>
+        <textarea name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control text-monospace" rows="24" required><?= $recipients ?></textarea>
         <div class="form-text text-muted">
           <div>
             <small>Každý z&nbsp;příjemců musí být umístěn na samostatném řádku.</small>
@@ -264,7 +275,7 @@
   </div>
 
   <div class="text-center">
-    <button type="submit" class="btn btn-primary btn-lg btn-confirm" name="<?= $formPrefix . $action; ?>"<?php if ($action == ACT_EDIT && strtotime($campaign['date_active_since'] . ' ' . $campaign['time_active_since']) <= strtotime('now')): ?> data-confirm="Opravdu chcete upravit kampaň i přesto, že může mít vliv na statistiku a hodnocení kampaně?"<?php endif; ?>>
+    <button type="submit" name="<?= $formPrefix . $action ?>" class="btn btn-primary btn-lg btn-confirm"<?php if ($action == ACT_EDIT && strtotime($campaign['date_active_since'] . ' ' . $campaign['time_active_since']) <= strtotime('now')): ?> data-confirm="Opravdu chcete upravit kampaň i přesto, že může mít vliv na statistiku a hodnocení kampaně?"<?php endif; ?>>
       <span data-feather="save"></span>
       <?= ($action == ACT_NEW) ? 'Přidat' : 'Uložit změny'; ?>
     </button>

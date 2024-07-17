@@ -54,12 +54,12 @@
         </td>
         <td><?= $campaign['count_recipients'] ?></td>
         <td data-sort="<?= $campaign['date_active_since'] . ' ' . $campaign['time_active_since'] ?>">
-          <span class="badge badge-<?= $campaign['date_active_since_color'] ?>">
+          <span class="badge badge-<?= $campaign['date_active_since_color'] ?> cursor-help" title="<?= $campaign['date_active_since_formatted'] . ' od ' . $campaign['time_active_since'] ?>">
             <?= insert_nonbreaking_spaces($campaign['date_active_since_formatted']) ?>
           </span>
         </td>
         <td data-sort="<?= $campaign['date_active_to'] . ' ' . $campaign['time_active_to'] ?>">
-          <span class="badge badge-<?= $campaign['date_active_to_color'] ?>">
+          <span class="badge badge-<?= $campaign['date_active_to_color'] ?> cursor-help" title="<?= $campaign['date_active_to_formatted'] . ' do ' . $campaign['time_active_to'] ?>">
             <?= insert_nonbreaking_spaces($campaign['date_active_to_formatted']) ?>
           </span>
         </td>
