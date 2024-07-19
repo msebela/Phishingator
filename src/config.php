@@ -581,6 +581,9 @@
   /** Rozmazání identit ve statistikách kampaně. */
   define('ACT_STATS_BLUR_IDENTITIES', 'blur-identities');
 
+  /** Zastavení kampaně. */
+  define('ACT_STOP', 'stop');
+
   /** Export dat. */
   define('ACT_EXPORT', 'export');
 

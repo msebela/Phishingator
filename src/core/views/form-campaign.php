@@ -1,12 +1,37 @@
 <hr>
-<?php if ($action == ACT_EDIT && strtotime($campaign['date_active_since'] . ' ' . $campaign['time_active_since']) <= strtotime('now')): ?>
+
+<?php if ($action == ACT_EDIT && $campaignRunning): ?>
 <div class="alert alert-with-icon alert-warning" role="alert">
   <div class="alert-icon pr-1">
     <span data-feather="activity"></span>
   </div>
   <div>
-    <h4 class="alert-heading">Pozor, kampaň již <?= ((strtotime($campaign['date_active_to'] . ' ' . $campaign['time_active_to']) >= strtotime('now')) ? 'běží' : 'proběhla') ?>!</h4>
-    Jakákoliv zásadní úprava kampaně po jejím spuštění (tedy po odeslání prvních e-mailů) může způsobit nevratné změny a&nbsp;zkreslení ve statistice a&nbsp;hodnocení kampaně!
+    <h4 class="alert-heading">Kampaň právě probíhá</h4>
+    <p>Jakákoliv klíčová úprava parametrů kampaně po jejím spuštění (tedy po odeslání prvních e-mailů) může způsobit nevratné akce a&nbsp;zkreslení ve výsledné statistice kampaně!</p>
+    <form method="post" action="/portal/<?= $urlSection . '/' . ACT_STOP . '/' . $campaign['id_campaign'] ?>">
+      <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+
+      <button type="submit" name="<?= $formPrefix . $action ?>" class="btn btn-danger btn-confirm" data-confirm="Opravdu chcete kampaň předčasně ukončit? Dojde tak k okamžitému znepřístupnění podvodné stránky (uživatelé budou při vstupu na podvodnou stránku automaticky přesměrováni na vzdělávací stránku) a případně (podle nastavení kampaně) dojde k rozeslání notifikací o absolvování cvičného phishingu.">
+        <span data-feather="x-octagon"></span>
+        Předčasně ukončit
+      </button>
+    </form>
+  </div>
+</div>
+
+<hr>
+<?php elseif ($action == ACT_EDIT && $campaignEnded): ?>
+<div class="alert alert-with-icon alert-info" role="alert">
+  <div class="alert-icon pr-1">
+    <span data-feather="flag"></span>
+  </div>
+  <div>
+    <h4 class="alert-heading">Kampaň již proběhla</h4>
+    <p>Jakákoliv klíčová úprava parametrů kampaně po jejím ukončení (kromě změny názvu a&nbsp;čísla lístku) může způsobit nevratné akce a&nbsp;zkreslení ve výsledné statistice kampaně!</p>
+    <a href="/portal/<?= $urlSection . '/' . ACT_STATS . '/' . $campaign['id_campaign'] ?>" class="btn btn-info">
+      <span data-feather="bar-chart"></span>
+      Přejít na výsledky
+    </a>
   </div>
 </div>
 
@@ -275,7 +300,7 @@
   </div>
 
   <div class="text-center">
-    <button type="submit" name="<?= $formPrefix . $action ?>" class="btn btn-primary btn-lg btn-confirm"<?php if ($action == ACT_EDIT && strtotime($campaign['date_active_since'] . ' ' . $campaign['time_active_since']) <= strtotime('now')): ?> data-confirm="Opravdu chcete upravit kampaň i přesto, že může mít vliv na statistiku a hodnocení kampaně?"<?php endif; ?>>
+    <button type="submit" name="<?= $formPrefix . $action ?>" class="btn btn-primary btn-lg btn-confirm"<?php if ($action == ACT_EDIT && $campaignRunning || $campaignEnded): ?> data-confirm="Opravdu chcete upravit kampaň i přesto, že může mít vliv na výslednou statistiku kampaně?"<?php endif; ?>>
       <span data-feather="save"></span>
       <?= ($action == ACT_NEW) ? 'Přidat' : 'Uložit změny'; ?>
     </button>

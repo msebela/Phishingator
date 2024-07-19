@@ -124,7 +124,9 @@
       $this->dbRecordData = Database::querySingle('
               SELECT `id_campaign`, `id_by_user`, `id_email`, `id_website`, `id_onsubmit`, `id_ticket`, `name`, `date_active_since`, `date_active_to`, `send_users_notification`,
               `time_active_since`, DATE_FORMAT(time_active_since, "%H:%i") AS `time_active_since`,
-              `time_active_to`, DATE_FORMAT(time_active_to, "%H:%i") AS `time_active_to`
+              `time_active_to`, DATE_FORMAT(time_active_to, "%H:%i") AS `time_active_to`,
+              TIMESTAMP(date_active_since, time_active_since) AS `datetime_active_since`,
+              TIMESTAMP(date_active_to, time_active_to) AS `datetime_active_to`
               FROM `phg_campaigns`
               WHERE `id_campaign` = ?
               AND `visible` = 1
@@ -203,7 +205,9 @@
               DATE_FORMAT(date_active_since, "%e. %c. %Y") AS `date_active_since_formatted`,
               DATE_FORMAT(date_active_to, "%e. %c. %Y") AS `date_active_to_formatted`,
               DATE_FORMAT(time_active_since, "%k:%i") AS `time_active_since`,
-              DATE_FORMAT(time_active_to, "%k:%i") AS `time_active_to`
+              DATE_FORMAT(time_active_to, "%k:%i") AS `time_active_to`,
+              TIMESTAMP(date_active_since, time_active_since) AS `datetime_active_since`,
+              TIMESTAMP(date_active_to, time_active_to) AS `datetime_active_to`
               FROM `phg_campaigns`
               JOIN `phg_users`
               ON phg_campaigns.id_by_user = phg_users.id_user
@@ -258,7 +262,9 @@
               phg_websites.name AS `website_name`, phg_websites.url,
               DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y") AS `date_added_formatted`,
               DATE_FORMAT(date_active_since, "%e. %c. %Y") AS `date_active_since_formatted`,
-              DATE_FORMAT(date_active_to, "%e. %c. %Y") AS `date_active_to_formatted`
+              DATE_FORMAT(date_active_to, "%e. %c. %Y") AS `date_active_to_formatted`,
+              TIMESTAMP(date_active_since, time_active_since) AS `datetime_active_since`,
+              TIMESTAMP(date_active_to, time_active_to) AS `datetime_active_to`
               FROM `phg_campaigns`
               JOIN `phg_users`
               ON phg_campaigns.id_by_user = phg_users.id_user
@@ -356,6 +362,25 @@
               WHERE ' . $query . '
               AND `visible` = 1
       ', $year);
+    }
+
+
+    /**
+     * Ověří, zdali je daná kampaň aktivní.
+     *
+     * @param int $idCampaign          ID kampaně
+     * @return bool                    TRUE, pokud je kampaň aktivní, jinak FALSE
+     */
+    private static function isCampaignActive($idCampaign) {
+      $campaing = Database::querySingle('
+              SELECT `id_campaign`
+              FROM `phg_campaigns`
+              WHERE `id_campaign` = ?
+              AND TIMESTAMP(`date_active_since`, `time_active_since`) <= NOW() AND TIMESTAMP(`date_active_to`, `time_active_to`) >= NOW()
+              AND `visible` = 1
+      ', $idCampaign);
+
+      return !empty($campaing['id_campaign']);
     }
 
 
@@ -797,7 +822,8 @@
     /**
      * Upraví zvolenou kampaň v databázi.
      *
-     * @param int $id                  ID kampaně
+     * @param int $id ID kampaně
+     * @throws UserError
      */
     public function updateCampaign($id) {
       $campaign = $this->makeCampaign();
@@ -839,12 +865,8 @@
      * @throws UserError
      */
     public function deleteCampaign($id) {
-      $activeCampaigns = self::getActiveCampaigns();
-
-      foreach ($activeCampaigns as $campaign) {
-        if ($campaign['id_campaign'] == $id) {
-          throw new UserError('Nelze smazat kampaň, která je právě aktivní.', MSG_ERROR);
-        }
+      if ($this->isCampaignActive($id)) {
+        throw new UserError('Nelze smazat kampaň, která je právě aktivní.', MSG_ERROR);
       }
 
       $result = Database::update(
@@ -861,6 +883,33 @@
       }
 
       Logger::info('Phishing campaign deleted.', $id);
+    }
+
+
+    /**
+     * Ukončí zvolenou kampaň.
+     *
+     * @param int $id                  ID kampaně
+     * @throws UserError
+     */
+    public static function stopCampaign($id) {
+      if (!self::isCampaignActive($id)) {
+        throw new UserError('Nelze zastavit kampaň, která není aktivní.', MSG_ERROR);
+      }
+
+      $currenteDatetime = [
+        'date_active_to' => date('Y-m-d'),
+        'time_active_to' => date('H:i:s')
+      ];
+
+      Database::update(
+        'phg_campaigns',
+        $currenteDatetime,
+        'WHERE `id_campaign` = ? AND `visible` = 1',
+        $id
+      );
+
+      Logger::info('Phishing campaign stopped.', $id);
     }
 
 

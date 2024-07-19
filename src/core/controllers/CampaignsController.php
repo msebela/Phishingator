@@ -39,6 +39,9 @@
         elseif ($_GET['action'] == ACT_STATS && $id !== false) {
           $this->processStats($model, $id);
         }
+        elseif ($_GET['action'] == ACT_STOP && $id !== false) {
+          $this->processStop($model, $id);
+        }
         elseif ($_GET['action'] == ACT_EXPORT && $id !== false && isset($_GET['data'])) {
           $this->processExportStats($model, $id, $_GET['data']);
         }
@@ -116,13 +119,18 @@
       $this->setTitle('Úprava kampaně');
       $this->setView('form-campaign');
 
+      $campaign = $model->getCampaign($idCampaign);
+
       $model->initForm($formData['inputsNames'], $formData['formPrefix'], $formData['dbTable']);
-      $this->setViewData('campaign', $model->getCampaign($idCampaign));
 
       // Ověření existence záznamu.
-      $this->checkRecordExistence($this->getData('campaign'));
+      $this->checkRecordExistence($campaign);
 
       $this->initViewData($model, ACT_EDIT, $formData['formPrefix']);
+
+      $this->setViewData('campaign', $campaign);
+      $this->setViewData('campaignRunning', strtotime($campaign['datetime_active_since']) <= strtotime('now') && strtotime($campaign['datetime_active_to']) > strtotime('now'));
+      $this->setViewData('campaignEnded', strtotime($campaign['datetime_active_to']) <= strtotime('now'));
 
       // Data z databáze pro vstupní pole.
       $this->setViewData('emails', PhishingEmailModel::getPhishingEmails());
@@ -177,7 +185,7 @@
       $this->checkRecordExistence($campaign);
 
       // Ověření, zdali se uživatel nepokouší zobrazit statistiku pro kampaň, která zatím nebyla spuštěna.
-      if (strtotime($campaign['date_active_since'] . ' ' . $campaign['time_active_since']) >= strtotime('now')) {
+      if (strtotime($campaign['datetime_active_since']) > strtotime('now')) {
         $this->addMessage(MSG_WARNING, 'Nelze zobrazit statistiku pro kampaň, u které zatím nedošlo k zahájení a odeslání e-mailů.');
         $this->redirect($this->urlSection);
       }
@@ -275,6 +283,32 @@
 
 
     /**
+     * Zavolá metodu pro okamžité zastavení kampaně.
+     *
+     * @param CampaignModel $model     Instance třídy
+     * @param int $idCampaign          ID kampaně
+     * @return void
+     */
+    private function processStop($model, $idCampaign) {
+      $this->checkPermission(PERMISSION_TEST_MANAGER);
+
+      if (isset($_POST)) {
+        try {
+          $model->isValidCsrfToken($_POST);
+          $model->stopCampaign($idCampaign);
+
+          $this->addMessage(MSG_SUCCESS, 'Předčasné ukončení proběhlo úspěšně.');
+        }
+        catch (UserError $error) {
+          $this->addMessage($error->getCode(), $error->getMessage());
+        }
+
+        $this->redirect($this->urlSection . '/' . ACT_EDIT . '/' . $idCampaign);
+      }
+    }
+
+
+    /**
      * Nastaví u konkrétního záznamu uživatele v kampani příznak,
      * že došlo k uživatelskému nahlášení phishingu.
      *
@@ -283,6 +317,8 @@
      * @return void
      */
     private function processReportPhish($model, $idCampaign) {
+      $this->checkPermission(PERMISSION_TEST_MANAGER);
+
       if (isset($_POST)) {
         try {
           $model->isValidCsrfToken($_POST);
@@ -311,6 +347,8 @@
      * @return void
      */
     private function processBlurIdentities($model) {
+      $this->checkPermission(PERMISSION_TEST_MANAGER);
+
       if (isset($_POST)) {
         try {
           $model->isValidCsrfToken($_POST);

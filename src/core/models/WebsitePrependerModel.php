@@ -573,7 +573,7 @@
       }
 
       // Stránka bude přístupná a bude zaznamenávat aktivitu od/do zvoleného data a času.
-      if (strtotime($campaign['date_active_since'] . ' ' . $campaign['time_active_since']) > strtotime('now') || strtotime($campaign['date_active_to'] . ' ' . $campaign['time_active_to']) < strtotime('now')) {
+      if (strtotime($campaign['datetime_active_since']) > strtotime('now') || strtotime($campaign['datetime_active_to']) < strtotime('now')) {
         $args[] = self::getClientIp();
         Logger::warning('Invalid access a phishing website for a phishing campaign that is not active.', $args);
 
