@@ -599,7 +599,7 @@
           $result[$key]['domain'] = $domain;
 
           // Ověření, zdali je daný uživatel vyplněn mezi příjemci.
-          $result[$key]['checked'] = (strpos($allRecipients, $recipient['email']) !== false) ? 1 : 0;
+          $result[$key]['checked'] = (str_contains($allRecipients, $recipient['email'])) ? 1 : 0;
 
           // Určení barvy uživatele na základě oprávnění ve Phishingatoru.
           $result[$key]['color'] = UserGroupsModel::getColorGroupRoleByUsername(

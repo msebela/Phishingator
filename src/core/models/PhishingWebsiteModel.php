@@ -825,7 +825,7 @@
     private function isURLPathValid() {
       $path = parse_url(str_replace(VAR_RECIPIENT_URL, 'var', $this->url), PHP_URL_PATH);
 
-      if (!empty($path) && (strpos($path, './') !== false || strpos($path, '//') !== false)) {
+      if (!empty($path) && (str_contains($path, './') || str_contains($path, '//'))) {
         throw new UserError('Adresářová cesta v URL adrese podvodné stránky nemůže obsahovat výraz //, ../ a podobné pro přecházení mezi adresáři.', MSG_ERROR);
       }
       elseif (!empty($path) && preg_match('/[^A-Za-z0-9\/._-]/', $path, $matches)) {

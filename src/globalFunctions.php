@@ -11,7 +11,7 @@
    * @param string $className          Název třídy
    */
   function autoload_functions($className) {
-    if (preg_match('/Controller$/', $className)) {
+    if (str_ends_with($className, 'Controller')) {
       require CORE_DOCUMENT_ROOT . '/' . CORE_DIR_CONTROLLERS . '/' . $className . '.php';
     }
 
@@ -186,6 +186,18 @@
     }
 
     return $number;
+  }
+
+
+  /**
+   * Vrátí počet položek uložených v řetězci a oddělených konkrétním symbolem.
+   *
+   * @param string $separator          Oddělovač položek
+   * @param string $string             Řetězec s položkami
+   * @return int                       Počet položek v řetězci
+   */
+  function get_sum_items_in_string($separator, $string) {
+    return count(explode($separator, trim($string, $separator)));
   }
 
 

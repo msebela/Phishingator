@@ -239,11 +239,11 @@
       $changes = false;
 
       foreach ($files as $file) {
-        if (strpos($file, PHISHING_WEBSITE_CONF_EXT) !== false) {
+        if (str_contains($file, PHISHING_WEBSITE_CONF_EXT)) {
           $filepath = PHISHING_WEBSITE_CONF_DIR . $file;
 
           $serverName = self::pregMatchInFile($filepath, '/ServerName (.*)/');
-          $serverNameWithProtocol = (strpos($serverName, 'https') !== 0 ? 'https://' : '') . $serverName;
+          $serverNameWithProtocol = (!str_starts_with($serverName, 'https') ? 'https://' : '') . $serverName;
 
           if (filter_var($serverNameWithProtocol, FILTER_VALIDATE_URL)) {
             // Aktivace podvodné stránky.

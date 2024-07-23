@@ -79,7 +79,7 @@
       $this->setViewData('websites', PhishingWebsiteModel::getActivePhishingWebsites());
       $this->setViewData('websiteActions', $model->getWebsiteActions());
       $this->setViewData('recipients', ($_POST[$model->formPrefix . 'recipients'] ?? ''));
-      $this->setViewData('countRecipients', count(explode(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients'))) - 1);
+      $this->setViewData('countRecipients', get_sum_items_in_string(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients')));
 
       if (PermissionsModel::getUserRole() == PERMISSION_ADMIN) {
         $this->setViewData('recipientsVolunteers', $model->getVolunteersRecipients($this->getData('recipients')));
@@ -137,7 +137,7 @@
       $this->setViewData('websites', PhishingWebsiteModel::getActivePhishingWebsites());
       $this->setViewData('websiteActions', $model->getWebsiteActions());
       $this->setViewData('recipients', ($_POST[$model->formPrefix . 'recipients'] ?? $model->getCampaignRecipients($idCampaign, true)));
-      $this->setViewData('countRecipients', count(explode(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients'))) - 1);
+      $this->setViewData('countRecipients', get_sum_items_in_string(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients')));
 
       if (PermissionsModel::getUserRole() == PERMISSION_ADMIN) {
         $this->setViewData('recipientsVolunteers', $model->getVolunteersRecipients($this->getData('recipients')));
@@ -290,8 +290,6 @@
      * @return void
      */
     private function processStop($model, $idCampaign) {
-      $this->checkPermission(PERMISSION_TEST_MANAGER);
-
       if (isset($_POST)) {
         try {
           $model->isValidCsrfToken($_POST);
@@ -317,8 +315,6 @@
      * @return void
      */
     private function processReportPhish($model, $idCampaign) {
-      $this->checkPermission(PERMISSION_TEST_MANAGER);
-
       if (isset($_POST)) {
         try {
           $model->isValidCsrfToken($_POST);
@@ -347,8 +343,6 @@
      * @return void
      */
     private function processBlurIdentities($model) {
-      $this->checkPermission(PERMISSION_TEST_MANAGER);
-
       if (isset($_POST)) {
         try {
           $model->isValidCsrfToken($_POST);
