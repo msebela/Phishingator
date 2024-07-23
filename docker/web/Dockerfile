@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 ENV TZ="Europe/Prague"
 ENV APACHE_DOCUMENT_ROOT="/var/www/phishingator/public/"
