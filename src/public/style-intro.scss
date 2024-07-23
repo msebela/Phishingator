@@ -314,21 +314,18 @@ a.btn {
   .phishing-sign {
     position: absolute;
     right: -20px;
-    top: -25px;
+    bottom: -20px;
     font-size: 1rem;
-    color: #fff;
-    padding: 5px 10px 5px 5px;
+    padding: 6px 8px;
     text-transform: uppercase;
     font-weight: bold;
+    color: #fff;
     border-radius: 10px;
-    transform: rotate(8deg);
+    transform: rotate(-8deg);
     z-index: 1;
 
-    @media only screen and (max-width: 480px) {
-      top: -35px;
-      left: 0;
-      right: unset;
-      transform: rotate(-4deg);
+    @include media-breakpoint-down(sm) {
+      right: -10px;
     }
   }
 }

@@ -24,36 +24,39 @@
 
     <div class="window-wrapper">
       <div class="window">
-        <div class="row">
-          <div class="column left">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-          </div>
-          <div class="column middle header"></div>
-          <div class="column right">
-            <div>
-              <span class="bar"></span>
-              <span class="bar"></span>
-              <span class="bar"></span>
+        <div class="container header">
+          <div class="row">
+            <div class="col">
+              <div class="traffic-lights-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <div class="col">
+              <div class="bar-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="content">
+        <div class="container content">
           <div class="row">
-            <div class="col-sm-3"><strong>Od:</strong></div>
+            <div class="col-md-3"><strong>Od:</strong></div>
             <div class="col"><?= $_email['sender'] ?></div>
           </div>
           <div class="row">
-            <div class="col-sm-3"><strong>Předmět:</strong></div>
+            <div class="col-md-3"><strong>Předmět:</strong></div>
             <div class="col"><?= $_email['subject'] ?></div>
           </div>
           <div class="row">
-            <div class="col-sm-3"><strong>Komu:</strong></div>
+            <div class="col-md-3"><strong>Komu:</strong></div>
             <div class="col"><?= $email['recipient_email'] ?></div>
           </div>
           <div class="row">
-            <div class="col-sm-3"><strong>Datum:</strong></div>
+            <div class="col-md-3"><strong>Datum:</strong></div>
             <div class="col"><?= $email['datetime_sent_formatted'] ?></div>
           </div>
           <hr>
@@ -62,6 +65,10 @@
               <?= $_email['body'] ?>
             </div>
           </div>
+        </div>
+        <div class="phishing-sign bg-danger" title="Podvodný e-mail">
+          <span data-feather="alert-triangle"></span>
+          Phishing
         </div>
       </div>
     </div>
@@ -96,33 +103,37 @@
 
   <div class="window-wrapper mb-5">
     <div class="window">
-      <div class="row">
-        <div class="column left">
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-        </div>
-        <div class="column middle header">
-          <div class="url<?php if ($website['http']): ?> http<?php endif; ?>">
-            <?php if ($website['http']): ?><span data-feather="alert-triangle"></span>&nbsp;Nezabezpečeno | <?php else: ?><span data-feather="lock"></span><?php endif; ?>
-            <?= $website['url_before_domain'] ?><a href="#indication-url-text" id="indication-url" class="indication anchor-link mark-indication" data-indication="url"><?= $website['domain'] ?><div class="icons top"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a><?= $website['url_after_domain'] ?>
+      <div class="container header">
+        <div class="row">
+          <div class="col col-2">
+            <div class="traffic-lights-menu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
-          <div class="phishing-sign bg-danger">
-            <span data-feather="x"></span>
-            Phishing
+          <div class="col title">
+            <div class="url<?php if ($website['http']): ?> http<?php endif; ?>">
+              <?php if ($website['http']): ?><span data-feather="alert-triangle"></span>&nbsp;Nezabezpečeno | <?php else: ?><span data-feather="lock"></span><?php endif; ?>
+              <?= $website['url_before_domain'] ?><a href="#indication-url-text" id="indication-url" class="indication anchor-link mark-indication" data-indication="url"><?= $website['domain'] ?><div class="icons top"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a><?= $website['url_after_domain'] ?>
+            </div>
           </div>
-        </div>
-        <div class="column right">
-          <div>
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
+          <div class="col col-1">
+            <div class="bar-menu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
         </div>
       </div>
-      <div class="content phishing-website-detail">
+      <div class="container content screenshot">
         <img src="<?= $website['image_src'] ?>" alt="Screenshot podvodné stránky">
         <div class="screenshot-shadow"></div>
+      </div>
+      <div class="phishing-sign bg-danger" title="Podvodný web">
+        <span data-feather="alert-triangle"></span>
+        Phishing
       </div>
     </div>
   </div>

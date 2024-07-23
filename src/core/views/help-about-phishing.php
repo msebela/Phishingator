@@ -93,36 +93,39 @@
 
 <div class="container">
   <div class="window">
-    <div class="row">
-      <div class="column left">
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-      </div>
-      <div class="column middle header"></div>
-      <div class="column right">
-        <div>
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
+    <div class="container header">
+      <div class="row">
+        <div class="col">
+          <div class="traffic-lights-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        <div class="col">
+          <div class="bar-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </div>
       </div>
     </div>
-    <div class="content">
+    <div class="container content">
       <div class="row">
-        <div class="col-sm-3 col-md-2"><strong>Od:</strong></div>
+        <div class="col-lg-3"><strong>Od:</strong></div>
         <div class="col"><?= $phishing['org'] ?> &lt;<a href="#indication-1-text" id="indication-1" class="indication anchor-link mark-indication" data-indication="1">admin@web<?= $phishing['orgDomain'] ?><div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>&gt;</div>
       </div>
       <div class="row">
-        <div class="col-sm-3 col-md-2"><strong>Předmět:</strong></div>
+        <div class="col-lg-3"><strong>Předmět:</strong></div>
         <div class="col">Kalendář plánu mezd <?= date('Y') + 1 ?> je nyní k&nbsp;dispozici (důležitý)</div>
       </div>
       <div class="row">
-        <div class="col-sm-3 col-md-2"><strong>Komu:</strong></div>
+        <div class="col-lg-3"><strong>Komu:</strong></div>
         <div class="col"><?= $phishing['recipient'] ?></div>
       </div>
       <div class="row">
-        <div class="col-sm-3 col-md-2"><strong>Datum:</strong></div>
+        <div class="col-lg-3"><strong>Datum:</strong></div>
         <div class="col"><?= date('j. n. Y H:i') ?></div>
       </div>
       <hr>
