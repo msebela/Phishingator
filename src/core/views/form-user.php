@@ -114,7 +114,7 @@
           <th colspan="2">Podvodný e-mail</th>
           <th colspan="2">Podvodná stránka</th>
           <th class="data-sort">Odesláno</th>
-          <th>Reakce uživatele</th>
+          <th colspan="2">Reakce uživatele</th>
         </tr>
       </thead>
       <tbody>
@@ -148,6 +148,13 @@
             <span class="badge badge-<?= $campaign['user_response']['css_color_class'] ?>">
               <?= $campaign['user_response']['name'] ?>
             </span>
+          </td>
+          <td>
+            <?php if ($campaign['user_response']['id_action'] != CAMPAIGN_NO_REACTION_ID): ?>
+            <a href="/portal/campaigns/<?= ACT_STATS . '/' . $campaign['id_campaign'] . '?' . ACT_STATS_WEBSITE_ACTIONS . '&amp;rows=' . $user['id_user'] . '#d' . $campaign['user_response']['id_captured_data'] ?>" class="badge badge-secondary" role="button" title="Náhled">
+              <span data-feather="eye"></span>
+            </a>
+            <?php endif; ?>
           </td>
         </tr>
         <?php endforeach; ?>

@@ -1081,8 +1081,8 @@
 
 
     /**
-     * Vrátí nejhorší možnou reakci uživatele, kterou mohl v konkrétní kampani udělat. Pokud na kampaň nereagoval,
-     * výsledek bude akce "bez reakce".
+     * Vrátí nejhorší možnou reakci uživatele, kterou mohl ve vybrané kampani provést.
+     * Pokud na kampaň nereagoval, výsledek bude akce "bez reakce".
      *
      * @param int $idCampaign          ID kampaně
      * @param int $idUser              ID uživatele
@@ -1093,7 +1093,7 @@
 
       if ($idCampaign && $idUser) {
         $result = Database::querySingle('
-              SELECT phg_captured_data.id_action,
+              SELECT phg_captured_data.id_captured_data, phg_captured_data.id_action,
               `name`, `css_color_class`
               FROM `phg_captured_data`
               JOIN `phg_captured_data_actions`

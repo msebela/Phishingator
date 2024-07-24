@@ -272,8 +272,10 @@
     </thead>
     <tbody>
       <?php $i = count($capturedData); foreach ($capturedData as $data): ?>
-      <tr id="r<?= $i ?>"<?php if (isset($_GET['rows']) && $_GET['rows'] == $data['id_user']): ?> class="table-primary"<?php endif; ?>>
-        <td id="d<?= $data['id_captured_data'] ?>">
+      <tr<?php if (isset($_GET['rows']) && $_GET['rows'] == $data['id_user']): ?> class="table-primary"<?php endif; ?>>
+        <td>
+          <a id="d<?= $data['id_captured_data'] ?>" class="hidden-anchor-link"></a>
+          <a id="r<?= $i ?>" class="hidden-anchor-link"></a>
           <a href="#r<?= $i ?>" class="text-dark">
             <abbr title="Identifikátor a odkaz na tento záznam v rámci této kampaně" class="initialism cursor-help"><?= $i--; ?></abbr>
           </a>
