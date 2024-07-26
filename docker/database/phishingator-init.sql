@@ -123,9 +123,10 @@ CREATE TABLE `phg_emails_indications` (
   `id_indication` int(10) UNSIGNED NOT NULL,
   `id_by_user` mediumint(8) UNSIGNED NOT NULL,
   `id_email` smallint(5) UNSIGNED NOT NULL,
+  `position` tinyint(3) UNSIGNED NOT NULL,
   `expression` varchar(32) COLLATE utf8mb3_czech_ci NOT NULL,
   `title` varchar(32) COLLATE utf8mb3_czech_ci NOT NULL,
-  `description` varchar(128) COLLATE utf8mb3_czech_ci NOT NULL,
+  `description` varchar(256) COLLATE utf8mb3_czech_ci NOT NULL,
   `date_added` datetime NOT NULL,
   `visible` tinyint(1) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_czech_ci;

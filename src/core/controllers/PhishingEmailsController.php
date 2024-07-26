@@ -178,7 +178,7 @@
       $modelIndication = new EmailIndicationsModel();
 
       $formData = [
-        'inputsNames' => ['expression', 'title', 'description'],
+        'inputsNames' => ['position', 'expression', 'title', 'description'],
         'formPrefix' => 'phishing-indication-',
         'dbTable' => 'phg_emails_indications'
       ];

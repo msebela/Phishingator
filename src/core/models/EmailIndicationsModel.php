@@ -18,12 +18,17 @@
     public $email;
 
     /**
-     * @var string      Výraz (část textu), který představuje indicii k rozpoznání phishingu.
+     * @var int         Pořadí indicie při výpisu v seznamu indicií u podvodného e-mailu.
+     */
+    protected $position;
+
+    /**
+     * @var string      Výraz (podezřelý text), který představuje indicii k rozpoznání phishingu.
      */
     protected $expression;
 
     /**
-     * @var string      Krátký název indicie.
+     * @var string      Název indicie.
      */
     protected $title;
 
@@ -37,7 +42,7 @@
      * Načte a zpracuje předaná data.
      *
      * @param array $data              Vstupní data
-     * @throws UserError               Výjimka platná tehdy, pokud CSRF token neodpovídá původně vygenerovanému.
+     * @throws UserError
      */
     public function load($data) {
       parent::load($data);
@@ -54,6 +59,7 @@
     private function makeEmailIndication() {
       return [
         'id_email' => $this->idEmail,
+        'position' => $this->position,
         'expression' => $this->expression,
         'title' => $this->title,
         'description' => $this->description
@@ -69,7 +75,7 @@
      */
     public function getEmailIndication($id) {
       $this->dbRecordData = Database::querySingle('
-                              SELECT `expression`, `title`, `description`
+                              SELECT `position`, `expression`, `title`, `description`
                               FROM `phg_emails_indications`
                               WHERE `id_indication` = ?
                               AND `visible` = 1
@@ -87,11 +93,11 @@
      */
     public static function getEmailIndications($idEmail) {
       return Database::queryMulti('
-              SELECT `id_indication`, `expression`, `title`, `description`
+              SELECT `id_indication`, `position`, `expression`, `title`, `description`
               FROM `phg_emails_indications`
               WHERE `id_email` = ?
               AND `visible` = 1
-              ORDER BY `id_indication`
+              ORDER BY `position`, `id_indication`
       ', $idEmail);
     }
 
@@ -238,6 +244,10 @@
      * @throws UserError
      */
     public function validateData() {
+      $this->isPositionEmpty();
+      $this->isPositionNumeric();
+      $this->isPositionInLimit();
+
       $this->isExpressionEmpty();
       $this->isExpressionTooLong();
       $this->existExpressionInText();
@@ -250,52 +260,87 @@
 
 
     /**
-     * Ověří, zdali byla vyplněna indicie k rozpoznání phishingu.
+     * Ověří, zdali bylo vyplněno pořadí indicie.
+     *
+     * @throws UserError
+     */
+    private function isPositionEmpty() {
+      if (empty($this->position)) {
+        throw new UserError('Pořadí indicie nebylo vyplněno.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali je pořadí indicie zadáno číselně.
+     *
+     * @throws UserError
+     */
+    private function isPositionNumeric() {
+      if (!is_numeric($this->position)) {
+        throw new UserError('Pořadí indicie není zadáno číselně.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali je pořadí indicie v číselném intervalu.
+     *
+     * @throws UserError
+     */
+    private function isPositionInLimit() {
+      if ($this->position < 0 || $this->position > 100) {
+        throw new UserError('Pořadí indicie je mimo povolený interval.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali byl vyplněn podezřelý text k rozpoznání phishingu.
      *
      * @throws UserError
      */
     private function isExpressionEmpty() {
       if (empty($this->expression)) {
-        throw new UserError('Není vyplněna indicie.', MSG_ERROR);
+        throw new UserError('Není vyplněn podezřelý text.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali zadaná indicie není příliš dlouhá.
+     * Ověří, zdali zadaný podezřelý text není příliš dlouhý.
      *
      * @throws UserError
      */
     private function isExpressionTooLong() {
       if (mb_strlen($this->expression) > $this->inputsMaxLengths['expression']) {
-        throw new UserError('Popsaná indicie je příliš dlouhá.', MSG_ERROR);
+        throw new UserError('Podezřelý text je příliš dlouhý.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali se výraz představující indicii opravdu nalézá v těle e-mailu (popř. nebo jestli se jedná
-     * o povolenou proměnnou).
+     * Ověří, zdali se podezřelý text opravdu nalézá v těle e-mailu (popř. jestli se jedná o proměnnou).
      *
      * @throws UserError
      */
     private function existExpressionInText() {
       if (mb_strpos($this->email, $this->expression) === false
           && !in_array($this->expression, self::getEmailIndicationsVariables())) {
-        throw new UserError('Popsaná indicie nebyla v těle e-mailu nalezena.', MSG_ERROR);
+        throw new UserError('Podezřelý text nebyl v těle e-mailu nalezen.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali výraz představující indicii není již mezi ostatními indiciemi (tzn. jestli je unikátní).
+     * Ověří, zdali podezřelý text není již mezi ostatními indiciemi (tzn. jestli je unikátní).
      *
      * @param int $idIndication        ID indicie (nepovinný parametr), aby se při úpravě vyloučila upravovaná indicie.
      * @throws UserError
      */
     private function isExpressionUnique($idIndication = 0) {
       if (self::existEmailIndication($this->idEmail, $this->expression, $idIndication) > 0) {
-        throw new UserError('Popsaná indicie je již jednou vedena mezi ostatními indiciemi.', MSG_ERROR);
+        throw new UserError('Podezřelý text je již jednou veden mezi ostatními indiciemi.', MSG_ERROR);
       }
     }
 
@@ -307,7 +352,7 @@
      */
     private function isTitleEmpty() {
       if (empty($this->title)) {
-        throw new UserError('Není vyplněn nadpis indicie.', MSG_ERROR);
+        throw new UserError('Není vyplněn název indicie.', MSG_ERROR);
       }
     }
 
@@ -319,7 +364,7 @@
      */
     private function isTitleTooLong() {
       if (mb_strlen($this->title) > $this->inputsMaxLengths['title']) {
-        throw new UserError('Nadpis indicie je příliš dlouhý.', MSG_ERROR);
+        throw new UserError('Název indicie je příliš dlouhý.', MSG_ERROR);
       }
     }
 
