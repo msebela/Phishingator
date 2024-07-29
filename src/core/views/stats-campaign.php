@@ -53,7 +53,7 @@
             <span data-feather="eye"></span>
           </a>
         </td>
-        <td class="nowrap">
+        <td>
           <?= $campaign['website_name'] ?><br>
           <span class="badge badge-<?= $campaign['url_protocol_color'] ?>"><?= $campaign['url_protocol'] ?></span><?= str_replace(VAR_RECIPIENT_URL, '<code>' . VAR_RECIPIENT_URL . '</code>', $campaign['url']) ?>
         </td>

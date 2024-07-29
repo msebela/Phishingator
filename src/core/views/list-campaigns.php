@@ -9,8 +9,8 @@
         <th scope="col">Název</th>
         <th scope="col" class="data-sort">Přidáno</th>
         <th scope="col" class="minw-5-rem">Přidal</th>
-        <th scope="col" colspan="2">E-mail</th>
-        <th scope="col" class="minw-10-rem">Podvodná stránka</th>
+        <th scope="col" colspan="2">Podvodný e-mail</th>
+        <th scope="col" colspan="2" class="minw-10-rem">Podvodná stránka</th>
         <th scope="col" class="minw-110-px">Příjemců</th>
         <th scope="col" class="data-sort minw-110-px">Aktivní od</th>
         <th scope="col" class="data-sort minw-110-px">Aktivní do</th>
@@ -51,6 +51,11 @@
           <span class="badge badge-<?= $campaign['url_protocol_color'] ?>">
             <?= $campaign['url_protocol'] ?>
           </span>://<?= get_hostname_from_url($campaign['url_protocol'] . $campaign['url']) ?>
+        </td>
+        <td class="pl-0">
+          <a href="/portal/phishing-websites/<?= ACT_PREVIEW . '/' . $campaign['id_website'] ?>" class="badge badge-secondary" role="button" title="Náhled">
+            <span data-feather="eye"></span>
+          </a>
         </td>
         <td><?= $campaign['count_recipients'] ?></td>
         <td data-sort="<?= $campaign['datetime_active_since'] ?>">
