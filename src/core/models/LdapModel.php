@@ -480,10 +480,15 @@
       $output = '';
 
       if ($string != null) {
-        $output = base64_decode($string, true);
+        $stringDecoded = base64_decode($string, true);
+        $output = $string;
 
-        if (base64_encode($output) !== $string) {
-          $output = $string;
+        if ($stringDecoded !== false) {
+          $stringEncoded = base64_encode($stringDecoded);
+
+          if ($stringEncoded === $string) {
+            $output = $stringEncoded;
+          }
         }
       }
 
