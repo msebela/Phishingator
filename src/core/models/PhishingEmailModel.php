@@ -230,6 +230,7 @@
     private static function getEmailBodyVariables() {
       return [
         VAR_RECIPIENT_USERNAME, VAR_RECIPIENT_EMAIL,
+        VAR_RECIPIENT_FIRSTNAME, VAR_RECIPIENT_SURNAME, VAR_RECIPIENT_FULLNAME,
         VAR_DATE_CZ, VAR_DATE_EN,
         VAR_URL
       ];
@@ -321,39 +322,25 @@
 
 
     /**
-     * Personalizuje tělo e-mailu podle vybraného uživatele.
+     * Vrátí personalizované tělo e-mailu vůči vybranému uživateli.
      *
-     * @param array $recipient         ID/E-mail uživatele, vůči kterému má být e-mail personalizován
+     * @param array $user              Data o uživateli, vůči kterému má být e-mail personalizován
      * @param string $body             Tělo e-mailu
-     * @param string|null $websiteUrl  URL podvodné stránky (nepovinný parametr)
-     * @param int|null $idCampaign     ID kampaně (nepovinný parametr)
-     * @return string|null             Personalizované tělo e-mailu nebo NULL (při nenalezení záznamů)
+     * @param string|null $websiteUrl  URL podvodné stránky (nepovinné)
+     * @param int|null $idCampaign     ID kampaně (nepovinné)
+     * @return string                  Personalizované tělo e-mailu
      */
-    public static function personalizeEmailBody($recipient, $body, $websiteUrl = null, $idCampaign = null) {
-      $usersModel = new UsersModel();
-      $user = '';
-
-      if (!empty($recipient['email'])) {
-        $user = $usersModel->getUserByEmail($recipient['email']);
-      }
-      elseif (!empty($recipient['id'])) {
-        $user = $usersModel->getUser($recipient['id']);
-      }
-
-      // Pokud se nepodařilo uživatele nalézt.
-      if (empty($user)) {
-        return null;
-      }
-
-      // Skutečné hodnoty, které se budou dosazovat za použité proměnné.
+    public static function personalizeEmailBody($user, $body, $websiteUrl = null, $idCampaign = null) {
+      // Data o uživateli, která se budou dosazovat za použité proměnné.
       $values = [
         $user['username'], $user['email'],
+        $user['firstname'], $user['surname'], $user['fullname'],
         date('j. n. Y'), date('Y-m-d')
       ];
 
-      // Pokud byl vyplněn i tento nepovinný parametr, nahrazovat i proměnou pro URL podvodné stránky.
+      // Pokud se má nahrazovat i proměnná pro URL podvodné stránky...
       if ($websiteUrl != null) {
-        // Jestliže je specifikována i kampaň, vložit do URL podvodné stránky i identifikátor pro sledování uživatele.
+        // Pokud je specifikována i kampaň, přidat do URL podvodné stránky i identifikátor pro sledování uživatele.
         if ($idCampaign != null) {
           $url = PhishingWebsiteModel::makeWebsiteUrl($websiteUrl, WebsitePrependerModel::makeUserWebsiteId($idCampaign, $user['url']));
         }
@@ -472,11 +459,13 @@
         $phishingEmail['recipient_email'] = $user['email'];
 
         if ($includeIndications) {
+          $user = array_merge($user, UsersModel::getUserFullname($user['username']));
+
           $phishingEmail['url'] = (isset($phishingEmail['url'])) ? str_replace('&amp;', '&', $phishingEmail['url']) : null;
 
           // Personalizace těla e-mailu.
           $phishingEmail['body'] = self::personalizeEmailBody(
-            ['id' => $user['id_user']], $phishingEmail['body'], $phishingEmail['url'], ($phishingEmail['id_campaign'] ?? null)
+            $user, $phishingEmail['body'], $phishingEmail['url'], ($phishingEmail['id_campaign'] ?? null)
           );
         }
 

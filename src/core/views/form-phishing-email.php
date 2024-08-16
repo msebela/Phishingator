@@ -46,20 +46,27 @@
 
   <div class="form-row">
     <?php $input = 'body'; ?>
-    <div class="form-group col-lg-10 col-xl-12">
+    <div class="form-group col-lg-9 col-xl-11">
       <label for="<?= $formPrefix . $input ?>">Tělo</label>
-      <textarea name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control text-monospace" rows="11" maxlength="<?= $inputsMaxLengths[$input] ?>" required><?= $inputsValues[$input] ?></textarea>
+      <textarea name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control text-monospace" rows="14" maxlength="<?= $inputsMaxLengths[$input] ?>" required><?= $inputsValues[$input] ?></textarea>
       <small class="form-text text-muted">V&nbsp;těle e-mailu lze používat proměnné, které budou při odeslání e-mailu nahrazeny zvoleným obsahem.</small>
     </div>
-    <div class="form-group col-lg-6 col-xl-4">
+    <div class="form-group col-lg-7 col-xl-5">
       <label>Proměnné</label>
-      <p class="text-muted">Pro vložení proměnné do těla e-mailu můžete kliknout na její název v&nbsp;následujícím seznamu:</p>
-      <ul class="form-text text-muted list-unstyled" id="<?= $formPrefix ?>variables">
+      <p class="text-muted">V&nbsp;těle e-mailu lze používat následující proměnné (kliknutím na proměnnou dojde ke vložení):</p>
+      <label>Proměnné vztahující se k&nbsp;příjemci</label>
+      <ul class="form-text text-muted list-unstyled <?= $formPrefix ?>variables">
         <li><code class="cursor-pointer" data-var="<?= VAR_RECIPIENT_USERNAME ?>"><?= VAR_RECIPIENT_USERNAME ?></code> &ndash; uživatelské jméno příjemce</li>
         <li><code class="cursor-pointer" data-var="<?= VAR_RECIPIENT_EMAIL ?>"><?= VAR_RECIPIENT_EMAIL ?></code> &ndash; e-mail příjemce</li>
-        <li><code class="cursor-pointer" data-var="<?= VAR_DATE_CZ ?>"><?= VAR_DATE_CZ ?></code> &ndash; datum, ve kterém dochází k&nbsp;odeslání e-mailu v&nbsp;českém formátu (<?= date(VAR_DATE_CZ_FORMAT) ?>)</li>
-        <li><code class="cursor-pointer" data-var="<?= VAR_DATE_EN ?>"><?= VAR_DATE_EN ?></code> &ndash; datum, ve kterém dochází k&nbsp;odeslání e-mailu ve&nbsp;formátu <samp>YYYY-MM-DD</samp> (<?= date(VAR_DATE_EN_FORMAT) ?>)</li>
+        <li><code class="cursor-pointer" data-var="<?= VAR_RECIPIENT_FULLNAME ?>"><?= VAR_RECIPIENT_FULLNAME ?></code> &ndash; jméno a&nbsp;příjmení příjemce</li>
+        <li><code class="cursor-pointer" data-var="<?= VAR_RECIPIENT_FIRSTNAME ?>"><?= VAR_RECIPIENT_FIRSTNAME ?></code> &ndash; jméno příjemce</li>
+        <li><code class="cursor-pointer" data-var="<?= VAR_RECIPIENT_SURNAME ?>"><?= VAR_RECIPIENT_SURNAME ?></code> &ndash; příjmení příjemce</li>
+      </ul>
+      <label>Další proměnné</label>
+      <ul class="form-text text-muted list-unstyled <?= $formPrefix ?>variables">
         <li><code class="cursor-pointer" data-var="<?= VAR_URL ?>"><?= VAR_URL ?></code> &ndash; URL podvodné stránky svázané s&nbsp;e-mailem (povinné)</li>
+        <li><code class="cursor-pointer" data-var="<?= VAR_DATE_CZ ?>"><?= VAR_DATE_CZ ?></code> &ndash; datum&nbsp;odeslání e-mailu v&nbsp;českém formátu (<?= date(VAR_DATE_CZ_FORMAT) ?>)</li>
+        <li><code class="cursor-pointer" data-var="<?= VAR_DATE_EN ?>"><?= VAR_DATE_EN ?></code> &ndash; datum&nbsp;odeslání e-mailu ve&nbsp;formátu <samp>YYYY-MM-DD</samp> (<?= date(VAR_DATE_EN_FORMAT) ?>)</li>
       </ul>
     </div>
   </div>

@@ -66,69 +66,73 @@
       // Seznam kampaní, u kterých je možné zahájit rozesílání e-mailů.
       $campaigns = CampaignModel::getActiveCampaignsToSend();
 
-      foreach ($campaigns as $campaign) {
-        $campaign = CampaignModel::getCampaignDetail($campaign['id_campaign'], false);
-        $recipients = CampaignModel::getCampaignRecipients($campaign['id_campaign']);
+      if (count($campaigns) > 0) {
+        $ldap = new LdapModel();
 
-        foreach ($recipients as $recipient) {
-          $user = UsersModel::getUserByEmail($recipient);
+        foreach ($campaigns as $campaign) {
+          $campaign = CampaignModel::getCampaignDetail($campaign['id_campaign'], false);
+          $recipients = CampaignModel::getCampaignRecipients($campaign['id_campaign']);
 
-          // Ověření, zdali nedošlo v rámci kampaně k odeslání e-mailu stejnému uživateli někdy dříve.
-          if ($this->isEmailSent($campaign['id_campaign'], $user['id_user'])) {
-            continue;
+          foreach ($recipients as $recipient) {
+            $user = UsersModel::getUserByEmail($recipient);
+            $user = array_merge($user, UsersModel::getUserFullname($user['username'], $ldap));
+
+            // Ověření, zdali nedošlo v rámci kampaně k odeslání e-mailu stejnému uživateli někdy dříve.
+            if ($this->isEmailSent($campaign['id_campaign'], $user['id_user'])) {
+              continue;
+            }
+
+            // Pokud byl e-mail odesílatele u předchozí iterace stejný jako e-mail příjemce, provést vyresetování.
+            if (isset($senderEmailMe)) {
+              $campaign['sender_email'] = VAR_RECIPIENT_EMAIL;
+            }
+
+            // Změnit odesílatele na e-mail příjemce, pokud byl tak podvodný e-mail vytvořen.
+            if ($campaign['sender_email'] == VAR_RECIPIENT_EMAIL) {
+              $senderEmailMe = true;
+              $campaign['sender_email'] = $recipient;
+            }
+
+            // Personalizace těla e-mailu na základě příjemce.
+            $campaign['body_personalized'] = PhishingEmailModel::personalizeEmailBody(
+              $user, $campaign['body'], $campaign['url_protocol'] . $campaign['url'], $campaign['id_campaign']
+            );
+
+            Logger::info('Phishing e-mail ready to send.', [
+                'id_campaign' => $campaign['id_campaign'],
+                'id_user' => $user['id_user'],
+                'sender' => PhishingEmailModel::formatEmailSender($campaign['sender_email'], $campaign['sender_name']),
+                'recipient' => Controller::escapeOutput($recipient),
+                'subject' => Controller::escapeOutput($campaign['subject']),
+                'body' => Controller::escapeOutput($campaign['body_personalized'])
+              ]
+            );
+
+            // Odeslání e-mailu.
+            $mailResult = $this->sendEmail(
+              $campaign['sender_email'], $campaign['sender_name'], $recipient,
+              $campaign['subject'], $campaign['body_personalized']
+            );
+
+            // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
+            $this->logSentEmail($campaign['id_campaign'], $campaign['id_email'], $user['id_user'], $mailResult, $this->mailer->ErrorInfo);
+
+            if ($mailResult) {
+              ParticipationModel::decrementEmailLimit($user['id_user']);
+
+              // Vložení záznamu do databáze o tom, že uživatel zatím na kampaň nereagoval.
+              CampaignModel::insertNoReactionRecord($campaign['id_campaign'], $user['id_user'], $recipient, $user['primary_group']);
+            }
+
+            // Vyčištění pro další iteraci.
+            $this->mailer->clearAddresses();
+
+            // Uspání skriptu po odeslání určitého množství e-mailů.
+            $countSentMails = $this->sleepSender($countSentMails);
           }
-
-          // Pokud byl e-mail odesílatele u předchozí iterace stejný jako e-mail příjemce, provést vyresetování.
-          if (isset($senderEmailMe)) {
-            $campaign['sender_email'] = VAR_RECIPIENT_EMAIL;
-          }
-
-          // Změnit odesílatele na e-mail příjemce, pokud byl tak podvodný e-mail vytvořen.
-          if ($campaign['sender_email'] == VAR_RECIPIENT_EMAIL) {
-            $senderEmailMe = true;
-            $campaign['sender_email'] = $recipient;
-          }
-
-          // Personalizace těla e-mailu na základě příjemce.
-          $campaign['body_personalized'] = PhishingEmailModel::personalizeEmailBody(
-            ['email' => $recipient],
-            $campaign['body'],
-            $campaign['url_protocol'] . $campaign['url'],
-            $campaign['id_campaign']
-          );
-
-          Logger::info('Phishing e-mail ready to send.', [
-              'id_campaign' => $campaign['id_campaign'],
-              'id_user' => $user['id_user'],
-              'sender' => PhishingEmailModel::formatEmailSender($campaign['sender_email'], $campaign['sender_name']),
-              'recipient' => Controller::escapeOutput($recipient),
-              'subject' => Controller::escapeOutput($campaign['subject']),
-              'body' => Controller::escapeOutput($campaign['body_personalized'])
-            ]
-          );
-
-          // Odeslání e-mailu.
-          $mailResult = $this->sendEmail(
-            $campaign['sender_email'], $campaign['sender_name'], $recipient,
-            $campaign['subject'], $campaign['body_personalized']
-          );
-
-          // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
-          $this->logSentEmail($campaign['id_campaign'], $campaign['id_email'], $user['id_user'], $mailResult, $this->mailer->ErrorInfo);
-
-          if ($mailResult) {
-            ParticipationModel::decrementEmailLimit($user['id_user']);
-
-            // Vložení záznamu do databáze o tom, že uživatel zatím na kampaň nereagoval.
-            CampaignModel::insertNoReactionRecord($campaign['id_campaign'], $user['id_user'], $recipient, $user['primary_group']);
-          }
-
-          // Vyčištění pro další iteraci.
-          $this->mailer->clearAddresses();
-
-          // Uspání skriptu po odeslání určitého množství e-mailů.
-          $countSentMails = $this->sleepSender($countSentMails);
         }
+
+        $ldap->close();
       }
     }
   }

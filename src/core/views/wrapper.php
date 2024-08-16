@@ -144,7 +144,7 @@
       });
 
       $('#phishing-email-body').highlightTextarea({
-        words: ['<?= VAR_RECIPIENT_USERNAME ?>', '<?= VAR_RECIPIENT_EMAIL ?>', '<?= VAR_DATE_CZ ?>', '<?= VAR_DATE_EN ?>', '<?= VAR_URL ?>']
+        words: ['<?= VAR_RECIPIENT_USERNAME ?>', '<?= VAR_RECIPIENT_EMAIL ?>', '<?= VAR_RECIPIENT_FULLNAME ?>', '<?= VAR_RECIPIENT_FIRSTNAME ?>', '<?= VAR_RECIPIENT_SURNAME ?>', '<?= VAR_DATE_CZ ?>', '<?= VAR_DATE_EN ?>', '<?= VAR_URL ?>']
       });
     </script>
     <?php elseif ($currentSection == 'phishing-websites'): ?>

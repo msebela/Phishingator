@@ -238,7 +238,7 @@ $('.insert-variable').on('click', function() {
 
 
 // PHISHING EMAILS
-$('#phishing-email-variables code').on('click', function() {
+$('.phishing-email-variables code').on('click', function() {
   let input = $('#phishing-email-body');
   let inputValue = input.val();
   let insertedValue = $(this).attr('data-var');

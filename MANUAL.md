@@ -99,15 +99,25 @@ Vstupní pole při vytváření nebo úpravě podvodného e-mailu jsou následuj
   * při nevyplnění bude v odeslaném podvodném e-mailu vidět pouze e-mail odesílatele
 * **e-mail odesílatele** - umožňuje definovat e-mail, ze kterého budou odesílány podvodné e-maily, případně použít proměnnou `%recipient_email%`, místo které dojde ke vložení e-mailu příjemce (tzn. e-mail odesílatele i příjemce bude stejný)
 * **předmět**
-* **tělo** – obsah e-mailu, v němž je možné používat proměnné, které budou při odeslání podvodného e-mailu nahrazeny skutečným (resp. personalizovaným) obsahem
+* **tělo** – obsah e-mailu, v němž je možné používat [proměnné](#2311-seznam-proměnných), které budou při odeslání podvodného e-mailu nahrazeny skutečným obsahem
   * pro vložení proměnné do těla e-mailu stačí kliknout na její název (vedle vstupního pole)
   * vždy je nutné v těle e-mailu použít proměnnou `%url%`
-  * **seznam proměnných**:
-    * `%recipient_username%` – uživatelské jméno příjemce
-    * `%recipient_email%` – e-mail příjemce
-    * `%date_cz%` – datum, ve kterém dochází k odeslání e-mailu v českém formátu (např. 1. 9. 2022)
-    * `%date_en%` – datum, ve kterém dochází k odeslání e-mailu ve formátu `YYYY-MM-DD` (např. 2022-09-01)
-    * `%url%` – URL podvodné stránky svázané s e-mailem
+
+
+##### 2.3.1.1 Seznam proměnných
+
+Následující tabulka obsahuje proměnné, které je možné používat v těle podvodného e-mailu. Proměnné jsou při vytváření či úpravě e-mailu podbarveny žlutou barvou.
+
+| Proměnná                | Význam                                                                                 |
+|-------------------------|:---------------------------------------------------------------------------------------|
+| `%recipient_username%`  | Uživatelské jméno příjemce                                                             |
+| `%recipient_email%`     | E-mail příjemce                                                                        |
+| `%recipient_name%`      | Jméno a příjmení příjemce                                                              |
+| `%recipient_firstname%` | Křestní jméno příjemce                                                                 |
+| `%recipient_surname%`   | Příjmení příjemce                                                                      |
+| `%date_cz%`             | Datum, ve kterém dochází k odeslání e-mailu v českém formátu (např. 1. 9. 2024)        |
+| `%date_en%`             | Datum, ve kterém dochází k odeslání e-mailu ve formátu `YYYY-MM-DD` (např. 2024-09-01) |
+| `%url%`                 | URL podvodné stránky svázané s e-mailem (povinná proměnná)                             |
 
 
 #### 2.3.2 Přidání nebo úprava indicií u podvodného e-mailu

@@ -345,11 +345,10 @@
 
       $result = Database::queryMulti($query, $args);
 
-      /* Pokud se podařilo data z databáze získat, požádáme o další podrobnosti. */
+      // Zjištění dalších podrobností o každém uživateli.
       if ($result != null) {
         $ldap = new LdapModel();
 
-        /* Získání dodatečných informací pro každý záznam pro výpis. */
         foreach ($result as $key => $user) {
           // Zjištění jména a příjmení uživatele z LDAP.
           $result[$key]['person_name'] = $ldap->getFullnameByUsername($user['username']);
@@ -431,6 +430,39 @@
 
         // Informace o maximálním limitu cvičných e-mailů.
         $user['email_limit'] = (!is_null($user['email_limit'])) ? $user['email_limit'] : 'žádný';
+      }
+
+      return $user;
+    }
+
+
+    /**
+     * Vrátí jméno a příjmení uživatele dle jeho uživatelského jména.
+     *
+     * @param string $username         Uživatelské jméno
+     * @param LdapModel $ldap          Instance třídy (nepovinné)
+     * @return array                   Pole obsahující jméno a příjmení uživatele
+     */
+    public static function getUserFullname($username, $ldap = null) {
+      $ldapConnected = false;
+      $user = [];
+
+      // Pokud zatím není LDAP spojení navázáno...
+      if ($ldap == null) {
+        $ldap = new LdapModel();
+        $ldapConnected = true;
+      }
+
+      $user['firstname'] = $ldap->getFirstnameByUsername($username) ?? '';
+      $user['surname'] = $ldap->getSurnameByUsername($username) ?? '';
+      $user['fullname'] = $ldap->getFullnameByUsername($username) ?? '';
+
+      if (empty($user['fullname'])) {
+        $user['fullname'] = $user['firstname'] . ' ' . $user['surname'];
+      }
+
+      if ($ldapConnected) {
+        $ldap->close();
       }
 
       return $user;

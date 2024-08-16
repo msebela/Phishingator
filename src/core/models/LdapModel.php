@@ -127,7 +127,7 @@
 
 
     /**
-     * Vrátí hodnotu konkrétního atributu u zvoleného uživatele, a to v závislosti na jeho uživatelském jménu z LDAP.
+     * Vrátí z LDAP hodnotu konkrétního atributu u zvoleného uživatele, a to v závislosti na jeho uživatelském jménu.
      *
      * @param string $username         Uživatelské jméno, u něhož se má získat hodnota atributu
      * @param string $attributeName    Název atributu v LDAP
@@ -193,7 +193,7 @@
 
 
     /**
-     * Vrátí uživatelské jméno na základě e-mailu uživatele.
+     * Vrátí z LDAP uživatelské jméno na základě e-mailu uživatele.
      *
      * @param string $email            E-mail uživatele
      * @return string|null             Uživatelské jméno nebo NULL
@@ -214,7 +214,7 @@
 
 
     /**
-     * Vrátí e-mail uživatele (první v pořadí) v závislosti na jeho uživatelském jménu z LDAP.
+     * Vrátí z LDAP e-mail uživatele (první v pořadí) v závislosti na jeho uživatelském jménu.
      *
      * @param string $username         Uživatelské jméno
      * @return string|null             E-mail uživatele nebo NULL
@@ -231,7 +231,7 @@
 
 
     /**
-     * Vrátí všechny e-maily uživatele v závislosti na jeho uživatelském jménu z LDAP.
+     * Vrátí z LDAP všechny e-maily uživatele v závislosti na jeho uživatelském jménu.
      *
      * @param string $username         Uživatelské jméno
      * @return array|null              Všechny e-maily uživatele nebo NULL
@@ -252,24 +252,58 @@
 
 
     /**
-     * Vrátí jméno a příjmení uživatele v závislosti na jeho uživatelském jménu z LDAP.
+     * Vrátí z LDAP jméno a příjmení uživatele v závislosti na jeho uživatelském jménu.
      *
      * @param string $username         Uživatelské jméno
      * @return string|null             Jméno a příjmení uživatele nebo NULL
      */
     public function getFullnameByUsername($username) {
-      $name = null;
+      $fullname = null;
 
       if (!empty($username)) {
-        $name = $this->getDecodedString($this->getAttributeValue($username, LDAP_USER_ATTR_NAME));
+        $fullname = $this->getDecodedString($this->getAttributeValue($username, LDAP_USER_ATTR_FULLNAME));
       }
 
-      return $name;
+      return $fullname;
     }
 
 
     /**
-     * Vrátí primární skupinu uživatele v závislosti na jeho uživatelském jménu z LDAP.
+     * Vrátí z LDAP křestní jméno uživatele v závislosti na jeho uživatelském jménu.
+     *
+     * @param string $username         Uživatelské jméno
+     * @return string|null             Křestní jméno uživatele nebo NULL
+     */
+    public function getFirstnameByUsername($username) {
+      $firstname = null;
+
+      if (!empty($username)) {
+        $firstname = $this->getDecodedString($this->getAttributeValue($username, LDAP_USER_ATTR_FIRSTNAME));
+      }
+
+      return $firstname;
+    }
+
+
+    /**
+     * Vrátí z LDAP příjmení uživatele v závislosti na jeho uživatelském jménu.
+     *
+     * @param string $username         Uživatelské jméno
+     * @return string|null             Příjmení uživatele nebo NULL
+     */
+    public function getSurnameByUsername($username) {
+      $surname = null;
+
+      if (!empty($username)) {
+        $surname = $this->getDecodedString($this->getAttributeValue($username, LDAP_USER_ATTR_SURNAME));
+      }
+
+      return $surname;
+    }
+
+
+    /**
+     * Vrátí z LDAP primární skupinu uživatele v závislosti na jeho uživatelském jménu.
      *
      * @param string $username            Uživatelské jméno
      * @param bool $preferAdminLdapGroups TRUE, pokud mají být preferovány skupiny definované
@@ -345,7 +379,7 @@
 
 
     /**
-     * Vrátí seznam názvů všech skupin z LDAP.
+     * Vrátí z LDAP seznam názvů všech skupin.
      *
      * @return array                   Pole názvů skupin
      */
@@ -367,7 +401,7 @@
 
 
     /**
-     * Vrátí seznam oddělení z LDAP (resp. fakulty a jejich katedry, oddělení apod.).
+     * Vrátí z LDAP seznam oddělení (resp. fakulty a jejich katedry, oddělení apod.).
      *
      * @return array                   Asociativní pole, kde jsou jako klíče názvy rodičovských oddělení a jako
      *                                 hodnoty pole oddělení spadajících pod daného rodiče.
