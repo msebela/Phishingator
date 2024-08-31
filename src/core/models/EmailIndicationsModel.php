@@ -146,15 +146,20 @@
      * @param int $idEmail             ID podvodného e-mailu
      * @param string $expression       Výraz představující indicii
      * @param int $idIndication        ID indicie (nepovinný parametr) pro vyloučení právě upravované indicie.
+     * @param bool $findSubstring      TRUE, pokud se má indicie vyhledávat jako podřetězec v ostatních indicích, jinak FALSE (výchozí)
      * @return mixed                   0 pokud indicie v databázi zatím neexistuje, jinak 1.
      */
-    public static function existEmailIndication($idEmail, $expression, $idIndication = 0) {
+    public static function existEmailIndication($idEmail, $expression, $idIndication = 0, $findSubstring = false) {
+      if ($findSubstring) {
+        $expression = '%' . $expression . '%';
+      }
+
       return Database::queryCount('
                SELECT COUNT(*)
                FROM `phg_emails_indications`
                WHERE `id_indication` != ?
                AND `id_email` = ?
-               AND `expression` = ?
+               AND `expression` LIKE ?
                AND `visible` = 1
       ', [$idIndication, $idEmail, $expression]);
     }
@@ -172,6 +177,7 @@
       $indication['date_added'] = date('Y-m-d H:i:s');
 
       $this->isExpressionUnique();
+      $this->isNotExpressionInExpressions();
 
       Logger::info('New phishing sign added.', $indication);
 
@@ -189,6 +195,7 @@
       $indication = $this->makeEmailIndication();
 
       $this->isExpressionUnique($id);
+      $this->isNotExpressionInExpressions($id);
 
       Logger::info('Phishing sign modified.', $indication);
 
@@ -335,12 +342,25 @@
     /**
      * Ověří, zdali podezřelý text není již mezi ostatními indiciemi (tzn. jestli je unikátní).
      *
-     * @param int $idIndication        ID indicie (nepovinný parametr), aby se při úpravě vyloučila upravovaná indicie.
+     * @param int $idIndication        ID indicie (nepovinný parametr), aby se při úpravě vyloučila upravovaná indicie
      * @throws UserError
      */
     private function isExpressionUnique($idIndication = 0) {
       if (self::existEmailIndication($this->idEmail, $this->expression, $idIndication) > 0) {
-        throw new UserError('Podezřelý text je již jednou veden mezi ostatními indiciemi.', MSG_ERROR);
+        throw new UserError('Stejný podezřelý text je již veden mezi ostatními indiciemi.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali podezřelý text není obsažen jako podřetězec v některé z jiných indicií.
+     *
+     * @param int $idIndication        ID indicie (nepovinný parametr), aby se při úpravě vyloučila upravovaná indicie
+     * @throws UserError
+     */
+    private function isNotExpressionInExpressions($idIndication = 0) {
+      if (self::existEmailIndication($this->idEmail, $this->expression, $idIndication, true) > 0) {
+        throw new UserError('Podezřelý text je obsažen v některé z jiných indicií.', MSG_ERROR);
       }
     }
 
