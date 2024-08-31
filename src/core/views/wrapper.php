@@ -119,7 +119,7 @@
           <?php $this->controller->displayView(); ?>
         </main>
 
-        <a href="#" class="d-none d-md-inline-block btn-top-page">
+        <a href="#" class="d-none btn-top-page">
           <span data-feather="chevron-up"></span>
         </a>
       </div>

@@ -1,8 +1,8 @@
 $(function() {
   $('table [data-toggle="tooltip"]').tooltip();
 
-  if ($(window).height() < $(document).height() && $(window).width() > 720) {
-    $('.btn-top-page').attr('style', 'display: inline-block !important');
+  if ($(window).height() + 50 < $(document).height() && $(window).width() >= 768) {
+    $('.btn-top-page').toggleClass('d-none');
   }
 });
 
