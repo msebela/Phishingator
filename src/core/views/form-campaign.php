@@ -202,7 +202,7 @@
               Administrátorem nebyly nastaveny žádné skupiny.
               <?php else: ?>
               <div class="text-right">
-                <button type="button" class="btn btn-outline-secondary btn-sm mark-checkboxes" data-checkboxes-group="">
+                <button type="button" class="btn btn-outline-secondary btn-sm mark-checkboxes" data-checkboxes-group="#recipientsDialog">
                   <span data-feather="user-check"></span>
                   Vybrat všechny příjemce
                 </button>

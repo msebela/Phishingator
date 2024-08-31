@@ -12,7 +12,7 @@ $('.btn-close').on('click', function() {
 });
 
 $('.btn-confirm').on('click', function() {
-  let message = $(this).attr('data-confirm');
+  let message = $(this).data('confirm');
 
   if (message) {
     if (!confirm(message)) {
@@ -22,106 +22,112 @@ $('.btn-confirm').on('click', function() {
 });
 
 $('.btn-submit').on('change', function() {
-  $($(this).attr('data-form')).submit();
+  $($(this).data('form')).submit();
 });
 
 $('.btn-redirect').on('change', function() {
-  window.location.href = $(this).attr('data-link') + $(this).val();
+  window.location.href = $(this).data('link') + $(this).val();
 });
 
 $('.btn-toggle-display').on('click', function() {
-  $($(this).attr('data-toggle')).toggleClass('d-none');
+  $($(this).data('toggle')).toggleClass('d-none');
 });
 
 
 // PHISHING CAMPAIGNS
-$('.set-preview-btn').on('change', function() {
-  let link = $(this).attr('data-preview-link');
-  let id = $(this).find(':selected').val();
+function extractEmails(emails, separator) {
+  return emails.split(separator).map(item => item.trim().toLowerCase()).filter(Boolean);
+}
 
-  $($(this).attr('data-preview-btn')).attr('href', ((id > 0) ? link + '/preview/' + id : link));
+function isEmailValid(input) {
+  const validEmailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  return validEmailPattern.test(input);
+}
+
+$('.set-preview-btn').on('change', function() {
+  let baseLink = $(this).data('preview-link');
+  let id = $(this).find(':selected').val();
+  let link = (id > 0) ? baseLink + '/preview/' + id : baseLink;
+
+  $($(this).data('preview-btn')).attr('href', link);
 });
 
 $('.insert-recipients-emails').on('click', function() {
+  const recipientsSeparator = "\n";
   let recipientsTextarea = $('#campaign-recipients');
+  let recipientsCheckboxes = $('.modal-body input[type=checkbox]');
+  let recipientsList = new Set(extractEmails(recipientsTextarea.val(), recipientsSeparator));
 
-  let recipientsSeparator = "\n";
-  let recipientsList = recipientsTextarea.val().split(recipientsSeparator);
+  recipientsCheckboxes.each(function() {
+    let recipientEmail = $(this).val().toLowerCase();
 
-  recipientsList.forEach(function() {
-    let index = recipientsList.indexOf("");
-
-    if (index !== -1) {
-      recipientsList.splice(index, 1);
+    if (this.checked && isEmailValid(recipientEmail)) {
+      recipientsList.add(recipientEmail);
+    }
+    else {
+      recipientsList.delete(recipientEmail);
     }
   });
 
-  $('.modal-body input[type=checkbox]').each(function() {
-    let index = recipientsList.indexOf($(this).val());
+  recipientsTextarea.val(Array.from(recipientsList).join(recipientsSeparator));
 
-    if (index !== -1) {
-      recipientsList.splice(index, 1);
-    }
-  });
-
-  $('.modal-body input[type=checkbox]:checked').each(function() {
-    if (recipientsList.includes($(this).val()) === false && $(this).val().match(/[^\s@]+@[^\s@]+\.[^\s@]+/g)) {
-      recipientsList.push($(this).val());
-    }
-  });
-
-  recipientsTextarea.val(recipientsList.join(recipientsSeparator));
   updateSumEmails();
 });
 
 $('#campaign-recipients').on('change keyup', function() {
-  let recipientsList = $(this).val().split("\n");
+  const recipientsSeparator = "\n";
+  let recipientsList = $(this).val().split(recipientsSeparator);
 
   $('.modal-body input[type=checkbox]').prop('checked', false);
 
   recipientsList.forEach(function (recipient) {
-    if (recipient.match(/[^\s@]+@[^\s@]+\.[^\s@]+/g)) {
+    if (isEmailValid(recipient)) {
       let recipientCheckbox = $('.modal-body input[value="' + recipient + '" i]');
 
-      if (recipientCheckbox) {
+      if (recipientCheckbox.length) {
         recipientCheckbox.prop('checked', true);
         markSameCheckboxes(recipientCheckbox);
       }
-
-      updateSumEmails();
     }
+
+    updateSumEmails();
   });
 });
 
 function updateSumEmails() {
-  let recipientsList = $('#campaign-recipients');
-  let sumValidRecipientsLabel = $('#countRecipients');
+  const validEmailPattern = /[^\s@]+@[^\s@]+\.[^\s@]+/g;
 
-  let sumValidEmails = 0;
+  let recipientsTextarea = $('#campaign-recipients').val();
+  let sumValidEmailsLabel = $('#countRecipients');
 
-  if (recipientsList.val().length > 4) {
-    let validEmails = recipientsList.val().match(/[^\s@]+@[^\s@]+\.[^\s@]+/g);
+  let validEmails = recipientsTextarea.match(validEmailPattern);
+  let sumValidEmails = validEmails ? validEmails.length : 0;
 
-    if (validEmails) {
-      sumValidEmails = validEmails.length;
-    }
-  }
-
-  sumValidRecipientsLabel.text(sumValidEmails);
+  sumValidEmailsLabel.text(sumValidEmails);
 }
 
 $('.mark-checkboxes').on('click', function() {
-  let group = $(this).attr('data-checkboxes-group');
-  let checkboxes = $(group + ' input[type=checkbox]');
+  let recipientsGroup = $(this).data('checkboxes-group');
+  let checkboxes = $(recipientsGroup + ' input[type=checkbox]');
+  let sumChecked = 0;
 
-  if (group && $(group).hasClass('d-none')) {
-    $(group).toggleClass('d-none');
+  if (recipientsGroup.length && $(recipientsGroup).hasClass('d-none')) {
+    $(recipientsGroup).toggleClass('d-none');
   }
 
   checkboxes.prop('checked', !checkboxes.prop('checked'));
   checkboxes.each(function() {
+    if (this.checked) {
+      sumChecked++;
+    }
+
     markSameCheckboxes($(this));
   });
+
+  if (sumChecked === 0) {
+    $(this).prop('checked', false);
+  }
 });
 
 $('.mark-same-checkboxes').on('click', function() {
@@ -129,110 +135,107 @@ $('.mark-same-checkboxes').on('click', function() {
 });
 
 function markSameCheckboxes(recipient) {
-  $('.modal-body input[value="' + recipient.val() + '" i]').prop('checked', recipient.prop('checked'));
+  $('.modal-body input[type=checkbox]').filter(function() {
+    return $(this).val().toLowerCase() === recipient.val().toLowerCase();
+  }).prop('checked', recipient.prop('checked'));
 }
 
-$('.expand-all-groups').on('click', function() {
-  let groups = $('.group-recipients');
 
-  if ($(this).attr('aria-pressed') === 'true') {
-    groups.addClass('d-none');
-  }
-  else {
-    groups.removeClass('d-none');
-  }
+$('.expand-all-groups').on('click', function() {
+  let isPressed = $(this).attr('aria-pressed') === 'true';
+
+  $('.group-recipients').toggleClass('d-none', isPressed);
+  $(this).attr('aria-pressed', !isPressed);
 });
 
 $('.import-recipients').on('click', function() {
-  let recipientsList = $('#campaign-recipients');
-  let inputImport = document.createElement('input');
+  const recipientsSeparator = "\n";
+  let recipientsTextarea = $('#campaign-recipients');
+  let recipientsList = new Set(extractEmails(recipientsTextarea.val(), recipientsSeparator));
+  let importFileInput = document.createElement('input');
 
-  inputImport.setAttribute('type', 'file');
-  inputImport.onchange = _ => {
-    let files = Array.from(inputImport.files);
+  importFileInput.setAttribute('type', 'file');
+  importFileInput.onchange = _ => {
+    let file = importFileInput.files[0];
 
-    if (files.length > 0) {
-      let file = files[0];
+    if (file && (file.type === 'text/plain' || file.type === 'text/csv')) {
+      let fileReader = new FileReader();
 
-      if (file.type && file.type === 'text/plain' || file.type === 'text/csv') {
-        let fileReader = new FileReader();
+      fileReader.readAsText(file);
+      fileReader.onload = function() {
+        let importedRecipients = new Set(extractEmails(fileReader.result, /\r?\n/));
+        let importedValidRecipients = [];
 
-        fileReader.readAsText(file);
-        fileReader.onload = function() {
-          let importedRecipients = new Set(fileReader.result.split(/\r?\n/));
-
-          if (file.type === 'text/csv') {
-            importedRecipients = importValuesFromCSV(importedRecipients);
-          }
-
-          importedRecipients.forEach(function (recipient) {
-            if (recipient.match(/[^\s@]+@[^\s@]+\.[^\s@]+/g)) {
-              let recipientCheckbox = $('.modal-body input[value="' + recipient + '" i]');
-
-              if (recipientCheckbox) {
-                recipientCheckbox.prop('checked', true);
-                markSameCheckboxes(recipientCheckbox);
-              }
-
-              recipientsList.val(recipientsList.val() + ((recipientsList.val() !== '') ? "\n" : '') + recipient);
-              updateSumEmails();
-            }
-          });
+        if (file.type === 'text/csv') {
+          importedRecipients = importValuesFromCSV(importedRecipients);
         }
+
+        importedRecipients.forEach(function (recipient) {
+          if (isEmailValid(recipient)) {
+            let recipientCheckbox = $('.modal-body input[value="' + recipient + '" i]');
+
+            if (recipientCheckbox.length) {
+              recipientCheckbox.prop('checked', true);
+              markSameCheckboxes(recipientCheckbox);
+            }
+
+            importedValidRecipients.push(recipient);
+          }
+        });
+
+        let allUniqRecipients = [...new Set([...recipientsList, ...importedValidRecipients])];
+
+        recipientsTextarea.val(allUniqRecipients.join(recipientsSeparator));
+
+        updateSumEmails();
       }
-      else {
-        alert('Vybraný typ souboru není podporován.');
-      }
+    }
+    else {
+      alert('Vybraný typ souboru není podporován.');
     }
   };
 
-  inputImport.click();
+  importFileInput.click();
 });
 
-function importValuesFromCSV(csvLines) {
+function importValuesFromCSV(lines) {
+  let separator = prompt('Zadejte znak, který je v CSV souboru použit jako oddělovač hodnot.', ';');
   let values = [];
-  let csvSeparator = prompt('Zadejte znak, který je v CSV souboru použit jako oddělovač hodnot.', ';');
 
-  if (csvSeparator != null || csvSeparator !== '') {
-    let lineValues = [];
-
-    csvLines.forEach(function (line) {
-      lineValues = lineValues.concat(line.split(csvSeparator));
-    });
-
-    values = lineValues;
+  if (separator !== null && separator !== '') {
+    values = lines.flatMap(line => line.split(separator));
   }
 
   return values;
 }
 
 $('#blur-identities').on('click', function() {
-  let form = $('#' + $(this).attr('data-form'));
+  let form = $('#' + $(this).data('form'));
 
   $('.identity').toggleClass('blur-text');
   $.post(form.attr('action'), form.serialize());
 });
 
 $('.export-chart').on('click', function() {
-  $(this).attr('download', $(this).attr('data-filename') + '.png');
-  $(this).attr('href', ($($(this).attr('data-chart'))[0]).toDataURL('image/png', 1));
+  $(this).attr('download', $(this).data('filename') + '.png');
+  $(this).attr('href', ($($(this).data('chart'))[0]).toDataURL('image/png', 1));
 });
 
 
 // VARIABLES
 $('.replace-variable').on('click', function() {
-  let input = $($(this).attr('data-input'));
+  let input = $($(this).data('input'));
 
   if (confirm('Opravdu chcete obsah pole nahradit touto proměnnou?')) {
-    input.val($(this).attr('data-var'));
+    input.val($(this).data('var'));
     input.focus();
   }
 });
 
 $('.insert-variable').on('click', function() {
-  let input = $($(this).attr('data-input'));
+  let input = $($(this).data('input'));
 
-  input.val(input.val() + $(this).attr('data-var'));
+  input.val(input.val() + $(this).data('var'));
   input.focus();
 });
 
@@ -241,7 +244,7 @@ $('.insert-variable').on('click', function() {
 $('.phishing-email-variables code').on('click', function() {
   let input = $('#phishing-email-body');
   let inputValue = input.val();
-  let insertedValue = $(this).attr('data-var');
+  let insertedValue = $(this).data('var');
 
   let cursorPos = input.prop('selectionStart');
   let cursorPosAfter = cursorPos + insertedValue.length;
@@ -272,34 +275,29 @@ function setSelectionRange(input, selectionStart, selectionEnd) {
 
 // PHISHING WEBSITES
 $('#phishing-domains-dropdown a').on('click', function() {
-  let domainInput = $('#phishing-website-url');
+  let urlInput = $('#phishing-website-url');
 
-  domainInput.val($(this).attr('data-var'));
-  domainInput.focus();
+  urlInput.val($(this).data('var'));
+  urlInput.focus();
 });
 
 $('.phishing-domain-protocol').on('click', function() {
-  let domainInput = $('#phishing-website-url');
-  let domain = domainInput.val();
+  let urlInput = $('#phishing-website-url');
+  let url = urlInput.val().trim();
+  let selectedProtocol = $(this).data('var');
 
-  let selectedProtocol = $(this).attr('data-var');
-  let protocol = null;
-
-  if (domain.indexOf('http:') >= 0 && selectedProtocol === 'https') {
-    protocol = domain.replace('http:', 'https:');
+  if (url.startsWith('http://') && selectedProtocol === 'https') {
+    url = url.replace('http://', 'https://');
   }
-  else if (domain.indexOf('https:') >= 0 && selectedProtocol === 'http') {
-    protocol = domain.replace('https:', 'http:');
+  else if (url.startsWith('https://') && selectedProtocol === 'http') {
+    url = url.replace('https://', 'http://');
   }
-  else if (domain.indexOf('http:') === -1 && domain.indexOf('https:') === -1) {
-    protocol = selectedProtocol + '://' + domain;
+  else if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = selectedProtocol + '://' + url;
   }
 
-  if (protocol !== null) {
-    domainInput.val(protocol);
-  }
-
-  domainInput.focus();
+  urlInput.val(url);
+  urlInput.focus();
 });
 
 
@@ -308,7 +306,7 @@ $('.user-groups-role').on('change', function() {
   let groups = $('#groups');
   let role = parseInt($(this).val());
 
-  if (role === 1 || role === 2) {
+  if (!isNaN(role) && (role === 1 || role === 2)) {
     groups.removeClass('d-none');
   }
   else {

@@ -197,7 +197,14 @@
    * @return int                       Počet položek v řetězci
    */
   function get_sum_items_in_string($separator, $string) {
-    return count(explode($separator, trim($string, $separator)));
+    $sum = 0;
+
+    if (!empty($string)) {
+      $array = explode($separator, trim($string, $separator));
+      $sum = count($array);
+    }
+
+    return $sum;
   }
 
 

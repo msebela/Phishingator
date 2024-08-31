@@ -77,6 +77,10 @@
 
       if (isset($_POST[$this->formPrefix . 'recipients'])) {
         $this->recipients = preg_split('/\r\n|[\r\n]/', $_POST[$this->formPrefix . 'recipients']);
+
+        if (count($this->recipients) == 1 && empty($this->recipients[0])) {
+          $this->recipients = '';
+        }
       }
       else {
         $this->recipients = '';
@@ -837,21 +841,21 @@
         $id
       );
 
-      /* Aktuální seznam příjemců kampaně. */
+      // Aktuální seznam příjemců kampaně.
       $currentRecipientsArray = $this->getCampaignRecipients($id);
 
-      /* Seznam příjemců, kteří v databázi přebývají (oproti vyplněnému seznamu). */
-      $recipientsToUnsign = array_diff($currentRecipientsArray, $this->recipients);
+      // Seznam příjemců, kteří v databázi přebývají (oproti vyplněnému seznamu).
+      $recipientsToUnsign = array_udiff($currentRecipientsArray, $this->recipients, 'strcasecmp');
 
-      /* Seznam příjemců, kteří v databázi nejsou (oproti vyplněnému seznamu). */
-      $recipientsToSign = array_diff($this->recipients, $currentRecipientsArray);
+      // Seznam příjemců, kteří v databázi nejsou (oproti vyplněnému seznamu).
+      $recipientsToSign = array_udiff($this->recipients, $currentRecipientsArray, 'strcasecmp');
 
-      /* Odhlášení smazaných příjemců. */
+      // Odhlášení smazaných příjemců.
       foreach ($recipientsToUnsign as $recipient) {
         $this->unsignRecipient($id, $recipient);
       }
 
-      /* Přihlášení nových příjemců. */
+      // Přihlášení nových příjemců.
       foreach ($recipientsToSign as $recipient) {
         $this->insertRecipient($id, $recipient);
       }
@@ -1451,7 +1455,7 @@
      * @throws UserError
      */
     private function isRecipientsEmpty() {
-      if (empty($this->recipients) || empty($this->recipients[0])) {
+      if (empty($this->recipients)) {
         throw new UserError('Není vyplněn seznam příjemců.', MSG_ERROR);
       }
     }
