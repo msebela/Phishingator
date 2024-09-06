@@ -589,10 +589,10 @@
         $ldap->close();
       }
 
-      // Zjištění dobrovolníků.
-      $volunteers = Database::queryMulti('SELECT `email`, `primary_group` FROM `phg_users` WHERE `recieve_email` = 1 AND `visible` = 1');
+      // Zjištění seznamu dobrovolníků.
+      $volunteers = Database::queryMulti('SELECT `email`, `primary_group` FROM `phg_users` WHERE `recieve_email` = 1 AND `inactive` = 0 AND `visible` = 1');
 
-      // Zjištění skupin a počet dobrovolníků v každé z nich.
+      // Zjištění skupin a počtu dobrovolníků v každé z nich.
       foreach ($volunteers as $recipient) {
         if (CAMPAIGN_STATS_AGGREGATION == 2) {
           // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.

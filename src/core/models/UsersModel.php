@@ -697,29 +697,25 @@
 
       if ($ldapModel->connect()) {
         // Získání seznamu všech aktivních uživatelů.
-        $users = Database::queryMulti('SELECT `id_user`, `username`, `email`, `primary_group` FROM `phg_users` WHERE `visible` = 1');
+        $users = Database::queryMulti('SELECT `id_user`, `username`, `email`, `primary_group` FROM `phg_users` WHERE `inactive` = 0 AND `visible` = 1');
 
         foreach ($users as $user) {
           // Zjištění aktuálního e-mailu uživatele z LDAP.
           $ldapEmail = $ldapModel->getEmailByUsername($user['username']);
 
-          // Pokud je e-mail prázdný, pak již uživatel není v organizaci, a je tak možné provést aktualizaci v databázi.
+          // Pokud je e-mail z LDAP prázdný, pak již uživatel není v organizaci, a je možné ho ve Phishingatoru označit za neaktivního.
           if (empty($ldapEmail)) {
-            $isInactive = Database::queryCount('SELECT COUNT(*) FROM `phg_users` WHERE `id_user` = ? AND `inactive` = 1', $user['id_user']);
+            Database::update(
+              'phg_users', ['inactive' => 1], 'WHERE `id_user` = ?', $user['id_user']
+            );
 
-            if ($isInactive == 0) {
-              Database::update(
-                'phg_users', ['inactive' => 1], 'WHERE `id_user` = ?', $user['id_user']
-              );
-
-              Logger::info(
-                'Deactivated user account based on the current data in LDAP.',
-                [$user['id_user'], $user['email'], $ldapEmail]
-              );
-            }
+            Logger::info(
+              'Deactivated user account based on the current data in LDAP.',
+              [$user['id_user'], $user['email'], $ldapEmail]
+            );
           }
-          elseif ($user['id_user'] != null) {
-            // Pokud se e-mail z LDAP neshoduje s tím, který je v databázi, provést aktualizaci.
+          else {
+            // Pokud se e-mail z LDAP neshoduje s tím, který je uložen ve Phishingatoru, provést aktualizaci.
             if ($user['email'] != $ldapEmail) {
               Database::update(
                 'phg_users', ['email' => $ldapEmail], 'WHERE `id_user` = ?', $user['id_user']
@@ -734,7 +730,7 @@
             // Zjištění aktuálního členství uživatele ve skupinách z LDAP.
             $ldapGroup = $ldapModel->getPrimaryGroupByUsername($user['username']);
 
-            // Pokud se členství ve skupině z LDAP neshoduje s tím, které je v databázi, provést aktualizaci.
+            // Pokud se členství ve skupině z LDAP neshoduje s tím, které je uloženo ve Phishingatoru, provést aktualizaci.
             if ($user['primary_group'] != $ldapGroup) {
               Database::update(
                 'phg_users', ['primary_group' => $ldapGroup], 'WHERE `id_user` = ?', $user['id_user']
@@ -746,7 +742,6 @@
               );
             }
           }
-
         }
 
         $ldapModel->close();
