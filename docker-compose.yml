@@ -55,6 +55,7 @@ services:
       - SMTP_USERNAME
       - SMTP_PASSWORD
       - TEST_USERNAME
+      - TEST_USERNAME_LDAP_SUFFIX
       - TEST_PASSWORD
       - ITS_URL
       - NOTIFICATION_SENDER

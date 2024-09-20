@@ -64,12 +64,16 @@
     private static function tryLdapLogin() {
       $ldap = new LdapModel(false);
 
-      $username = AUTHENTICATION_LDAP_USER_PREFIX . self::$username;
+      $username = self::$username;
 
-      if (!empty(AUTHENTICATION_LDAP_USER_SUFFIX) && !str_contains($username, AUTHENTICATION_LDAP_USER_SUFFIX)) {
+      if (!empty(TEST_USERNAME_LDAP_SUFFIX) && $username == TEST_USERNAME) {
+        $username .= TEST_USERNAME_LDAP_SUFFIX;
+      }
+      elseif (!empty(AUTHENTICATION_LDAP_USER_SUFFIX) && !str_contains($username, AUTHENTICATION_LDAP_USER_SUFFIX)) {
         $username .= AUTHENTICATION_LDAP_USER_SUFFIX;
       }
 
+      $username = AUTHENTICATION_LDAP_USER_PREFIX . $username;
       $username = ldap_escape($username, '', LDAP_ESCAPE_FILTER);
 
       $validCreds = $ldap->connect($username, self::$password, AUTHENTICATION_LDAP_HOST, AUTHENTICATION_LDAP_PORT, true);

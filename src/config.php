@@ -157,10 +157,12 @@
 
 
   /* --- TESTOVÁNÍ --- */
-  /** Uživatelské jméno testovacího uživatele (např. sondy), který periodicky a automatizovaně (např. Selenium) testuje
-   * funkčnost části aplikace (např. průchodem přes SSO přihlášení). Při vyplnění nebude docházet k logování přístupu
-   * daného uživatele. */
+  /** Uživatelské jméno testovacího uživatele (sondy), který periodicky a automatizovaně testuje funkčnost aplikace
+   * (např. funkčnost ověřování přihlašovacích údajů). U testovacího uživatele se neprovádí logování přihlášení. */
   define('TEST_USERNAME', getenv('TEST_USERNAME'));
+
+  /** Sufix automaticky přidávaný k uživatelskému jménu testovacího uživatele pro přístup do LDAP. */
+  define('TEST_USERNAME_LDAP_SUFFIX', getenv('TEST_USERNAME_LDAP_SUFFIX'));
 
   /** Heslo testovacího uživatele. */
   define('TEST_PASSWORD', getenv('TEST_PASSWORD'));
@@ -308,7 +310,7 @@
    *  Pozor, musí se jednat o sudé číslo! */
   define('USER_ID_WEBSITE_LENGTH', 6);
 
-  /** Suffix k identifikátoru uživatele na podvodné stránce. */
+  /** Sufix k identifikátoru uživatele na podvodné stránce. */
   define('USER_ID_WEBSITE_SUFFIX', '1');
 
 
