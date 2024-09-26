@@ -64,7 +64,7 @@
 
       $token = $_SERVER['HTTP_PHISHINGATOR_TOKEN'] ?? '';
 
-      if ($token != getenv('PHISHINGATOR_TOKEN')) {
+      if ($token != PHISHINGATOR_TOKEN) {
         Logger::error('Invalid token to call scheduler job.', $token);
         $invalid = true;
       }

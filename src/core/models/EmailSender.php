@@ -33,24 +33,24 @@
     protected function getPHPMailerInstance() {
       $mailer = new PHPMailer;
 
-      if (!empty(getenv('SMTP_HOST')) && !empty(getenv('SMTP_PORT'))) {
+      if (!empty(SMTP_HOST) && !empty(SMTP_PORT)) {
         $mailer->isSMTP();
 
-        $mailer->Host = getenv('SMTP_HOST');
-        $mailer->Port = getenv('SMTP_PORT');
+        $mailer->Host = SMTP_HOST;
+        $mailer->Port = SMTP_PORT;
 
-        if (!empty(getenv('SMTP_USERNAME')) && !empty(getenv('SMTP_PASSWORD'))) {
+        if (!empty(SMTP_USERNAME) && !empty(SMTP_PASSWORD)) {
           $mailer->SMTPAuth = true;
 
-          if (getenv('SMTP_TLS')) {
+          if (SMTP_TLS) {
             $mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
           }
 
           // Neuzavírat SMTP spojení po odeslání každého e-mailu.
           $mailer->SMTPKeepAlive = true;
 
-          $mailer->Username = getenv('SMTP_USERNAME');
-          $mailer->Password = getenv('SMTP_PASSWORD');
+          $mailer->Username = SMTP_USERNAME;
+          $mailer->Password = SMTP_PASSWORD;
         }
       }
 

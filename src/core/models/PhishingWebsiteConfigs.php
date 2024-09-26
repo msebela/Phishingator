@@ -140,18 +140,17 @@
     public static function editConfig($action, $url, $idTemplate, $previousUrl = false, $previousIdTemplate = false) {
       self::isConfigReady($url, true);
 
+      $newTemplate = PhishingWebsiteModel::getPhishingWebsiteTemplate($idTemplate);
       $configFilepath = self::getConfigPath($url);
 
-      if (file_exists($configFilepath)) {
-        $config = file_get_contents($configFilepath);
+      if ($newTemplate) {
+        if (file_exists($configFilepath)) {
+          $config = file_get_contents($configFilepath);
 
-        if ($previousIdTemplate) {
-          $previousTemplate = PhishingWebsiteModel::getPhishingWebsiteTemplate($previousIdTemplate);
-        }
+          if ($previousIdTemplate) {
+            $previousTemplate = PhishingWebsiteModel::getPhishingWebsiteTemplate($previousIdTemplate);
+          }
 
-        $newTemplate = PhishingWebsiteModel::getPhishingWebsiteTemplate($idTemplate);
-
-        if ($newTemplate) {
           // Vytvoření aliasu, pokud je součástí URL adresy i cesta (názvy adresářů).
           $urlAlias = self::getUrlAlias($url);
 
@@ -174,7 +173,6 @@
               $config
             );
           }
-
           // Přidání nového aliasu.
           elseif ($action == ACT_NEW) {
             $config = str_replace(
@@ -183,7 +181,6 @@
               $config
             );
           }
-
           // Odstranění existujícího aliasu.
           elseif ($action == ACT_DEL) {
             $config = str_replace(
@@ -199,15 +196,15 @@
           }
         }
         else {
-          Logger::error('A non-existent phishing website template has been selected.', $configFilepath);
+          Logger::warning('Failed to find phishing website configuration file on the server.', $configFilepath);
 
-          throw new UserError('Zvolená šablona neexistuje.', MSG_ERROR);
+          PhishingWebsiteConfigs::createNewConfig($url, $idTemplate);
         }
       }
       else {
-        Logger::error('Failed to find phishing website configuration file on the server.', $configFilepath);
+        Logger::error('A non-existent phishing website template has been selected.', $configFilepath);
 
-        throw new UserError('Nenalezen soubor s konfigurací podvodné stránky.', MSG_ERROR);
+        throw new UserError('Zvolená šablona neexistuje.', MSG_ERROR);
       }
     }
 

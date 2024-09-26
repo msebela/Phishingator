@@ -59,7 +59,7 @@ class DomainsController extends Controller {
 
     $token = $_SERVER['HTTP_PHISHINGATOR_TOKEN'] ?? '';
 
-    if ($token != getenv('PHISHINGATOR_TOKEN')) {
+    if ($token != PHISHINGATOR_TOKEN) {
       Logger::error('Invalid token to get fraudulent domains list.', $token);
       $invalid = true;
     }

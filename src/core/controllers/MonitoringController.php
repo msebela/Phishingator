@@ -56,7 +56,7 @@ class MonitoringController extends Controller {
 
     $token = $_SERVER['HTTP_PHISHINGATOR_TOKEN'] ?? '';
 
-    if ($token != getenv('PHISHINGATOR_TOKEN')) {
+    if ($token != PHISHINGATOR_TOKEN) {
       Logger::error('Invalid token to display monitoring status.', $token);
       $invalid = true;
     }
@@ -188,10 +188,10 @@ class MonitoringController extends Controller {
 
     $data = Database::querySingle(
       'SELECT `username` FROM `phg_users` WHERE `username` = ? AND `visible` = 1',
-      getenv('TEST_USERNAME')
+      TEST_USERNAME
     );
 
-    return $data != null && $data['username'] == getenv('TEST_USERNAME');
+    return $data != null && $data['username'] == TEST_USERNAME;
   }
 
 
@@ -203,8 +203,8 @@ class MonitoringController extends Controller {
   private function ldapTest() {
     $ldap = new LdapModel();
 
-    $name = $ldap->getFullnameByUsername(getenv('TEST_USERNAME'));
-    $email = $ldap->getEmailByUsername(getenv('TEST_USERNAME'));
+    $name = $ldap->getFullnameByUsername(TEST_USERNAME);
+    $email = $ldap->getEmailByUsername(TEST_USERNAME);
 
     $ldap->close();
 
@@ -220,13 +220,14 @@ class MonitoringController extends Controller {
    * @return bool                      TRUE pokud byl výsledek správný, jinak FALSE
    */
   private function credentialsTest($wrongPassword = false, $usernameSuffix = '') {
-    $password = getenv('TEST_PASSWORD');
-
     if ($wrongPassword) {
       $password = 'test-wrong-password';
     }
+    else {
+      $password = TEST_PASSWORD;
+    }
 
-    $result = CredentialsTesterModel::tryLogin(getenv('TEST_USERNAME') . $usernameSuffix, $password);
+    $result = CredentialsTesterModel::tryLogin(TEST_USERNAME . $usernameSuffix, $password);
 
     if ($wrongPassword) {
       $result = !$result;
