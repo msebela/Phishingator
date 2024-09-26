@@ -296,9 +296,9 @@
       $originalWebsite = new PhishingWebsiteModel();
       $originalWebsite = $originalWebsite->getPhishingWebsite($id);
 
-      // Pokud byla změněna URL adresa, šablona podvodné stránky nebo jde o (de)aktivaci stránky,
-      // je nutné upravit konfigurační soubor (VirtualHost).
-      if ($originalWebsite['url'] != $this->url || $originalWebsite['id_template'] != $this->idTemplate || $originalWebsite['active'] != $this->active) {
+      // Pokud byla změněna URL adresa nebo šablona podvodné stránky nebo jde o (de)aktivaci stránky, je nutné upravit
+      // konfigurační soubor (VirtualHost). Pokud konfigurační soubor neexistuje, je třeba ho dodatečně vytvořit.
+      if ($originalWebsite['url'] != $this->url || $originalWebsite['id_template'] != $this->idTemplate || $originalWebsite['active'] != $this->active || !file_exists(PhishingWebsiteConfigs::getConfigPath($this->url))) {
         PhishingWebsiteConfigs::isConfigReady($this->url, true);
 
         // (Sub)doména se nijak nezměnila - upravovat se bude původní konfigurační soubor.
@@ -315,15 +315,14 @@
 
           PhishingWebsiteConfigs::isConfigReady($originalWebsite['url'], true);
 
-          // V původném konfiguračním souboru jsou ale ještě jiné aliasy - tj. nemazat celý
-          // konfigurační soubor, ale jenom konkrétní alias.
+          // V původním konfiguračním souboru jsou ale ještě jiné aliasy - tj. nemazat celý konfigurační soubor, ale jenom konkrétní alias.
           if ($this->existsWebsiteWithSameHostname($originalWebsite['url'], $id)) {
             PhishingWebsiteConfigs::editConfig(ACT_DEL, $originalWebsite['url'], $originalWebsite['id_template']);
           }
 
           if ($this->active) {
-            // Pokud se (sub)doména změnila na nějakou jinou, ve Phishingatoru již existující (sub)doménu,
-            // tak ji k ní přidat jako další alias.
+            // Pokud se (sub)doména změnila na nějakou jinou, ale ve Phishingatoru již existující (sub)doménu
+            // (tj. existuje k ní konfigurační soubor), tak ji přidat k té existující jako další alias.
             if (file_exists(PhishingWebsiteConfigs::getConfigPath($this->url))) {
               PhishingWebsiteConfigs::editConfig(ACT_NEW, $this->url, $this->idTemplate);
               PhishingWebsiteConfigs::removeConfig($this->url);
