@@ -60,9 +60,9 @@
         'email' => $this->email
       ];
 
-      // Získání uživatelského jména a primární skupiny z LDAP.
+      // Získání uživatelského jména a členství ve skupinách z LDAP.
       $user['username'] = $ldap->getUsernameByEmail($this->email);
-      $user['primary_group'] = $ldap->getPrimaryGroupByUsername($user['username']);
+      $user['departments'] = $ldap->getGroupsByUsername($user['username'], false);
 
       // Výjimka pro případ, kdy se registruje nový uživatel - v takovém případě
       // je do databáze nutné zapsat nikoliv NULL hodnoty, ale hodnoty nastavené
@@ -86,7 +86,7 @@
      */
     public function getUser($id) {
       $this->dbRecordData = Database::querySingle('
-              SELECT `id_user`, `id_user_group`, `url`, `username`, `email`, `primary_group`
+              SELECT `id_user`, `id_user_group`, `url`, `username`, `email`, `departments`
               FROM `phg_users`
               WHERE `id_user` = ?
               AND `visible` = 1
@@ -124,7 +124,7 @@
      */
     public static function getUserByEmail($email) {
       return Database::querySingle('
-              SELECT `id_user`, phg_users.id_user_group, `url`, `username`, `email`, `primary_group`, `recieve_email`, `email_limit`, `value` AS `role`
+              SELECT `id_user`, phg_users.id_user_group, `url`, `username`, `email`, `departments`, `recieve_email`, `email_limit`, `value` AS `role`
               FROM `phg_users`
               JOIN `phg_users_groups`
               ON phg_users.id_user_group = phg_users_groups.id_user_group
@@ -144,7 +144,7 @@
      */
     public static function getUserByURL($url) {
       return Database::querySingle('
-              SELECT `id_user`, `id_user_group`, `url`, `username`, `email`, `primary_group`
+              SELECT `id_user`, `id_user_group`, `url`, `username`, `email`, `departments`
               FROM `phg_users`
               WHERE `url` = ?
               AND `visible` = 1
@@ -697,7 +697,7 @@
 
       if ($ldapModel->connect()) {
         // Získání seznamu všech aktivních uživatelů.
-        $users = Database::queryMulti('SELECT `id_user`, `username`, `email`, `primary_group` FROM `phg_users` WHERE `inactive` = 0 AND `visible` = 1');
+        $users = Database::queryMulti('SELECT `id_user`, `username`, `email`, `departments` FROM `phg_users` WHERE `inactive` = 0 AND `visible` = 1');
 
         foreach ($users as $user) {
           // Zjištění aktuálního e-mailu uživatele z LDAP.
@@ -728,17 +728,17 @@
             }
 
             // Zjištění aktuálního členství uživatele ve skupinách z LDAP.
-            $ldapGroup = $ldapModel->getPrimaryGroupByUsername($user['username']);
+            $ldapGroups = $ldapModel->getGroupsByUsername($user['username'], false);
 
             // Pokud se členství ve skupině z LDAP neshoduje s tím, které je uloženo ve Phishingatoru, provést aktualizaci.
-            if ($user['primary_group'] != $ldapGroup) {
+            if ($user['departments'] != $ldapGroups) {
               Database::update(
-                'phg_users', ['primary_group' => $ldapGroup], 'WHERE `id_user` = ?', $user['id_user']
+                'phg_users', ['departments' => $ldapGroups], 'WHERE `id_user` = ?', $user['id_user']
               );
 
               Logger::info(
                 'Updated the users group based on the current data in LDAP.',
-                [$user['id_user'], $user['primary_group'], $ldapGroup]
+                [$user['id_user'], $user['departments'], $ldapGroups]
               );
             }
           }

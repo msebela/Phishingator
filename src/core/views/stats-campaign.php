@@ -212,7 +212,11 @@
               <?php endif; ?>
             </td>
             <td>
-              <small><?= mb_strtoupper((CAMPAIGN_STATS_AGGREGATION == 2) ? StatsModel::getSubdomainFromEmail($data['used_email']) : $data['used_group']) ?></small>
+              <?php if (CAMPAIGN_STATS_AGGREGATION == 2): ?>
+              <small><?= mb_strtoupper(StatsModel::getSubdomainFromEmail($data['used_email'])) ?></small>
+              <?php else: ?>
+              <small class="d-block maxw-6-rem text-truncate cursor-help" data-toggle="tooltip" data-placement="left" data-html="true" data-original-title="<?= str_replace(LDAP_GROUPS_DELIMITER, '<br>', $data['used_group']) ?>"><?= mb_strtoupper(str_replace(LDAP_GROUPS_DELIMITER, '; ', $data['used_group'])) ?></small>
+              <?php endif; ?>
             </td>
             <td>
               <form method="post" action="/portal/<?= $urlSection . '/' . ACT_STATS . '/' . $campaign['id_campaign'] ?>">
@@ -290,7 +294,11 @@
           <?php endif; ?>
         </td>
         <td>
-          <small><?= mb_strtoupper((CAMPAIGN_STATS_AGGREGATION == 2) ? StatsModel::getSubdomainFromEmail($data['used_email']) : $data['used_group']) ?></small>
+          <?php if (CAMPAIGN_STATS_AGGREGATION == 2): ?>
+          <small><?= mb_strtoupper(StatsModel::getSubdomainFromEmail($data['used_email'])) ?></small>
+          <?php else: ?>
+          <small class="d-block maxw-6-rem text-truncate cursor-help" data-toggle="tooltip" data-placement="left" data-html="true" data-original-title="<?= str_replace(LDAP_GROUPS_DELIMITER, '<br>', $data['used_group']) ?>"><?= mb_strtoupper(str_replace(LDAP_GROUPS_DELIMITER, '; ', $data['used_group'])) ?></small>
+          <?php endif; ?>
         </td>
         <td>
           <span class="badge badge-<?= $data['css_color_class'] ?>"><?= $data['name'] ?></span>

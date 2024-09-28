@@ -154,7 +154,7 @@ CREATE TABLE `phg_users` (
   `url` varchar(6) COLLATE utf8mb3_czech_ci NOT NULL,
   `username` varchar(32) COLLATE utf8mb3_czech_ci NOT NULL,
   `email` varchar(256) COLLATE utf8mb3_czech_ci NOT NULL,
-  `primary_group` varchar(64) COLLATE utf8mb3_czech_ci NOT NULL,
+  `departments` varchar(256) COLLATE utf8mb3_czech_ci NOT NULL,
   `recieve_email` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
   `email_limit` smallint(4) DEFAULT NULL,
   `date_added` datetime NOT NULL,

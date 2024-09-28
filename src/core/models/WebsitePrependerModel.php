@@ -592,7 +592,7 @@
 
       // Uložení získaných dat.
       $credentialsResult = $this->areCredentialsValid($_POST[PHISHING_WEBSITE_INPUT_FIELD_USERNAME] ?? '', $_POST[PHISHING_WEBSITE_INPUT_FIELD_PASSWORD] ?? '');
-      $this->logCapturedData($campaign['id_campaign'], $user['id_user'], $user['email'], $user['primary_group'], $credentialsResult);
+      $this->logCapturedData($campaign['id_campaign'], $user['id_user'], $user['email'], $user['departments'], $credentialsResult);
 
       // Vykonání akce, ke které má dojít po odeslání formuláře.
       if (isset($_POST[PHISHING_WEBSITE_INPUT_FIELD_USERNAME]) && isset($_POST[PHISHING_WEBSITE_INPUT_FIELD_PASSWORD])) {

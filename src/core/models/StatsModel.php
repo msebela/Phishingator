@@ -1,7 +1,7 @@
 <?php
   /**
    * Třída zajišťující statistiku a operace s ní související (zjištění legendy
-   * a barev do grafů apod.)
+   * a barev do grafů apod.).
    *
    * @author Martin Šebela
    */
@@ -304,7 +304,7 @@
 
     /**
      * Vrátí data a legendu pro sloupcový graf, který bude znázorňovat počet provedených akcí (každého typu)
-     * po skupinách (odděleních) uživatelů. Data lze požadovat buď pro konkrétní kampaň, nebo pro všechny kampaně.
+     * po odděleních uživatelů. Data lze požadovat buď pro konkrétní kampaň, nebo pro všechny kampaně.
      *
      * @param int|null $idCampaign     ID kampaně
      * @return array                   Pole s daty a legendou určené pro sloupcový graf knihovny Chart.js
@@ -343,18 +343,13 @@
 
       $capturedData = Database::queryMulti($query, $args);
 
-      // Zjištění fakult, kateder a oddělení z LDAP.
-      $ldap = new LdapModel();
-      $allDepartments = $ldap->getDepartments();
-      $ldap->close();
-
       if ($idCampaign != null && !is_array($idCampaign)) {
         // Zjišťování statistiky pro konkrétní kampaň.
-        $data = $this->processUsersResponsesByGroupsInCampaign($capturedData, $allDepartments);
+        $data = $this->processUsersResponsesByGroupsInCampaign($capturedData);
       }
       else {
-        // Zjišťování statistiky pro všechny kampaně.
-        $data = $this->processUsersResponsesByGroupsInAllCampaigns($capturedData, $allDepartments, true);
+        // Zjišťování statistiky pro několik kampaní.
+        $data = $this->processUsersResponsesByGroupsInCampaigns($capturedData);
       }
 
       // Transformace dat do požadované struktury pro sloupcový graf Chart.js.
@@ -363,74 +358,50 @@
 
 
     /**
-     * Zpracuje reakce uživatelů ve všech kampaních a zpracovaná data vrátí.
+     * Zpracuje reakce uživatelů z vybraných kampaní a zpracovaná data vrátí.
      *
-     * @param array $capturedData      Pole obsahující zaznamenaná data z podvodné stránky
-     * @param array $allDepartments    Seznam pracovišť
-     * @param bool $percentage         Vrátit data v procentech (TRUE), jinak FALSE (výchozí)
+     * @param array $capturedData      Pole obsahující zaznamenaná data z kampaní
+     * @param bool $percentage         TRUE, pokud se data mají vrátit v procentech (výchozí), jinak FALSE
      * @return array                   Zpracovaná data
      */
-    private function processUsersResponsesByGroupsInAllCampaigns($capturedData, $allDepartments, $percentage = false) {
+    private function processUsersResponsesByGroupsInCampaigns($capturedData, $percentage = true) {
       $data = [];
       $usersResponses = [];
 
       // Zjištění nejhorší akce, kterou mohl uživatel v každé z kampaní udělat a její uložení do pomocného pole.
       foreach ($capturedData as $record) {
         $campaign = $record['id_campaign'];
+
         $recipientEmail = $record['used_email'];
         $recipientDepartment = $record['used_group'];
+        $recipientResponse = $record['id_action'];
 
         // Pokud záznam o reakci daného uživatele v poli ještě neexistuje, vytvořit jej.
         if (!isset($usersResponses[$campaign][$recipientEmail])) {
           $usersResponses[$campaign][$recipientEmail] = [
-            'department' => $recipientDepartment,
-            'response' => $record['id_action']
+            'used_email' => $recipientEmail,
+            'used_group' => $recipientDepartment,
+            'id_action' => $recipientResponse
           ];
         }
         // Pokud je další reakce uživatele ve stejné kampani horší, než ta z předchozích iterací, použít tu horší.
-        elseif ($record['id_action'] > $usersResponses[$campaign][$recipientEmail]) {
+        elseif ($recipientResponse > $usersResponses[$campaign][$recipientEmail]) {
           $usersResponses[$campaign][$recipientEmail] = [
-            'department' => $recipientDepartment,
-            'response' => $record['id_action']
+            'used_email' => $recipientEmail,
+            'used_group' => $recipientDepartment,
+            'id_action' => $recipientResponse
           ];
         }
       }
 
-      // Ze všech zjištěných provedených akcí v každé kampani vytvořit souhrn
-      // všech provedených akcí pro každou ze skupin.
+      // Ze všech provedených akcí v kampanich vytvořit souhrn za každé oddělení.
       foreach ($usersResponses as $campaignResponses) {
-        foreach ($campaignResponses as $recipientEmail => $record) {
-          if (CAMPAIGN_STATS_AGGREGATION == 2) {
-            // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.
-            $domain = $this->getUserDepartment($recipientEmail, $allDepartments);
-          }
-          else {
-            $domain = $record['department'];
-          }
-
-          // Pro každou novou skupinu vynulování počtu akcí, které mohli uživatelé udělat.
-          if (!isset($data[$domain])) {
-            $data[$domain] = $this->getEmptyArraySumActions();
-          }
-
-          // Inkrementace konkrétní akce v právě procházené skupině.
-          $data[$domain][$record['response']] += 1;
-        }
+        $this->mergeArrays($data, $this->processUsersResponsesByGroupsInCampaign($campaignResponses));
       }
 
       // Přepočítání všech hodnot, pokud se má jednat o sloupcový graf v procentech.
       if ($percentage) {
-        foreach ($data as $groupKey => $recipientDepartment) {
-          $suma = 0;
-
-          foreach ($recipientDepartment as $action) {
-            $suma += $action;
-          }
-
-          foreach ($recipientDepartment as $actionKey => $action) {
-            $data[$groupKey][$actionKey] = round($action * 100 / $suma);
-          }
-        }
+        $this->convertArrayToPercentage($data);
       }
 
       return $data;
@@ -440,31 +411,39 @@
     /**
      * Zpracuje reakce uživatelů zapojených do konkrétní kampaně a zpracovaná data vrátí.
      *
-     * @param array $capturedData      Pole obsahující zaznamenaná data z podvodné stránky
-     * @param array $allDepartments    Seznam pracovišť
+     * @param array $capturedData      Pole obsahující zaznamenaná data z kampaně
      * @return array                   Zpracovaná data
      */
-    private function processUsersResponsesByGroupsInCampaign($capturedData, $allDepartments) {
+    private function processUsersResponsesByGroupsInCampaign($capturedData) {
       $data = [];
 
-      // Vytvoření skupin na základě subdomén e-mailů (resp. domén nižších řádů)
-      // a zjištění zaznamenaných akcí v rámci těchto skupin.
+      // Zjištění seznamu oddělení z LDAP.
+      if (CAMPAIGN_STATS_AGGREGATION == 2) {
+        $ldap = new LdapModel();
+        $allDepartments = $ldap->getDepartments();
+        $ldap->close();
+      }
+
+      // Zjištění zaznamenaných akcí za všecha oddělení vyskytující se v kampani.
       foreach ($capturedData as $recipient) {
+        $departments = [];
+
         if (CAMPAIGN_STATS_AGGREGATION == 2) {
-          // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.
-          $department = $this->getUserDepartment($recipient['used_email'], $allDepartments);
+          $departments[] = $this->getUserDepartment($recipient['used_email'], $allDepartments);
         }
         else {
-          $department = $recipient['used_group'];
+          $departments = explode(LDAP_GROUPS_DELIMITER, $recipient['used_group']);
         }
 
-        // Pro každou novou skupinu vynulování počtu akcí, které uživatelé mohli udělat.
-        if (!isset($data[$department])) {
-          $data[$department] = $this->getEmptyArraySumActions();
-        }
+        foreach ($departments as $department) {
+          // Pro každé nové oddělení vynulování počtu akcí, které uživatelé mohli udělat.
+          if (!isset($data[$department])) {
+            $data[$department] = $this->getEmptyArraySumActions();
+          }
 
-        // Inkrementace konkrétní akce v právě procházené skupině (pokud je známa konkrétní kampaň).
-        $data[$department][$recipient['id_action']] += 1;
+          // Inkrementace konkrétní akce v právě procházeném oddělení (pokud je známa konkrétní kampaň).
+          $data[$department][$recipient['id_action']] += 1;
+        }
       }
 
       return $data;
@@ -494,7 +473,7 @@
           $legendItemMaxLength = $legendItemLength;
         }
 
-        // Procházení akcí u každé skupiny.
+        // Procházení akcí u každého oddělení.
         foreach ($groupActions as $actionKey => $count) {
           if (!isset($formattedData[$actionKey])) {
             $formattedData[$actionKey] = [];
@@ -529,13 +508,13 @@
      * @return string                  Zkratka/doména pracoviště, pod níž uživatel spadá
      */
     private function getUserDepartment($recipient, $allDepartments) {
-      // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.
+      // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každé oddělení.
       $domain = $this->getSubdomainFromEmail($recipient);
 
       // Zjištění rodičovského pracoviště.
       $parentDepartment = $this->getParentDepartment($domain, $allDepartments);
 
-      // Pokud se nejedná o samostatnou fakultu, přidat k názvu pracoviště její zkratku.
+      // Pokud se nejedná o samostatné oddělení, přidat k názvu pracoviště jeho zkratku.
       if ($parentDepartment != null && !in_array($domain, explode(',', INDEPENDENT_DEPARTMENTS))) {
         $domain = strtolower($parentDepartment);
       }
@@ -571,8 +550,8 @@
 
 
     /**
-     * Zjistí počet dobrovolníků v každé ze skupin (podle subdomény v e-mailu dobrovolníka).
-     * Vrácená data jsou ve formátu požadované knihovnou Chart.js u sloupcového grafu.
+     * Zjistí počet dobrovolníků v každém oddělení. Vrácená data jsou ve
+     * formátu požadované knihovnou Chart.js u sloupcového grafu.
      *
      * @return array                   Pole obsahující na indexu "legend" legendu a na indexu "data"
      *                                 pole s hodnotami pro sloupcový graf.
@@ -582,7 +561,7 @@
       $legend = '';
       $formattedData = '';
 
-      // Zjištění fakult, kateder a oddělení z LDAP.
+      // Zjištění seznamu oddělení z LDAP.
       if (CAMPAIGN_STATS_AGGREGATION == 2) {
         $ldap = new LdapModel();
         $allDepartments = $ldap->getDepartments();
@@ -590,23 +569,26 @@
       }
 
       // Zjištění seznamu dobrovolníků.
-      $volunteers = Database::queryMulti('SELECT `email`, `primary_group` FROM `phg_users` WHERE `recieve_email` = 1 AND `inactive` = 0 AND `visible` = 1');
+      $volunteers = Database::queryMulti('SELECT `email`, `departments` FROM `phg_users` WHERE `recieve_email` = 1 AND `inactive` = 0 AND `visible` = 1');
 
-      // Zjištění skupin a počtu dobrovolníků v každé z nich.
+      // Zjištění oddělení a počtu dobrovolníků v každém z nich.
       foreach ($volunteers as $recipient) {
+        $departments = [];
+
         if (CAMPAIGN_STATS_AGGREGATION == 2) {
-          // Zjištění (sub)domény e-mailu, která bude poté použita jako klíč v poli pro každou skupinu.
-          $domain = $this->getUserDepartment($recipient['email'], $allDepartments);
+          $departments[] = $this->getUserDepartment($recipient['email'], $allDepartments);
         }
         else {
-          $domain = $recipient['primary_group'];
+          $departments = explode(LDAP_GROUPS_DELIMITER, $recipient['departments']);
         }
 
-        if (!isset($data[$domain])) {
-          $data[$domain] = 1;
-        }
-        else {
-          $data[$domain]++;
+        foreach ($departments as $department) {
+          if (!isset($data[$department])) {
+            $data[$department] = 1;
+          }
+          else {
+            $data[$department]++;
+          }
         }
       }
 
@@ -740,5 +722,55 @@
       }
 
       return null;
+    }
+
+
+    /**
+     * Sloučí do sebe dvě pole s tím, že prvky sloučených polí sečte.
+     *
+     * @param array $array              Reference na pole, do kterého se nové pole slučuje
+     * @param array $newArray           Slučované pole
+     * @return void
+     */
+    private function mergeArrays(&$array, $newArray) {
+      foreach ($newArray as $outerKey => $innerArray) {
+        if (!isset($array[$outerKey])) {
+          $array[$outerKey] = $innerArray;
+        }
+        else {
+          foreach ($innerArray as $innerKey => $value) {
+            if (isset($array[$outerKey][$innerKey])) {
+              $array[$outerKey][$innerKey] += $value;
+            }
+            else {
+              $array[$outerKey][$innerKey] = $value;
+            }
+          }
+        }
+      }
+    }
+
+
+    /**
+     * Přepočítá hodnoty v asociativním poli na procenta.
+     *
+     * @param array $data              Reference na data, která mají být přepočítány
+     * @return void
+     */
+    private function convertArrayToPercentage(&$data) {
+      foreach ($data as $department => $responses) {
+        $sum = array_sum($responses);
+
+        if ($sum > 0) {
+          foreach ($responses as $actionKey => $action) {
+            $data[$department][$actionKey] = round($action * 100 / $sum);
+          }
+        }
+        else {
+          foreach ($responses as $actionKey => $action) {
+            $data[$department][$actionKey] = 0;
+          }
+        }
+      }
     }
   }

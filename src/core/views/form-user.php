@@ -14,10 +14,16 @@
     </div>
 
     <div class="col-md">
-      <?php $input = 'group'; ?>
+      <?php $departments = explode(LDAP_GROUPS_DELIMITER, $user['departments']) ?>
       <div class="form-group">
-        <label for="<?= $formPrefix . $input ?>">Primární skupina/oddělení</label>
-        <input type="text" id="<?= $formPrefix . $input ?>" class="form-control-plaintext" value="<?= $user['primary_group'] ?>" readonly>
+        <label>Oddělení <span class="badge badge-dark badge-pill"><?= count($departments) ?></span></label>
+        <div>
+          <ul class="list-unstyled">
+          <?php foreach ($departments as $department): ?>
+            <li><?= $department ?></li>
+          <?php endforeach; ?>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -55,7 +61,7 @@
           <option value="<?= $group['id_user_group'] ?>"<?= (($inputsValues[$input] == $group['id_user_group']) ? ' selected': ''); ?>><?= $group['name'] ?> (opr. <?= $group['role_name'] ?>)</option>
           <?php endforeach; ?>
         </select>
-        <small class="form-text text-muted">Skupina, na základě které uživatel zdědí oprávnění do systému.</small>
+        <small class="form-text text-muted">Skupina, na základě které uživatel získá oprávnění ve Phishingatoru.</small>
       </div>
     </div>
   </div>

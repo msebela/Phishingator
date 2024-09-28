@@ -303,52 +303,25 @@
 
 
     /**
-     * Vrátí z LDAP primární skupinu uživatele v závislosti na jeho uživatelském jménu.
+     * Vrátí z LDAP skupiny uživatele v závislosti na jeho uživatelském jménu.
      *
      * @param string $username            Uživatelské jméno
-     * @param bool $preferAdminLdapGroups TRUE, pokud mají být preferovány skupiny definované
-     *                                    u administrátorského oprávnění (výchozí) [nepovinné]
-     * @return string                     Primární skupina uživatele nebo NULL
+     * @param bool $returnArray           TRUE, pokud mají být skupiny vráceny jako pole (výchozí),
+     *                                    FALSE pokud jako řetězec
+     * @return array|string               Pole/řetězec skupin, kterých je uživatel členem
      */
-    public function getPrimaryGroupByUsername($username, $preferAdminLdapGroups = true) {
-      $found = false;
-      $group = '';
+    public function getGroupsByUsername($username, $returnArray = true) {
+      $groups = [];
 
       if (!empty($username)) {
-        $group = $this->getAttributeValue($username, LDAP_USER_ATTR_PRIMARY_GROUP, null);
-
-        if (is_array($group)) {
-          // Pokud je uživatel členem několika skupin...
-          if (count($group) > 1) {
-            if ($preferAdminLdapGroups) {
-              foreach ($group as $item) {
-                $item = $this->getDnPart($item, 0);
-
-                if (UserGroupsModel::existsAdminGroup($item)) {
-                  $found = true;
-                  $group = $item;
-
-                  break;
-                }
-              }
-            }
-
-            if (!$preferAdminLdapGroups || !$found) {
-              $group = end($group);
-            }
-          }
-          else {
-            $group = $group[0];
-            $found = true;
-          }
-        }
-
-        if (!$found) {
-          $group = $this->getDnPart($group, 0);
-        }
+        $groups = $this->getAttributeValue($username, LDAP_USER_ATTR_GROUPS, null);
       }
 
-      return $group;
+      if (!$returnArray) {
+        $groups = implode(LDAP_GROUPS_DELIMITER, $groups);
+      }
+
+      return $groups;
     }
 
 

@@ -57,8 +57,8 @@
   /** Název LDAP atributu, ve kterém je uložen e-mail uživatele. */
   define('LDAP_USER_ATTR_EMAIL', (getenv('LDAP_USER_ATTR_EMAIL')) ? getenv('LDAP_USER_ATTR_EMAIL') : 'mail');
 
-  /** Název LDAP atributu, ze kterého lze získat název oddělení, do něhož je uživatel zařazen. */
-  define('LDAP_USER_ATTR_PRIMARY_GROUP', (getenv('LDAP_USER_ATTR_PRIMARY_GROUP')) ? getenv('LDAP_USER_ATTR_PRIMARY_GROUP') : 'departmentnumber');
+  /** Název LDAP atributu, ze kterého lze získat názvy skupin (oddělení), do nichž je uživatel zařazen. */
+  define('LDAP_USER_ATTR_GROUPS', (getenv('LDAP_USER_ATTR_GROUPS')) ? getenv('LDAP_USER_ATTR_GROUPS') : 'departmentnumber');
 
   /** Cesta k seznamu uživatelských skupin v LDAP. */
   define('LDAP_GROUPS_DN', (getenv('LDAP_GROUPS_DN')) ? getenv('LDAP_GROUPS_DN') : 'ou=Groups');

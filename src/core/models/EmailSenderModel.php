@@ -121,7 +121,7 @@
               ParticipationModel::decrementEmailLimit($user['id_user']);
 
               // Vložení záznamu do databáze o tom, že uživatel zatím na kampaň nereagoval.
-              CampaignModel::insertNoReactionRecord($campaign['id_campaign'], $user['id_user'], $recipient, $user['primary_group']);
+              CampaignModel::insertNoReactionRecord($campaign['id_campaign'], $user['id_user'], $recipient, $user['departments']);
             }
 
             // Vyčištění pro další iteraci.
