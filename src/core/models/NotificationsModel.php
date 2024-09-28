@@ -252,6 +252,11 @@
         foreach ($recipients as $recipient) {
           $user = UsersModel::getUserByEmail($recipient);
 
+          // Ověření, zdali se podařilo získat informace o uživateli.
+          if (empty($user['id_user'])) {
+            continue;
+          }
+
           // Ověření, zdali nedošlo k odeslání notifikace o účasti v kampani někdy dříve.
           if ($this->isNotificationEmailSent($campaign['id_campaign'], $user['id_user'], 3)) {
             continue;
