@@ -203,7 +203,7 @@ function importValuesFromCSV(lines) {
   let values = [];
 
   if (separator !== null && separator !== '') {
-    values = lines.flatMap(line => line.split(separator));
+    values = Array.from(lines).flatMap(line => line.split(separator));
   }
 
   return values;
