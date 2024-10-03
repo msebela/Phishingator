@@ -167,7 +167,7 @@ $('.import-recipients').on('click', function() {
         let importedValidRecipients = [];
 
         if (file.type === 'text/csv') {
-          importedRecipients = importValuesFromCSV(importedRecipients);
+          importedRecipients = importValuesFromCSV(Array.from(importedRecipients));
         }
 
         importedRecipients.forEach(function (recipient) {
@@ -203,7 +203,7 @@ function importValuesFromCSV(lines) {
   let values = [];
 
   if (separator !== null && separator !== '') {
-    values = Array.from(lines).flatMap(line => line.split(separator));
+    values = lines.flatMap(line => line.split(separator));
   }
 
   return values;
