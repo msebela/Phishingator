@@ -324,19 +324,28 @@
     /**
      * Vrátí personalizované tělo e-mailu vůči vybranému uživateli.
      *
-     * @param array $user              Data o uživateli, vůči kterému má být e-mail personalizován
-     * @param string $body             Tělo e-mailu
-     * @param string|null $websiteUrl  URL podvodné stránky (nepovinné)
-     * @param int|null $idCampaign     ID kampaně (nepovinné)
-     * @return string                  Personalizované tělo e-mailu
+     * @param array $user                     Data o uživateli, vůči kterému má být e-mail personalizován
+     * @param string $body                    Tělo e-mailu
+     * @param string|null $websiteUrl         URL podvodné stránky (nepovinné)
+     * @param int|null $idCampaign            ID kampaně (nepovinné)
+     * @param string|null $datetimeEmailSent  Datum a čas, kdy došlo k odeslání e-mailu pro doplnění proměnné (nepovinné)
+     * @return string                         Personalizované tělo e-mailu
      */
-    public static function personalizeEmailBody($user, $body, $websiteUrl = null, $idCampaign = null) {
+    public static function personalizeEmailBody($user, $body, $websiteUrl = null, $idCampaign = null, $datetimeEmailSent = null) {
       // Data o uživateli, která se budou dosazovat za použité proměnné.
       $values = [
         $user['username'], $user['email'],
         $user['firstname'], $user['surname'], $user['fullname'],
-        date('j. n. Y'), date('Y-m-d')
+        date(VAR_DATE_CZ_FORMAT), date(VAR_DATE_EN_FORMAT)
       ];
+
+      // Změna obsahu proměnné s datem v závislosti na datu odeslání e-mailu.
+      if ($datetimeEmailSent !== null) {
+        $timestampEmailSent = strtotime($datetimeEmailSent);
+
+        $values[5] = date(VAR_DATE_CZ_FORMAT, $timestampEmailSent);
+        $values[6] = date(VAR_DATE_EN_FORMAT, $timestampEmailSent);
+      }
 
       // Pokud se má nahrazovat i proměnná pro URL podvodné stránky...
       if ($websiteUrl != null) {
@@ -425,7 +434,7 @@
      * Doplní a personalizuje konkrétní phishingový e-mail.
      *
      * @param array $phishingEmail           Asociativní pole s daty o phishingovém e-mailu
-     * @param array $user                    Asociativní pole s daty o uživateli (ID a e-mail)
+     * @param array|null $user               Asociativní pole s daty o uživateli (ID a e-mail), nebo NULL
      * @param bool|array $includeIndications TRUE (výchozí) pokud mají být k e-mailu zahrnuty i indicie pro jeho rozpoznání,
      *                                        FALSE pokud ne anebo pole indicií
      * @param bool $markVariables            Vyznačí proměnné v těle phishingového e-mailu
@@ -465,7 +474,7 @@
 
           // Personalizace těla e-mailu.
           $phishingEmail['body'] = self::personalizeEmailBody(
-            $user, $phishingEmail['body'], $phishingEmail['url'], ($phishingEmail['id_campaign'] ?? null)
+            $user, $phishingEmail['body'], $phishingEmail['url'], ($phishingEmail['id_campaign'] ?? null), ($phishingEmail['date_sent'] ?? null)
           );
         }
 
