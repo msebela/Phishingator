@@ -11,6 +11,11 @@
     <form method="post" action="/portal/<?= $urlSection . '/' . ACT_STOP . '/' . $campaign['id_campaign'] ?>">
       <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
+      <a href="/portal/<?= $urlSection . '/' . ACT_STATS . '/' . $campaign['id_campaign'] ?>" class="btn btn-info mr-1">
+        <span data-feather="bar-chart"></span>
+        Zobrazit statistiku
+      </a>
+
       <button type="submit" name="<?= $formPrefix . $action ?>" class="btn btn-danger btn-confirm" data-confirm="Opravdu chcete kampaň předčasně ukončit? Dojde tak k okamžitému znepřístupnění podvodné stránky (uživatelé budou při vstupu na podvodnou stránku automaticky přesměrováni na vzdělávací stránku) a případně (podle nastavení kampaně) dojde k rozeslání notifikací o absolvování cvičného phishingu.">
         <span data-feather="x-octagon"></span>
         Předčasně ukončit
