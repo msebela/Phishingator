@@ -242,3 +242,32 @@
 
     return preg_replace('/-+/', '-', $string);
   }
+
+
+  /**
+   * Ověří, zdali IP adresa spadá do zadaného IP rozsahu.
+   *
+   * @param string $ip                 IP adresa
+   * @param string $ipRange            IP rozsah
+   * @return bool                      TRUE pokud IP adresa do IP rozsahu spadá, jinak FALSE
+   */
+  function is_ip_in_range($ip, $ipRange) {
+    $inRange = false;
+
+    list($subnet, $bits) = explode('/', $ipRange);
+
+    if ($bits === null) {
+      $bits = 32;
+    }
+
+    if ($bits >= 0 && $bits <= 32) {
+      $ip = ip2long($ip);
+      $subnet = ip2long($subnet);
+      $mask = -1 << (32 - $bits);
+      $subnet &= $mask;
+
+      $inRange = ($ip & $mask) == $subnet;
+    }
+
+    return $inRange;
+  }

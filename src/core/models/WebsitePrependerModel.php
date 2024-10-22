@@ -214,15 +214,15 @@
         );
       }
 
-      // Pokud podvodnou stránku navštívil specifický prohlížeč (např. náhledový robot), záznam o návštěvě ignorovat.
+      // Pokud podvodnou stránku navštívil specifický prohlížeč nebo IP adresa (např. náhledový robot), záznam o návštěvě ignorovat.
       if ($record['id_action'] == CAMPAIGN_VISIT_FRAUDULENT_PAGE_ID) {
-        $ignoreRecord = $this->isIgnoredBrowser($_SERVER['HTTP_USER_AGENT']);
+        $ignoreRequest = $this->isIgnoredRequest($_SERVER['HTTP_USER_AGENT'], WebsitePrependerModel::getClientIp());
       }
       else {
-        $ignoreRecord = false;
+        $ignoreRequest = false;
       }
 
-      if (!$ignoreRecord) {
+      if (!$ignoreRequest) {
         Database::insert('phg_captured_data', $record);
       }
     }
@@ -249,9 +249,9 @@
         'browser_fingerprint' => $_SERVER['HTTP_USER_AGENT']
       ];
 
-      $ignoreRecord = self::isIgnoredBrowser($_SERVER['HTTP_USER_AGENT']);
+      $ignoreRequest = self::isIgnoredRequest($_SERVER['HTTP_USER_AGENT'], WebsitePrependerModel::getClientIp());
 
-      if (!$ignoreRecord) {
+      if (!$ignoreRequest) {
         Logger::info('Access to the educational site.', $record);
         Database::insert('phg_captured_data_end', $record);
       }
@@ -259,13 +259,15 @@
 
 
     /**
-     * Vrátí, zdali použitý webový prohlížeč nepatří do seznamu ignorovaných prohlížečů
-     * (např. náhledový robot, prefetching) nastavených v konfiguraci Phishingatoru.
+     * Vrátí, zdali se nejedná o požadavek webového prohlížeče nebo IP adresy patřících
+     * do seznamu ignorovaných prohlížečů/IP adres (např. náhledový robot, prefetching)
+     * nastavených v konfiguraci Phishingatoru.
      *
      * @param string $userAgent        Otisk webového prohlížeče
-     * @return bool                    TRUE pokud má být prohlížeč ignorován, jinak FALSE
+     * @param string $ipAddress        IP adresa
+     * @return bool                    TRUE pokud má být požadavek ignorován, jinak FALSE
      */
-    private static function isIgnoredBrowser($userAgent) {
+    private static function isIgnoredRequest($userAgent, $ipAddress) {
       $ignored = false;
 
       $headers = apache_request_headers();
@@ -278,9 +280,22 @@
         }
       }
 
-      if (!empty(PHISHING_WEBSITE_IGNORED_USER_AGENTS) && !$ignored) {
-        foreach (PHISHING_WEBSITE_IGNORED_USER_AGENTS as $browser) {
-          if (str_contains($userAgent, $browser)) {
+      if (!$ignored && !empty(PHISHING_WEBSITE_IGNORED_USER_AGENTS)) {
+        $ignoredUserAgents = explode(',', PHISHING_WEBSITE_IGNORED_USER_AGENTS);
+
+        foreach ($ignoredUserAgents as $record) {
+          if (str_contains($userAgent, $record)) {
+            $ignored = true;
+            break;
+          }
+        }
+      }
+
+      if (!$ignored && !empty(PHISHING_WEBSITE_IGNORED_IP)) {
+        $ignoredIPRanges = explode(',', PHISHING_WEBSITE_IGNORED_IP);
+
+        foreach ($ignoredIPRanges as $record) {
+          if (is_ip_in_range($ipAddress, $record)) {
             $ignored = true;
             break;
           }

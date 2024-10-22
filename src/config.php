@@ -364,8 +364,11 @@
   /** Název vstupního pole na podvodné stránce, do kterého uživatel zadává heslo. */
   define('PHISHING_WEBSITE_INPUT_FIELD_PASSWORD', 'password');
 
-  /** Pole obsahující názvy webových prohlížečů, jejichž akce nemají být ukládány při návštěvě podvodné stránky. */
-  define('PHISHING_WEBSITE_IGNORED_USER_AGENTS', ['MicrosoftPreview']);
+  /** Seznam názvů webových prohlížečů (oddělené čárkou), jejichž akce nemají být ukládány při návštěvě podvodné stránky. */
+  define('PHISHING_WEBSITE_IGNORED_USER_AGENTS', (getenv('PHISHING_WEBSITE_IGNORED_USER_AGENTS')) ? getenv('PHISHING_WEBSITE_IGNORED_USER_AGENTS') : 'MicrosoftPreview');
+
+  /** Seznam IP adres, popř. IP rozsahů (oddělené čárkou), jejichž akce nemají být ukládány při návštěvě podvodné stránky. */
+  define('PHISHING_WEBSITE_IGNORED_IP', getenv('PHISHING_WEBSITE_IGNORED_IP'));
 
   /** Identifikátor pro náhled podvodné stránky nahrazující identifikátor phishingové kampaně. */
   define('PHISHING_WEBSITE_PREVIEW_ID', 0);
