@@ -32,7 +32,7 @@ Phishingator uses, incorporates or may be acompanied by Open Source Software (OS
 | Bootstrap                | 4.6.2   | Copyright (c) 2011-2024 The Bootstrap Authors<br/>https://github.com/twbs/bootstrap/blob/main/LICENSE                                          |
 | Feather                  | 4.29.2  | Copyright (c) 2013-2023 Cole Bemis<br/>https://github.com/feathericons/feather/blob/master/LICENSE                                             |
 | jQuery                   | 3.7.1   | Copyright jQuery Foundation and other contributors<br/>https://jquery.org/license/                                                             |
-| Chart.js                 | 4.4.5   | Copyright (c) 2014-2024 Chart.js Contributors<br/>https://github.com/chartjs/Chart.js/blob/master/LICENSE.md                                   |
+| Chart.js                 | 4.4.6   | Copyright (c) 2014-2024 Chart.js Contributors<br/>https://github.com/chartjs/Chart.js/blob/master/LICENSE.md                                   |
 | Chart.js DataLabels      | 2.2.0   | Copyright (c) 2017-2021 chartjs-plugin-datalabels contributors<br/>https://github.com/chartjs/chartjs-plugin-datalabels/blob/master/LICENSE.md |
 | jQuery highlightTextarea | 3.1.3   | Copyright 2014-2016 Damien "Mistic" Sorel<br/>https://garysieling.github.io/jquery-highlighttextarea/                                          |
 | TABLE-SORT-JS.           | 1.21.0  | Copyright (c) 2021 Lee Wannacott<br/>https://github.com/LeeWannacott/table-sort-js/blob/master/LICENSE                                         |
@@ -48,7 +48,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 | Component name | Version | Copyright (provided for informational purposes only)                                           |
 |----------------|:--------|:-----------------------------------------------------------------------------------------------|
-| PHP            | 8.3.12  | Copyright (c) 1999 - 2019 The PHP Group. All rights reserved.<br/>https://www.php.net/license/ |
+| PHP            | 8.3.13  | Copyright (c) 1999 - 2019 The PHP Group. All rights reserved.<br/>https://www.php.net/license/ |
 
 The PHP License, version 3.01  
 Copyright (c) 1999 - 2019 The PHP Group. All rights reserved.
