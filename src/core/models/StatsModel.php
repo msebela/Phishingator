@@ -401,7 +401,9 @@
 
       // Přepočítání všech hodnot, pokud se má jednat o sloupcový graf v procentech.
       if ($percentage) {
-        $this->convertArrayToPercentage($data);
+        foreach ($data as $department => $responses) {
+          $data[$department] = self::calculatePercentages($responses);
+        }
       }
 
       return $data;
@@ -752,25 +754,26 @@
 
 
     /**
-     * Přepočítá hodnoty v asociativním poli na procenta.
+     * Přepočítá hodnoty pole na procenta, která vrátí formou pole.
      *
-     * @param array $data              Reference na data, která mají být přepočítány
-     * @return void
+     * @param array $data              Data, která mají být přepočítána
+     * @return array
      */
-    private function convertArrayToPercentage(&$data) {
-      foreach ($data as $department => $responses) {
-        $sum = array_sum($responses);
+    public static function calculatePercentages($data) {
+      $sum = array_sum($data);
+      $result = [];
 
-        if ($sum > 0) {
-          foreach ($responses as $actionKey => $action) {
-            $data[$department][$actionKey] = round($action * 100 / $sum);
-          }
-        }
-        else {
-          foreach ($responses as $actionKey => $action) {
-            $data[$department][$actionKey] = 0;
-          }
+      if ($sum > 0) {
+        foreach ($data as $key => $value) {
+          $result[$key] = round($value * 100 / $sum, 1);
         }
       }
+      else {
+        foreach ($data as $key => $value) {
+          $result[$key] = 0;
+        }
+      }
+
+      return $result;
     }
   }

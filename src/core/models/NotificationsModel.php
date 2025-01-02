@@ -164,6 +164,9 @@
 
         // Získání výsledků kampaně.
         $campaignStats = $statsModel->getUsersResponses($campaign['id_campaign'], null, true);
+        $campaignStatsPercentages = StatsModel::calculatePercentages($campaignStats);
+
+        $campaignStatsMaxValueLength = mb_strlen(max(array_values($campaignStats)));
 
         // Organizace, ve které k vytvoření phishingové kampaně došlo.
         $campaignOrg = getenv('ORG') . ' (' . getenv('ORG_DOMAIN') . ')';
@@ -187,11 +190,13 @@
           '-------------------------------------------' . "\n\n" .
           'Reakce příjemců byly následující:' . "\n\n";
 
-        // Vložení reakcí příjemců do obsahu notifikace.
+        // Vložení výsledků kampaně do obsahu notifikace.
         foreach ($statsModel->legend as $key => $legend) {
-          // Zarovnání hodnoty v obsahu notifikace.
-          $value = str_pad($campaignStats[$key], 25 - mb_strlen($legend), ' ', STR_PAD_LEFT);
-          $notificationBody .= $legend . ': ' . $value . "\n";
+          $legend = mb_str_pad($legend . ': ', 26);
+          $value = mb_str_pad($campaignStats[$key], $campaignStatsMaxValueLength);
+          $percentages = $campaignStatsPercentages[$key] . ' %';
+
+          $notificationBody .= $legend . $value . ' (' . $percentages . ')' . "\n";
         }
 
         // Patička notifikace.
