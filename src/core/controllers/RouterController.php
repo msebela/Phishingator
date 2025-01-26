@@ -58,11 +58,11 @@
     public function process($arguments) {
       $publicSite = true;
 
-      PermissionsModel::checkUserValidity();
-
       // Uživatel je přihlášen a je v autorizované části aplikace.
       if (PermissionsModel::getUserId() != null) {
         $publicSite = false;
+
+        PermissionsModel::checkUserValidity();
 
         if (mb_substr($arguments, 0, 8) == '/portal/') {
           if (isset($_GET['section']) && $_GET['section'] != ACT_PHISHING_TEST) {
