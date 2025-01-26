@@ -158,6 +158,32 @@
 
 
     /**
+     * Ověří, zdali má uživatel podle databáze stále aktivní konto a zdali
+     * nedošlo během jeho přihlášené relace ke změně přidělených oprávnění.
+     *
+     * @return void
+     */
+    public static function checkUserValidity() {
+      $user = UsersModel::getUserByEmail(self::getUserName());
+
+      if (!empty($user)) {
+        // Pokud byla uživateli během jeho relace odebrána práva, snížit mu je i v přihlášené relaci.
+        if (self::getUserPermission() != $user['role']) {
+          $_SESSION['user']['permission'] = $user['role'];
+
+          if (self::getUserRole() < $user['role']) {
+            $_SESSION['user']['role'] = $user['role'];
+          }
+        }
+      }
+      else {
+        // Pokud bylo uživateli konto smazáno, provést obratem jeho odhlášení.
+        self::logout();
+      }
+    }
+
+
+    /**
      * Vytvoří v databázi nový záznam o úspěšném přihlášení uživatele do systému.
      *
      * @param int $idUser              ID uživatele

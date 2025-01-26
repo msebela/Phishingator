@@ -58,6 +58,8 @@
     public function process($arguments) {
       $publicSite = true;
 
+      PermissionsModel::checkUserValidity();
+
       // Uživatel je přihlášen a je v autorizované části aplikace.
       if (PermissionsModel::getUserId() != null) {
         $publicSite = false;
