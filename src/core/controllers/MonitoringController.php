@@ -216,21 +216,27 @@ class MonitoringController extends Controller {
    * Pokusí se provést přihlášení do autentizační služby s přihlašovacími údaji testovací identity.
    *
    * @param bool $wrongPassword        TRUE pokud má dojít k přihlášení s nesprávným heslem, jinak FALSE (výchozí)
-   * @param string $usernameSuffix     Nepovinný suffix přidávaný k uživatelskému jménu (např. doména)
-   * @return bool                      TRUE pokud byl výsledek správný, jinak FALSE
+   * @param string $usernameSuffix     Nepovinný sufix přidávaný k uživatelskému jménu (např. doména)
+   * @return bool                      TRUE pokud byl výsledek správný, FALSE pokud ne, 3 pokud byl neznámý
    */
   private function credentialsTest($wrongPassword = false, $usernameSuffix = '') {
-    if ($wrongPassword) {
-      $password = 'test-wrong-password';
+    if (!($wrongPassword && MONITORING_SKIP_TEST_CREDS_INVALID)) {
+      if ($wrongPassword) {
+        $password = 'test-wrong-password';
+      }
+      else {
+        $password = TEST_PASSWORD;
+      }
+
+      $result = CredentialsTesterModel::tryLogin(TEST_USERNAME . $usernameSuffix, $password);
+
+      if ($wrongPassword) {
+        $result = !$result;
+      }
     }
     else {
-      $password = TEST_PASSWORD;
-    }
-
-    $result = CredentialsTesterModel::tryLogin(TEST_USERNAME . $usernameSuffix, $password);
-
-    if ($wrongPassword) {
-      $result = !$result;
+      // Testování zadání nepatných údajů se na základě konfigurace neprovádí - tj. stav neznámý.
+      $result = 3;
     }
 
     return $result;

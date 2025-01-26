@@ -156,19 +156,6 @@
 
 
 
-  /* --- TESTOVÁNÍ --- */
-  /** Uživatelské jméno testovacího uživatele (sondy), který periodicky a automatizovaně testuje funkčnost aplikace
-   * (např. funkčnost ověřování přihlašovacích údajů). U testovacího uživatele se neprovádí logování přihlášení. */
-  define('TEST_USERNAME', getenv('TEST_USERNAME'));
-
-  /** Sufix automaticky přidávaný k uživatelskému jménu testovacího uživatele pro přístup do LDAP. */
-  define('TEST_USERNAME_LDAP_SUFFIX', getenv('TEST_USERNAME_LDAP_SUFFIX'));
-
-  /** Heslo testovacího uživatele. */
-  define('TEST_PASSWORD', getenv('TEST_PASSWORD'));
-
-
-
   /* --- NASTAVENÍ WEBU --- */
   /** Verze Phishingatoru. */
   define('WEB_VERSION', '1.5');
@@ -270,8 +257,26 @@
   /** Lokální IP adresa, které je jako jediné povoleno získat seznam podvodných domén. */
   define('DOMAINER_ALLOWED_IP', getenv('DOMAINER_ALLOWED_IP'));
 
+
+
+  /* --- MONITORING --- */
   /** IP adresy (oddělené čárkou), které mají přístup k zobrazení monitoringu. */
   define('MONITORING_ALLOWED_IP', getenv('MONITORING_ALLOWED_IP'));
+
+  /** Určuje, zdali se má nad testovacím uživatelem přeskočit test monitoringu zadání neplatných údajů
+   * (např. z důvodu možného zablokování testovacího účtu při neplatných pokusech). */
+  define('MONITORING_SKIP_TEST_CREDS_INVALID', (getenv('MONITORING_SKIP_TEST_CREDS_INVALID') && getenv('MONITORING_SKIP_TEST_CREDS_INVALID') == 1));
+
+  /** Uživatelské jméno testovacího uživatele (sondy), který v rámci monitoringu periodicky a automatizovaně
+   * testuje funkčnost aplikace (např. funkčnost ověřování přihlašovacích údajů). U testovacího uživatele
+   * se neprovádí logování přihlášení. */
+  define('TEST_USERNAME', getenv('TEST_USERNAME'));
+
+  /** Sufix automaticky přidávaný k uživatelskému jménu testovacího uživatele pro přístup do LDAP. */
+  define('TEST_USERNAME_LDAP_SUFFIX', getenv('TEST_USERNAME_LDAP_SUFFIX'));
+
+  /** Heslo testovacího uživatele. */
+  define('TEST_PASSWORD', getenv('TEST_PASSWORD'));
 
 
 
