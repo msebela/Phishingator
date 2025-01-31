@@ -98,20 +98,29 @@
               $user, $campaign['body'], $campaign['url_protocol'] . $campaign['url'], $campaign['id_campaign']
             );
 
+            // Vložení povolených HTML tagů do těla e-mailu, pokud se má jednat o HTML e-mail.
+            if ($campaign['html']) {
+              $campaign['body_personalized'] = PhishingEmailModel::insertHTMLtags($campaign['body_personalized']);
+
+              // Nahrazení symbolů nového řádku za odřádkování pomocí HTML.
+              $campaign['body_personalized'] = PhishingEmailModel::insertHTMLnewLines($campaign['body_personalized']);
+            }
+
             Logger::info('Phishing e-mail ready to send.', [
                 'id_campaign' => $campaign['id_campaign'],
                 'id_user' => $user['id_user'],
                 'sender' => PhishingEmailModel::formatEmailSender($campaign['sender_email'], $campaign['sender_name']),
                 'recipient' => Controller::escapeOutput($recipient),
                 'subject' => Controller::escapeOutput($campaign['subject']),
-                'body' => Controller::escapeOutput($campaign['body_personalized'])
+                'body' => Controller::escapeOutput($campaign['body_personalized']),
+                'html' => $campaign['html']
               ]
             );
 
             // Odeslání e-mailu.
             $mailResult = $this->sendEmail(
               $campaign['sender_email'], $campaign['sender_name'], $recipient,
-              $campaign['subject'], $campaign['body_personalized']
+              $campaign['subject'], $campaign['body_personalized'], $campaign['html']
             );
 
             // Uložení záznamu o tom, zda se e-mail podařilo odeslat.

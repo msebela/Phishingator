@@ -37,6 +37,11 @@
      */
     protected $body;
 
+    /**
+     * @var int         Proměnná uchovávající informaci o tom, zdali se jedná o e-mail v HTML formátu.
+     */
+    protected $html;
+
 
     /**
      * Načte a zpracuje předaná data.
@@ -47,6 +52,7 @@
     public function load($data) {
       parent::load($data);
 
+      $this->html = (empty($this->html) ? 0 : 1);
       $this->hidden = (empty($this->hidden) ? 0 : 1);
     }
 
@@ -63,6 +69,7 @@
         'sender_email' => $this->senderEmail,
         'subject' => $this->subject,
         'body' => $this->body,
+        'html' => $this->html,
         'hidden' => $this->hidden
       ];
     }
@@ -78,7 +85,7 @@
       $whereFilter = (PermissionsModel::getUserRole() == PERMISSION_TEST_MANAGER) ? 'AND `hidden` = 0' : '';
 
       $this->dbRecordData = Database::querySingle('
-              SELECT `id_email`, `name`, `sender_name`, `sender_email`, `subject`, `body`, `hidden`
+              SELECT `id_email`, `name`, `sender_name`, `sender_email`, `subject`, `body`, `html`, `hidden`
               FROM `phg_emails`
               WHERE `id_email` = ?
               AND `visible` = 1
@@ -98,7 +105,7 @@
       $whereFilter = (PermissionsModel::getUserRole() == PERMISSION_TEST_MANAGER) ? 'AND `hidden` = 0' : '';
 
       $records = Database::queryMulti('
-              SELECT `id_email`, phg_emails.id_by_user, `name`, `subject`, phg_emails.date_added, `hidden`,
+              SELECT `id_email`, phg_emails.id_by_user, `name`, `subject`, phg_emails.date_added, `html`, `hidden`,
               `username`, `email`,
               DATE_FORMAT(phg_emails.date_added, "%e. %c. %Y") AS date_added_formatted
               FROM `phg_emails`
@@ -232,7 +239,7 @@
         VAR_RECIPIENT_USERNAME, VAR_RECIPIENT_EMAIL,
         VAR_RECIPIENT_FIRSTNAME, VAR_RECIPIENT_SURNAME, VAR_RECIPIENT_FULLNAME,
         VAR_DATE_CZ, VAR_DATE_EN,
-        VAR_URL
+        VAR_URL, VAR_URL_HTML
       ];
     }
 
@@ -324,7 +331,7 @@
     /**
      * Vrátí personalizované tělo e-mailu vůči vybranému uživateli.
      *
-     * @param array $user                     Data o uživateli, vůči kterému má být e-mail personalizován
+     * @param array $user                     Data o uživateli, vůči kterému má být tělo e-mailu personalizováno
      * @param string $body                    Tělo e-mailu
      * @param string|null $websiteUrl         URL podvodné stránky (nepovinné)
      * @param int|null $idCampaign            ID kampaně (nepovinné)
@@ -347,9 +354,32 @@
         $values[6] = date(VAR_DATE_EN_FORMAT, $timestampEmailSent);
       }
 
-      // Pokud se má nahrazovat i proměnná pro URL podvodné stránky...
+      // Nahrazení proměnné pro URL adresu podvodné stránky za personalizovaný odkaz.
+      $body = self::personalizeURL($user, $body, $websiteUrl, $idCampaign);
+
+      // Nahrazení dalších proměnných v těle e-mailu za personalizované/požadované hodnoty.
+      return str_replace(self::getEmailBodyVariables(), $values, $body);
+    }
+
+
+    /**
+     * Nahradí v těle e-mailu proměnnou pro URL adresu na podvodnou stránku
+     * a případně ji personalizuje pro daného uživatele a kampaň.
+     *
+     * @param array $user              Data o uživateli, vůči kterému má být odkaz personalizován
+     * @param string $body             Tělo e-mailu
+     * @param string|null $websiteUrl  URL podvodné stránky (nepovinné)
+     * @param int|null $idCampaign     ID kampaně (nepovinné)
+     * @return string                  Tělo e-mailu s nahrazenými/personalizovanými odkazy na podvodnou stránku
+     */
+    private static function personalizeURL($user, $body, $websiteUrl = null, $idCampaign = null) {
+      $values = [];
+
+      // Pokud se má nahrazovat proměnná pro URL adresu podvodné stránky...
       if ($websiteUrl != null) {
-        // Pokud je specifikována i kampaň, přidat do URL podvodné stránky i identifikátor pro sledování uživatele.
+        $websiteUrl = str_replace('&amp;', '&', $websiteUrl);
+
+        // Pokud je specifikována kampaň, přidat do URL podvodné stránky i identifikátor pro sledování uživatele.
         if ($idCampaign != null) {
           $url = PhishingWebsiteModel::makeWebsiteUrl($websiteUrl, WebsitePrependerModel::makeUserWebsiteId($idCampaign, $user['url']));
         }
@@ -357,14 +387,18 @@
           $url = str_replace(VAR_RECIPIENT_URL, 'id', $websiteUrl);
         }
 
-        $values[] = $url;
+        $url = Controller::escapeOutput($url);
+
+        array_push($values, $url, $url);
       }
       else {
-        $values[] = '&lt;URL podvodné stránky&gt;';
+        $urlLabel = '[URL podvodné stránky]';
+
+        array_push($values, $urlLabel, $urlLabel, '%url%');
       }
 
       // Nahrazení proměnných v těle e-mailu za požadované hodnoty.
-      return str_replace(self::getEmailBodyVariables(), $values, $body);
+      return str_replace([VAR_URL, VAR_URL_HTML, '%url_%'], $values, $body);
     }
 
 
@@ -381,13 +415,54 @@
 
 
     /**
-     * Vloží do těla e-mailu nové řádky (HTML tag) tam, kde uživatel zamýšlel (tedy místo \n).
+     * Nahradí v těle e-mailu symboly nového řádku (\n) za HTML tag odřádkování.
      *
      * @param string $body             Tělo e-mailu
      * @return string                  Tělo e-mailu s nahrazenými novými řádky
      */
-    private static function insertHTMLnewLines($body) {
+    public static function insertHTMLnewLines($body) {
       return str_replace("\n", '<br>', $body);
+    }
+
+
+    /**
+     * Vrátí povolené uživatelské tagy včetně jejich náhrad za skutečné HTML tagy.
+     *
+     * @param bool $withReplacements   TRUE (výchozí), pokud se mají vrátit i náhrady se skutečnými HTML tagy
+     * @return string[]                Pole povolených tagů, nebo asociativní pole s tagy včetně jejich náhrad
+     */
+    public static function getHTMLtags($withReplacements = true) {
+      $tags = [
+        '\[a href=(https?:\/\/.*?)\](.*?)\[\/a\]' => '<a href="\1" target="_blank" rel="nofollow">\2</a>',
+        '\[b\](.*?)\[\/b\]' => '<b>\1</b>',
+        '\[i\](.*?)\[\/i\]' => '<i>\1</i>',
+        '\[u\](.*?)\[\/u\]' => '<u>\1</u>',
+        '\[s\](.*?)\[\/s\]' => '<s>\1</s>',
+        '\[br\]' => '<br>'
+      ];
+
+      if (!$withReplacements) {
+        $tags = array_keys($tags);
+      }
+
+      return $tags;
+    }
+
+
+    /**
+     * Nahradí v obsahu e-mailu povolené uživatelské tagy za HTML tagy.
+     *
+     * @param string $body             Tělo e-mailu
+     * @return string                  Tělo e-mail včetně HTML tagů
+     */
+    public static function insertHTMLtags($body) {
+      $replacements = self::getHTMLtags();
+
+      foreach ($replacements as $pattern => $replacement) {
+        $body = preg_replace("/$pattern/", $replacement, $body);
+      }
+
+      return $body;
     }
 
 
@@ -400,7 +475,7 @@
      */
     private static function insertHTMLIndications($email, $emailIndications) {
       // Pole nahrazovaných proměnných v hlavičkách e-mailu.
-      $emailVariablesIndications = [VAR_INDICATION_SENDER_NAME, VAR_INDICATION_SENDER_EMAIL, VAR_INDICATION_SUBJECT];
+      $emailHeadersVariables = [VAR_INDICATION_SENDER_NAME, VAR_INDICATION_SENDER_EMAIL, VAR_INDICATION_SUBJECT];
 
       // Vložení HTML indicií do hlaviček a těla e-mailu.
       foreach ($emailIndications as $indication) {
@@ -409,20 +484,25 @@
           '<div class="icons"><div><span data-feather="alert-triangle"></span></div><div><span data-feather="arrow-up-left"></span></div></div></a>'
         ];
 
-        if (in_array($indication['expression'], $emailVariablesIndications)) {
-          // Získání názvu pole (jméno odesílatele apod.), ve kterém dojde k úpravě.
+        // Nahrazení proměnných za HTML indicie v hlavičce e-mailu - u odesílatele a předmětu.
+        if (in_array($indication['expression'], $emailHeadersVariables)) {
+          // Získání názvu indexu (jméno odesílatele apod.), ve kterém dojde k úpravě.
           $var = str_replace('%', '', $indication['expression']);
 
-          // Nahrazení proměnné za HTML.
+          // Nahrazení proměnné za HTML indicii.
           $email[$var] = $htmlTag[0] . $email[$var] . $htmlTag[1];
         }
+        elseif ($indication['expression'] == VAR_URL) {
+          // Přidání HTML indicií a zvýraznění všech odkazů na podvodné stránky.
+          if ($email['html']) {
+            $email['body'] = self::highlightURL($email['body'], $htmlTag[0], $htmlTag[1]);
+          }
+
+          $email['body'] = self::highlightURL($email['body'], $htmlTag[0], $htmlTag[1], true);
+        }
         else {
-          // Nahrazení promměných za HTML v těle e-mailu.
-          $email['body'] = str_replace(
-            $indication['expression'],
-            $htmlTag[0] . $indication['expression'] . $htmlTag[1],
-            $email['body']
-          );
+          // Nahrazení zbylých promměných za HTML indicie v těle e-mailu.
+          $email['body'] = str_replace($indication['expression'], $htmlTag[0] . $indication['expression'] . $htmlTag[1], $email['body']);
         }
       }
 
@@ -431,16 +511,90 @@
 
 
     /**
+     * Zvýrazní v těle e-mailu odkaz (resp. přidá k němu komponentu Tooltip)
+     * s případným dodatečným HTML tagem, který bude odkaz obalovat (např. indicii).
+     *
+     * @param string $body             Tělo e-mailu
+     * @param string $startTag         Otevírací část HTML tagu obalující odkaz (nepovinné)
+     * @param string $endTag           Uzavírací část HTML tagu obalující odkaz (nepovinné)
+     * @param bool $plainTextLinks     TRUE, pokud se mají zvýraznit i odkazy, které nejsou
+     *                                 obaleny HTML tagy, jinak FALSE (výchozí)
+     * @return string                  Tělo e-mailu se zvýrazněnými odkazy
+     */
+    private static function highlightURL($body, $startTag = '', $endTag = '', $plainTextLinks = false) {
+      // Zvýraznění odkazu na podvodnou stránku, který není obalen HTML tagem.
+      if ($plainTextLinks) {
+        $linkRegexp = VAR_URL;
+        $linkURL = VAR_URL;
+        $linkLabel = VAR_URL;
+        $textTooltip = 'podvodnou';
+      }
+      else {
+        $linkRegexp = '\[a href=';
+
+        // Zvýraznění HTML odkazu na podvodnou stránku.
+        if (!empty($startTag) && !empty($endTag)) {
+          $linkRegexp .= '(' . VAR_URL . '.*?)';
+          $linkURL = VAR_URL_HTML;
+          $linkLabel = '\2';
+          $textTooltip = 'podvodnou';
+        }
+        else {
+          // Zvýraznění HTML odkazu mimo podvodnou stránku.
+          $linkRegexp .= '(?!' . VAR_URL . ')(https?:\/\/.*?)';
+          $linkURL = '\1';
+          $linkLabel = '\2';
+          $textTooltip = '';
+        }
+
+        $linkRegexp .= '](.*?)\[\/a\]';
+      }
+
+      // Komponenta Tooltip, která odkaz zvýrazní a bude jej obalovat.
+      $tooltipContent = 'Odkaz na ' . ((!empty($textTooltip)) ? $textTooltip . ' ' : '') . 'stránku:<br><span class=\'text-monospace\'>' . $linkURL . '</span>';
+      $tooltapStartTag = '<span class="indication-link" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="' . $tooltipContent . '">';
+      $tooltipEndTag = '</span>';
+
+      return preg_replace('/' . $linkRegexp . '/', $tooltapStartTag . $startTag . $linkLabel . $endTag . $tooltipEndTag, $body);
+    }
+
+
+    /**
      * Doplní a personalizuje konkrétní phishingový e-mail.
      *
      * @param array $phishingEmail           Asociativní pole s daty o phishingovém e-mailu
-     * @param array|null $user               Asociativní pole s daty o uživateli (ID a e-mail), nebo NULL
+     * @param array|null $user               Asociativní pole s daty o uživateli, nebo NULL
      * @param bool|array $includeIndications TRUE (výchozí) pokud mají být k e-mailu zahrnuty i indicie pro jeho rozpoznání,
      *                                        FALSE pokud ne anebo pole indicií
      * @param bool $markVariables            Vyznačí proměnné v těle phishingového e-mailu
      * @return array                         Upravený, popř. personalizovaný phishingový e-mail
      */
     public static function personalizePhishingEmail($phishingEmail, $user, $includeIndications = true, $markVariables = false) {
+      if ($phishingEmail['html']) {
+        // Zvýraznění odkazů vedoucích mimo podvodné stránky.
+        if ($markVariables || $includeIndications) {
+          $phishingEmail['body'] = self::highlightURL($phishingEmail['body']);
+        }
+
+        // Zvýraznění odkazů s proměnnými v náhledu e-mailu.
+        if ($markVariables) {
+          $phishingEmail['body'] = self::highlightURL($phishingEmail['body'], '<span class="variable">', '</span>');
+          $phishingEmail['body'] = self::highlightURL($phishingEmail['body'], '<span class="variable">', '</span>', true);
+
+          $phishingEmail['body'] = self::personalizeURL($user, $phishingEmail['body']);
+        }
+
+        // Vložení povolených HTML tagů, pokud se má jednat o HTML e-mail.
+        if (isset($phishingEmail['body'])) {
+          $phishingEmail['body'] = self::insertHTMLtags($phishingEmail['body']);
+        }
+      }
+
+      // Vyznačení proměnných v těle e-mailu.
+      if ($markVariables) {
+        $phishingEmail['body'] = self::markVariablesInEmailBody($phishingEmail['body']);
+      }
+
       // Dodání seznamu indicií - musí být jako první, jinak jej přebijí následující metody.
       if ($includeIndications) {
         // Získání indicií.
@@ -470,11 +624,9 @@
         if ($includeIndications) {
           $user = array_merge($user, UsersModel::getUserFullname($user['username']));
 
-          $phishingEmail['url'] = (isset($phishingEmail['url'])) ? str_replace('&amp;', '&', $phishingEmail['url']) : null;
-
           // Personalizace těla e-mailu.
           $phishingEmail['body'] = self::personalizeEmailBody(
-            $user, $phishingEmail['body'], $phishingEmail['url'], ($phishingEmail['id_campaign'] ?? null), ($phishingEmail['date_sent'] ?? null)
+            $user, $phishingEmail['body'], ($phishingEmail['url'] ?? null), ($phishingEmail['id_campaign'] ?? null), ($phishingEmail['date_sent'] ?? null)
           );
         }
 
@@ -494,11 +646,6 @@
       if (isset($phishingEmail['body'])) {
         // Vložení odřádkování do těla e-mailu.
         $phishingEmail['body'] = self::insertHTMLnewLines($phishingEmail['body']);
-      }
-
-      // Vyznačení proměnných v těle e-mailu.
-      if ($markVariables) {
-        $phishingEmail['body'] = self::markVariablesInEmailBody($phishingEmail['body']);
       }
 
       return $phishingEmail;

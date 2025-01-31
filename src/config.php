@@ -456,6 +456,9 @@
   /** URL podvodné stránky. */
   define('VAR_URL', '%url%');
 
+  /** URL podvodné stránky (v HTML odkazu). */
+  define('VAR_URL_HTML', '%url_html%');
+
   /** Identifikátor příjemce pro URL podvodné stránky. */
   define('VAR_RECIPIENT_URL', '%id%');
 

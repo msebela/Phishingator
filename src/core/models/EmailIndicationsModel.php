@@ -256,8 +256,10 @@
       $this->isPositionInLimit();
 
       $this->isExpressionEmpty();
+      $this->isExpressionTooShort();
       $this->isExpressionTooLong();
       $this->existExpressionInText();
+      $this->isExpressionHTMLtag();
 
       $this->isTitleEmpty();
       $this->isTitleTooLong();
@@ -315,6 +317,18 @@
 
 
     /**
+     * Ověří, zdali zadaný podezřelý text není příliš krátký.
+     *
+     * @throws UserError
+     */
+    private function isExpressionTooShort() {
+      if (mb_strlen($this->expression) < 3) {
+        throw new UserError('Podezřelý text je příliš krátký.', MSG_ERROR);
+      }
+    }
+
+
+    /**
      * Ověří, zdali zadaný podezřelý text není příliš dlouhý.
      *
      * @throws UserError
@@ -335,6 +349,30 @@
       if (mb_strpos($this->email, $this->expression) === false
           && !in_array($this->expression, self::getEmailIndicationsVariables())) {
         throw new UserError('Podezřelý text nebyl v těle e-mailu nalezen.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali nebyl jako podezřelý text vybrán HTML tag nebo jeho část.
+     *
+     * @throws UserError
+     */
+    private function isExpressionHTMLtag() {
+      $tags = implode('|', PhishingEmailModel::getHTMLtags(false));
+
+      preg_match_all('/\[a href=(.*?)](.*?)\[\/a]/', Controller::escapeOutput($this->email), $matches);
+
+      foreach ($matches[0] as $match) {
+        if (str_contains($match, $this->expression)) {
+          throw new UserError('Podezřelý text nemůže být součást HTML tagu pro odkaz.', MSG_ERROR);
+        }
+      }
+
+      if (preg_match('/' . $tags . '/', $this->expression) ||
+          str_contains($this->expression, '[') || str_contains($this->expression, ']') ||
+          str_contains($tags, $this->expression)) {
+        throw new UserError('Podezřelý text nemůže být HTML tag nebo jeho část.', MSG_ERROR);
       }
     }
 

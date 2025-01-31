@@ -9,7 +9,6 @@
 
   &:hover, &.active {
     text-decoration: none;
-    font-weight: bold;
     color: #dc3545;
 
     .icons {
@@ -27,16 +26,19 @@
 
   .icons {
     display: inline-block;
-    transform: translateY(10px);
     color: #dc3545;
+    background: $white;
 
-    &.top div {
-      transform: translateY(-5px);
+    &.top {
       background: #f1f1f1;
+
+      div {
+        transform: translateY(-5px);
+      }
     }
 
     div {
-      background: $white;
+      transform: translateY(10px);
 
       &:last-of-type {
         display: none;
@@ -168,4 +170,11 @@
       border-top: 1px solid #aaa;
     }
   }
+}
+
+
+.indication-link {
+  color: $black;
+  border-bottom: 2px solid $black;
+  cursor: pointer;
 }

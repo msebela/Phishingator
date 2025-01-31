@@ -190,8 +190,7 @@
      *
      * @param int $id                  ID kampaně
      * @param bool $replaceUsernames   TRUE (výchozí) pokud má dojít k nahrazení uživatelských jmen podle konfigurace
-     * @return array|null              Pole s informace o kampani nebo NULL, pokud uživatel k dané kampani
-     *                                 nemá právo.
+     * @return array|null              Pole s informacemi o kampani nebo NULL, pokud uživatel k dané kampani nemá právo
      */
     public static function getCampaignDetail($id, $replaceUsernames = true) {
       if (self::isCampaignInUserGroup($id) !== true) {
@@ -202,7 +201,7 @@
               SELECT `id_campaign`, phg_campaigns.id_by_user, phg_campaigns.id_email, phg_campaigns.id_website, phg_campaigns.id_ticket, phg_campaigns.name,
               `time_active_since`, `time_active_to`, `date_active_since`, `date_active_to`, phg_campaigns.date_added,
               `username`, `email`,
-              phg_emails.name AS `email_name`, phg_emails.sender_name, phg_emails.sender_email, `subject`, `body`,
+              phg_emails.name AS `email_name`, phg_emails.sender_name, phg_emails.sender_email, `subject`, `body`, `html`,
               phg_websites.name AS `website_name`, phg_websites.url AS `url`,
               `server_dir`,
               DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y") AS `date_added`,

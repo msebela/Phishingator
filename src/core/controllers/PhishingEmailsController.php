@@ -25,7 +25,7 @@
 
       $model = new PhishingEmailModel();
       $formData = [
-        'inputsNames' => ['name', 'sender-name', 'sender-email', 'subject', 'body', 'hidden'],
+        'inputsNames' => ['name', 'sender-name', 'sender-email', 'subject', 'body', 'html', 'hidden'],
         'formPrefix' => 'phishing-email-',
         'dbTable' => 'phg_emails'
       ];

@@ -1,5 +1,5 @@
 $(function() {
-  $('table [data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="tooltip"]').tooltip();
 
   if ($(window).height() + 50 < $(document).height() && $(window).width() >= 768) {
     $('.btn-top-page').toggleClass('d-none');

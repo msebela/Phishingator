@@ -1,3 +1,7 @@
+$(function() {
+  $('[data-toggle="tooltip"]').tooltip();
+});
+
 $(document).on('click', '.anchor-link', function (event) {
   event.preventDefault();
 

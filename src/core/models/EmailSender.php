@@ -77,17 +77,46 @@
      * @param string $recipientEmail   E-mail příjemce
      * @param string $subject          Předmět e-mailu
      * @param string $body             Tělo e-mailu
+     * @param string $html             TRUE, pokud má být e-mail odeslán v HTML, jinak FALSE (výchozí)
      * @return bool                    Výsledek odeslání e-mailu
      * @throws \PHPMailer\PHPMailer\Exception
      */
-    protected function sendEmail($senderEmail, $senderName, $recipientEmail, $subject, $body) {
+    protected function sendEmail($senderEmail, $senderName, $recipientEmail, $subject, $body, $html = false) {
       $this->mailer->setFrom($senderEmail, $senderName);
       $this->mailer->addAddress($recipientEmail);
 
       $this->mailer->Subject = $subject;
+
+      if ($html) {
+        $this->mailer->isHTML();
+        $this->mailer->AltBody = strip_tags($body);
+
+        $body = $this->getHTMLEmailSkeleton($subject, $body);
+      }
+
       $this->mailer->Body = $body;
 
       return $this->mailer->send();
+    }
+
+
+    /**
+     * Vrátí HTML kostru e-mailu včetně doplněného předmětu a obsahu.
+     *
+     * @param string $subject          Předmět, který má být do kostry doplněn
+     * @param string $body             HTML obsah, který má být do kostry doplněn
+     * @return string                  HTML kostra e-mailu
+     */
+    private function getHTMLEmailSkeleton($subject, $body) {
+      return '<!DOCTYPE html>
+        <html>
+        <head>
+            <title>' . Controller::escapeOutput($subject) . '</title>
+        </head>
+        <body>
+            ' . $body . '
+        </body>
+        </html>';
     }
 
 
