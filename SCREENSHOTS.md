@@ -6,9 +6,9 @@ Následující screenshoty z Phishingatoru zobrazují **proces tvorby phishingov
 
 ## 1. Vytvoření podvodného e-mailu
 
-Ve Phishingatoru se cvičné podvodné e-maily vytvářejí podobně jako v e-mailovém klientovi – tj. stačí vyplnit **jméno odesílatele**, jeho **e-mail** a samozřejmě **obsah zasílané zprávy**.
+Ve Phishingatoru se cvičné podvodné e-maily vytvářejí podobně jako v e-mailovém klientovi – tj. stačí vyplnit **e-mail odesílatele**, případně **jméno odesílatele**, **předmět** a samozřejmě **obsah zasílané zprávy**.
 
-Phishingový e-mail lze navíc **personalizovat vůči konkrétnímu adresátovi**, a to použitím proměnných (na screenshotu vyznačeny žlutým podbarvením), které budou při odeslání e-mailu nahrazeny skutečným obsahem – například jménem a příjmením příjemce, jeho uživatelským jménem nebo třeba e-mailovou adresou.
+Phishingový e-mail lze navíc **personalizovat vůči konkrétnímu adresátovi**, a to použitím proměnných (na screenshotu vyznačeny žlutým podbarvením), které budou při odeslání e-mailu nahrazeny skutečným obsahem – například jménem a příjmením příjemce, jeho uživatelským jménem nebo třeba e-mailovou adresou. V těle e-mailu lze zároveň používat i některé **HTML tagy**, a e-mail tak následně odeslat v HTML formátu.
 
 ![Vytvoření podvodného e-mailu](doc/images/01-phishing-training-email.png)
 
