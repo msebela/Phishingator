@@ -158,7 +158,7 @@
     <?php endif; ?>
 
     <footer class="pr-2 text-right text-light bg-dark">
-      <small>&copy;&nbsp;Martin Šebela, 2019&ndash;2023</small>
+      <small>&copy;&nbsp;Martin Šebela, 2019&ndash;2025</small>
     </footer>
   </body>
 </html>

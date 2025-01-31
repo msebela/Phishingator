@@ -158,7 +158,7 @@
 
   /* --- NASTAVENÍ WEBU --- */
   /** Verze Phishingatoru. */
-  define('WEB_VERSION', '1.5');
+  define('WEB_VERSION', '1.6');
 
   /** URL, na které Phishingator běží (slouží pro přesměrování v rámci systému). */
   define('WEB_URL', getenv('WEB_URL'));
