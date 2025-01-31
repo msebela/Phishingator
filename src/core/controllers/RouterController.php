@@ -62,9 +62,9 @@
       if (PermissionsModel::getUserId() != null) {
         $publicSite = false;
 
-        PermissionsModel::checkUserValidity();
-
         if (mb_substr($arguments, 0, 8) == '/portal/') {
+          PermissionsModel::checkUserValidity();
+
           if (isset($_GET['section']) && $_GET['section'] != ACT_PHISHING_TEST) {
             $this->controller = $this->getController($_GET['section']);
           }
