@@ -19,7 +19,32 @@
   </div>
   <div>
     <h4 class="alert-heading">Nedokončené přesměrování</h4>
-    Doména, na níž bude hostována podvodná strána, je správně směrována na IP adresu Phishingatoru, zatím ale nedošlo k&nbsp;aktivaci domény v&nbsp;proxy Phishingatoru.
+    Doména, na níž bude hostována podvodná stránka, je správně směrována na IP adresu Phishingatoru, zatím ale nedošlo k&nbsp;aktivaci domény v&nbsp;proxy Phishingatoru.
+  </div>
+</div>
+
+<hr>
+<?php endif; ?>
+<?php if ($action == ACT_EDIT && $phishingWebsite['active_campaigns_count'] > 0): ?>
+<div class="alert alert-with-icon alert-danger" role="alert">
+  <div class="alert-icon pr-1">
+    <span data-feather="activity"></span>
+  </div>
+  <div>
+    <h4 class="alert-heading">Stránka se právě používá</h4>
+    Tato podvodná stránka se právě používá u&nbsp;<?= $phishingWebsite['active_campaigns_count'] . ' ' . (($phishingWebsite['active_campaigns_count'] == 1) ? 'kampaně' : 'kampaní') ?>. Pokud dojde ke změně URL adresy podvodné stránky, přestanou fungovat odkazy v&nbsp;již rozeslaných podvodných e-mailech.
+  </div>
+</div>
+
+<hr>
+<?php elseif ($action == ACT_EDIT && $phishingWebsite['used_campaigns_count'] > 0): ?>
+<div class="alert alert-with-icon alert-warning" role="alert">
+  <div class="alert-icon pr-1">
+    <span data-feather="alert-triangle"></span>
+  </div>
+  <div>
+    <h4 class="alert-heading">Stránka se používá</h4>
+    Tato podvodná stránka se používá u&nbsp;<?= $phishingWebsite['used_campaigns_count'] . ' ' . (($phishingWebsite['used_campaigns_count'] == 1) ? 'kampaně' : 'kampaní') ?>. Pokud dojde ke změně URL adresy podvodné stránky, přestanou fungovat odkazy v&nbsp;již rozeslaných podvodných e-mailech.
   </div>
 </div>
 

@@ -80,6 +80,9 @@
 
       if (!empty($this->dbRecordData)) {
         $this->dbRecordData['status'] = $this->getPhishingWebsiteStatus($this->dbRecordData['url']);
+
+        $this->dbRecordData['active_campaigns_count'] = $this->getPhishingWebsiteCampaignCount($this->dbRecordData['id_website'], true);
+        $this->dbRecordData['used_campaigns_count'] = $this->getPhishingWebsiteCampaignCount($this->dbRecordData['id_website']);
       }
 
       return $this->dbRecordData;
@@ -207,15 +210,25 @@
     /**
      * Vrátí počet kampaní, ke kterým je přiřazena daná podvodná webová stránka.
      *
-     * @param int $id                  ID podvodné stránky
-     * @return int                     Počet kampaní
+     * @param int $id                   ID podvodné stránky
+     * @param bool $onlyActiveCampaigns TRUE, pokud se mají uvažovat pouze aktivní (běžící) kampaně, jinak FALSE (výchozí)
+     * @return int                      Počet kampaní
      */
-    public static function getCountOfUsePhishingWebsite($id) {
+    public static function getPhishingWebsiteCampaignCount($id, $onlyActiveCampaigns = false) {
+      if ($onlyActiveCampaigns) {
+        $query = 'AND TIMESTAMP(`date_active_since`, `time_active_since`) <= NOW() AND TIMESTAMP(`date_active_to`, `time_active_to`) >= NOW()';
+      }
+      else {
+        $query = '';
+      }
+
       return Database::queryCount('
               SELECT COUNT(*)
               FROM `phg_campaigns`
               WHERE `id_website` = ?
-      ', $id);
+              AND `visible` = 1
+              ' . $query,
+        $id);
     }
 
 
@@ -357,7 +370,7 @@
      * @throws UserError
      */
     public function deletePhishingWebsite($id) {
-      if ($this->getCountOfUsePhishingWebsite($id) != 0) {
+      if ($this->getPhishingWebsiteCampaignCount($id) != 0) {
         throw new UserError('Nelze smazat podvodnou stránku, která je svázána s nějakou existující kampaní.', MSG_ERROR);
       }
 
@@ -964,8 +977,8 @@
      * @throws UserError
      */
     private function isWebsiteDeactivable() {
-      if ($this->active == 0 && !empty($this->dbRecordData['id_website']) && self::getCountOfUsePhishingWebsite($this->dbRecordData['id_website']) != 0) {
-        throw new UserError('Nelze deaktivovat podvodnou stránku, která je využívána v nějaké existující kampani.', MSG_ERROR);
+      if ($this->active == 0 && !empty($this->dbRecordData['id_website']) && self::getPhishingWebsiteCampaignCount($this->dbRecordData['id_website'], true) != 0) {
+        throw new UserError('Nelze deaktivovat podvodnou stránku, která je právě využívána v probíhající kampani.', MSG_ERROR);
       }
     }
   }
