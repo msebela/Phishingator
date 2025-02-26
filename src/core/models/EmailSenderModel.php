@@ -63,8 +63,8 @@
     public function startSendingEmails() {
       $countSentMails = 0;
 
-      // Seznam kampaní, u kterých je možné zahájit rozesílání e-mailů.
-      $campaigns = CampaignModel::getActiveCampaignsToSend();
+      // Seznam aktivních kampaní, u kterých je možné zahájit rozesílání e-mailů.
+      $campaigns = CampaignModel::getActiveCampaigns();
 
       if (count($campaigns) > 0) {
         $ldap = new LdapModel();

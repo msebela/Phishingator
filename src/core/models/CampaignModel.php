@@ -346,12 +346,12 @@
 
 
     /**
-     * Vrátí seznam právě aktivních kampaní (případně v daném roce).
+     * Vrátí seznam právě aktivních kampaní (případně kampaní aktivních v daném roce).
      *
-     * @param int $year                Zkoumaný rok
+     * @param int $year                Rok (nepovinné)
      * @return mixed                   Pole aktivních kampaní
      */
-    public static function getActiveCampaigns($year = []) {
+    public static function getActiveCampaigns($year = null) {
       if (!empty($year) && is_numeric($year)) {
         $query = 'YEAR(`date_added`) = ?';
       }
@@ -384,22 +384,6 @@
       ', $idCampaign);
 
       return !empty($campaing['id_campaign']);
-    }
-
-
-    /**
-     * Vrátí seznam všech kampaní, u kterých je možné zahájit rozesílání e-mailů.
-     *
-     * @return mixed                   Pole kampaní
-     */
-    public static function getActiveCampaignsToSend() {
-      return Database::queryMulti('
-              SELECT `id_campaign`
-              FROM `phg_campaigns`
-              WHERE TIMESTAMP(`date_active_since`, `time_active_since`) <= NOW()
-              AND TIMESTAMP(`date_active_to`, `time_active_to`) >= NOW()
-              AND `visible` = 1
-      ');
     }
 
 
