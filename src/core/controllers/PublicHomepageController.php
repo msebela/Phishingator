@@ -76,11 +76,11 @@
       }
 
       // Zjištění, zdali už byla kampaň ukončena (pro úpravu textů na stránce).
-      $this->setViewData('campaign_ended', (int) (date('Y-m-d') > $campaign['date_active_to']));
+      $this->setViewData('campaign_ended', strtotime('now') > strtotime($campaign['datetime_active_to']));
 
-      // Zjištění, zdali je uživatel dobrovolník (pro úpravu textů na stránce).
+      // Zjištění, zdali je uživatel zaregistrován k dobrovolnému odběru cvičných phishingů (pro úpravu textů na stránce).
       $volunteer = UsersModel::getUserEmailLimit($user['id_user']);
-      $this->setViewData('volunteer', $volunteer['recieve_email']);
+      $this->setViewData('volunteer', $volunteer['recieve_email'] == 1);
 
       // Získání detailů o e-mailu a ošetření pro výpis.
       $phishingEmail = self::escapeOutput(RecievedEmailModel::getRecievedPhishingEmail($idCampaign, $campaign['id_email'], $user['id_user']));

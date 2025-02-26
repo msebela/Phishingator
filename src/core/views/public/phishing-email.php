@@ -1,20 +1,21 @@
 <div class="container mt-5">
   <div class="row pb-5">
-    <div class="col-md-10 col-lg-11">
+    <div class="col-lg-12">
       <h2 class="mb-3">Právě jste absolvovali <strong>cvičný phishing</strong></h2>
-      <?php if ($campaign_ended == 0): ?>
-      <p class="par-intro"><strong>Kdyby</strong> se jednalo o&nbsp;<strong>skutečný phishing</strong>, <strong>útočníci</strong> by v&nbsp;tuto chvíli již velmi pravděpodobně <strong>znali údaje</strong>, které jste vyplnili do přihlašovacího formuláře na <strong>podvodné stránce</strong>.</p>
+      <p class="par-intro">E-mail, který jste obdrželi, byl <strong>cvičný podvodný e-mail</strong> napodobující skutečný phishing. Jeho cílem bylo ukázat Vám <strong>typické znaky</strong>, podle kterých můžete skutečný podvodný e-mail poznat.</p>
+      <?php if (!$campaign_ended): ?>
+      <p class="par-intro">Kdyby se jednalo o&nbsp;skutečný phishing, <strong>útočníci</strong> by v&nbsp;tuto chvíli již velmi pravděpodobně <strong>znali údaje, které jste vyplnili na podvodné stránce</strong>.</p>
       <?php endif; ?>
-      <?php if ($volunteer == 1): ?>
-      <p class="par-intro"><strong>Děkujeme</strong>, že máte zájem <strong>vzdělávat se</strong> v&nbsp;oblasti <strong>phishingu</strong>. Jakékoliv změny včetně nastavení <strong>limitu cvičných e-mailů</strong> můžete provést po <a href="/portal">přihlášení</a> do Phishingatoru.</p>
+      <?php if ($volunteer): ?>
+      <p class="par-intro"><strong>Děkujeme</strong>, že máte zájem <strong>vzdělávat se</strong> v&nbsp;oblasti <strong>phishingu</strong>. Nastavení <strong>dobrovolného odebírání</strong> cvičných phishingů můžete změnit po <a href="/portal">přihlášení</a> do Phishingatoru.</p>
       <?php else: ?>
-      <p class="par-intro">Využijte projektu <a href="<?= WEB_BASE_URL ?>">Phishingator</a> a&nbsp;<strong><a href="<?= WEB_BASE_URL ?>">přihlaste se</a></strong> k&nbsp;odebírání <strong>cvičných</strong> podvodných e-mailů, které Vám názorně ukáží, <strong>na co se v&nbsp;e-mailu zaměřit</strong> a&nbsp;<strong>jak rozpoznat a&nbsp;nenaletět na opravdový phishing</strong>.</p>
+      <p class="par-intro">V&nbsp;rámci projektu <a href="<?= WEB_BASE_URL ?>">Phishingator</a> se můžete <a href="/portal">přihlásit</a> k&nbsp;dobrovolnému odebírání <strong>cvičných</strong> phishingů, které Vám názorně ukáží, <strong>na co se v&nbsp;e-mailu zaměřit</strong> a&nbsp;<strong>jak rozpoznat skutečný phishing a&nbsp;nepodlehnout mu</strong>.</p>
       <?php endif; ?>
     </div>
 
-    <div class="col-md-6 col-lg-5 mb-3 mb-md-0 d-flex align-items-center justify-content-end">
-      <a href="<?= WEB_BASE_URL ?>" class="btn btn-primary with-icon mt-4 mt-md-0" role="button">
-        Více informací&hellip;
+    <div class="col-lg-4 mt-4 mt-lg-0 d-flex align-items-center justify-content-end">
+      <a href="<?= WEB_BASE_URL ?>/co-je-to-phishing" target="_blank" class="btn btn-primary with-icon" role="button">
+        Více informací
       </a>
     </div>
   </div>
