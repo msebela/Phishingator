@@ -351,7 +351,7 @@
      * @param int $year                Rok (nepovinné)
      * @return mixed                   Pole aktivních kampaní
      */
-    public static function getActiveCampaigns($year = null) {
+    public static function getActiveCampaigns($year = []) {
       if (!empty($year) && is_numeric($year)) {
         $query = 'YEAR(`date_added`) = ?';
       }
