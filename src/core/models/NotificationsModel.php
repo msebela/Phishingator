@@ -99,7 +99,7 @@
         }
 
         // Organizace, ve které k vytvoření phishingové kampaně došlo.
-        $campaignOrg = getenv('ORG') . ' (' . getenv('ORG_DOMAIN') . ')';
+        $campaignOrg = strtoupper(getenv('ORG')) . ' (' . getenv('ORG_DOMAIN') . ')';
 
         // Předmět a obsah notifikace.
         $notificationSubject = 'Nová phishingová kampaň [' . $campaign['id_campaign'] . ']';
@@ -169,7 +169,7 @@
         $campaignStatsMaxValueLength = mb_strlen(max(array_values($campaignStats)));
 
         // Organizace, ve které k vytvoření phishingové kampaně došlo.
-        $campaignOrg = getenv('ORG') . ' (' . getenv('ORG_DOMAIN') . ')';
+        $campaignOrg = strtoupper(getenv('ORG')) . ' (' . getenv('ORG_DOMAIN') . ')';
 
         // Předmět a obsah notifikace.
         $notificationSubject = 'Phishingová kampaň ukončena [' . $campaign['id_campaign'] . ']';
