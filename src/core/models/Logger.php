@@ -77,6 +77,7 @@
     private static function getFormattedMessage($message, $level, $data = null) {
       $time = date(LOGGER_DATE_FORMAT);
       $level = str_pad($level, 5, ' ');
+      $org = strtoupper(getenv('ORG'));
 
       // Soubor, ve kterém dochází k nějaké akci.
       if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['REQUEST_URI'])) {
@@ -103,7 +104,7 @@
         $data = '';
       }
 
-      return trim("$time [$level] : [$filepath] $user - $message $data");
+      return trim("$time [$level] [$org] : [$filepath] $user - $message $data");
     }
 
 
