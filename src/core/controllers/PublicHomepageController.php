@@ -121,6 +121,6 @@
       $this->setViewData('email', $phishingEmail);
 
       // Logování přístupu na vzdělávací stránku.
-      WebsitePrependerModel::logEducationSiteAccess($idCampaign, $user['id_user'], $user['email'], $user['departments']);
+      WebsitePrependerModel::logEducationalSiteAccess($idCampaign, $user['id_user'], $user['email'], $user['departments']);
     }
   }

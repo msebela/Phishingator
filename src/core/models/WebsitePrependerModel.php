@@ -237,7 +237,7 @@
      * @param string $group            Skupina uživatele
      * @return void
      */
-    public static function logEducationSiteAccess($idCampaign, $idUser, $email, $group) {
+    public static function logEducationalSiteAccess($idCampaign, $idUser, $email, $group) {
       $record = [
         'id_campaign' => $idCampaign,
         'id_user' => $idUser,
@@ -583,17 +583,16 @@
         $args[] = self::getClientIp();
         Logger::warning('Unauthorized access to a phishing website.', $args);
 
-        header('Location: ' . WEB_BASE_URL);
+        http_response_code(404);
         exit();
       }
 
-      // Stránka bude přístupná a bude zaznamenávat aktivitu od/do zvoleného data a času.
+      // Při přístupu na podvodnou stránku po ukončení kampaně přssměrovat uživatele na vzdělávací stránku.
       if (strtotime($campaign['datetime_active_since']) > strtotime('now') || strtotime($campaign['datetime_active_to']) < strtotime('now')) {
         $args[] = self::getClientIp();
-        Logger::warning('Invalid access a phishing website for a phishing campaign that is not active.', $args);
 
-        header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
-        exit();
+        Logger::warning('Invalid access a phishing website for a phishing campaign that is not active.', $args);
+        self::redirectToEducationalSite($args['url']);
       }
 
       // Data o uživateli pro možný, personalizovaný výpis na podvodné stránce.
@@ -639,7 +638,7 @@
         $args[] = self::getClientIp();
         Logger::warning('Unauthorized access to preview a phishing website (non-existent token).', $args);
 
-        header('Location: ' . WEB_URL);
+        http_response_code(403);
         exit();
       }
       // Pokud platnost tokenu k přístupu na náhled podvodné stránky vypršela.
@@ -648,6 +647,8 @@
         Logger::warning('Invalid access a preview of a phishing website with an expired token.', $args);
 
         echo 'Interval pro zobrazení náhledu podvodné stránky vypršel.';
+
+        http_response_code(403);
         exit();
       }
 
@@ -674,7 +675,7 @@
         $args[] = self::getClientIp();
         Logger::warning('Unauthorized access to preview a phishing website (insufficient authorization).', $args);
 
-        header('Location: ' . WEB_URL);
+        http_response_code(403);
         exit();
       }
     }
@@ -691,14 +692,12 @@
     private function processForm($onSubmitAction, $args = null, $credentialsResult = false) {
       // Přesměrování na vzdělávací stránku s indiciemi (po zadání čehokoliv).
       if ($onSubmitAction == 2) {
-        header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
-        exit();
+        self::redirectToEducationalSite($args['url']);
       }
       // Přesměrování na vzdělávací stránku s indiciemi (pouze po zadání platných přihlašovacích údajů).
       elseif ($onSubmitAction == 3) {
         if ($credentialsResult) {
-          header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
-          exit();
+          self::redirectToEducationalSite($args['url']);
         }
         else {
           $this->displayMessage = true;
@@ -726,11 +725,21 @@
         // Při překročení nastaveného limitu přesměrovat na vzdělávací stránku s indiciemi.
         if ($_SESSION[$sessionName] >= $countMaxSends) {
           unset($_SESSION[$sessionName]);
-
-          header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $args['url']);
-          exit();
+          self::redirectToEducationalSite($args['url']);
         }
       }
+    }
+
+
+    /**
+     * Přesměruje uživatele na vzdělávací stránku s indiciemi o absolvování cvičného phishingu.
+     *
+     * @param string $usedUrl          Identifikátor uživatele pro podvodné stránky
+     * @return void
+     */
+    private function redirectToEducationalSite($usedUrl) {
+      header('Location: ' . WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $usedUrl);
+      exit();
     }
 
 
