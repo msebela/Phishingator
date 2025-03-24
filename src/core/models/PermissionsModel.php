@@ -189,12 +189,14 @@
      * @param int $idUser              ID uživatele
      */
     private function logLogin($idUser) {
-      Logger::info('Successful user login.', $idUser);
+      $ip = WebsitePrependerModel::getClientIp();
+
+      Logger::info('Successful user login.', [$idUser, $ip]);
 
       $record = [
         'id_user' => $idUser,
         'login_datetime' => date('Y-m-d H:i:s'),
-        'ip' => WebsitePrependerModel::getClientIp()
+        'ip' => $ip
       ];
 
       Database::insert('phg_users_login_log', $record);
