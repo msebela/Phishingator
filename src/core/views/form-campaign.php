@@ -193,7 +193,7 @@
     </div>
 
     <div class="modal fade" id="recipientsDialog" tabindex="-1" role="dialog" aria-labelledby="recipientsDialogTitle" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="recipientsDialogTitle">Výběr příjemců na základě skupin</h5>
@@ -235,7 +235,7 @@
             <?php if ($recipientsVolunteers != null): ?>
             <div class="container-fluid pt-3 mt-3 border-top">
               <div class="row">
-                <div class="col-md-11">
+                <div class="col-lg-11">
                   <h6>
                     <label>
                       <input type="checkbox" class="mark-checkboxes" data-checkboxes-group="#cover-volunteers">
@@ -243,8 +243,7 @@
                     </label>
                   </h6>
                 </div>
-
-                <div class="col-md-5 text-right">
+                <div class="col-lg-5 mb-2 mb-lg-0 text-right">
                   <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-display" data-toggle="#cover-volunteers">
                     <span data-feather="user-check"></span>
                     Seznam příjemců <span class="badge badge-secondary"><?= count($recipientsVolunteers) ?></span>
@@ -254,7 +253,7 @@
 
               <div id="cover-volunteers" class="group-recipients d-none">
                 <small>Číslo u&nbsp;příjemce udává zbývající počet e-mailů, o&nbsp;které má zájem.</small>
-                <div class="d-flex flex-row flex-wrap justify-content-between mt-2">
+                <div class="d-flex flex-row flex-wrap mt-2">
                   <?php foreach ($recipientsVolunteers as $volunteer): ?>
                   <label class="recipients-list-email text-truncate">
                     <input type="checkbox" value="<?= $volunteer['email'] ?>" class="mark-same-checkboxes"<?php if ($volunteer['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($volunteer['color'])) ? '<span class="badge badge-' . $volunteer['color'] . '">' . $volunteer['username'] . '</span>@' . $volunteer['domain'] : $volunteer['email']) . ((!empty($volunteer['email_limit'])) ? '&nbsp;<span class="badge badge-secondary">' . $volunteer['email_limit'] . '</span>' : '') ?>
@@ -270,16 +269,15 @@
 
             <div class="container-fluid pt-3 mt-3 border-top">
               <div class="row">
-                <div class="col-md-11">
+                <div class="col-lg-11">
                   <h6>
                     <label>
                       <input type="checkbox" class="mark-checkboxes" data-checkboxes-group="#group-<?= remove_special_chars($groupName) ?>">
-                      <span class="font-weight-normal text-muted">LDAP:</span> <?= stripcslashes($groupName) ?>
+                      <span class="font-weight-normal text-muted">Import:</span> <?= stripcslashes($groupName) ?>
                     </label>
                   </h6>
                 </div>
-
-                <div class="col-md-5 text-right">
+                <div class="col-lg-5 mb-2 mb-lg-0 text-right">
                   <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-display" data-toggle="#group-<?= remove_special_chars($groupName) ?>">
                     <span data-feather="user-check"></span>
                     Seznam příjemců <span class="badge badge-secondary"><?= count($groupUsers) ?></span>
@@ -288,7 +286,7 @@
               </div>
 
               <div id="group-<?= remove_special_chars($groupName) ?>" class="group-recipients d-none">
-                <div class="d-flex flex-row flex-wrap justify-content-between mt-2">
+                <div class="d-flex flex-row flex-wrap mt-2">
                   <?php foreach ($groupUsers as $user): ?>
                   <label class="text-truncate">
                     <input type="checkbox" value="<?= $user['email'] ?>" class="mark-same-checkboxes"<?php if ($user['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($user['color'])) ? '<span class="badge badge-' . $user['color'] . '">' . $user['username'] . '</span>@' . $user['domain'] : $user['email']); ?>
@@ -313,7 +311,6 @@
         </div>
       </div>
     </div>
-
   </div>
 
   <div class="text-center">
