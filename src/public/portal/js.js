@@ -1,8 +1,8 @@
 $(function() {
   $('[data-toggle="tooltip"]').tooltip();
 
-  if ($(window).height() + 50 < $(document).height() && $(window).width() >= 768) {
-    $('.btn-top-page').toggleClass('d-none');
+  if (window.innerHeight + 50 < document.documentElement.scrollHeight && window.innerWidth >= 768) {
+    document.querySelector('.btn-top-page').classList.toggle('d-none');
   }
 });
 
@@ -12,25 +12,23 @@ $('.btn-close').on('click', function() {
 });
 
 $('.btn-confirm').on('click', function() {
-  let message = $(this).data('confirm');
+  const message = this.dataset.confirm;
 
-  if (message) {
-    if (!confirm(message)) {
-      return false;
-    }
+  if (message && !confirm(message)) {
+    return false;
   }
 });
 
 $('.btn-submit').on('change', function() {
-  $($(this).data('form')).submit();
+  document.querySelector(this.dataset.form).submit();
 });
 
 $('.btn-redirect').on('change', function() {
-  window.location.href = $(this).data('link') + $(this).val();
+  window.location.href = this.dataset.link + this.value;
 });
 
 $('.btn-toggle-display').on('click', function() {
-  $($(this).data('toggle')).toggleClass('d-none');
+  document.querySelector(this.dataset.toggle).classList.toggle('d-none');
 });
 
 
@@ -46,116 +44,143 @@ function isEmailValid(input) {
 }
 
 $('.set-preview-btn').on('change', function() {
-  let baseLink = $(this).data('preview-link');
-  let id = $(this).find(':selected').val();
-  let link = (id > 0) ? baseLink + '/preview/' + id : baseLink;
+  const baseLink = this.dataset.previewLink;
+  const id = this.querySelector(':checked').value;
+  const link = (id > 0) ? baseLink + '/preview/' + id : baseLink;
 
-  $($(this).data('preview-btn')).attr('href', link);
+  document.querySelector(this.dataset.previewBtn).setAttribute('href', link);
 });
 
 $('.insert-recipients-emails').on('click', function() {
   const recipientsSeparator = "\n";
-  let recipientsTextarea = $('#campaign-recipients');
-  let recipientsCheckboxes = $('.modal-body input[type=checkbox]');
-  let recipientsList = new Set(extractEmails(recipientsTextarea.val(), recipientsSeparator));
 
-  recipientsCheckboxes.each(function() {
-    let recipientEmail = $(this).val().toLowerCase();
+  const recipientsTextarea = document.querySelector('#campaign-recipients');
+  const recipientsCheckboxes = document.querySelectorAll('.modal-body input[type=checkbox]');
+  const recipientsList = new Set(extractEmails(recipientsTextarea.value, recipientsSeparator));
 
-    if (this.checked && isEmailValid(recipientEmail)) {
+  for (let i = 0; i < recipientsCheckboxes.length; i++) {
+    const checkbox = recipientsCheckboxes[i];
+
+    const recipientEmail = checkbox.value.toLowerCase();
+
+    if (checkbox.checked && isEmailValid(recipientEmail)) {
       recipientsList.add(recipientEmail);
     }
     else {
       recipientsList.delete(recipientEmail);
     }
-  });
+  }
 
-  recipientsTextarea.val(Array.from(recipientsList).join(recipientsSeparator));
+  recipientsTextarea.value = Array.from(recipientsList).join(recipientsSeparator);
 
   updateSumEmails();
 });
 
 $('#campaign-recipients').on('change keyup', function() {
   const recipientsSeparator = "\n";
-  let recipientsList = $(this).val().split(recipientsSeparator);
+  const recipientsList = new Set(extractEmails(this.value, recipientsSeparator).filter(email => isEmailValid(email)));
 
-  $('.modal-body input[type=checkbox]').prop('checked', false);
+  const checkboxes = document.querySelectorAll('.modal-body input[type="checkbox"]');
 
-  recipientsList.forEach(function (recipient) {
-    if (isEmailValid(recipient)) {
-      let recipientCheckbox = $('.modal-body input[value="' + recipient + '" i]');
+  for (let i = 0; i < checkboxes.length; i++) {
+    const checkbox = checkboxes[i];
 
-      if (recipientCheckbox.length) {
-        recipientCheckbox.prop('checked', true);
-        markSameCheckboxes(recipientCheckbox);
+    if (!checkbox.dataset.checkboxesGroup) {
+      const recipient = checkbox.value.trim().toLowerCase();
+      const recipientChecked = recipientsList.has(recipient);
+
+      if (checkbox.checked !== recipientChecked) {
+        checkbox.checked = recipientChecked;
+        markSameCheckboxes(checkbox);
       }
     }
+  }
 
-    updateSumEmails();
-  });
+  updateSumEmails(recipientsList.size);
 });
 
-function updateSumEmails() {
-  const validEmailPattern = /[^\s@]+@[^\s@]+\.[^\s@]+/g;
+function updateSumEmails(sumEmails = null) {
+  const sumEmailsLabel = document.querySelector('#countRecipients');
 
-  let recipientsTextarea = $('#campaign-recipients').val();
-  let sumValidEmailsLabel = $('#countRecipients');
+  if (sumEmails === null) {
+    const validEmailPattern = /[^\s@]+@[^\s@]+\.[^\s@]+/g;
 
-  let validEmails = recipientsTextarea.match(validEmailPattern);
-  let sumValidEmails = validEmails ? validEmails.length : 0;
+    const recipientsTextarea = document.querySelector('#campaign-recipients').value;
+    const validEmails = recipientsTextarea.match(validEmailPattern);
 
-  sumValidEmailsLabel.text(sumValidEmails);
+    sumEmails = validEmails ? validEmails.length : 0;
+  }
+
+  sumEmailsLabel.textContent = sumEmails;
 }
 
 $('.mark-checkboxes').on('click', function() {
-  let recipientsGroup = $(this).data('checkboxes-group');
-  let checkboxes = $(recipientsGroup + ' input[type=checkbox]');
+  const recipientsGroup = document.querySelector(this.dataset.checkboxesGroup);
+  const recipientsCheckboxes = recipientsGroup.querySelectorAll('input[type="checkbox"]');
+
+  const checkedRecipients = !recipientsCheckboxes[0]?.checked;
+
   let sumChecked = 0;
 
-  if (recipientsGroup.length && $(recipientsGroup).hasClass('d-none')) {
-    $(recipientsGroup).toggleClass('d-none');
-  }
+  for (let i = 0; i < recipientsCheckboxes.length; i++) {
+    const checkbox = recipientsCheckboxes[i];
 
-  checkboxes.prop('checked', !checkboxes.prop('checked'));
-  checkboxes.each(function() {
-    if (this.checked) {
+    checkbox.checked = checkedRecipients;
+
+    if (checkbox.checked) {
       sumChecked++;
     }
 
-    markSameCheckboxes($(this));
-  });
+    markSameCheckboxes(checkbox);
+  }
 
-  if (sumChecked === 0) {
-    $(this).prop('checked', false);
+  if (this.type === 'checkbox') {
+    if (recipientsGroup.classList.contains('d-none')) {
+      recipientsGroup.classList.remove('d-none');
+    }
+
+    if (sumChecked === 0) {
+      this.checked = false;
+    }
+    else if (sumChecked > 0) {
+      this.checked = true;
+    }
   }
 });
 
 $('.mark-same-checkboxes').on('click', function() {
-  markSameCheckboxes($(this));
+  markSameCheckboxes(this);
 });
 
 function markSameCheckboxes(recipient) {
-  $('.modal-body input[type=checkbox]').filter(function() {
-    return $(this).val().toLowerCase() === recipient.val().toLowerCase();
-  }).prop('checked', recipient.prop('checked'));
+  const recipientCheckboxes = document.querySelectorAll(
+      '.modal-body input[type="checkbox"][value="' + recipient.value + '" i]'
+  );
+
+  for (const checkbox of recipientCheckboxes) {
+    checkbox.checked = recipient.checked;
+  }
 }
 
-
 $('.expand-all-groups').on('click', function() {
-  let isPressed = $(this).attr('aria-pressed') === 'true';
+  const isPressed = this.getAttribute('aria-pressed') === 'true';
 
-  $('.group-recipients').toggleClass('d-none', isPressed);
-  $(this).attr('aria-pressed', !isPressed);
+  document.querySelectorAll('.group-recipients').forEach(
+      group => group.classList.toggle('d-none', isPressed)
+  );
+
+  this.setAttribute('aria-pressed', !isPressed);
 });
 
 $('.import-recipients').on('click', function() {
   const recipientsSeparator = "\n";
-  let recipientsTextarea = $('#campaign-recipients');
-  let recipientsList = new Set(extractEmails(recipientsTextarea.val(), recipientsSeparator));
+  const recipientsTextarea = document.getElementById('campaign-recipients');
+
+  let recipientsList = new Set(extractEmails(recipientsTextarea.value, recipientsSeparator));
   let importFileInput = document.createElement('input');
 
   importFileInput.setAttribute('type', 'file');
-  importFileInput.onchange = _ => {
+  importFileInput.addEventListener('change', function() {
     let file = importFileInput.files[0];
 
     if (file && (file.type === 'text/plain' || file.type === 'text/csv')) {
@@ -172,10 +197,10 @@ $('.import-recipients').on('click', function() {
 
         importedRecipients.forEach(function (recipient) {
           if (isEmailValid(recipient)) {
-            let recipientCheckbox = $('.modal-body input[value="' + recipient + '" i]');
+            let recipientCheckbox = document.querySelector('.modal-body input[value="' + recipient + '" i]');
 
-            if (recipientCheckbox.length) {
-              recipientCheckbox.prop('checked', true);
+            if (recipientCheckbox) {
+              recipientCheckbox.checked = true;
               markSameCheckboxes(recipientCheckbox);
             }
 
@@ -185,15 +210,15 @@ $('.import-recipients').on('click', function() {
 
         let allUniqRecipients = [...new Set([...recipientsList, ...importedValidRecipients])];
 
-        recipientsTextarea.val(allUniqRecipients.join(recipientsSeparator));
+        recipientsTextarea.value = allUniqRecipients.join(recipientsSeparator);
 
         updateSumEmails();
-      }
+      };
     }
     else {
       alert('Vybraný typ souboru není podporován.');
     }
-  };
+  });
 
   importFileInput.click();
 });
@@ -203,58 +228,71 @@ function importValuesFromCSV(lines) {
   let values = [];
 
   if (separator !== null && separator !== '') {
-    values = lines.flatMap(line => line.split(separator));
+    values = lines.flatMap(line => line.split(separator).map(item => item.trim()));
   }
 
   return values;
 }
 
 $('#blur-identities').on('click', function() {
-  let form = $('#' + $(this).data('form'));
+  const form = document.getElementById(this.dataset.form);
 
-  $('.identity').toggleClass('blur-text');
-  $.post(form.attr('action'), form.serialize());
+  document.querySelectorAll('.identity').forEach(identity => {
+    identity.classList.toggle('blur-text');
+  });
+
+  fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form)
+  });
 });
 
 $('.export-chart').on('click', function() {
-  $(this).attr('download', $(this).data('filename') + '.png');
-  $(this).attr('href', ($($(this).data('chart'))[0]).toDataURL('image/png', 1));
+  const chart = document.querySelector(this.dataset.chart);
+
+  this.setAttribute('href', chart.toDataURL('image/png', 1));
+  this.setAttribute('download', this.dataset.filename + '.png');
 });
 
 
 // VARIABLES
 $('.replace-variable').on('click', function() {
-  let input = $($(this).data('input'));
+  const input = document.querySelector(this.dataset.input);
 
   if (confirm('Opravdu chcete obsah pole nahradit touto proměnnou?')) {
-    input.val($(this).data('var'));
+    input.value = this.dataset.var;
     input.focus();
   }
 });
 
 $('.insert-variable').on('click', function() {
-  let input = $($(this).data('input'));
+  const input = document.querySelector(this.dataset.input);
 
-  input.val(input.val() + $(this).data('var'));
+  input.value = input.value + this.dataset.var;
   input.focus();
 });
 
 
 // PHISHING EMAILS
 $('.phishing-email-variables code').on('click', function() {
-  let input = $('#phishing-email-body');
-  let inputValue = input.val();
-  let insertedValue = $(this).data('var');
+  const input = document.getElementById('phishing-email-body');
+  let variable = this.dataset.var;
 
-  let cursorPos = input.prop('selectionStart');
-  let cursorPosAfter = cursorPos + insertedValue.length;
+  const selectedText = input.value.substring(input.selectionStart, input.selectionEnd);
 
-  let textBefore = inputValue.substring(0, cursorPos);
-  let textAfter  = inputValue.substring(cursorPos, inputValue.length);
+  if (selectedText) {
+    variable = variable.replace('text', selectedText);
+  }
 
-  input.val(textBefore + insertedValue + textAfter);
+  const cursorPos = input.selectionStart;
+  const cursorPosAfter = cursorPos + variable.length;
 
-  setSelectionRange(input[0], cursorPosAfter, cursorPosAfter);
+  const textBefore = input.value.substring(0, cursorPos);
+  const textAfter = input.value.substring(input.selectionEnd);
+
+  input.value = textBefore + variable + textAfter;
+
+  setSelectionRange(input, cursorPosAfter, cursorPosAfter);
 });
 
 function setSelectionRange(input, selectionStart, selectionEnd) {
@@ -263,7 +301,7 @@ function setSelectionRange(input, selectionStart, selectionEnd) {
     input.setSelectionRange(selectionStart, selectionEnd);
   }
   else if (input.createTextRange) {
-    let range = input.createTextRange();
+    const range = input.createTextRange();
 
     range.collapse(true);
     range.moveEnd('character', selectionEnd);
@@ -275,16 +313,17 @@ function setSelectionRange(input, selectionStart, selectionEnd) {
 
 // PHISHING WEBSITES
 $('#phishing-domains-dropdown a').on('click', function() {
-  let urlInput = $('#phishing-website-url');
+  const urlInput = document.querySelector('#phishing-website-url');
 
-  urlInput.val($(this).data('var'));
+  urlInput.value = this.dataset.var;
   urlInput.focus();
 });
 
 $('.phishing-domain-protocol').on('click', function() {
-  let urlInput = $('#phishing-website-url');
-  let url = urlInput.val().trim();
-  let selectedProtocol = $(this).data('var');
+  const urlInput = document.querySelector('#phishing-website-url');
+  const selectedProtocol = this.dataset.var;
+
+  let url = urlInput.value.trim();
 
   if (url.startsWith('http://') && selectedProtocol === 'https') {
     url = url.replace('http://', 'https://');
@@ -296,20 +335,20 @@ $('.phishing-domain-protocol').on('click', function() {
     url = selectedProtocol + '://' + url;
   }
 
-  urlInput.val(url);
+  urlInput.value = url;
   urlInput.focus();
 });
 
 
 // USER GROUPS
 $('.user-groups-role').on('change', function() {
-  let groups = $('#groups');
-  let role = parseInt($(this).val());
+  const groups = document.querySelector('#groups');
+  const role = parseInt(this.value);
 
   if (!isNaN(role) && (role === 1 || role === 2)) {
-    groups.removeClass('d-none');
+    groups.classList.remove('d-none');
   }
   else {
-    groups.addClass('d-none');
+    groups.classList.add('d-none');
   }
 });
