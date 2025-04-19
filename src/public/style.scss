@@ -320,6 +320,15 @@ header {
 // SECTION: CAMPAIGNS
 .group-recipients label {
   width: 210px;
+  margin-right: 5px;
+
+  @include media-breakpoint-down(lg) {
+    width: 240px;
+  }
+
+  @include media-breakpoint-down(md) {
+    width: 210px;
+  }
 }
 
 .tooltip {
