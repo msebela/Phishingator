@@ -203,21 +203,33 @@
           </div>
           <div class="modal-body">
             <div class="container-fluid">
-              <?php if ($recipientsVolunteers == null && count($recipientsLdapGroups) == 0): ?>
-              Administrátorem nebyly nastaveny žádné skupiny.
-              <?php else: ?>
-              <div class="text-right">
-                <button type="button" class="btn btn-outline-secondary btn-sm mark-checkboxes" data-checkboxes-group="#recipientsDialog">
-                  <span data-feather="user-check"></span>
-                  Vybrat všechny příjemce
-                </button>
+              <div class="row">
+                <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
+                <div class="col-6">
+                  <a href="/portal/user-groups/<?= ACT_EDIT ?>/1#groups" target="_blank" class="btn btn-secondary btn-sm">
+                    <span data-feather="grid"></span>
+                    Upravit zobrazované skupiny
+                  </a>
+                </div>
+                <?php endif; ?>
+                <div class="col text-right align-content-center">
+                  <?php if ($recipientsVolunteers == null && count($recipientsLdapGroups) == 0): ?>
+                  <p class="m-0<?php if (PermissionsModel::getUserRole() != PERMISSION_ADMIN): ?> text-left<?php endif; ?>">
+                    Zatím nebyly administrátorem nastaveny skupiny k&nbsp;zobrazení.
+                  </p>
+                  <?php else: ?>
+                  <button type="button" class="btn btn-outline-secondary btn-sm mark-checkboxes" data-checkboxes-group="#recipientsDialog">
+                    <span data-feather="user-check"></span>
+                    Vybrat všechny příjemce
+                  </button>
 
-                <button type="button" class="btn btn-outline-secondary btn-sm expand-all-groups" data-toggle="button" aria-pressed="false">
-                  <span data-feather="users"></span>
-                  Rozbalit všechny skupiny
-                </button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm expand-all-groups" data-toggle="button" aria-pressed="false">
+                    <span data-feather="users"></span>
+                    Rozbalit všechny skupiny
+                  </button>
+                  <?php endif; ?>
+                </div>
               </div>
-              <?php endif; ?>
             </div>
 
             <?php if ($recipientsVolunteers != null): ?>
