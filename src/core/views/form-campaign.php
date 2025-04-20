@@ -246,7 +246,7 @@
                 <div class="col-lg-5 mb-2 mb-lg-0 text-right">
                   <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-display" data-toggle="#cover-volunteers">
                     <span data-feather="user-check"></span>
-                    Seznam příjemců <span class="badge badge-secondary"><?= count($recipientsVolunteers) ?></span>
+                    Seznam příjemců <span id="group-checkbox-volunteers-count" class="badge badge-secondary"><?= count($recipientsVolunteers) ?></span>
                   </button>
                 </div>
               </div>
@@ -280,7 +280,7 @@
                 <div class="col-lg-5 mb-2 mb-lg-0 text-right">
                   <button type="button" class="btn btn-outline-secondary btn-sm btn-toggle-display" data-toggle="#group-<?= remove_special_chars($groupName) ?>">
                     <span data-feather="user-check"></span>
-                    Seznam příjemců <span class="badge badge-secondary"><?= count($groupUsers) ?></span>
+                    Seznam příjemců <span id="group-checkbox-<?= remove_special_chars($groupName) ?>-count" class="badge badge-secondary"><?= count($groupUsers) ?></span>
                   </button>
                 </div>
               </div>

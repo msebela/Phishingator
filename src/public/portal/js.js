@@ -177,8 +177,10 @@ $('.expand-all-groups').on('click', function() {
 
 function updateGroupCheckboxState(groupCheckbox, checkedCount) {
   const totalCheckboxesCount = parseInt(groupCheckbox.dataset.checkboxesGroupTotal || "0");
+  const labelCount = document.querySelector('#' + groupCheckbox.id + '-count');
 
   groupCheckbox.dataset.checkboxesGroupChecked = checkedCount;
+  labelCount.textContent = checkedCount + ' / ' + totalCheckboxesCount;
 
   if (totalCheckboxesCount === checkedCount) {
     groupCheckbox.checked = true;
