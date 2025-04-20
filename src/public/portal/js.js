@@ -114,13 +114,23 @@ function updateSumEmails(sumEmails = null) {
   sumEmailsLabel.textContent = sumEmails;
 }
 
-$('.mark-checkboxes').on('click', function() {
+$('.mark-all-checkboxes').on('click', function() {
+  const recipientsCheckboxes = document.querySelectorAll(this.dataset.checkboxesGroup + ' input[type="checkbox"]');
+
+  for (let i = 0; i < recipientsCheckboxes.length; i++) {
+    recipientsCheckboxes[i].checked = true;
+  }
+
+  updateGroupCheckboxStates();
+});
+
+$('.mark-group-checkboxes').on('click', function() {
   const recipientsGroup = document.querySelector(this.dataset.checkboxesGroup);
   const recipientsCheckboxes = recipientsGroup.querySelectorAll('input[type="checkbox"]');
 
   const checkedRecipients = !recipientsCheckboxes[0]?.checked;
 
-  let sumChecked = 0;
+  let checkedCount = 0;
 
   for (let i = 0; i < recipientsCheckboxes.length; i++) {
     const checkbox = recipientsCheckboxes[i];
@@ -128,24 +138,17 @@ $('.mark-checkboxes').on('click', function() {
     checkbox.checked = checkedRecipients;
 
     if (checkbox.checked) {
-      sumChecked++;
+      checkedCount++;
     }
 
     markSameCheckboxes(checkbox);
   }
 
-  if (this.type === 'checkbox') {
-    if (recipientsGroup.classList.contains('d-none')) {
-      recipientsGroup.classList.remove('d-none');
-    }
-
-    if (sumChecked === 0) {
-      this.checked = false;
-    }
-    else if (sumChecked > 0) {
-      this.checked = true;
-    }
+  if (recipientsGroup.classList.contains('d-none')) {
+    recipientsGroup.classList.remove('d-none');
   }
+
+  updateGroupCheckboxState(this, checkedCount);
 });
 
 $('.mark-same-checkboxes').on('click', function() {
@@ -170,6 +173,55 @@ $('.expand-all-groups').on('click', function() {
   );
 
   this.setAttribute('aria-pressed', !isPressed);
+});
+
+function updateGroupCheckboxState(groupCheckbox, checkedCount) {
+  const totalCheckboxesCount = parseInt(groupCheckbox.dataset.checkboxesGroupTotal || "0");
+
+  groupCheckbox.dataset.checkboxesGroupChecked = checkedCount;
+
+  if (totalCheckboxesCount === checkedCount) {
+    groupCheckbox.checked = true;
+    groupCheckbox.indeterminate = false;
+  }
+  else if (checkedCount === 0) {
+    groupCheckbox.checked = false;
+    groupCheckbox.indeterminate = false;
+  }
+  else {
+    groupCheckbox.checked = false;
+    groupCheckbox.indeterminate = true;
+  }
+}
+
+function updateGroupCheckboxStates() {
+  document.querySelectorAll('.mark-group-checkboxes').forEach(groupCheckbox => {
+    const group = groupCheckbox.dataset.checkboxesGroup;
+
+    if (group) {
+      const checkboxes = document.querySelectorAll(group + ' input[type="checkbox"]');
+
+      let checkedCount = 0;
+
+      for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+          checkedCount++;
+        }
+      }
+
+      updateGroupCheckboxState(groupCheckbox, checkedCount);
+    }
+  });
+}
+
+$('.select-recipients').on('click', function() {
+  updateGroupCheckboxStates();
+});
+
+document.querySelectorAll('.modal-body input[type="checkbox"]').forEach(checkbox => {
+  checkbox.addEventListener('change', function () {
+    updateGroupCheckboxStates();
+  });
 });
 
 $('.import-recipients').on('click', function() {
