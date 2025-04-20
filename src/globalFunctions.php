@@ -190,21 +190,21 @@
 
 
   /**
-   * Vrátí počet položek uložených v řetězci a oddělených konkrétním symbolem.
+   * Rozdělí řetězec podle zadaného oddělovače, odstraní oddělovače
+   * na jeho začátku a konci a vrátí výsledné položky jako pole.
    *
    * @param string $separator          Oddělovač položek
    * @param string $string             Řetězec s položkami
-   * @return int                       Počet položek v řetězci
+   * @return array                     Pole s jednotlivými položkami
    */
-  function get_sum_items_in_string($separator, $string) {
-    $sum = 0;
+  function split_items($separator, $string) {
+    $array = [];
 
     if (!empty($string)) {
       $array = explode($separator, trim($string, $separator));
-      $sum = count($array);
     }
 
-    return $sum;
+    return $array;
   }
 
 

@@ -548,10 +548,10 @@
 
     /**
      * Vrátí seznam všech příjemců, kteří jsou dobrovolně zaregistrováni k odebírání cvičných
-     * phishingových zpráv. První parametr předává metodě seznam příjemců, kteří mají být označeni
+     * phishingových zpráv. První parametr předává metodě pole příjemců, kteří mají být označeni
      * jako vybraní (tzn. jsou již součástí kampaně).
      *
-     * @param string $allRecipients         Seznam příjemců, kteří jsou již součástí kampaně.
+     * @param array $allRecipients          Pole příjemců, kteří jsou již součástí kampaně.
      * @return mixed                        Pole dobrovolných příjemců s informacemi o každém z nich.
      */
     public static function getVolunteersRecipients($allRecipients) {
@@ -586,7 +586,7 @@
           $result[$key]['domain'] = $domain;
 
           // Ověření, zdali je daný uživatel vyplněn mezi příjemci.
-          $result[$key]['checked'] = (str_contains($allRecipients, $recipient['email'])) ? 1 : 0;
+          $result[$key]['checked'] = in_array($recipient['email'], $allRecipients);
 
           // Určení barvy uživatele na základě oprávnění ve Phishingatoru.
           $result[$key]['color'] = UserGroupsModel::getColorGroupRoleByUsername(
@@ -603,10 +603,10 @@
 
     /**
      * Vrátí seznam skupin se všemi jejich potenciálními příjemci z LDAP s tím,
-     * že první parametr metodě předává seznam příjemců, které uživatel již mezi
+     * že první parametr metodě předává pole příjemců, které uživatel již mezi
      * příjemce zahrnul.
      *
-     * @param string $allRecipients         Seznam příjemců, kteří jsou již součástí kampaně.
+     * @param array $allRecipients          Pole příjemců, kteří jsou již součástí kampaně.
      * @param string $allowedLdapGroups     Názvy povolených skupin v LDAP, které mají být vypisovány.
      * @param string|null $emailRestriction E-mailové omezení uživatele na konkrétní sadu e-mailů - takové e-maily
      *                                      nebudou uživateli ani vypisovány (nepovinný parametr).
@@ -645,7 +645,7 @@
               }
 
               // Ověření, zdali je daný uživatel vyplněn mezi příjemci.
-              $checked = str_contains($allRecipients, $user);
+              $checked = in_array($user, $allRecipients);
 
               // Určení barvy uživatele na základě jeho oprávnění.
               $color = UserGroupsModel::getColorGroupRoleByUsername(

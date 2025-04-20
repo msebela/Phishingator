@@ -138,7 +138,7 @@
         $result[$key]['role_color'] = self::getColorGroupRole($group['value']);
         $result[$key]['count_users'] = self::getCountOfUsersInGroup($group['id_user_group']);
 
-        $result[$key]['ldap_groups_sum'] = get_sum_items_in_string(LDAP_GROUPS_DELIMITER, $group['ldap_groups']);
+        $result[$key]['ldap_groups_sum'] = count(split_items(LDAP_GROUPS_DELIMITER, $group['ldap_groups']));
       }
 
       return $result;

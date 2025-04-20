@@ -79,17 +79,20 @@
       $this->setViewData('websites', PhishingWebsiteModel::getActivePhishingWebsites());
       $this->setViewData('websiteActions', $model->getWebsiteActions());
       $this->setViewData('recipients', ($_POST[$model->formPrefix . 'recipients'] ?? ''));
-      $this->setViewData('countRecipients', get_sum_items_in_string(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients')));
+
+      $recipients = split_items(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients'));
+
+      $this->setViewData('countRecipients', count($recipients));
 
       if (PermissionsModel::getUserRole() == PERMISSION_ADMIN) {
-        $this->setViewData('recipientsVolunteers', $model->getVolunteersRecipients($this->getData('recipients')));
+        $this->setViewData('recipientsVolunteers', $model->getVolunteersRecipients($recipients));
       }
       else {
         $this->setViewData('recipientsVolunteers', array());
       }
 
       $userAllowedLdapGroups = (PermissionsModel::getUserAllowedLdapGroups() != null) ? PermissionsModel::getUserAllowedLdapGroups() : null;
-      $this->setViewData('recipientsLdapGroups', $model->getLdapRecipients($this->getData('recipients'), $userAllowedLdapGroups, PermissionsModel::getUserEmailRestrictions()));
+      $this->setViewData('recipientsLdapGroups', $model->getLdapRecipients($recipients, $userAllowedLdapGroups, PermissionsModel::getUserEmailRestrictions()));
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {
@@ -137,17 +140,20 @@
       $this->setViewData('websites', PhishingWebsiteModel::getActivePhishingWebsites());
       $this->setViewData('websiteActions', $model->getWebsiteActions());
       $this->setViewData('recipients', ($_POST[$model->formPrefix . 'recipients'] ?? $model->getCampaignRecipients($idCampaign, true)));
-      $this->setViewData('countRecipients', get_sum_items_in_string(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients')));
+
+      $recipients = split_items(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients'));
+
+      $this->setViewData('countRecipients', count($recipients));
 
       if (PermissionsModel::getUserRole() == PERMISSION_ADMIN) {
-        $this->setViewData('recipientsVolunteers', $model->getVolunteersRecipients($this->getData('recipients')));
+        $this->setViewData('recipientsVolunteers', $model->getVolunteersRecipients($recipients));
       }
       else {
         $this->setViewData('recipientsVolunteers', array());
       }
 
       $userAllowedLdapGroups = (PermissionsModel::getUserAllowedLdapGroups() != null) ? PermissionsModel::getUserAllowedLdapGroups() : null;
-      $this->setViewData('recipientsLdapGroups', $model->getLdapRecipients($this->getData('recipients'), $userAllowedLdapGroups, PermissionsModel::getUserEmailRestrictions()));
+      $this->setViewData('recipientsLdapGroups', $model->getLdapRecipients($recipients, $userAllowedLdapGroups, PermissionsModel::getUserEmailRestrictions()));
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {
