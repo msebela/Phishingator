@@ -5,8 +5,10 @@ services:
       dockerfile: docker/web/Dockerfile
       args:
         SMTP_HOST: ${SMTP_HOST}
-    restart: always
     container_name: phishingator-${ORG}-web
+    restart: always
+    depends_on:
+      - database
     env_file:
       - .env
     volumes:
@@ -14,29 +16,26 @@ services:
       - ./phishingator-data/${ORG}/logs:/var/www/phishingator/logs
       - ./phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
       - ./phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
-    ports:
-      - '8000:80'
-      - '443:443'
-    depends_on:
-      - database
     networks:
+      - web-net
       - database-net
       - scheduler-net
+      - smtp-net
 
   database:
     build:
       context: .
       dockerfile: docker/database/Dockerfile
-    restart: always
     container_name: phishingator-${ORG}-database
-    volumes:
-      - ./phishingator-data/${ORG}/database:/var/lib/mysql/
-      - ./phishingator-data/${ORG}/database-dumps:/phishingator-dumps
-      - ./docker/database:/docker-entrypoint-initdb.d:ro
+    restart: always
     environment:
       - MYSQL_USER=${DB_USERNAME}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE}
+    volumes:
+      - ./phishingator-data/${ORG}/database:/var/lib/mysql/
+      - ./phishingator-data/${ORG}/database-dumps:/phishingator-dumps
+      - ./docker/database:/docker-entrypoint-initdb.d:ro
     ports:
       - '3306:3306'
     networks:
@@ -46,16 +45,34 @@ services:
     build:
       context: .
       dockerfile: docker/scheduler/Dockerfile
-    restart: always
     container_name: phishingator-${ORG}-scheduler
+    restart: always
     environment:
       - PHISHINGATOR_TOKEN
     networks:
       - scheduler-net
 
+  waf:
+    image: owasp/modsecurity-crs:3.3.5-apache-202402140602
+    container_name: phishingator-${ORG}-waf
+    restart: always
+    depends_on:
+      - web
+    environment:
+      - PARANOIA=1
+      - ANOMALY_INBOUND=10
+      - ANOMALY_OUTBOUND=5
+      - BACKEND=http://phishingator-${ORG}-web
+    ports:
+      - '8000:80'
+      - '8443:443'
+    networks:
+      - web-net
+
   mailhog:
     image: mailhog/mailhog
     container_name: phishingator-${ORG}-mailhog
+    command: ["-smtp-bind-addr=0.0.0.0:25"]
     ports:
       - '25:25'
       - '8025:8025'
@@ -63,6 +80,7 @@ services:
       - smtp-net
 
 networks:
+  web-net:
   database-net:
   scheduler-net:
   smtp-net:

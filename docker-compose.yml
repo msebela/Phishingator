@@ -6,8 +6,10 @@ services:
       args:
         SMTP_HOST: ${SMTP_HOST}
     image: ${CI_REGISTRY_IMAGE}/phishingator_web:${CI_COMMIT_REF_SLUG}
-    restart: always
     container_name: phishingator-${ORG}-web
+    restart: always
+    depends_on:
+      - database
     volumes:
       - /phishingator-data/${ORG}/logs:/var/www/phishingator/logs
       - /phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
@@ -82,49 +84,26 @@ services:
       - CAMPAIGN_DEFAULT_ONSUBMIT_ACTION
       - CAMPAIGN_ACTIVE_HIDE_EMAILS
       - USER_PREFER_EMAIL
-    depends_on:
-      - database
     networks:
-      - traefik
+      - web-net
       - database-net
       - scheduler-net
       - ldap-net
-    labels:
-      - traefik.docker.network=traefik
-      - traefik.enable=true
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host(`$WEB_HOST`,$FRAUDULENT_HOSTS)
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls=true
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.entrypoints=websecure
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.entrypoints=web
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.rule=Host(`$WEB_HOST`)
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.middlewares=web-https
-      - traefik.http.middlewares.web-https.redirectscheme.scheme=https
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.rule=Host($FRAUDULENT_HOSTS)
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.entrypoints=web
-      - traefik.port=80
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.priority=50
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.middlewares=sslheader
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls.certresolver=leresolver
-      - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
-      - traefik.http.middlewares.waf.plugin.traefik-modsecurity-plugin.modSecurityUrl=http://waf:80
-      - traefik.http.middlewares.waf.plugin.traefik-modsecurity-plugin.maxBodySize=10485760
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.middlewares=waf
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.middlewares=waf
 
   database:
     build:
       context: .
       dockerfile: docker/database/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/phishingator_database:${CI_COMMIT_REF_SLUG}
-    restart: always
     container_name: phishingator-${ORG}-database
-    volumes:
-      - /phishingator-data/${ORG}/database:/var/lib/mysql/
-      - /phishingator-data/${ORG}/database-dumps:/phishingator-dumps
+    restart: always
     environment:
       - MYSQL_USER=${DB_USERNAME}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_DATABASE=${DB_DATABASE}
+    volumes:
+      - /phishingator-data/${ORG}/database:/var/lib/mysql/
+      - /phishingator-data/${ORG}/database-dumps:/phishingator-dumps
     networks:
       - database-net
 
@@ -133,8 +112,8 @@ services:
       context: .
       dockerfile: docker/scheduler/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/phishingator_scheduler:${CI_COMMIT_REF_SLUG}
-    restart: always
     container_name: phishingator-${ORG}-scheduler
+    restart: always
     environment:
       - PHISHINGATOR_TOKEN
     networks:
@@ -145,8 +124,8 @@ services:
       context: .
       dockerfile: docker/ldap/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/phishingator_ldap:${CI_COMMIT_REF_SLUG}
-    restart: always
     container_name: phishingator-${ORG}-ldap
+    restart: always
     environment:
       - LDAP_ADMIN_PASSWORD=${LDAP_CONFIG_ADMIN_PASSWORD}
       - LDAP_CONFIG_PASSWORD
@@ -162,21 +141,36 @@ services:
   waf:
     image: owasp/modsecurity-crs:3.3.5-apache-202402140602
     container_name: phishingator-${ORG}-waf
+    restart: always
+    depends_on:
+      - web
     environment:
       - PARANOIA=1
       - ANOMALY_INBOUND=10
       - ANOMALY_OUTBOUND=5
-      - BACKEND=http://dummy
-      - PORT=80
+      - BACKEND=http://phishingator-${ORG}-web
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host(`$WEB_HOST`,$FRAUDULENT_HOSTS)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls=true
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls.certresolver=leresolver
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.entrypoints=websecure
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.priority=50
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.entrypoints=web
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.rule=Host(`$WEB_HOST`)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.middlewares=web-https
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.rule=Host($FRAUDULENT_HOSTS)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.entrypoints=web
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.middlewares=sslheader
+      - traefik.http.middlewares.web-https.redirectscheme.scheme=https
+      - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
     networks:
-      - traefik
-
-  dummy:
-    image: ${CI_REGISTRY_IMAGE}/phishingator_web:${CI_COMMIT_REF_SLUG}
-    networks:
+      - web-net
       - traefik
 
 networks:
+  web-net:
   database-net:
   scheduler-net:
   ldap-net:
