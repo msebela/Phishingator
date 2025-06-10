@@ -139,7 +139,7 @@ services:
       - ldap-net
 
   waf:
-    image: owasp/modsecurity-crs:3.3.5-apache-202402140602
+    image: owasp/modsecurity-crs:4-apache-alpine-202506050606
     container_name: phishingator-${ORG}-waf
     restart: always
     depends_on:
@@ -149,6 +149,7 @@ services:
       - ANOMALY_INBOUND=10
       - ANOMALY_OUTBOUND=5
       - BACKEND=http://phishingator-${ORG}-web
+      - REMOTEIP_INT_PROXY=172.18.0.0/16
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik
@@ -157,14 +158,17 @@ services:
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls.certresolver=leresolver
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.entrypoints=websecure
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.priority=50
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.middlewares=sslheader
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.service=${CI_COMMIT_REF_SLUG}-waf
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.entrypoints=web
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.rule=Host(`$WEB_HOST`)
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.middlewares=web-https
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.rule=Host($FRAUDULENT_HOSTS)
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.entrypoints=web
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.middlewares=sslheader
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.service=${CI_COMMIT_REF_SLUG}-waf
       - traefik.http.middlewares.web-https.redirectscheme.scheme=https
       - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
+      - traefik.http.services.${CI_COMMIT_REF_SLUG}-waf.loadbalancer.server.port=8080
     networks:
       - web-net
       - traefik

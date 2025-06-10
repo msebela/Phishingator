@@ -53,7 +53,7 @@ services:
       - scheduler-net
 
   waf:
-    image: owasp/modsecurity-crs:3.3.5-apache-202402140602
+    image: owasp/modsecurity-crs:4-apache-alpine-202506050606
     container_name: phishingator-${ORG}-waf
     restart: always
     depends_on:
@@ -63,9 +63,10 @@ services:
       - ANOMALY_INBOUND=10
       - ANOMALY_OUTBOUND=5
       - BACKEND=http://phishingator-${ORG}-web
+      - REMOTEIP_INT_PROXY=172.18.0.0/16
     ports:
-      - '8000:80'
-      - '8443:443'
+      - '8080:8080'
+      - '8443:8443'
     networks:
       - web-net
 
