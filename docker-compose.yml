@@ -14,6 +14,8 @@ services:
       - /phishingator-data/${ORG}/logs:/var/www/phishingator/logs
       - /phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
       - /phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
+      - /phishingator-data/${ORG}/shibboleth-certs/sp-cert.pem:/etc/shibboleth/sp-cert.pem:ro
+      - /phishingator-data/${ORG}/shibboleth-certs/sp-key.pem:/etc/shibboleth/sp-key.pem:ro
     environment:
       - ORG
       - ORG_DOMAIN
@@ -72,6 +74,11 @@ services:
       - AUTHENTICATION_WEB_INPUT_PASSWORD
       - AUTHENTICATION_WEB_RESPONSE_CODE
       - AUTHENTICATION_WEB_RESPONSE_OUTPUT
+      - AUTHENTICATION_SOAP_URL
+      - AUTHENTICATION_SOAP_GUID_SYSTEM
+      - AUTHENTICATION_SOAP_USERNAME
+      - AUTHENTICATION_SOAP_PASSWORD
+      - AUTHENTICATION_SOAP_DOMAINS
       - AUTHENTICATION_IMAP_ARGS
       - AUTHENTICATION_POLICY_MIN_LENGTH
       - AUTHENTICATION_POLICY_MIN_CHARS_GROUPS
@@ -123,6 +130,9 @@ services:
     build:
       context: .
       dockerfile: docker/ldap/Dockerfile
+      args:
+        - ORG
+        - SUPPORT_TOOLS_TOKEN
     image: ${CI_REGISTRY_IMAGE}/phishingator_ldap:${CI_COMMIT_REF_SLUG}
     container_name: phishingator-${ORG}-ldap
     restart: always
@@ -154,9 +164,8 @@ services:
       - traefik.enable=true
       - traefik.docker.network=traefik
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.rule=Host(`$WEB_HOST`,$FRAUDULENT_HOSTS)
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls=true
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls.certresolver=leresolver
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.entrypoints=websecure
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.tls.certresolver=leresolver
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.priority=50
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.middlewares=sslheader
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web.service=${CI_COMMIT_REF_SLUG}-waf
@@ -165,8 +174,11 @@ services:
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http.middlewares=web-https
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.rule=Host($FRAUDULENT_HOSTS)
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.entrypoints=web
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.middlewares=sslheader-http
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-web-http-fraudulent.service=${CI_COMMIT_REF_SLUG}-waf
       - traefik.http.middlewares.web-https.redirectscheme.scheme=https
+      - traefik.http.middlewares.web-https.redirectscheme.permanent=true
+      - traefik.http.middlewares.sslheader-http.headers.customrequestheaders.X-Forwarded-Proto=http
       - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https
       - traefik.http.services.${CI_COMMIT_REF_SLUG}-waf.loadbalancer.server.port=8080
     networks:
