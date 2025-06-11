@@ -14,8 +14,6 @@ services:
       - /phishingator-data/${ORG}/logs:/var/www/phishingator/logs
       - /phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
       - /phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
-      - /phishingator-data/${ORG}/shibboleth-certs/sp-cert.pem:/etc/shibboleth/sp-cert.pem:ro
-      - /phishingator-data/${ORG}/shibboleth-certs/sp-key.pem:/etc/shibboleth/sp-key.pem:ro
     environment:
       - ORG
       - ORG_DOMAIN
@@ -74,11 +72,6 @@ services:
       - AUTHENTICATION_WEB_INPUT_PASSWORD
       - AUTHENTICATION_WEB_RESPONSE_CODE
       - AUTHENTICATION_WEB_RESPONSE_OUTPUT
-      - AUTHENTICATION_SOAP_URL
-      - AUTHENTICATION_SOAP_GUID_SYSTEM
-      - AUTHENTICATION_SOAP_USERNAME
-      - AUTHENTICATION_SOAP_PASSWORD
-      - AUTHENTICATION_SOAP_DOMAINS
       - AUTHENTICATION_IMAP_ARGS
       - AUTHENTICATION_POLICY_MIN_LENGTH
       - AUTHENTICATION_POLICY_MIN_CHARS_GROUPS
@@ -130,9 +123,6 @@ services:
     build:
       context: .
       dockerfile: docker/ldap/Dockerfile
-      args:
-        - ORG
-        - SUPPORT_TOOLS_TOKEN
     image: ${CI_REGISTRY_IMAGE}/phishingator_ldap:${CI_COMMIT_REF_SLUG}
     container_name: phishingator-${ORG}-ldap
     restart: always
