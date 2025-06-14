@@ -160,11 +160,11 @@ services:
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-http.rule=Host(`$WEB_HOST`)
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-http.entrypoints=web
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-http.middlewares=redirect-to-https
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-fraudulent-https.rule=Host($FRAUDULENT_HOSTS)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-fraudulent-https.rule=$FRAUDULENT_HOSTS_TRAEFIK
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-fraudulent-https.entrypoints=websecure
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-fraudulent-https.tls.certresolver=leresolver
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-fraudulent-https.service=${CI_COMMIT_REF_SLUG}-phishingator-waf
-      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-fraudulent-http.rule=Host($FRAUDULENT_HOSTS)
+      - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-fraudulent-http.rule=$FRAUDULENT_HOSTS_TRAEFIK
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-fraudulent-http.entrypoints=web
       - traefik.http.routers.${CI_COMMIT_REF_SLUG}-phishingator-fraudulent-http.service=${CI_COMMIT_REF_SLUG}-phishingator-waf
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
