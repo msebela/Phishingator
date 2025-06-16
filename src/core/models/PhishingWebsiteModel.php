@@ -643,7 +643,7 @@
       $proxyDomains = [];
 
       if (getenv('FRAUDULENT_HOSTS') !== null) {
-        $proxyDomains = explode(',', str_replace('`', '', mb_strtolower(getenv('FRAUDULENT_HOSTS'))));
+        $proxyDomains = explode(',', mb_strtolower(getenv('FRAUDULENT_HOSTS')));
       }
 
       return $proxyDomains;

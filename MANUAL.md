@@ -279,13 +279,16 @@ Soubor `.env` bude pro lokální spuštění typicky obsahovat minimálně násl
 ORG=<nazev-organizace>
 ORG_DOMAIN=<domena-organizace>
 
-WEB_HOST=localhost:8000
+WEB_HOST=localhost:8080
 WEB_URL=http://${WEB_HOST}
 
 (...)
 ```
 
-Phishingator je v takovémto případě po úspěšném vykonání skriptu dostupný na URL adrese <http://localhost:8000>.
+Phishingator je s výše uvedenou konfigurací po úspěšném vykonání skriptu [`build-dev.sh`](scripts/build-dev.sh) dostupný na URL adresách:
+
+- <http://localhost:8080> (HTTP),
+- <https://localhost:8433> (HTTPS).
 
 
 #### 3.2.2 Produkční instance
