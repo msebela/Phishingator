@@ -31,14 +31,16 @@ class DomainsController extends Controller {
 
 
   /**
-   * Vrátí, zdali je zdrojová lokální IP adresa oprávněná k volání metod.
+   * Vrátí, zdali je zdrojová IP adresa oprávněná k přístupu.
    *
    * @return bool
    */
   public static function isValidSourceIP() {
     $valid = false;
 
-    if ($_SERVER['REMOTE_ADDR'] == DOMAINER_ALLOWED_IP && !isset($_SERVER['HTTP_X_REAL_IP'])) {
+    $allowedIPs = explode(',', DOMAINER_ALLOWED_IP);
+
+    if ($allowedIPs && in_array($_SERVER['HTTP_X_REAL_IP'], $allowedIPs)) {
       $valid = true;
     }
 
