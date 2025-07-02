@@ -53,7 +53,7 @@
     </div>
 
     <div class="text-right mt-2">
-      <button type="button" class="btn btn-outline-secondary btn-sm mark-checkboxes" data-checkboxes-group="#groups">
+      <button type="button" class="btn btn-outline-secondary btn-sm mark-all-checkboxes" data-checkboxes-group="#groups">
         <span data-feather="users"></span>
         Vybrat všechny skupiny
       </button>

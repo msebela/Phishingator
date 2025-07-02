@@ -116,9 +116,17 @@ function updateSumEmails(sumEmails = null) {
 
 $('.mark-all-checkboxes').on('click', function() {
   const recipientsCheckboxes = document.querySelectorAll(this.dataset.checkboxesGroup + ' input[type="checkbox"]');
+  let checkedState = false;
 
   for (let i = 0; i < recipientsCheckboxes.length; i++) {
-    recipientsCheckboxes[i].checked = true;
+    if (!recipientsCheckboxes[i].checked) {
+      checkedState = true;
+      break;
+    }
+  }
+
+  for (let i = 0; i < recipientsCheckboxes.length; i++) {
+    recipientsCheckboxes[i].checked = checkedState;
   }
 
   updateGroupCheckboxStates();
