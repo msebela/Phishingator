@@ -8,7 +8,10 @@ services:
     container_name: phishingator-${ORG}-web
     restart: always
     depends_on:
-      - database
+      database:
+        condition: service_started
+      ldap-migrator:
+        condition: service_completed_successfully
     env_file:
       - .env
     volumes:
@@ -16,10 +19,12 @@ services:
       - ./phishingator-data/${ORG}/logs:/var/www/phishingator/logs
       - ./phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
       - ./phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
+      - ./phishingator-data/${ORG}/certs/ldap.crt:/etc/ssl/certs/ldap.crt:ro
     networks:
       - web-net
       - database-net
       - scheduler-net
+      - ldap-net
       - smtp-net
 
   database:
@@ -28,6 +33,9 @@ services:
       dockerfile: docker/database/Dockerfile
     container_name: phishingator-${ORG}-database
     restart: always
+    depends_on:
+      ldap-migrator:
+        condition: service_completed_successfully
     environment:
       - MYSQL_USER=${DB_USERNAME}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
@@ -35,7 +43,6 @@ services:
     volumes:
       - ./phishingator-data/${ORG}/database:/var/lib/mysql/
       - ./phishingator-data/${ORG}/database-dumps:/phishingator-dumps
-      - ./docker/database:/docker-entrypoint-initdb.d:ro
     ports:
       - '3306:3306'
     networks:
@@ -47,10 +54,46 @@ services:
       dockerfile: docker/scheduler/Dockerfile
     container_name: phishingator-${ORG}-scheduler
     restart: always
+    depends_on:
+      - web
     environment:
       - PHISHINGATOR_TOKEN
     networks:
       - scheduler-net
+
+  ldap-migrator:
+    build:
+      context: .
+      dockerfile: docker/ldap-migrator/Dockerfile
+    container_name: phishingator-${ORG}-ldap-migrator
+    restart: no
+    volumes:
+      - ./phishingator-data/${ORG}/certs/ldap.crt:/etc/ssl/certs/ldap.crt:ro
+      - ./phishingator-data/${ORG}/ldap:/phishingator/data
+    networks:
+      - ldap-migrator-net
+
+  ldap:
+    image: osixia/openldap:1.5.0
+    container_name: phishingator-${ORG}-ldap
+    restart: always
+    environment:
+      - LDAP_DOMAIN=${LDAP_LOCAL_DOMAIN}
+      - LDAP_ORGANISATION=${LDAP_LOCAL_ORGANISATION}
+      - LDAP_BASE_DN=${LDAP_LOCAL_BASE_DN}
+      - LDAP_ADMIN_PASSWORD=${LDAP_LOCAL_ADMIN_PASSWORD}
+      - LDAP_CONFIG_PASSWORD=${LDAP_LOCAL_CONFIG_PASSWORD}
+      - LDAP_READONLY_USER=true
+      - LDAP_READONLY_USER_USERNAME=${LDAP_LOCAL_READONLY_USER_USERNAME}
+      - LDAP_READONLY_USER_PASSWORD=${LDAP_LOCAL_READONLY_USER_PASSWORD}
+    depends_on:
+      ldap-migrator:
+        condition: service_completed_successfully
+    volumes:
+      - ./phishingator-data/${ORG}/ldap/users.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/bootstrap.ldif:ro
+    command: --copy-service --loglevel debug
+    networks:
+      - ldap-net
 
   waf:
     image: owasp/modsecurity-crs:4-apache-alpine-202506050606
@@ -73,6 +116,8 @@ services:
   mailhog:
     image: mailhog/mailhog
     container_name: phishingator-${ORG}-mailhog
+    depends_on:
+      - web
     command: ["-smtp-bind-addr=0.0.0.0:25"]
     ports:
       - '25:25'
@@ -84,4 +129,6 @@ networks:
   web-net:
   database-net:
   scheduler-net:
+  ldap-migrator-net:
+  ldap-net:
   smtp-net:

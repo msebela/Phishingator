@@ -9,11 +9,15 @@ services:
     container_name: phishingator-${ORG}-web
     restart: always
     depends_on:
-      - database
+      database:
+        condition: service_started
+      ldap-migrator:
+        condition: service_completed_successfully
     volumes:
       - /phishingator-data/${ORG}/logs:/var/www/phishingator/logs
       - /phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
       - /phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro
+      - /phishingator-data/${ORG}/certs/ldap.crt:/etc/ssl/certs/ldap.crt:ro
     environment:
       - ORG
       - ORG_DOMAIN
@@ -97,6 +101,9 @@ services:
     image: ${CI_REGISTRY_IMAGE}/phishingator_database:${CI_COMMIT_REF_SLUG}
     container_name: phishingator-${ORG}-database
     restart: always
+    depends_on:
+      ldap-migrator:
+        condition: service_completed_successfully
     environment:
       - MYSQL_USER=${DB_USERNAME}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
@@ -114,27 +121,45 @@ services:
     image: ${CI_REGISTRY_IMAGE}/phishingator_scheduler:${CI_COMMIT_REF_SLUG}
     container_name: phishingator-${ORG}-scheduler
     restart: always
+    depends_on:
+      - web
     environment:
       - PHISHINGATOR_TOKEN
     networks:
       - scheduler-net
 
-  ldap:
+  ldap-migrator:
     build:
       context: .
-      dockerfile: docker/ldap/Dockerfile
-    image: ${CI_REGISTRY_IMAGE}/phishingator_ldap:${CI_COMMIT_REF_SLUG}
+      dockerfile: docker/ldap-migrator/Dockerfile
+    image: ${CI_REGISTRY_IMAGE}/phishingator_ldap_migrator:${CI_COMMIT_REF_SLUG}
+    container_name: phishingator-${ORG}-ldap-migrator
+    restart: no
+    volumes:
+      - /phishingator-data/${ORG}/certs/ldap.crt:/etc/ssl/certs/ldap.crt:ro
+      - /phishingator-data/${ORG}/ldap:/phishingator/data
+    networks:
+      - ldap-migrator-net
+
+  ldap:
+    image: osixia/openldap:1.5.0
     container_name: phishingator-${ORG}-ldap
     restart: always
     environment:
-      - LDAP_ADMIN_PASSWORD=${LDAP_CONFIG_ADMIN_PASSWORD}
-      - LDAP_CONFIG_PASSWORD
+      - LDAP_DOMAIN=${LDAP_LOCAL_DOMAIN}
+      - LDAP_ORGANISATION=${LDAP_LOCAL_ORGANISATION}
+      - LDAP_BASE_DN=${LDAP_LOCAL_BASE_DN}
+      - LDAP_ADMIN_PASSWORD=${LDAP_LOCAL_ADMIN_PASSWORD}
+      - LDAP_CONFIG_PASSWORD=${LDAP_LOCAL_CONFIG_PASSWORD}
       - LDAP_READONLY_USER=true
-      - LDAP_READONLY_USER_USERNAME
-      - LDAP_READONLY_USER_PASSWORD
-      - LDAP_BASE_DN=${LDAP_CONFIG_BASE_DN}
-      - LDAP_DOMAIN=${LDAP_CONFIG_DOMAIN}
-      - LDAP_ORGANISATION=${LDAP_CONFIG_ORGANISATION}
+      - LDAP_READONLY_USER_USERNAME=${LDAP_LOCAL_READONLY_USER_USERNAME}
+      - LDAP_READONLY_USER_PASSWORD=${LDAP_LOCAL_READONLY_USER_PASSWORD}
+    depends_on:
+      ldap-migrator:
+        condition: service_completed_successfully
+    volumes:
+      - /phishingator-data/${ORG}/ldap/users.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/bootstrap.ldif:ro
+    command: --copy-service
     networks:
       - ldap-net
 
@@ -178,6 +203,7 @@ networks:
   web-net:
   database-net:
   scheduler-net:
+  ldap-migrator-net:
   ldap-net:
   traefik:
     external: true
