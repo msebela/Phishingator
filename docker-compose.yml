@@ -137,7 +137,7 @@ services:
     restart: no
     volumes:
       - /phishingator-data/${ORG}/certs/ldap.crt:/etc/ssl/certs/ldap.crt:ro
-      - /phishingator-data/${ORG}/ldap:/phishingator/data
+      - /phishingator-data/${ORG}/ldap:/phishingator/ldap
     networks:
       - ldap-migrator-net
 

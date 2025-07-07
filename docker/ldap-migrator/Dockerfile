@@ -10,6 +10,6 @@ WORKDIR /phishingator
 COPY docker/ldap-migrator/entrypoint.sh entrypoint.sh
 RUN chmod +x entrypoint.sh
 
-RUN mkdir data
+RUN mkdir ldap
 
 ENTRYPOINT ["./entrypoint.sh"]
