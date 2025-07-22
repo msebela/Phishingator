@@ -7,7 +7,7 @@ stages:
   - deploy
 
 build:
-  image: docker:cli
+  image: docker:28.3.1-cli
   stage: build
   before_script:
     - apk add --update --no-cache git
@@ -22,7 +22,7 @@ build:
     name: $CI_COMMIT_REF_SLUG
 
 deploy:
-  image: docker:cli
+  image: docker:28.3.1-cli
   stage: deploy
   before_script:
     - . <(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | sed 's/^/export /')
@@ -41,7 +41,7 @@ deploy:
     on_stop: stop
 
 stop:
-  image: docker:cli
+  image: docker:28.3.1-cli
   stage: deploy
   before_script:
     - . <(printenv CONFIG | grep -v '^#\|^$\|^\s+$' | sed 's/^/export /')
