@@ -175,6 +175,7 @@ services:
       - ANOMALY_OUTBOUND=5
       - BACKEND=http://phishingator-${ORG}-web
       - REMOTEIP_INT_PROXY=172.18.0.0/16
+      - MODSEC_REQ_BODY_NOFILES_LIMIT=524288
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik
