@@ -618,6 +618,9 @@
   /** Náhled. */
   define('ACT_PREVIEW', 'preview');
 
+  /** Duplikace záznamu. */
+  define('ACT_DUPLICATE', 'duplicate');
+
   /** Indicie. */
   define('ACT_INDICATIONS', 'indications');
 

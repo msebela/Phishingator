@@ -12,7 +12,7 @@
         <th scope="col" class="minw-10-rem">Předmět</th>
         <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
         <th scope="col" colspan="2" class="disable-sort">Znaky phishingu</th>
-        <th scope="col" colspan="2" class="disable-sort"></th>
+        <th scope="col" colspan="3" class="disable-sort"></th>
         <?php else: ?>
         <th scope="col" class="disable-sort"></th>
         <?php endif; ?>
@@ -62,6 +62,16 @@
         </td>
         <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
         <td>
+          <form method="post" action="/portal/<?= $urlSection . '/' . ACT_DUPLICATE . '/' . $email['id_email'] ?>" class="d-inline">
+            <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+
+            <button type="submit" class="btn btn-secondary btn-sm btn-confirm" data-confirm="Opravdu chcete duplikovat tento podvodný e-mail? Dojde k duplikování jak e-mailu, tak všech přiřazených indicií.">
+              <span data-feather="copy"></span>
+              Duplikovat
+            </button>
+          </form>
+        </td>
+        <td>
           <form method="post" action="/portal/<?= $urlSection . '/' . ACT_DEL . '/' . $email['id_email'] ?>" class="d-inline">
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
@@ -83,7 +93,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="9" class="font-italic">
+        <td colspan="10" class="font-italic">
           <?= $countRecordsText ?>
         </td>
       </tr>

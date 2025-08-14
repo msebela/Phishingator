@@ -230,6 +230,46 @@
 
 
     /**
+     * Duplikuje podvodný e-mail včetně souvisejících indicií.
+     *
+     * @param int $id                  ID podvodného e-mailu, který se má duplikovat
+     */
+    public function duplicatePhishingEmail($id) {
+      $email = $this->getPhishingEmail($id);
+
+      $incicationModel = new EmailIndicationsModel();
+      $indications = EmailIndicationsModel::getEmailIndications($id);
+
+      if (!empty($email)) {
+        $duplicatedEmail = [
+          'id_by_user' => PermissionsModel::getUserId(),
+          'name' => $this->dbRecordData['name'] . ' (kopie)',
+          'sender_name' => $this->dbRecordData['sender_name'],
+          'sender_email' => $this->dbRecordData['sender_email'],
+          'subject' => $this->dbRecordData['subject'],
+          'body' => $this->dbRecordData['body'],
+          'html' => $this->dbRecordData['html'],
+          'hidden' => $this->dbRecordData['hidden'],
+          'date_added' => date('Y-m-d H:i:s')
+        ];
+
+        Logger::info('Phishing email duplicated.', $duplicatedEmail);
+
+        Database::insert('phg_emails', $duplicatedEmail);
+
+        $idEmail = Database::getLastInsertId();
+
+        // Duplikace i všech původních indicií.
+        if ($idEmail !== false) {
+          foreach ($indications as $indication) {
+            $incicationModel->duplicateEmailIndication($indication['id_indication'], $idEmail);
+          }
+        }
+      }
+    }
+
+
+    /**
      * Vrátí pole proměnných, které se mohou vyskytovat v těle e-mailu.
      *
      * @return array                   Pole proměnných

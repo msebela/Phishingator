@@ -46,6 +46,9 @@
         elseif ($_GET['action'] == ACT_DEL && $id !== false) {
           $this->processDelete($model, $id);
         }
+        elseif ($_GET['action'] == ACT_DUPLICATE && $id !== false) {
+          $this->processDuplicate($model, $id);
+        }
         elseif ($_GET['action'] == ACT_INDICATIONS && $id !== false) {
           $this->processSetIndications($model, $id);
         }
@@ -153,6 +156,32 @@
           $model->deletePhishingEmail($idEmail);
 
           $this->addMessage(MSG_SUCCESS, 'Smazání proběhlo úspěšně.');
+        }
+        catch (UserError $error) {
+          $this->addMessage($error->getCode(), $error->getMessage());
+        }
+
+        $this->redirect($this->urlSection);
+      }
+    }
+
+
+    /**
+     * Zavolá metodu pro duplikování konkrétního podvodného
+     * e-mailu, a to včetně souvisejících indicií.
+     *
+     * @param PhishingEmailModel $model     Instance třídy
+     * @param int $idEmail                  ID podvodného e-mailu
+     */
+    private function processDuplicate($model, $idEmail) {
+      $this->checkPermission(PERMISSION_ADMIN);
+
+      if (isset($_POST)) {
+        try {
+          $model->isValidCsrfToken($_POST);
+          $model->duplicatePhishingEmail($idEmail);
+
+          $this->addMessage(MSG_SUCCESS, 'Duplikování proběhlo úspěšně.');
         }
         catch (UserError $error) {
           $this->addMessage($error->getCode(), $error->getMessage());

@@ -233,6 +233,33 @@
 
 
     /**
+     * Duplikuje indicii a přidá ji ke konkrétnímu podvodnému e-mailu.
+     *
+     * @param int $idIndication        ID duplikované indicie
+     * @param int $idEmail             ID podvodného e-mailu, ke kterému se duplikovaná indicie přidá
+     */
+    public function duplicateEmailIndication($idIndication, $idEmail) {
+      $indication = $this->getEmailIndication($idIndication);
+
+      if (!empty($indication) && is_numeric($idEmail)) {
+        $duplicatedIndication = [
+          'id_by_user' => PermissionsModel::getUserId(),
+          'id_email' => $idEmail,
+          'position' => $this->dbRecordData['position'],
+          'expression' => $this->dbRecordData['expression'],
+          'title' => $this->dbRecordData['title'],
+          'description' => $this->dbRecordData['description'],
+          'date_added' => date('Y-m-d H:i:s')
+        ];
+
+        Logger::info('Phishing sign duplicated.', $duplicatedIndication);
+
+        Database::insert('phg_emails_indications', $duplicatedIndication);
+      }
+    }
+
+
+    /**
      * Vrátí pole proměnných, které se mohou používat pro lokalizaci indicií.
      *
      * @return array                   Pole proměnných.
