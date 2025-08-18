@@ -10,6 +10,7 @@
         <th scope="col" class="data-sort">Přidáno</th>
         <th scope="col" class="minw-5-rem">Přidal</th>
         <th scope="col" class="minw-10-rem">URL</th>
+        <th scope="col">Šablona</th>
         <th scope="col" class="minw-5-rem">Stav</th>
         <th scope="col" colspan="3" class="disable-sort"></th>
       </tr>
@@ -38,6 +39,7 @@
             <?= $website['url_protocol'] ?>
           </span><?= str_replace(VAR_RECIPIENT_URL, '<code>' . VAR_RECIPIENT_URL . '</code>', $website['url']) ?>
         </td>
+        <td><?= $website['template_name'] ?></td>
         <td>
           <span class="badge badge-<?= $website['status_color'] ?>">
             <?= $website['status_text'] ?>
@@ -72,7 +74,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="9" class="font-italic">
+        <td colspan="10" class="font-italic">
           <?= $countRecordsText ?>
         </td>
       </tr>

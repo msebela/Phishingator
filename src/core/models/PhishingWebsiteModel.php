@@ -147,10 +147,13 @@
      */
     public static function getPhishingWebsites() {
       $result = Database::queryMulti('
-              SELECT `id_website`, phg_websites.id_by_user, `name`, phg_websites.url, `active`, phg_websites.date_added,
+              SELECT `id_website`, phg_websites.id_by_user, phg_websites.name, phg_websites.url, `active`, phg_websites.date_added,
+              phg_websites_templates.name AS template_name,
               `username`, `email`,
               DATE_FORMAT(phg_websites.date_added, "%e. %c. %Y") AS date_added_formatted
               FROM `phg_websites`
+              JOIN `phg_websites_templates`
+              ON phg_websites.id_template = phg_websites_templates.id_website_template
               JOIN `phg_users`
               ON phg_websites.id_by_user = phg_users.id_user
               WHERE phg_websites.visible = 1
