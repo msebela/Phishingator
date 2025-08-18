@@ -53,7 +53,7 @@
           </span>://<?= get_hostname_from_url($campaign['url_protocol'] . $campaign['url']) ?>
         </td>
         <td class="pl-0">
-          <a href="/portal/phishing-websites/<?= ACT_PREVIEW . '/' . $campaign['id_website'] ?>" class="badge badge-secondary" role="button" title="Náhled">
+          <a href="/portal/phishing-websites/<?= ACT_PREVIEW . '/' . $campaign['id_website'] ?>" target="_blank" class="badge badge-secondary" role="button" title="Náhled">
             <span data-feather="eye"></span>
           </a>
         </td>
