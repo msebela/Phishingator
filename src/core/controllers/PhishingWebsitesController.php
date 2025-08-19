@@ -39,6 +39,9 @@
         elseif ($_GET['action'] == ACT_DEL && $id !== false) {
           $this->processDelete($model, $id);
         }
+        elseif ($_GET['action'] == ACT_DUPLICATE && $id !== false) {
+          $this->processDuplicate($model, $id);
+        }
         else {
           $this->addMessage(MSG_ERROR, 'Zvolená akce neexistuje.');
           $this->redirect($this->urlSection);
@@ -168,6 +171,31 @@
           $model->deletePhishingWebsite($idWebsite);
 
           $this->addMessage(MSG_SUCCESS, 'Smazání proběhlo úspěšně.');
+        }
+        catch (UserError $error) {
+          $this->addMessage($error->getCode(), $error->getMessage());
+        }
+
+        $this->redirect($this->urlSection);
+      }
+    }
+
+
+    /**
+     * Zavolá metodu pro duplikování konkrétní podvodné stránky.
+     *
+     * @param PhishingWebsiteModel $model   Instance třídy
+     * @param int $idWebsite                ID podvodné stránky
+     */
+    private function processDuplicate($model, $idWebsite) {
+      $this->checkPermission(PERMISSION_ADMIN);
+
+      if (isset($_POST)) {
+        try {
+          $model->isValidCsrfToken($_POST);
+          $model->duplicatePhishingWebsite($idWebsite);
+
+          $this->addMessage(MSG_SUCCESS, 'Duplikování proběhlo úspěšně.');
         }
         catch (UserError $error) {
           $this->addMessage($error->getCode(), $error->getMessage());

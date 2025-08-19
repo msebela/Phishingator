@@ -414,6 +414,32 @@
 
 
     /**
+     * Duplikuje podvodnou stránku.
+     *
+     * @param int $id                  ID podvodné stránky, která se má duplikovat
+     */
+    public function duplicatePhishingWebsite($id) {
+      $website = $this->getPhishingWebsite($id);
+
+      if (!empty($website)) {
+        $duplicatedWebsite = [
+          'id_by_user' => PermissionsModel::getUserId(),
+          'id_template' => $this->dbRecordData['id_template'],
+          'name' => $this->dbRecordData['name'] . ' (kopie)',
+          'url' => $this->dbRecordData['url'] . ' (kopie)',
+          'service_name' => $this->dbRecordData['service_name'],
+          'date_added' => date('Y-m-d H:i:s'),
+          'active' => 0
+        ];
+
+        Logger::info('Phishing website duplicated.', $duplicatedWebsite);
+
+        Database::insert('phg_websites', $duplicatedWebsite);
+      }
+    }
+
+
+    /**
      * Ověří, zdali v databázi existuje podvodná stránka se stejnou (sub)doménou.
      *
      * @param string $websiteUrl       URL podvodné stránky

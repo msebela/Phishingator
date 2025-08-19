@@ -12,7 +12,7 @@
         <th scope="col" class="minw-10-rem">URL</th>
         <th scope="col">Šablona</th>
         <th scope="col" class="minw-5-rem">Stav</th>
-        <th scope="col" colspan="3" class="disable-sort"></th>
+        <th scope="col" colspan="4" class="disable-sort"></th>
       </tr>
     </thead>
     <tbody>
@@ -54,6 +54,16 @@
           <?php endif; ?>
         </td>
         <td>
+          <form method="post" action="/portal/<?= $urlSection . '/' . ACT_DUPLICATE . '/' . $website['id_website'] ?>" class="d-inline">
+            <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+
+            <button type="submit" class="btn btn-secondary btn-sm btn-confirm" data-confirm="Opravdu chcete duplikovat tuto podvodnou stránkou? Duplikovanou stránku je třeba následně ještě manuálně aktivovat.">
+              <span data-feather="copy"></span>
+              Duplikovat
+            </button>
+          </form>
+        </td>
+        <td>
           <form method="post" action="/portal/<?= $urlSection . '/' . ACT_DEL . '/' . $website['id_website'] ?>" class="d-inline">
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
@@ -74,7 +84,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="10" class="font-italic">
+        <td colspan="11" class="font-italic">
           <?= $countRecordsText ?>
         </td>
       </tr>

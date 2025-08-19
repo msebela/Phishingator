@@ -166,23 +166,32 @@
           // Úprava existujícího aliasu.
           if ($action == ACT_EDIT && $previousUrl && $previousTemplate) {
             $previousUrlAlias = self::getUrlAlias($previousUrl);
+            $previousAliasConfigPart = self::getAliasConfigPart($previousUrlAlias, $previousTemplate['server_dir']);
 
-            $config = str_replace(
-              self::getAliasConfigPart($previousUrlAlias, $previousTemplate['server_dir']),
-              self::getAliasConfigPart($urlAlias, $newTemplate['server_dir']),
-              $config
-            );
+            // Nahrazení staré konfigurace za novou (pokud konfigurace pro alias existuje, jinak vytvořit novou konfiguraci).
+            if (str_contains($config, $previousAliasConfigPart)) {
+              $config = str_replace(
+                $previousAliasConfigPart,
+                self::getAliasConfigPart($urlAlias, $newTemplate['server_dir']),
+                $config
+              );
+            }
+            else {
+              $action = ACT_NEW;
+            }
           }
+
           // Přidání nového aliasu.
-          elseif ($action == ACT_NEW) {
+          if ($action == ACT_NEW) {
             $config = str_replace(
               PHISHING_WEBSITE_ANOTHER_ALIAS,
               trim(self::getAliasConfigPart($urlAlias, $newTemplate['server_dir'], true)),
               $config
             );
           }
+
           // Odstranění existujícího aliasu.
-          elseif ($action == ACT_DEL) {
+          if ($action == ACT_DEL) {
             $config = str_replace(
               self::getAliasConfigPart($urlAlias, $newTemplate['server_dir']), '', $config
             );
