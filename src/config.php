@@ -336,9 +336,6 @@
   /** Adresář, kde se nacházejí dostupné konfigurační VirtualHost soubory pro Apache. */
   define('PHISHING_WEBSITE_APACHE_DIR', '/etc/apache2/sites-available/');
 
-  /** Cesta k souboru, který slouží jako šablona konfiguračního souboru podvodné stránky. */
-  define('PHISHING_WEBSITE_TEMPLATE_CONF_FILE', '/var/www/phishingator/templates/000-default.conf');
-
   /** Přípona konfiguračního souboru podvodné stránky. */
   define('PHISHING_WEBSITE_CONF_EXT', '.conf');
 
@@ -350,9 +347,6 @@
 
   /** Cesta k souboru, který obsluhuje požadavky uživatelů na podvodných stránkách. */
   define('PHISHING_WEBSITE_PREPENDER', '/var/www/phishingator/websitePrepender.php');
-
-  /** Proměnná, která bude v konfiguračním souboru nahrazena dalším aliasem pro podvodnou stránku. */
-  define('PHISHING_WEBSITE_ANOTHER_ALIAS', '#PHISHINGATOR_ANOTHER_SERVER_ALIAS');
 
   /** Název souboru (včetně přípony), v němž je uložen screenshot (ve formátu PNG a o šířce 800 px) podvodné stránky. */
   define('PHISHING_WEBSITE_SCREENSHOT_FILENAME', 'thumbnail.png');

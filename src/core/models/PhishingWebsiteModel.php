@@ -190,7 +190,7 @@
       $yearQuery = (!is_array($year) && is_numeric($year)) ? 'AND YEAR(`date_added`) = ?' : '';
 
       $result = Database::queryMulti('
-              SELECT `id_website`, `name`, `url`
+              SELECT `id_website`, `id_template`, `name`, `url`
               FROM `phg_websites`
               WHERE `active` = 1
               AND `visible` = 1
@@ -280,16 +280,7 @@
 
       $this->isURLUnique();
 
-      PhishingWebsiteConfigs::isConfigReady($this->url, true);
-
-      // Přidání podvodné stránky do existujícího konfiguračního souboru k již založené (sub)doméně.
-      if (file_exists(PhishingWebsiteConfigs::getConfigPath($this->url))) {
-        PhishingWebsiteConfigs::editConfig(ACT_NEW, $this->url, $this->idTemplate);
-        PhishingWebsiteConfigs::removeConfig($this->url);
-      }
-      else {
-        PhishingWebsiteConfigs::createNewConfig($this->url, $this->idTemplate);
-      }
+      PhishingWebsiteConfigs::generateNewConfig($this->url, $this->idTemplate);
 
       Database::insert($this->dbTableName, $phishingWebsite);
 
@@ -313,48 +304,26 @@
       $originalWebsite = $originalWebsite->getPhishingWebsite($id);
 
       // Změny v konfiguračních souborech provádět pouze tehdy, pokud byla, nebo pokud má být podvodná stránka aktivní
-      // (u neaktivních stránek nedojde zbytečně k uzamčení konfiguračního souboru pro stránky se stejnou doménou).
+      // (u neaktivních stránek nedojde ke zbytečnému uzamčení konfiguračního souboru pro stránky se stejnou doménou).
       if ($this->active !== 0 || $originalWebsite['active'] !== 0) {
-        // Pokud byla změněna URL adresa nebo šablona podvodné stránky nebo jde o (de)aktivaci stránky, je nutné upravit
-        // konfigurační soubor (VirtualHost). Pokud konfigurační soubor neexistuje, je třeba ho dodatečně vytvořit.
-        if ($originalWebsite['url'] != $this->url || $originalWebsite['id_template'] != $this->idTemplate || $originalWebsite['active'] != $this->active || !file_exists(PhishingWebsiteConfigs::getConfigPath($this->url))) {
-          PhishingWebsiteConfigs::isConfigReady($this->url, true);
+        // Pokud byla změněna URL adresa (doména/path – resp. část před GET argumenty), šablona podvodné stránky
+        // nebo jde o (de)aktivaci stránky, je nutné upravit konfigurační soubor. Pokud konfigurační soubor
+        // neexistuje, je třeba ho dodatečně vytvořit.
+        if (strtok($originalWebsite['url'], '?') !== strtok($this->url, '?') || $originalWebsite['id_template'] != $this->idTemplate || $originalWebsite['active'] !== $this->active || !file_exists(PhishingWebsiteConfigs::getConfigPath($this->url))) {
+          // Pokud se má stránka aktivovat (přidat do konfiguračního souboru), je třeba do konfigurace předat ID šablony.
+          $idTemplate = ($this->active !== 0) ? $this->idTemplate : null;
 
-          // (Sub)doména se nijak nezměnila - upravovat se bude původní konfigurační soubor.
+          // (Sub)doména se nijak nezměnila – přegeneruje se aktuální konfigurační soubor tak,
+          // že se odstraní původní záznam editované stránky a přidá nový s aktuálním nastavením.
           if (get_hostname_from_url($originalWebsite['url']) == get_hostname_from_url($this->url)) {
-            if ($this->active) {
-              PhishingWebsiteConfigs::editConfig(ACT_EDIT, $this->url, $this->idTemplate, $originalWebsite['url'], $originalWebsite['id_template']);
-            }
-            else {
-              PhishingWebsiteConfigs::editConfig(ACT_DEL, $this->url, $this->idTemplate);
-            }
+            PhishingWebsiteConfigs::generateNewConfig($this->url, $idTemplate, $id);
           }
           else {
-            // (Sub)doména se změnila - z původního konfiguračního souboru je nutné záznam smazat.
-
-            PhishingWebsiteConfigs::isConfigReady($originalWebsite['url'], true);
-
-            // V původním konfiguračním souboru jsou ale ještě jiné aliasy - tj. nemazat celý konfigurační soubor, ale jenom konkrétní alias.
-            if ($this->existsWebsiteWithSameHostname($originalWebsite['url'], $id)) {
-              PhishingWebsiteConfigs::editConfig(ACT_DEL, $originalWebsite['url'], $originalWebsite['id_template']);
-            }
-
-            if ($this->active) {
-              // Pokud se (sub)doména změnila na nějakou jinou, ale ve Phishingatoru již existující (sub)doménu
-              // (tj. existuje k ní konfigurační soubor), tak ji přidat k té existující jako další alias.
-              if (file_exists(PhishingWebsiteConfigs::getConfigPath($this->url))) {
-                PhishingWebsiteConfigs::editConfig(ACT_NEW, $this->url, $this->idTemplate);
-                PhishingWebsiteConfigs::removeConfig($this->url);
-              }
-              else {
-                // Pokud pro zadanou (sub)doménu neexistuje konfigurační soubor, vytvořit jej.
-                PhishingWebsiteConfigs::createNewConfig($this->url, $this->idTemplate);
-              }
-            }
+            // (Sub)doména se změnila – přegeneruje se aktuální konfigurační soubor
+            // a z původního konfiguračního souboru je nutné záznam smazat.
+            PhishingWebsiteConfigs::generateNewConfig($this->url, $idTemplate);
+            PhishingWebsiteConfigs::generateNewConfig($originalWebsite['url'], null, $id);
           }
-
-          // Původní konfigurační soubor po úpravě zneplatnit.
-          PhishingWebsiteConfigs::removeConfig($originalWebsite['url']);
         }
       }
 
@@ -383,17 +352,9 @@
 
       $website = $this->getPhishingWebsite($id);
 
-      // Pokud byla podvodná stránka aktivní, je třeba zároveň deaktivovat konfigurační soubory.
+      // Pokud byla podvodná stránka aktivní, je třeba zároveň odstranit její záznam v konfiguračním souboru.
       if ($website['active'] === 1) {
-        PhishingWebsiteConfigs::isConfigReady($website['url'], true);
-
-        // Pokud existuje nějaká jiná podvodná stránka se stejnou (sub)doménou (tj. konfigurační soubor
-        // by po smazání nezůstal prázdný), smazat tu aktuální z konfiguračního souboru.
-        if ($this->existsWebsiteWithSameHostname($website['url'], $website['id_website'])) {
-          PhishingWebsiteConfigs::editConfig(ACT_DEL, $website['url'], $website['id_template']);
-        }
-
-        PhishingWebsiteConfigs::removeConfig($website['url']);
+        PhishingWebsiteConfigs::generateNewConfig($website['url'], null, $id);
       }
 
       $result = Database::update(

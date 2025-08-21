@@ -3,9 +3,9 @@
 
   session_start();
 
-  // Začlenění nutných souborů (vůči adresáři templates/websites/nazev-podvodne-stranky/).
-  require $_SERVER['DOCUMENT_ROOT'] . '../../../config.php';
-  require $_SERVER['DOCUMENT_ROOT'] . '../../../globalFunctions.php';
+  // Začlenění nutných souborů (vůči DOCUMENT_ROOT v konfiguračním souboru podvodné stránky).
+  require $_SERVER['DOCUMENT_ROOT'] . '/../config.php';
+  require $_SERVER['DOCUMENT_ROOT'] . '/../globalFunctions.php';
 
   init_locales();
 

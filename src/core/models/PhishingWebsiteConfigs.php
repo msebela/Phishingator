@@ -19,7 +19,7 @@
 
 
     /**
-     * Ověří, zdali konfigurační soubor pro podvodnou stránku není ve stavu probíhající úpravy,
+     * Ověří, zdali konfigurační soubor pro podvodné stránky není ve stavu probíhající úpravy,
      * a je tak možné s podvodnou stránkou pracovat.
      *
      * @param string $url              URL adresa podvodné stránky
@@ -47,174 +47,66 @@
 
 
     /**
-     * Zkopíruje šablonu konfiguračního souboru podvodné stránky do zadaného adresáře.
+     * Vygeneruje nový konfigurační soubor pro podvodné stránky se stejnou (sub)doménou.
      *
      * @param string $url              URL adresa podvodné stránky
+     * @param int $idTemplateToAdd     ID šablony podvodné stránky pro její přidání (nepovinné)
+     * @param int $idWebsiteToDelete   ID podvodné stránky pro její smazání (nepovinné)
      * @return void
      * @throws UserError
      */
-    private static function copyConfigTemplate($url) {
-      if (!file_exists(PHISHING_WEBSITE_TEMPLATE_CONF_FILE)) {
-        Logger::error('Unable to find sample site configuration template on the server.', PHISHING_WEBSITE_TEMPLATE_CONF_FILE);
-
-        throw new UserError('Nepodařilo se nalézt soubor se šablonou pro konfiguraci podvodné stránky.', MSG_ERROR);
-      }
-
-      if (!is_writable(PHISHING_WEBSITE_CONF_DIR)) {
-        Logger::error('The destination directory for inserting the sample phishing website configuration file is not writable.', PHISHING_WEBSITE_CONF_DIR);
-
-        throw new UserError('Adresář, do kterého se má vložit konfigurační soubor, není zapisovatelný.', MSG_ERROR);
-      }
+    public static function generateNewConfig($url, $idTemplateToAdd = null, $idWebsiteToDelete = null) {
+      self::isConfigReady($url, true);
 
       $configFilepath = self::getConfigPath($url, PHISHING_WEBSITE_CONF_EXT_NEW);
 
-      if (!copy(PHISHING_WEBSITE_TEMPLATE_CONF_FILE, $configFilepath)) {
-        Logger::error('Failed to create a copy of the sample site configuration template.', $configFilepath);
+      $websites = PhishingWebsiteModel::getActivePhishingWebsites();
+      $websitesToConfig = [];
 
-        throw new UserError('Nepodařilo se připravit soubor pro konfiguraci podvodné stránky.', MSG_ERROR);
+      // Případné přidání stránky do seznamu aktivních podvodných stránek (protože stránka zatím není v databázi).
+      if ($idTemplateToAdd) {
+        $websites[] = ['url' => $url, 'id_template' => $idTemplateToAdd];
       }
-    }
 
-
-    /**
-     * Vytvoří nový konfigurační soubor pro podvodnou stránku.
-     *
-     * @param string $url              URL adresa podvodné stránky
-     * @param int $idTemplate          ID šablony podvodné stránky
-     * @return void
-     * @throws UserError
-     */
-    public static function createNewConfig($url, $idTemplate) {
-      self::isConfigReady($url, true);
-      self::copyConfigTemplate($url);
-
-      $configFilepath = self::getConfigPath($url, PHISHING_WEBSITE_CONF_EXT_NEW);
-      $config = file_get_contents($configFilepath);
-
-      if ($config) {
-        $template = PhishingWebsiteModel::getPhishingWebsiteTemplate($idTemplate);
-
-        if ($template) {
-          // $port = (get_protocol_from_url($url) == 'https') ? 443 : 80;  // Při neexistenci proxy.
-          $port = 80;
-
-          // Hodnoty za proměnné pro šablonu konfiguračního souboru podvodné stránky (ve správném pořadí).
-          $values = [
-            $port, get_hostname_from_url($url), $template['server_dir'],
-            self::getUrlAlias($url), PHISHING_WEBSITE_PREPENDER
-          ];
-
-          $config = str_replace(self::getConfigVarsToReplace(), $values, $config);
-
-          if (!file_put_contents($configFilepath, $config)) {
-            Logger::error('Failed to create a phishing website configuration file.', $configFilepath);
-
-            throw new UserError('Nepodařilo se připravit soubor pro konfiguraci podvodné stránky.', MSG_ERROR);
+      // Případné odstranění stránky ze seznamu aktivních stránek.
+      if ($idWebsiteToDelete) {
+        foreach ($websites as $i => $website) {
+          if ($website['id_website'] == $idWebsiteToDelete) {
+            unset($websites[$i]);
+            break;
           }
         }
-        else {
-          Logger::error('A non-existent phishing website template has been selected.', $configFilepath);
+      }
 
-          throw new UserError('Zvolená šablona neexistuje.', MSG_ERROR);
+      // Nalezení všech aktivních podvodných stránek se stejnou (sub)doménou.
+      foreach ($websites as $website) {
+        if (get_hostname_from_url($website['url']) == get_hostname_from_url($url)) {
+          $template = PhishingWebsiteModel::getPhishingWebsiteTemplate($website['id_template']);
+
+          if ($template) {
+            $websitesToConfig[self::getUrlAlias($website['url'])] = $template['server_dir'];
+          }
         }
       }
-      else {
-        Logger::error('Failed to find sample phishing website configuration on the server.', $configFilepath);
 
-        throw new UserError('Nenalezen soubor se šablonou pro konfiguraci podvodné stránky.', MSG_ERROR);
-      }
-    }
+      if (count($websitesToConfig) > 0) {
+        $config = self::getConfig(get_hostname_from_url($url), 80, $websitesToConfig);
 
+        if (!is_writable(PHISHING_WEBSITE_CONF_DIR)) {
+          Logger::error('The destination directory for inserting the sample phishing website configuration file is not writable.', PHISHING_WEBSITE_CONF_DIR);
 
-    /**
-     * Upraví konfigurační soubor podvodné stránky.
-     *
-     * @param string $action           Typ úpravy - přídání/úprava/smazání z konfiguračníhou souboru
-     * @param string $url              Nová URL adresa podvodné stránky
-     * @param int $idTemplate          Nové ID šablony podvodné stránky
-     * @param string $previousUrl      Původní URL adresa podvodné stránky (nepovinné)
-     * @param int $previousIdTemplate  Původní ID šablony podvodné stránky (nepovinné)
-     * @return void
-     * @throws UserError
-     */
-    public static function editConfig($action, $url, $idTemplate, $previousUrl = false, $previousIdTemplate = false) {
-      self::isConfigReady($url, true);
-
-      $newTemplate = PhishingWebsiteModel::getPhishingWebsiteTemplate($idTemplate);
-      $configFilepath = self::getConfigPath($url);
-
-      if ($newTemplate) {
-        if (file_exists($configFilepath)) {
-          $config = file_get_contents($configFilepath);
-
-          if ($previousIdTemplate) {
-            $previousTemplate = PhishingWebsiteModel::getPhishingWebsiteTemplate($previousIdTemplate);
-          }
-
-          // Vytvoření aliasu, pokud je součástí URL adresy i cesta (názvy adresářů).
-          $urlAlias = self::getUrlAlias($url);
-
-          // Pokud se nejedná o alias, je třeba změnit DocumentRoot.
-          if ($action == ACT_EDIT && $urlAlias == '/') {
-            $config = preg_replace(
-              '/DocumentRoot .*/',
-              'DocumentRoot ' . $newTemplate['server_dir'],
-              $config
-            );
-          }
-
-          // Úprava existujícího aliasu.
-          if ($action == ACT_EDIT && $previousUrl && $previousTemplate) {
-            $previousUrlAlias = self::getUrlAlias($previousUrl);
-            $previousAliasConfigPart = self::getAliasConfigPart($previousUrlAlias, $previousTemplate['server_dir']);
-
-            // Nahrazení staré konfigurace za novou (pokud konfigurace pro alias existuje, jinak vytvořit novou konfiguraci).
-            if (str_contains($config, $previousAliasConfigPart)) {
-              $config = str_replace(
-                $previousAliasConfigPart,
-                self::getAliasConfigPart($urlAlias, $newTemplate['server_dir']),
-                $config
-              );
-            }
-            else {
-              $action = ACT_NEW;
-            }
-          }
-
-          // Přidání nového aliasu.
-          if ($action == ACT_NEW) {
-            $config = str_replace(
-              PHISHING_WEBSITE_ANOTHER_ALIAS,
-              trim(self::getAliasConfigPart($urlAlias, $newTemplate['server_dir'], true)),
-              $config
-            );
-          }
-
-          // Odstranění existujícího aliasu.
-          if ($action == ACT_DEL) {
-            $config = str_replace(
-              self::getAliasConfigPart($urlAlias, $newTemplate['server_dir']), '', $config
-            );
-          }
-
-          // Uložit jako nový konfigurační soubor, který se bude muset aktivovat.
-          if (!file_put_contents(self::getConfigPath($url, PHISHING_WEBSITE_CONF_EXT_NEW), $config)) {
-            Logger::error('Failed to create a phishing website configuration file.', $configFilepath);
-
-            throw new UserError('Nepodařilo se připravit soubor pro konfiguraci podvodné stránky.', MSG_ERROR);
-          }
+          throw new UserError('Adresář, ve kterém se má vytvořit konfigurace podvodné stránky, není zapisovatelný.', MSG_ERROR);
         }
-        else {
-          Logger::warning('Failed to find phishing website configuration file on the server.', $configFilepath);
 
-          PhishingWebsiteConfigs::createNewConfig($url, $idTemplate);
+        if (!file_put_contents($configFilepath, $config)) {
+          Logger::error('Failed to create a phishing website configuration file.', $configFilepath);
+
+          throw new UserError('Nepodařilo se vytvořit soubor s konfigurací podvodné stránky.', MSG_ERROR);
         }
       }
-      else {
-        Logger::error('A non-existent phishing website template has been selected.', $configFilepath);
 
-        throw new UserError('Zvolená šablona neexistuje.', MSG_ERROR);
-      }
+      // Pokud už existuje nějaký konfigurační soubor, nastavit starší verzi z odstranění.
+      self::removeConfig($url);
     }
 
 
@@ -225,7 +117,7 @@
      * @param string $url              URL podvodné stránky
      * @return void
      */
-    public static function removeConfig($url) {
+    private static function removeConfig($url) {
       $websiteConfigPath = PHISHING_WEBSITE_CONF_DIR . get_hostname_from_url($url);
 
       if (file_exists($websiteConfigPath . PHISHING_WEBSITE_CONF_EXT)) {
@@ -300,33 +192,75 @@
 
 
     /**
-     * Vrátí část konfiguračního souboru pro vytvoření nového aliasu.
+     * Vrátí hlavičku konfiguračního souboru pro Apache VirtualHost.
      *
-     * @param string $websiteAlias     Alias podvodné stránky
-     * @param string $templateDir      Adresář se šablonou podvodné stránky
-     * @param bool $nextAliasVar       TRUE pokud má být na výstup přidána i proměnná pro další alias, jinak FALSE (výchozí)
-     * @return string                  Část konfiguračního souboru s novým aliasem
+     * @param string $domain           Název serveru
+     * @param int $port                Port, na kterém bude VirtualHost naslouchat
+     * @return string                  Část (hlavička) konfigurace
      */
-    private static function getAliasConfigPart($websiteAlias, $templateDir, $nextAliasVar = false) {
-      return '    Alias "' . $websiteAlias . '" ' . $templateDir . "\n".
-             '    <Directory "' . $templateDir . '">' . "\n".
-             '        Options -Indexes' . "\n".
-             '        php_value auto_prepend_file "' . PHISHING_WEBSITE_PREPENDER . '"' . "\n".
-             '    </Directory>' . "\n\n" .
-             (($nextAliasVar) ? '    ' . PHISHING_WEBSITE_ANOTHER_ALIAS : '');
+    private static function getHeaderConfigPart($domain, $port) {
+      return '<VirtualHost *:' . $port . '>' . "\n" .
+             '    ServerName ' . $domain . "\n" .
+             '    DocumentRoot ' . getenv('APACHE_DOCUMENT_ROOT') . "\n" .
+             "\n" .
+             '    <Directory ' . getenv('APACHE_DOCUMENT_ROOT') . '>' . "\n" .
+             '        Require all denied' . "\n" .
+             '    </Directory>' . "\n\n";
     }
 
 
     /**
-     * Vrátí pole názvů proměnných, které se budou nahrazovat v šabloně konfiguračního souboru za skutečné hodnoty.
+     * Vrátí patičku konfiguračního souboru pro Apache VirtualHost.
      *
-     * @return string[]                Pole proměnných
+     * @return string                  Část (patička) konfigurace
      */
-    private static function getConfigVarsToReplace() {
-      return [
-        'PHISHINGATOR_SERVER_PORT', 'PHISHINGATOR_SERVER_NAME', 'PHISHINGATOR_DOCUMENT_ROOT',
-        'PHISHINGATOR_SERVER_ALIAS', 'PHISHINGATOR_WEBSITE_PREPENDER'
-      ];
+    private static function getFooterConfigPart() {
+      return '    ErrorLog /proc/self/fd/2' . "\n" .
+             '    CustomLog /proc/self/fd/1 combined' . "\n" .
+             '</VirtualHost>' . "\n";
+    }
+
+    /**
+     * Vrátí část konfiguračního souboru s definicí nového aliasu pro Apache VirtualHost.
+     *
+     * @param string $aliasPath        Alias (doména a path) podvodné stránky
+     * @param string $templateDir      Adresář se šablonou podvodné stránky
+     * @return string                  Část konfiguračního souboru s definicí aliasu
+     */
+    private static function getAliasConfigPart($aliasPath, $templateDir) {
+      return '    Alias "' . $aliasPath . '" ' . $templateDir . "\n" .
+             '    <Directory "' . $templateDir . '">' . "\n" .
+             '        Options -Indexes' . "\n" .
+             '        AllowOverride None' . "\n" .
+             '        Require all granted' . "\n\n" .
+             '        php_value auto_prepend_file "' . PHISHING_WEBSITE_PREPENDER . '"' . "\n" .
+             '    </Directory>' . "\n\n";
+    }
+
+
+    /**
+     * Vrátí kompletní obsah konfiguračního souboru pro Apache VirtualHost
+     * pro zadané podvodné stránky se stejnou (sub)doménou.
+     *
+     * @param string $domain           Název serveru
+     * @param int $port                Port, na kterém bude VirtualHost naslouchat
+     * @param array $aliases           Pole s aliasy a šablonami
+     * @return string                  Kompletní obsah konfiguračního souboru
+     */
+    private static function getConfig($domain, $port, $aliases) {
+      $config = self::getHeaderConfigPart($domain, $port);
+
+      // Seřazení aliasů pro potřeby Apache VirtualHost, aby konkrétnější
+      // alias byl v souboru uveden výš než ten obecnější.
+      $aliases = self::sortUrlAliases($aliases);
+
+      foreach ($aliases as $url => $template) {
+        $config .= self::getAliasConfigPart($url, $template);
+      }
+
+      $config .= self::getFooterConfigPart();
+
+      return $config;
     }
 
 
@@ -353,6 +287,40 @@
       $urlPath = parse_url($url, PHP_URL_PATH);
 
       return (!empty($urlPath) && $urlPath != '/') ? $urlPath : '/';
+    }
+
+
+    /**
+     * Vrátí seřazené pole s aliasy pro podvodné stránky od nejkonkrétnějšího po nejobecnější.
+     *
+     * @param array $aliases           Asociativní pole s aliasy (klíče) a adresářemi šablon podvodných stránek (hodnoty)
+     * @return array                   Seřazené asociativní pole s aliasy
+     */
+    private static function sortUrlAliases($aliases) {
+      $urls = array_keys($aliases);
+      $sortedAliases = [];
+
+      usort($urls, function($a, $b) {
+        // Pokud alias B začíná jako alias A, alias B je specifičtější (alias B musí být výš).
+        if (str_starts_with($b, $a)) {
+          return 1;
+        }
+
+        // Pokud alias A začíná jako alias B, alias A je specifičtější (alias A musí být výš).
+        if (str_starts_with($a, $b)) {
+          return -1;
+        }
+
+        // Jinak neřešíme (ponecháme původní pořadí).
+        return 0;
+      });
+
+      // Doplnění adresářů se šablonami k seřazenému seznamu aliasů.
+      foreach ($urls as $alias) {
+        $sortedAliases[$alias] = $aliases[$alias];
+      }
+
+      return $sortedAliases;
     }
 
 
