@@ -557,7 +557,7 @@
 
 
     /**
-     * Vrátí aktuální stav podvodné domény v textové podobě.
+     * Vrátí aktuální stav podvodné stránky v textové podobě.
      *
      * @param int $status              Aktuální stav
      * @param int $active              Stav nasazení podvodné stránky na webovém serveru
@@ -569,24 +569,26 @@
         'color' => ''
       ];
 
-      if ($status == 0 && $active == 1) {
-        $message['text'] = 'aktivní';
-        $message['color'] = MSG_CSS_SUCCESS;
+      if ($active == 1) {
+        if ($status == 0) {
+          $message['text'] = 'aktivní';
+          $message['color'] = MSG_CSS_SUCCESS;
+        }
+        elseif ($status == 1) {
+          $message['text'] = 'chybné DNS';
+          $message['color'] = MSG_CSS_ERROR;
+        }
+        elseif ($status == 2) {
+          $message['text'] = 'nedokončené směrování';
+          $message['color'] = MSG_CSS_WARNING;
+        }
+        elseif ($status == 3) {
+          $message['text'] = 'probíhají změny';
+          $message['color'] = MSG_CSS_DEFAULT;
+        }
       }
-      elseif ($status == 0 && $active == 0) {
+      elseif ($active == 0) {
         $message['text'] = 'neaktivní';
-        $message['color'] = MSG_CSS_DEFAULT;
-      }
-      elseif ($status == 1) {
-        $message['text'] = 'chybné DNS';
-        $message['color'] = MSG_CSS_ERROR;
-      }
-      elseif ($status == 2) {
-        $message['text'] = 'nedokončené směrování';
-        $message['color'] = MSG_CSS_WARNING;
-      }
-      elseif ($status == 3) {
-        $message['text'] = 'probíhají změny';
         $message['color'] = MSG_CSS_DEFAULT;
       }
 
@@ -802,7 +804,7 @@
      */
     private function isURLValidDNSRecord() {
       if (!in_array(mb_strtolower(get_domain_from_url($this->url)), PhishingWebsiteModel::getDomainsRegisteredInProxy()) &&
-           gethostbyname(get_hostname_from_url($this->url)) != gethostbyname(get_hostname_from_url(WEB_URL))) {
+           gethostbyname(get_hostname_from_url($this->url)) != gethostbyname(get_hostname_from_url(WEB_URL)) && $this->active == 1) {
         throw new UserError('U zadané domény (popř. subdomény) není v DNS nasměrován záznam typu A na IP adresu serveru, kde běží Phishingator.', MSG_ERROR);
       }
     }

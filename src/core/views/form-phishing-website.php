@@ -12,7 +12,7 @@
 </div>
 
 <hr>
-<?php elseif ($action == ACT_EDIT && $phishingWebsite['status'] == 2): ?>
+<?php elseif ($action == ACT_EDIT && $phishingWebsite['status'] == 2 && $phishingWebsite['active'] == 1): ?>
 <div class="alert alert-with-icon alert-warning" role="alert">
   <div class="alert-icon pr-1">
     <span data-feather="alert-triangle"></span>
@@ -31,8 +31,8 @@
     <span data-feather="activity"></span>
   </div>
   <div>
-    <h4 class="alert-heading">Stránka se právě používá</h4>
-    Tato podvodná stránka se právě používá u&nbsp;<?= $phishingWebsite['active_campaigns_count'] . ' ' . (($phishingWebsite['active_campaigns_count'] == 1) ? 'kampaně' : 'kampaní') ?>. Pokud dojde ke změně URL adresy podvodné stránky, přestanou fungovat odkazy v&nbsp;již rozeslaných podvodných e-mailech.
+    <h4 class="alert-heading">Stránka je využívána v&nbsp;aktivních kampaních</h4>
+    Tato podvodná stránka se právě používá u&nbsp;<?= $phishingWebsite['active_campaigns_count'] . ' ' . (($phishingWebsite['active_campaigns_count'] == 1) ? 'kampaně' : 'kampaní') ?>. Pokud dojde ke změně URL adresy nebo k&nbsp;deaktivaci podvodné stránky, přestanou fungovat odkazy v&nbsp;již rozeslaných podvodných e-mailech.
   </div>
 </div>
 
@@ -43,8 +43,8 @@
     <span data-feather="alert-triangle"></span>
   </div>
   <div>
-    <h4 class="alert-heading">Stránka se používá</h4>
-    Tato podvodná stránka se používá u&nbsp;<?= $phishingWebsite['used_campaigns_count'] . ' ' . (($phishingWebsite['used_campaigns_count'] == 1) ? 'kampaně' : 'kampaní') ?>. Pokud dojde ke změně URL adresy podvodné stránky, přestanou fungovat odkazy v&nbsp;již rozeslaných podvodných e-mailech.
+    <h4 class="alert-heading">Stránka je využívána v&nbsp;ukončených kampaních</h4>
+    Tato podvodná stránka se používá u&nbsp;<?= $phishingWebsite['used_campaigns_count'] . ' ' . (($phishingWebsite['used_campaigns_count'] == 1) ? 'kampaně' : 'kampaní') ?>. Pokud dojde ke změně URL adresy nebo k&nbsp;deaktivaci podvodné stránky, přestanou fungovat odkazy v&nbsp;již rozeslaných podvodných e-mailech.
   </div>
 </div>
 
