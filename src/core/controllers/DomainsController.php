@@ -74,7 +74,7 @@ class DomainsController extends Controller {
 
 
   /**
-   * Vypíše ve formátu JSON seznam (sub)domén podvodných stránek,
+   * Vypíše ve formátu JSON seznam (sub)domén aktivních podvodných stránek,
    * které nejsou v aktuální konfiguraci Phishingatoru aktivovány
    * a zároveň mají korektně nastaveny DNS záznamy na Phishingator.
    *
@@ -93,7 +93,7 @@ class DomainsController extends Controller {
       $websiteUrl = mb_strtolower($website['url_protocol'] . $website['url']);
       $domain = get_hostname_from_url($websiteUrl);
 
-      if (!in_array($domain, $domainsActivated) && PhishingWebsiteModel::getPhishingWebsiteStatus($websiteUrl) != 1) {
+      if (!in_array($domain, $domainsActivated) && PhishingWebsiteModel::getPhishingWebsiteStatus($websiteUrl) != 1 && $website['active'] == 1) {
         $domainsToActivate[] = $domain;
       }
     }
@@ -104,8 +104,8 @@ class DomainsController extends Controller {
 
   /**
    * Vypíše ve formátu JSON seznam (sub)domén podvodných stránek, které
-   * jsou v aktuální konfiguraci Phishingatoru aktivovány,
-   * ale už expirovaly a je možné je deaktivovat.
+   * jsou v aktuální konfiguraci Phishingatoru aktivovány, ale už
+   * expirovaly, nebo jsou neaktivní, a je tak je možné deaktivovat.
    *
    * @return void
    * @throws Exception
@@ -124,7 +124,7 @@ class DomainsController extends Controller {
       foreach ($websites as $website) {
         $websiteUrl = mb_strtolower($website['url_protocol'] . $website['url']);
 
-        if (get_hostname_from_url($websiteUrl) == $domainActivated && PhishingWebsiteModel::getPhishingWebsiteStatus($websiteUrl) == 1) {
+        if (get_hostname_from_url($websiteUrl) == $domainActivated && (PhishingWebsiteModel::getPhishingWebsiteStatus($websiteUrl) == 1 || $website['active'] == 0)) {
           $expired = true;
           break;
         }
