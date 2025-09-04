@@ -1,7 +1,8 @@
 FROM python:3.12-slim-bookworm
 
 ENV LDAPTLS_CACERT="/etc/ssl/certs/ldap.crt" \
-    LDAPTLS_REQCERT="demand"
+    LDAPTLS_REQCERT="demand" \
+    TZ="Europe/Prague"
 
 RUN apt-get update && \
     apt-get install -y ldap-utils && \
@@ -9,9 +10,7 @@ RUN apt-get update && \
 
 WORKDIR /phishingator
 
-COPY docker/ldap-migrator/entrypoint.sh entrypoint.sh
-RUN chmod +x entrypoint.sh
-
-RUN mkdir ldap
+COPY docker/ldap-migrator/entrypoint.sh docker/ldap-migrator/run-ldapsearch.sh ./
+RUN chmod +x entrypoint.sh run-ldapsearch.sh
 
 ENTRYPOINT ["./entrypoint.sh"]

@@ -67,6 +67,11 @@ services:
       dockerfile: docker/ldap-migrator/Dockerfile
     container_name: phishingator-${ORG}-ldap-migrator
     restart: no
+    environment:
+      - LDAP_MIGRATOR_HOST
+      - LDAP_MIGRATOR_USER
+      - LDAP_MIGRATOR_PASS
+      - LDAP_MIGRATOR_BASE_DN
     volumes:
       - ./phishingator-data/${ORG}/certs/ldap.crt:/etc/ssl/certs/ldap.crt:ro
       - ./phishingator-data/${ORG}/ldap:/phishingator/ldap
