@@ -104,14 +104,10 @@
      */
     public static function getUserByUsername($username) {
       return Database::querySingle('
-              SELECT `id_user`, phg_users.id_user_group, `username`, `value` AS `role`
+              SELECT `id_user`, `id_user_group`, `username`, `email`, `inactive`
               FROM `phg_users`
-              JOIN `phg_users_groups`
-              ON phg_users.id_user_group = phg_users_groups.id_user_group
-              JOIN `phg_users_roles`
-              ON phg_users_groups.role = phg_users_roles.id_user_role
               WHERE `username` = ?
-              AND phg_users.visible = 1
+              AND `visible` = 1
       ', $username);
     }
 
@@ -865,12 +861,13 @@
 
 
     /**
-     * Ověří, zdali zadaný e-mail již v aplikaci nepoužívá jiný uživatel (tzn. jestli je unikátní).
+     * Ověří, zdali zadaný e-mail již v databázi Phishingatoru nepoužívá
+     * jiný aktivní uživatel (tzn. jestli je e-mail unikátní).
      *
-     * @param int|null $id             ID uživatele (nepovinný parametr)
+     * @param int|null $idUser         ID uživatele, u kterého se e-mail testuje (nepovinné)
      * @throws UserError
      */
-    private function isEmailUnique($id = null) {
+    private function isEmailUnique($idUser = null) {
       $ldap = new LdapModel();
 
       $username = $ldap->getUsernameByEmail($this->email);
@@ -878,7 +875,9 @@
 
       $ldap->close();
 
-      if (!empty($user) && ($id != $user['id_user'] || $id == null)) {
+      // V případě, že byl v databázi nalezen aktivní uživatel se stejným uživatelským jménem
+      // a nejedná se o uživatele, u kterého se e-mail testuje, zobrazit chybovou hlášku.
+      if ((!empty($user) && $user['inactive'] == 0) && ($idUser != $user['id_user'] || $idUser == null)) {
         throw new UserError('Toto uživatelské jméno již používá jiný uživatel.', MSG_ERROR);
       }
     }
