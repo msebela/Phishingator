@@ -33,6 +33,10 @@
         $username = get_email_part($username, 'username');
       }
 
+      if (AUTHENTICATION_USERNAME_TO_LOWERCASE) {
+        $username = mb_strtolower($username);
+      }
+
       self::$username = $username;
       self::$password = $password;
 

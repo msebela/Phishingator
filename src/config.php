@@ -102,6 +102,9 @@
    */
   define('AUTHENTICATION_TYPE', getenv('AUTHENTICATION_TYPE'));
 
+  /** Nastavení, zdali má být uživatelské jméno zadané uživatelem do cvičné podvodné stránky převedeno na malá písmena. */
+  define('AUTHENTICATION_USERNAME_TO_LOWERCASE', (getenv('AUTHENTICATION_USERNAME_TO_LOWERCASE') && getenv('AUTHENTICATION_USERNAME_TO_LOWERCASE') == 1));
+
   /** Pokud se použije LDAP autentizace, je nutné uvést hostitele LDAP, vůči kterému se budou přihlašovací údaje z podvodných stránek ověřovat. */
   define('AUTHENTICATION_LDAP_HOST', (getenv('AUTHENTICATION_LDAP_HOST')) ? getenv('AUTHENTICATION_LDAP_HOST') : getenv('LDAP_HOSTNAME'));
 
