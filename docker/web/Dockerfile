@@ -13,9 +13,11 @@ RUN apt-get update && \
 RUN useradd -u 5000 phishingator
 
 # PHP
-RUN docker-php-ext-install pdo_mysql
-ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-RUN install-php-extensions ldap imap zip
+RUN curl -sSLf \
+        -o /usr/local/bin/install-php-extensions \
+        https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions && \
+    chmod +x /usr/local/bin/install-php-extensions && \
+    install-php-extensions pdo_mysql ldap imap zip
 
 # Apache
 COPY docker/web/phishingator.conf /etc/apache2/sites-enabled/000-default.conf
@@ -32,7 +34,6 @@ RUN sed -i "s/\${SMTP_HOST}/${SMTP_HOST}/g" /etc/msmtprc && \
 
 # Phishingator
 WORKDIR $APACHE_DOCUMENT_ROOT
-COPY src ../
-RUN chown -R phishingator ../
+COPY --chown=phishingator:phishingator src ../
 
 USER phishingator
