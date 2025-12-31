@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.14-slim-trixie
 
 ENV LDAPTLS_CACERT="/etc/ssl/certs/ldap.crt" \
     LDAPTLS_REQCERT="demand" \

@@ -1,4 +1,4 @@
-FROM php:8.3-apache-bookworm
+FROM php:8.3-apache-trixie
 
 ENV TZ="Europe/Prague" \
     APACHE_DOCUMENT_ROOT="/var/www/phishingator/public/" \
