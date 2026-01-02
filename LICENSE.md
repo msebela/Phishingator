@@ -84,7 +84,7 @@ PHP includes the Zend Engine, freely available at <http://www.zend.com>.
 
 | Component name | Version | Copyright (provided for informational purposes only)       |
 |----------------|:--------|:-----------------------------------------------------------|
-| PHPMailer      | 6.10.0  | https://github.com/PHPMailer/PHPMailer/blob/master/LICENSE |
+| PHPMailer      | 7.0.1   | https://github.com/PHPMailer/PHPMailer/blob/master/LICENSE |
 
 GNU Lesser General Public License
 
