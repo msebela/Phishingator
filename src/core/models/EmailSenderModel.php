@@ -75,6 +75,13 @@
 
           foreach ($recipients as $recipient) {
             $user = UsersModel::getUserByEmail($recipient);
+
+            // Ověření, zdali se podařilo získat informace o uživateli
+            // (např. uživatel mohl být v průběhu aktivní kampaně odstraněn).
+            if (empty($user['id_user'])) {
+              continue;
+            }
+
             $user = array_merge($user, UsersModel::getUserFullname($user['username'], $ldap));
 
             // Ověření, zdali nedošlo v rámci kampaně k odeslání e-mailu stejnému uživateli někdy dříve.
