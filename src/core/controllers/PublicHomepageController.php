@@ -75,8 +75,8 @@
         $websiteModel->getPhishingWebsiteScreenshot($campaign['id_website']);
       }
 
-      // Zjištění, zdali už byla kampaň ukončena (pro úpravu textů na stránce).
-      $this->setViewData('campaign_ended', strtotime('now') > strtotime($campaign['datetime_active_to']));
+      // Zjištění stavu kampaně pro úpravu textů na vzdělávací stránce.
+      $this->setViewData('campaign_status', $campaign['status']);
 
       // Zjištění, zdali je uživatel zaregistrován k dobrovolnému odběru cvičných phishingů (pro úpravu textů na stránce).
       $volunteer = UsersModel::getUserEmailLimit($user['id_user']);

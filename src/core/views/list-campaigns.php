@@ -14,6 +14,7 @@
         <th scope="col" class="minw-110-px">Příjemců</th>
         <th scope="col" class="data-sort minw-110-px">Aktivní od</th>
         <th scope="col" class="data-sort minw-110-px">Aktivní do</th>
+        <th scope="col">Stav</th>
         <?php if ($displayTicketIdColumn): ?>
         <th scope="col" class="minw-8-rem">RT kampaně</th>
         <?php endif; ?>
@@ -59,13 +60,16 @@
         </td>
         <td><?= $campaign['count_recipients'] ?></td>
         <td data-sort="<?= $campaign['datetime_active_since'] ?>">
-          <span class="badge badge-<?= $campaign['date_active_since_color'] ?> cursor-help" title="<?= $campaign['date_active_since_formatted'] . ' od ' . $campaign['time_active_since'] ?>">
-            <?= insert_nonbreaking_spaces($campaign['date_active_since_formatted']) ?>
-          </span>
+          <?= insert_nonbreaking_spaces($campaign['date_active_since_formatted']) ?><br>
+          <?= $campaign['time_active_since_formatted'] ?>
         </td>
         <td data-sort="<?= $campaign['datetime_active_to'] ?>">
-          <span class="badge badge-<?= $campaign['date_active_to_color'] ?> cursor-help" title="<?= $campaign['date_active_to_formatted'] . ' do ' . $campaign['time_active_to'] ?>">
-            <?= insert_nonbreaking_spaces($campaign['date_active_to_formatted']) ?>
+          <?= insert_nonbreaking_spaces($campaign['date_active_to_formatted']) ?><br>
+          <?= $campaign['time_active_to_formatted'] ?>
+        </td>
+        <td>
+          <span class="badge badge-<?= $campaign['status_color'] ?>">
+            <?= $campaign['status_text'] ?>
           </span>
         </td>
         <?php if ($displayTicketIdColumn): ?>

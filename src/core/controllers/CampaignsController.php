@@ -132,8 +132,6 @@
       $this->initViewData($model, ACT_EDIT, $formData['formPrefix']);
 
       $this->setViewData('campaign', $campaign);
-      $this->setViewData('campaignRunning', strtotime($campaign['datetime_active_since']) <= strtotime('now') && strtotime($campaign['datetime_active_to']) > strtotime('now'));
-      $this->setViewData('campaignEnded', strtotime($campaign['datetime_active_to']) <= strtotime('now'));
 
       // Data z databáze pro vstupní pole.
       $this->setViewData('emails', PhishingEmailModel::getPhishingEmails());
@@ -191,7 +189,7 @@
       $this->checkRecordExistence($campaign);
 
       // Ověření, zdali se uživatel nepokouší zobrazit statistiku pro kampaň, která zatím nebyla spuštěna.
-      if (strtotime($campaign['datetime_active_since']) > strtotime('now')) {
+      if ($campaign['status'] != 'running' && $campaign['status'] != 'ending' && $campaign['status'] != 'ended') {
         $this->addMessage(MSG_WARNING, 'Nelze zobrazit statistiku pro kampaň, u které zatím nedošlo k zahájení a odeslání e-mailů.');
         $this->redirect($this->urlSection);
       }

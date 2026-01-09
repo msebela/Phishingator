@@ -1,6 +1,6 @@
 <hr>
 
-<?php if (strtotime($campaign['date_active_to'] . ' ' . $campaign['time_active_to']) >= strtotime('now')): ?>
+<?php if ($campaign['status'] == 'running' || $campaign['status'] == 'ending'): ?>
 <div class="alert alert-with-icon alert-warning" role="alert">
   <div class="alert-icon pr-1">
     <span data-feather="activity"></span>
@@ -25,8 +25,9 @@
         <th colspan="2">Podvodný e-mail</th>
         <th colspan="2">Podvodná stránka</th>
         <th>E-mailů odesláno</th>
-        <th colspan="2">Aktivní od</th>
-        <th colspan="2">Aktivní do</th>
+        <th>Aktivní od</th>
+        <th>Aktivní do</th>
+        <th>Stav</th>
         <?php if ($campaign['id_ticket']): ?>
         <th>RT kampaně</th>
         <?php endif; ?>
@@ -62,18 +63,21 @@
             <span data-feather="eye"></span>
           </a>
         </td>
-        <td><?= $campaign['sent_emails'] . '/' . $campaign['count_recipients'] ?></td>
         <td>
-          <span class="badge badge-<?= $campaign['date_active_since_color'] ?>"><?= insert_nonbreaking_spaces($campaign['date_active_since_formatted']) ?></span>
+          <?= $campaign['sent_emails'] . '/' . $campaign['count_recipients'] ?>
         </td>
-        <td class="pl-0">
+        <td>
+          <?= insert_nonbreaking_spaces($campaign['date_active_since_formatted']) ?><br>
           <?= $campaign['time_active_since'] ?>
         </td>
         <td>
-          <span class="badge badge-<?= $campaign['date_active_to_color'] ?>"><?= insert_nonbreaking_spaces($campaign['date_active_to_formatted']) ?></span>
-        </td>
-        <td class="pl-0">
+          <?= insert_nonbreaking_spaces($campaign['date_active_to_formatted']) ?><br>
           <?= $campaign['time_active_to'] ?>
+        </td>
+        <td>
+          <span class="badge badge-<?= $campaign['status_color'] ?>">
+            <?= $campaign['status_text'] ?>
+          </span>
         </td>
         <?php if ($campaign['id_ticket']): ?>
         <td>

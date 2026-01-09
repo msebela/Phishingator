@@ -587,8 +587,8 @@
         exit();
       }
 
-      // Při přístupu na podvodnou stránku po ukončení kampaně přssměrovat uživatele na vzdělávací stránku.
-      if (strtotime($campaign['datetime_active_since']) > strtotime('now') || strtotime($campaign['datetime_active_to']) < strtotime('now')) {
+      // Při přístupu na podvodnou stránku po ukončení kampaně přesměrovat uživatele na vzdělávací stránku.
+      if ($campaign['status'] != 'running') {
         $args[] = self::getClientIp();
 
         Logger::warning('Invalid access a phishing website for a phishing campaign that is not active.', $args);

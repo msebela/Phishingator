@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <h2 class="mb-3">Právě jste absolvovali <strong>cvičný phishing</strong></h2>
       <p class="par-intro">E-mail, který jste obdrželi, byl <strong>cvičný podvodný e-mail</strong> napodobující skutečný phishing. Jeho cílem bylo ukázat Vám <strong>typické znaky</strong>, podle kterých můžete skutečný podvodný e-mail poznat.</p>
-      <?php if (!$campaign_ended): ?>
+      <?php if ($campaign_status != 'ended'): ?>
       <p class="par-intro">Kdyby se jednalo o&nbsp;skutečný phishing, <strong>útočníci</strong> by v&nbsp;tuto chvíli již velmi pravděpodobně <strong>znali údaje, které jste vyplnili na podvodné stránce</strong>.</p>
       <?php endif; ?>
       <?php if ($volunteer): ?>

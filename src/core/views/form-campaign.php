@@ -1,6 +1,6 @@
 <hr>
 
-<?php if ($action == ACT_EDIT && $campaignRunning): ?>
+<?php if ($action == ACT_EDIT && $campaign['status'] == 'running'): ?>
 <div class="alert alert-with-icon alert-warning" role="alert">
   <div class="alert-icon pr-1">
     <span data-feather="activity"></span>
@@ -25,7 +25,7 @@
 </div>
 
 <hr>
-<?php elseif ($action == ACT_EDIT && $campaignEnded): ?>
+<?php elseif ($action == ACT_EDIT && $campaign['status'] == 'ended'): ?>
 <div class="alert alert-with-icon alert-info" role="alert">
   <div class="alert-icon pr-1">
     <span data-feather="flag"></span>
@@ -314,7 +314,7 @@
   </div>
 
   <div class="text-center">
-    <button type="submit" name="<?= $formPrefix . $action ?>" class="btn btn-primary btn-lg btn-confirm"<?php if ($action == ACT_EDIT && ($campaignRunning || $campaignEnded)): ?> data-confirm="Opravdu chcete upravit kampaň i přesto, že může mít vliv na výslednou statistiku kampaně?"<?php endif; ?>>
+    <button type="submit" name="<?= $formPrefix . $action ?>" class="btn btn-primary btn-lg btn-confirm"<?php if ($action == ACT_EDIT && ($campaign['status'] == 'running' || $campaign['status'] == 'ended')): ?> data-confirm="Opravdu chcete upravit kampaň i přesto, že může mít vliv na výslednou statistiku kampaně?"<?php endif; ?>>
       <span data-feather="save"></span>
       <?= ($action == ACT_NEW) ? 'Přidat' : 'Uložit změny'; ?>
     </button>

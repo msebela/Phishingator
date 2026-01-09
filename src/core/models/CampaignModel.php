@@ -136,6 +136,10 @@
               AND `visible` = 1
       ', $id);
 
+      if (!empty($this->dbRecordData)) {
+        $this->dbRecordData['status'] = $this->getCampaignStatus($this->dbRecordData['datetime_active_since'], $this->dbRecordData['datetime_active_to']);
+      }
+
       return $this->dbRecordData;
     }
 
@@ -235,8 +239,12 @@
         $result['count_recipients'] = self::getCountOfRecipients($result['id_campaign']);
         $result['sent_emails'] = RecievedEmailModel::getCountOfSentEmailsInCampaign($result['id_campaign']);
 
-        $result['date_active_since_color'] = self::getColorDate($result['date_active_since'], $result['time_active_since']);
-        $result['date_active_to_color'] = self::getColorDate($result['date_active_to'], $result['time_active_to']);
+        $status = self::getCampaignStatus($result['datetime_active_since'], $result['datetime_active_to'], true);
+        $statusText = self::getCampaignStatusText($status);
+
+        $result['status'] = $status;
+        $result['status_text'] = $statusText['text'];
+        $result['status_color'] = $statusText['color'];
       }
 
       if ($replaceUsernames) {
@@ -266,6 +274,8 @@
               DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y") AS `date_added_formatted`,
               DATE_FORMAT(date_active_since, "%e. %c. %Y") AS `date_active_since_formatted`,
               DATE_FORMAT(date_active_to, "%e. %c. %Y") AS `date_active_to_formatted`,
+              DATE_FORMAT(time_active_since, "%H:%i") AS `time_active_since_formatted`,
+              DATE_FORMAT(time_active_to, "%H:%i") AS `time_active_to_formatted`,
               TIMESTAMP(date_active_since, time_active_since) AS `datetime_active_since`,
               TIMESTAMP(date_active_to, time_active_to) AS `datetime_active_to`
               FROM `phg_campaigns`
@@ -300,8 +310,12 @@
 
         $result[$key]['count_recipients'] = $this->getCountOfRecipients($campaign['id_campaign']);
 
-        $result[$key]['date_active_since_color'] = self::getColorDate($campaign['date_active_since'], $campaign['time_active_since']);
-        $result[$key]['date_active_to_color'] = self::getColorDate($campaign['date_active_to'], $campaign['time_active_to']);
+        $status = self::getCampaignStatus($campaign['datetime_active_since'], $campaign['datetime_active_to'], true);
+        $statusText = self::getCampaignStatusText($status);
+
+        $result[$key]['status'] = $status;
+        $result[$key]['status_text'] = $statusText['text'];
+        $result[$key]['status_color'] = $statusText['color'];
       }
 
       return UsersModel::setUsernamesByConfig($result);
@@ -1106,27 +1120,87 @@
 
 
     /**
-     * Vrátí CSS třídu určenou k podbarvení data zahájení/ukončení kampaně závislou
-     * na tom, kolik dní a času do zahájení nebo ukončení kampaně zbývá.
+     * Vrátí aktuální stav kampaně podle předaného data a času startu a konce.
      *
-     * @param string $date             Datum zahájení/ukončení kampaně
-     * @param string $time             Čas zahájení/ukončení kampaně
-     * @return string                  Název CSS třídy
+     * @param string $datetimeActiveSince Datum a čas startu kampaně
+     * @param string $datetimeActiveTo    Datum a čas konce kampaně
+     * @param bool $withTodayStatus       TRUE, pokud se má uvažovat i stav "dnes startuje" / "dnes končí", jinak FALSE (výchozí)
+     * @return string                     Aktuální stav
      */
-    private static function getColorDate($date, $time) {
-      $color = MSG_CSS_DEFAULT;
+    public static function getCampaignStatus($datetimeActiveSince, $datetimeActiveTo, $withTodayStatus = false) {
+      $activeSince = strtotime($datetimeActiveSince);
+      $activeTo = strtotime($datetimeActiveTo);
 
-      $campaignDate = strtotime($date);
-      $currentDate = strtotime(date('Y-m-d'));
+      $todayStart = strtotime('today');
+      $todayEnd = strtotime('tomorrow');
 
-      if ($campaignDate > $currentDate) {
-        $color = MSG_CSS_SUCCESS;
+      $now = time();
+
+      // Kampaň zatím nezačala.
+      if ($now < $activeSince) {
+        $status = 'waiting';
       }
-      elseif ($campaignDate == $currentDate && strtotime($date . ' ' . $time) >= strtotime('now')) {
-        $color = MSG_CSS_WARNING;
+      // Kampaň probíhá.
+      elseif ($now < $activeTo) {
+        $status = 'running';
+      }
+      // Kampaň již skončila.
+      else {
+        $status = 'ended';
       }
 
-      return $color;
+      if ($withTodayStatus) {
+        // Kampaň dnes začíná (tj. ještě neprobíhá).
+        if ($status == 'waiting' && $activeSince >= $todayStart && $activeSince < $todayEnd) {
+          $status = 'starting';
+        }
+        // Kampaň dnes končí (tj. probíhá, ale dnes je poslední den).
+        elseif ($status == 'running' && $activeTo >= $todayStart && $activeTo < $todayEnd) {
+          $status = 'ending';
+        }
+      }
+
+      return $status;
+    }
+
+
+    /**
+     * Vrátí aktuální stav kampaně v textové podobě.
+     *
+     * @param string $status           Aktuální stav
+     * @return string[]                Aktuální stav v textové podobě společně s barvou
+     */
+    public static function getCampaignStatusText($status) {
+      $message = [];
+
+      switch ($status) {
+        case 'waiting':
+          $message['text'] = 'čeká na zahájení';
+          $message['color'] = MSG_CSS_WARNING;
+          break;
+
+        case 'starting':
+          $message['text'] = 'dnes startuje';
+          $message['color'] = MSG_CSS_ERROR;
+          break;
+
+        case 'running':
+          $message['text'] = 'probíhá';
+          $message['color'] = MSG_CSS_SUCCESS;
+          break;
+
+        case 'ending':
+          $message['text'] = 'dnes končí';
+          $message['color'] = MSG_CSS_ERROR;
+          break;
+
+        default:
+          $message['text'] = 'ukončena';
+          $message['color'] = MSG_CSS_DEFAULT;
+          break;
+      }
+
+      return $message;
     }
 
 
