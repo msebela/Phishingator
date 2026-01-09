@@ -138,17 +138,15 @@
           <form method="post" action="/portal/<?= $urlSection . '/' . ACT_DEL . '/' . $user['id_user'] ?>" class="d-inline">
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
-            <button type="submit" class="btn btn-secondary btn-sm btn-confirm" data-confirm="Opravdu chcete odstranit tento záznam?">
+            <button type="submit" class="btn btn-secondary btn-sm btn-confirm" data-confirm="Opravdu chcete odstranit tento záznam?" title="Odstranit" aria-label="Odstranit">
               <span data-feather="trash"></span>
-              Smazat
             </button>
           </form>
           <?php endif; ?>
         </td>
         <td>
-          <a href="/portal/<?= $urlSection . '/' . ACT_EDIT . '/' . $user['id_user'] ?>" class="btn btn-primary btn-sm" role="button">
+          <a href="/portal/<?= $urlSection . '/' . ACT_EDIT . '/' . $user['id_user'] ?>" class="btn btn-primary btn-sm" role="button" title="Upravit" aria-label="Upravit">
             <span data-feather="edit-2"></span>
-            Upravit
           </a>
         </td>
       </tr>

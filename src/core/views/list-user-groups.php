@@ -45,17 +45,15 @@
           <form method="post" action="/portal/<?= $urlSection . '/' . ACT_DEL . '/' . $group['id_user_group'] ?>" class="d-inline">
             <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
-            <button type="submit" class="btn btn-secondary btn-sm btn-confirm" data-confirm="Opravdu chcete odstranit tuto skupinu?<?= (($group['count_users'] > 0) ? ' Zbývající uživatelé budou přeřazeni do rodičovské skupiny.' : '') ?>">
+            <button type="submit" class="btn btn-secondary btn-sm btn-confirm" data-confirm="Opravdu chcete odstranit tuto skupinu?<?= (($group['count_users'] > 0) ? ' Zbývající uživatelé budou přeřazeni do rodičovské skupiny.' : '') ?>" title="Odstranit" aria-label="Odstranit">
               <span data-feather="trash"></span>
-              Smazat
             </button>
           </form>
           <?php endif; ?>
         </td>
         <td>
-          <a href="/portal/<?= $urlSection . '/' . ACT_EDIT . '/' . $group['id_user_group'] ?>" class="btn btn-primary btn-sm" role="button">
+          <a href="/portal/<?= $urlSection . '/' . ACT_EDIT . '/' . $group['id_user_group'] ?>" class="btn btn-primary btn-sm" role="button" title="Upravit" aria-label="Upravit">
             <span data-feather="edit-2"></span>
-            Upravit
           </a>
         </td>
       </tr>
