@@ -128,10 +128,10 @@
 
       // Informace o datech pro CSV export.
       $csvHeader = [
-        'username', 'email', 'group', 'action', 'action_datetime', 'action_datetime_utc', 'reported', 'ip', 'user_agent', 'http_post_data_json'
+        'username', 'email', 'group', 'action', 'action_datetime', 'action_datetime_utc', 'reported', 'ip', 'user_agent', 'filled_username', 'filled_password'
       ];
       $csvDataIndexes = [
-        'username', 'used_email', 'used_group', 'name', 'visit_datetime', 'visit_datetime_utc', 'reported', 'ip', 'browser_fingerprint', 'data_json'
+        'username', 'used_email', 'used_group', 'name', 'visit_datetime', 'visit_datetime_utc', 'reported', 'ip', 'browser_fingerprint', 'filled_username', 'filled_password'
       ];
 
       $data = [

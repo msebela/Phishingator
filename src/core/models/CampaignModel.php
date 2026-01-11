@@ -964,6 +964,14 @@
               ORDER BY `id_captured_data` ' . ((!$orderAsc) ? 'DESC' : '')
       , [$idCampaign, CAMPAIGN_NO_REACTION_ID]);
 
+      // Dekódování uživatelského jména a hesla zadaného do podvodné stránky z JSON.
+      foreach ($records as $key => $record) {
+        $capturedCredentials = (!empty($record['data_json'])) ? json_decode($record['data_json'], true) : [];
+
+        $records[$key]['filled_username'] = $capturedCredentials['username'] ?? '';
+        $records[$key]['filled_password'] = $capturedCredentials['password'] ?? '';
+      }
+
       if ($replaceUsernames) {
         $records = UsersModel::setUsernamesByConfig($records);
       }

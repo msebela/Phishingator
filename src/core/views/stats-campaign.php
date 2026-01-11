@@ -275,7 +275,8 @@
         <th class="data-sort datetime">Datum a&nbsp;čas</th>
         <th>IP adresa</th>
         <th>User agent</th>
-        <th>HTTP POST data v&nbsp;JSON</th>
+        <th class="minw-10-rem maxw-10-rem">Zadané jméno</th>
+        <th class="minw-10-rem maxw-10-rem">Zadané heslo</th>
       </tr>
     </thead>
     <tbody>
@@ -323,12 +324,15 @@
             <?= $data['browser_fingerprint'] ?>
           </small>
         </td>
-        <td class="minw-15-rem maxw-20-rem text-truncate">
-          <?php if (!empty($data['data_json'])): ?>
-          <code class="identity <?= $blurIdentities ?> cursor-help" title="<?= $data['data_json'] ?>" data-toggle="tooltip" data-placement="left">
-            <?= $data['data_json'] ?>
+        <td class="minw-10-rem maxw-10-rem text-truncate">
+          <code class="identity <?= $blurIdentities ?> text-primary cursor-help" title="<?= $data['filled_username'] ?>" data-toggle="tooltip" data-placement="left">
+          <?= $data['filled_username'] ?>
           </code>
-          <?php endif; ?>
+        </td>
+        <td class="minw-10-rem maxw-10-rem text-truncate">
+          <code class="identity <?= $blurIdentities ?> text-danger cursor-help" title="<?= $data['filled_password'] ?>" data-toggle="tooltip" data-placement="left">
+            <?= $data['filled_password'] ?>
+          </code>
         </td>
       </tr>
       <?php endforeach; ?>
