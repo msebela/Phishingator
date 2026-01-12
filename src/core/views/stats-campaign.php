@@ -270,7 +270,7 @@
     <thead>
       <tr>
         <th class="order-by-asc">#</th>
-        <th colspan="2" class="minw-5-rem">Uživatel</th>
+        <th colspan="3" class="minw-5-rem">Uživatel</th>
         <th>Akce</th>
         <th class="data-sort datetime">Datum a&nbsp;čas</th>
         <th>IP adresa</th>
@@ -287,6 +287,11 @@
           <a id="r<?= $i ?>" class="hidden-anchor-link"></a>
           <a href="#r<?= $i ?>" class="text-dark">
             <abbr title="Identifikátor a odkaz na tento záznam v rámci této kampaně" class="initialism cursor-help"><?= $i--; ?></abbr>
+          </a>
+        </td>
+        <td class="pr-0">
+          <a href="?<?= ACT_STATS_WEBSITE_ACTIONS ?>&amp;rows=<?= $data['id_user'] ?>#d<?= $data['id_captured_data'] ?>" class="badge badge-secondary" role="button" title="Zvýraznit aktivitu uživatele" data-toggle="tooltip">
+            <span data-feather="eye"></span>
           </a>
         </td>
         <td>
