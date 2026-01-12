@@ -274,9 +274,9 @@
         <th>Akce</th>
         <th class="data-sort datetime">Datum a&nbsp;čas</th>
         <th>IP adresa</th>
-        <th>User agent</th>
         <th class="minw-10-rem maxw-10-rem">Zadané jméno</th>
         <th class="minw-10-rem maxw-10-rem">Zadané heslo</th>
+        <th>User agent</th>
       </tr>
     </thead>
     <tbody>
@@ -315,24 +315,28 @@
         </td>
         <td class="text-nowrap" data-sort="<?= $data['visit_datetime'] ?>"><?= $data['visit_datetime_formatted'] ?></td>
         <td>
-          <span class="identity <?= $blurIdentities ?>" title="<?= $data['ip'] ?>" data-toggle="tooltip">
+          <code class="identity <?= $blurIdentities ?> cursor-help" title="<?= $data['ip'] ?>" data-toggle="tooltip">
             <?= $data['ip'] ?>
-          </span>
+          </code>
+        </td>
+        <td class="minw-10-rem maxw-10-rem text-truncate">
+          <?php if (!empty($data['filled_username'])): ?>
+          <code class="identity <?= $blurIdentities ?> text-primary cursor-help" title="<?= $data['filled_username'] ?>" data-toggle="tooltip" data-placement="left">
+            <?= $data['filled_username'] ?>
+          </code>
+          <?php endif; ?>
+        </td>
+        <td class="minw-10-rem maxw-10-rem text-truncate">
+          <?php if (!empty($data['filled_password'])): ?>
+          <code class="identity <?= $blurIdentities ?> text-danger cursor-help" title="<?= $data['filled_password'] ?>" data-toggle="tooltip" data-placement="left">
+            <?= $data['filled_password'] ?>
+          </code>
+          <?php endif; ?>
         </td>
         <td class="maxw-40-rem text-truncate">
           <small class="cursor-help" title="<?= $data['browser_fingerprint'] ?>" data-toggle="tooltip" data-placement="left">
             <?= $data['browser_fingerprint'] ?>
           </small>
-        </td>
-        <td class="minw-10-rem maxw-10-rem text-truncate">
-          <code class="identity <?= $blurIdentities ?> text-primary cursor-help" title="<?= $data['filled_username'] ?>" data-toggle="tooltip" data-placement="left">
-          <?= $data['filled_username'] ?>
-          </code>
-        </td>
-        <td class="minw-10-rem maxw-10-rem text-truncate">
-          <code class="identity <?= $blurIdentities ?> text-danger cursor-help" title="<?= $data['filled_password'] ?>" data-toggle="tooltip" data-placement="left">
-            <?= $data['filled_password'] ?>
-          </code>
         </td>
       </tr>
       <?php endforeach; ?>
