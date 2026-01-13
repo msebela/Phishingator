@@ -6,7 +6,7 @@
    */
   class LdapModel {
     /**
-     * @var LDAP\Connection  LDAP spojení nebo NULL.
+     * @var resource    LDAP spojení nebo NULL.
      */
     private $ldapConnection;
 
@@ -33,15 +33,13 @@
      * @param string $password         Heslo pro připojení do LDAP [nepovinné]
      * @param string $hostname         LDAP server [nepovinné]
      * @param int $port                Port, na kterém LDAP běží [nepovinné]
-     * @param bool $notLogging         TRUE pokud se nemají do logu zapisovat neplatné pokusy o přihlášení,
-     *                                 jinak FALSE (výchozí)
-     * @return bool                    TRUE pokud došlo k úspěšnému připojení, jinak FALSE
+     * @param bool $logErrors          TRUE (výchozí), pokud se mají do logu zapisovat neplatné pokusy o přihlášení, jinak FALSE
+     * @return bool                    TRUE, pokud došlo k úspěšnému připojení, jinak FALSE
      */
-    public function connect($username = null, $password = null, $hostname = null, $port = null, $notLogging = false) {
+    public function connect($username = null, $password = null, $hostname = null, $port = null, $logErrors = true) {
       $connected = false;
-      $ldapBind = false;
 
-      if ($hostname == null) {
+      if ($hostname === null) {
         $hostname = LDAP_HOSTNAME;
         $port = LDAP_PORT;
       }
@@ -53,24 +51,22 @@
       if ($this->ldapConnection) {
         ldap_set_option($this->ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
 
-        if ($username == null || $password == null) {
+        if ($username === null || $password === null) {
           $username = LDAP_USERNAME;
           $password = LDAP_PASSWORD;
         }
 
-        $ldapBind = ldap_bind($this->ldapConnection, $username, $password);
-      }
-
-      if (!$this->ldapConnection) {
-        Logger::error('Failed to connect to LDAP.', [$ldapUri, ldap_error($this->ldapConnection)]);
-      }
-      elseif (!$ldapBind) {
-        if (!$notLogging) {
-          Logger::error('Failed to authenticate to LDAP.', [$ldapUri, ldap_error($this->ldapConnection)]);
+        if (ldap_bind($this->ldapConnection, $username, $password)) {
+          $connected = true;
+        }
+        else {
+          if ($logErrors) {
+            Logger::error('Failed to authenticate to LDAP.', [$ldapUri, ldap_error($this->ldapConnection)]);
+          }
         }
       }
       else {
-        $connected = true;
+        Logger::error('Failed to connect to LDAP.', $ldapUri);
       }
 
       return $connected;

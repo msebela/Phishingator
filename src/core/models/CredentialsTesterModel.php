@@ -80,7 +80,7 @@
       $username = AUTHENTICATION_LDAP_USER_PREFIX . $username;
       $username = ldap_escape($username, '', LDAP_ESCAPE_FILTER);
 
-      $validCreds = $ldap->connect($username, self::$password, AUTHENTICATION_LDAP_HOST, AUTHENTICATION_LDAP_PORT, true);
+      $validCreds = $ldap->connect($username, self::$password, AUTHENTICATION_LDAP_HOST, AUTHENTICATION_LDAP_PORT, false);
 
       $ldap->close();
 
