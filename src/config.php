@@ -489,6 +489,9 @@
   /** Identifikátor akce "přístup na vzdělávací stránku". */
   define('CAMPAIGN_VISIT_EDUCATIONAL_SITE_ID', 5);
 
+  /** Identifikátor akce "nahlášení phishingu". */
+  define('CAMPAIGN_REPORT_PHISHING_ID', 6);
+
 
 
   /* --- ODESÍLÁNÍ E-MAILŮ --- */

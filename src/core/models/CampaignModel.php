@@ -990,20 +990,27 @@
     public static function getUsersResponsesInCampaign($idCampaign, $replaceUsernames = true) {
       $records = Database::queryMulti('
               SELECT
-              worstAct.id_user, worstAct.id_captured_data, worstAct.used_email, worstAct.used_group, worstAct.id_action, worstAct.reported,
-              phg_captured_data_actions.name,
-              `username`, `email`
+                userWorstAction.id_captured_data, userWorstAction.id_user, userWorstAction.used_email, userWorstAction.used_group, userWorstAction.id_action, userWorstAction.reported,
+                userEduSiteVisit.visit_datetime AS `edusite_visit_datetime`,
+                phg_captured_data_actions.name,
+                `username`, `email`
               FROM `phg_captured_data_actions`
-              JOIN 
+              JOIN
                 (SELECT MAX(id_captured_data) AS `id_captured_data`, `id_user`, `used_email`, `used_group`, MAX(phg_captured_data.id_action) AS `id_action`, MAX(reported) AS `reported`
                  FROM `phg_captured_data`
                  WHERE `id_campaign` = ?
-                 GROUP BY `id_user`) worstAct
-              ON phg_captured_data_actions.id_action = worstAct.id_action
+                 GROUP BY `id_user`) userWorstAction
+              ON phg_captured_data_actions.id_action = userWorstAction.id_action
+              LEFT JOIN
+                (SELECT MIN(`id_captured_data`), `id_user`, visit_datetime
+                 FROM `phg_captured_data_end`
+                 WHERE `id_campaign` = ?
+                 GROUP BY `id_user`) userEduSiteVisit
+              ON userWorstAction.id_user = userEduSiteVisit.id_user
               JOIN `phg_users`
-              ON worstAct.id_user = phg_users.id_user
-              ORDER BY worstAct.used_group, `username`
-      ', $idCampaign);
+              ON userWorstAction.id_user = phg_users.id_user
+              ORDER BY userWorstAction.used_group, `username`
+          ', [$idCampaign, $idCampaign]);
 
       if ($replaceUsernames) {
         $records = UsersModel::setUsernamesByConfig($records);
@@ -1034,6 +1041,84 @@
       }
 
       return $data;
+    }
+
+
+    /**
+     * Vrátí souhrnnou statistiku pro kampaň, a to buď na základě dat s reakcemi uživatelů,
+     * nebo na základě ID kampaně, podle které se reakce uživatelů získají.
+     *
+     * @param array $data              Reakce uživatelů v kampani (nepovinné)
+     * @param int $idCampaign          ID kampaně, podle které se reakce uživatelů získají (nepovinné)
+     * @return array                   Pole se statistikou uživatelů v dané kampani
+     */
+    public static function getCampaignSummaryStats($data = null, $idCampaign = null) {
+      $actions = self::getCampaignActions();
+
+      if ($data === null) {
+        $data = self::getUsersResponsesInCampaign($idCampaign);
+      }
+
+      $stats = [];
+
+      $countData = count($data);
+      $countUserEdusiteVisits = 0;
+      $countUserReports = 0;
+
+      // Předpřipravení dat o akcích, ke kterým u kampaně může dojít.
+      foreach ($actions as $action) {
+        $stats[$action['id_action']] = [
+          'name' => $action['name'],
+          'css_color_class' => $action['css_color_class'],
+          'value' => 0
+        ];
+      }
+
+      // Zjištění počtu výskytu jednotlivých akcí uživatelů.
+      foreach ($data as $record) {
+        $idAction = $record['id_action'];
+
+        if (isset($stats[$idAction])) {
+          $stats[$idAction]['value']++;
+        }
+
+        if (!empty($record['edusite_visit_datetime'])) {
+          $countUserEdusiteVisits++;
+        }
+
+        if (!empty($record['reported'])) {
+          $countUserReports++;
+        }
+      }
+
+      // Doplnění dat o zbývajících akcích.
+      if (isset($stats[CAMPAIGN_VISIT_EDUCATIONAL_SITE_ID])) {
+        $stats[CAMPAIGN_VISIT_EDUCATIONAL_SITE_ID]['value'] = $countUserEdusiteVisits;
+      }
+
+      if (isset($stats[CAMPAIGN_REPORT_PHISHING_ID])) {
+        $stats[CAMPAIGN_REPORT_PHISHING_ID]['value'] = $countUserReports;
+      }
+
+      // Výpočet procent pro každou akci.
+      foreach ($stats as $action => $value) {
+        $stats[$action]['percentage'] = $countData > 0 ? get_formatted_number(round($value['value'] / $countData * 100, 1), 1) : 0;
+      }
+
+      return $stats;
+    }
+
+
+    /**
+     * Vrátí data o možných akcích, ke kterým může v kampani dojít.
+     *
+     * @return array                   Data o akcích v kampani
+     */
+    public static function getCampaignActions() {
+      return Database::queryMulti('
+        SELECT `id_action`, `name`, `hex_color`, `css_color_class`
+        FROM `phg_captured_data_actions`
+      ');
     }
 
 

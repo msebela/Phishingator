@@ -31,18 +31,23 @@
 
 
     /**
-     * Získá z databáze a nastaví atribut legendy, barvy grafu a CSS třídy legendy.
+     * Nastaví atribut legendy pro graf včetně barev a CSS tříd.
+     *
+     * @param int $limit          ID akce, do které má být legenda nastavena
      */
-    private function getChartLegend() {
-      $data = Database::queryMulti('
-        SELECT `id_action`, `name`, `hex_color`, `css_color_class`
-        FROM `phg_captured_data_actions`
-      ');
+    private function getChartLegend($limit = CAMPAIGN_VISIT_EDUCATIONAL_SITE_ID) {
+      $actions = CampaignModel::getCampaignActions();
 
-      foreach ($data as $legend) {
-        $this->legend[$legend['id_action']] = $legend['name'];
-        $this->colors[$legend['id_action']] = $legend['hex_color'];
-        $this->cssClasess[$legend['id_action']] = $legend['css_color_class'];
+      foreach ($actions as $action) {
+        $idAction = $action['id_action'];
+
+        if ($idAction >= $limit) {
+          continue;
+        }
+
+        $this->legend[$idAction] = $action['name'];
+        $this->colors[$idAction] = $action['hex_color'];
+        $this->cssClasess[$idAction] = $action['css_color_class'];
       }
     }
 

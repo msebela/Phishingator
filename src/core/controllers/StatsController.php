@@ -57,7 +57,7 @@
         $this->setViewData('countCampaigns' . $year, get_formatted_number($countCampaigns));
         $this->setViewData('countCampaignsText' . $year, $model->getStatsText($countCampaigns, 'campaignsCount'));
 
-        $this->setViewData('countCampaignsDiff' . $year, get_formatted_number($diff, true));
+        $this->setViewData('countCampaignsDiff' . $year, get_formatted_number($diff, 0, true));
         $this->setViewData('countCampaignsDiffColor' . $year, $this->getDiffColor($diff));
 
 
@@ -70,7 +70,7 @@
         $this->setViewData('countUsers' . $year, get_formatted_number($countUsers));
         $this->setViewData('countUsersText' . $year, $model->getStatsText($countUsers, 'recipientsCount'));
 
-        $this->setViewData('countUsersDiff' . $year, get_formatted_number($diff, true));
+        $this->setViewData('countUsersDiff' . $year, get_formatted_number($diff, 0, true));
         $this->setViewData('countUsersDiffColor' . $year, $this->getDiffColor($diff));
 
 
@@ -83,7 +83,7 @@
         $this->setViewData('countVolunteers' . $year, get_formatted_number($countVolunteers));
         $this->setViewData('countVolunteersText' . $year, $model->getStatsText($countVolunteers, 'volunteersCount'));
 
-        $this->setViewData('countVolunteersDiff' . $year, get_formatted_number($diff, true));
+        $this->setViewData('countVolunteersDiff' . $year, get_formatted_number($diff, 0, true));
         $this->setViewData('countVolunteersDiffColor' . $year, $this->getDiffColor($diff));
 
 
@@ -96,7 +96,7 @@
         $this->setViewData('countSentEmails' . $year, get_formatted_number($countSentEmails));
         $this->setViewData('countSentEmailsText' . $year, $model->getStatsText($countSentEmails, 'sentEmails'));
 
-        $this->setViewData('countSentEmailsDiff' . $year, get_formatted_number($diff, true));
+        $this->setViewData('countSentEmailsDiff' . $year, get_formatted_number($diff, 0, true));
         $this->setViewData('countSentEmailsDiffColor' . $year, $this->getDiffColor($diff));
 
 
@@ -109,7 +109,7 @@
         $this->setViewData('countPhishingWebsites' . $year, get_formatted_number($countPhishingWebsites));
         $this->setViewData('countPhishingWebsitesText' . $year, $model->getStatsText($countPhishingWebsites, 'websitesCount'));
 
-        $this->setViewData('countPhishingWebsitesDiff' . $year, get_formatted_number($diff, true));
+        $this->setViewData('countPhishingWebsitesDiff' . $year, get_formatted_number($diff, 0, true));
         $this->setViewData('countPhishingWebsitesDiffColor' . $year, $this->getDiffColor($diff));
 
 

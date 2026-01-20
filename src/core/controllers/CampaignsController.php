@@ -204,6 +204,8 @@
       // Rozmazání identit uživatelů dle konfigurace.
       $this->setViewData('blurIdentities', (PermissionsModel::getUserSetting(ACT_STATS_BLUR_IDENTITIES) ? 'blur-text' : ''));
 
+      $usersResponses = $model->getUsersResponsesInCampaign($idCampaign);
+
       // Získání nasbíraných dat.
       if (isset($_GET[ACT_STATS_WEBSITE_ACTIONS])) {
         // Data uživatelů zaznamenané na podvodné stránce a akce "bez reakce".
@@ -212,7 +214,7 @@
       }
       elseif (isset($_GET[ACT_STATS_USERS_RESPONSES])) {
         // Reakce uživatelů v kampani.
-        $this->setViewData('usersResponses', $model->getUsersResponsesInCampaign($idCampaign));
+        $this->setViewData('usersResponses', $usersResponses);
         $this->setViewData('usersResponsesLegend', $statsModel->legend);
         $this->setViewData('usersResponsesLegendCssClasses', $statsModel->cssClasess);
 
@@ -224,6 +226,9 @@
         // Úprava nastavení uživatelského hlášení o phishingu.
         $this->processReportPhish($model, $idCampaign);
       }
+
+      // Souhrnná statistika.
+      $this->setViewData('statsSummary', CampaignModel::getCampaignSummaryStats($usersResponses));
 
       // Data a legenda pro koláčový graf.
       $this->setViewData('chartLegend', $statsModel->getLegendAsString('"'));

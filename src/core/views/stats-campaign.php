@@ -14,7 +14,7 @@
 <hr>
 <?php endif; ?>
 
-<h3>Základní informace</h3>
+<h3 class="mb-3">Základní informace</h3>
 <div class="table-responsive mb-5">
   <table class="table table-striped table-hover">
     <thead>
@@ -96,6 +96,53 @@
   </table>
 </div>
 
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-5 mb-3 border-bottom">
+  <h3>Statistika</h3>
+
+  <div class="btn-toolbar mb-2 mb-md-0 align-items-center">
+    <button type="button" id="exportDropdown" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <span data-feather="save"></span>
+      Export
+    </button>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-<?= date('Y-m-d') ?>">
+        Graf: Reakce uživatelů <code>[PNG]</code>
+      </a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-groups" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-groups-<?= date('Y-m-d') ?>">
+        Graf: Reakce uživatelů dle oddělení <code>[PNG]</code>
+      </a>
+      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-sum" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-sum-<?= date('Y-m-d') ?>">
+        Graf: Všechny provedené akce <code>[PNG]</code>
+      </a>
+      <div class="dropdown-divider"></div>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
+        Tabulka: Reakce uživatelů <code>[CSV]</code>
+      </a>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=website-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
+        Tabulka: Akce na podvodné stránce <code>[CSV]</code>
+      </a>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses-sum&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
+        Počet akcí každého uživatele <code>[CSV]</code>
+      </a>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
+        Všechna data v&nbsp;archivu <code>[ZIP]</code>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="card-group mb-5">
+  <?php foreach ($statsSummary as $action): ?>
+  <div class="card bg-light">
+    <div class="card-body py-3">
+      <div class="h4 font-weight-bold mb-0"><?= $action['value'] ?></div>
+      <div class="small text-muted"><?= $action['name'] ?></div>
+      <span class="badge badge-<?= $action['css_color_class'] ?>"><?= $action['percentage'] ?>&nbsp;%</span>
+    </div>
+  </div>
+  <?php endforeach; ?>
+</div>
+
 <div class="d-flex flex-wrap justify-content-around mb-4">
   <div class="chart-wrapper sm">
     <h4>Reakce uživatelů</h4>
@@ -135,44 +182,13 @@
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mt-5 mb-3 border-bottom">
   <h3><?php if (isset($_GET[ACT_STATS_USERS_RESPONSES])): ?>Reakce jednotlivých uživatelů<?php else: ?>Provedené akce na podvodné stránce<?php endif; ?></h3>
 
-  <div class="btn-toolbar mb-2 mb-md-0 align-items-center">
-    <div class="custom-control custom-checkbox mr-2">
-      <form method="post" action="/portal/<?= $urlSection . '/' . ACT_STATS_BLUR_IDENTITIES ?>" id="blur-identities-form">
-        <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+  <div class="custom-control custom-checkbox mr-2">
+    <form method="post" action="/portal/<?= $urlSection . '/' . ACT_STATS_BLUR_IDENTITIES ?>" id="blur-identities-form">
+      <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
-        <input type="checkbox" name="<?= ACT_STATS_BLUR_IDENTITIES ?>" id="blur-identities" class="custom-control-input" data-form="blur-identities-form"<?= ((!empty($blurIdentities)) ? ' checked' : '') ?>>
-        <label class="custom-control-label" for="blur-identities">Rozmazat identity</label>
-      </form>
-    </div>
-
-    <button type="button" id="exportDropdown" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <span data-feather="save"></span>
-      Export
-    </button>
-    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-<?= date('Y-m-d') ?>">
-        Graf: Reakce uživatelů <code>[PNG]</code>
-      </a>
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-groups" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-groups-<?= date('Y-m-d') ?>">
-        Graf: Reakce uživatelů dle oddělení <code>[PNG]</code>
-      </a>
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-sum" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-sum-<?= date('Y-m-d') ?>">
-        Graf: Všechny provedené akce <code>[PNG]</code>
-      </a>
-      <div class="dropdown-divider"></div>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
-        Tabulka: Reakce uživatelů <code>[CSV]</code>
-      </a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=website-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
-        Tabulka: Akce na podvodné stránce <code>[CSV]</code>
-      </a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses-sum&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
-        Počet akcí každého uživatele <code>[CSV]</code>
-      </a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
-        Všechna data v&nbsp;archivu <code>[ZIP]</code>
-      </a>
-    </div>
+      <input type="checkbox" name="<?= ACT_STATS_BLUR_IDENTITIES ?>" id="blur-identities" class="custom-control-input" data-form="blur-identities-form"<?= ((!empty($blurIdentities)) ? ' checked' : '') ?>>
+      <label class="custom-control-label" for="blur-identities">Rozmazat identity</label>
+    </form>
   </div>
 </div>
 <?php endif; ?>
@@ -237,7 +253,7 @@
             </td>
             <td>
               <?php if (isset($testPageData[$data['id_user']])): ?>
-              <div class="text-success cursor-help" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel navštívil vzdělávací stránku o&nbsp;phishingu<br><?= $testPageData[$data['id_user']] ?>">
+              <div class="text-primary cursor-help" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel navštívil vzdělávací stránku o&nbsp;phishingu<br><?= $testPageData[$data['id_user']] ?>">
                 <span data-feather="flag"></span>
               </div>
               <?php endif; ?>

@@ -91,7 +91,9 @@ INSERT INTO `phg_captured_data_actions` (`id_action`, `name`, `hex_color`, `css_
 (1, 'bez reakce', '00c851', 'success'),
 (2, 'návštěva stránky', '33b5e5', 'info'),
 (3, 'zadání neplatných údajů', 'ffbb33', 'warning'),
-(4, 'zadání platných údajů', 'ff4444', 'danger');
+(4, 'zadání platných údajů', 'ff4444', 'danger'),
+(5, 'zobrazení vzdělávací stránky', '004085', 'primary'),
+(6, 'nahlášení phishingu', '563d7c', 'purple');
 
 CREATE TABLE `phg_captured_data_end` (
   `id_captured_data` int(10) UNSIGNED NOT NULL,

@@ -172,20 +172,25 @@
 
 
   /**
-   * Zformátuje číslo podle zvyklostí v České republice (oddělení jednotlivých řádů apod.).
+   * Zformátuje číslo do českého formátu a případně ke kladnému číslu přidá znaménko "+".
    *
-   * @param int $number                Číslo, které má být zformátováno
-   * @param bool $withSign             TRUE, pokud má být před číslem uvedeno navíc i znaménko, jinak FALSE (nepovinné)
+   * @param float|int $number          Číslo, které má být zformátováno
+   * @param int $decimals              Počet desetinných míst (nepovinné)
+   * @param bool $withPlusSign         TRUE, pokud má být před kladným číslem uvedeno i znaménko +, jinak FALSE (nepovinné)
    * @return string                    Zformátované číslo
    */
-  function get_formatted_number($number, $withSign = false) {
-    $number = number_format($number,0, ',', ' ');
+  function get_formatted_number($number, $decimals = 0, $withPlusSign = false) {
+    $formattedNumber = number_format($number, $decimals, ',', ' ');
 
-    if ($withSign) {
-      $number = ($number > 0) ? '+' . $number : $number;
+    if ($decimals > 0) {
+      $formattedNumber = rtrim(rtrim($formattedNumber, '0'), ',');
     }
 
-    return $number;
+    if ($withPlusSign && $number > 0) {
+      $formattedNumber = '+' . $formattedNumber;
+    }
+
+    return $formattedNumber;
   }
 
 
