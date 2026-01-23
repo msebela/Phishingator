@@ -729,53 +729,18 @@
 
 
     /**
-     * Vloží k dané kampani nového příjemce.
+     * Přidá uživatele mezi příjemce u dané kampaně.
      *
-     * @param int $idCampaign ID kampaně
-     * @param string $email E-mail příjemce
-     * @return void
+     * @param int $idCampaign          ID kampaně
+     * @param string $email            E-mail příjemce
      * @throws UserError
      */
     public function insertRecipient($idCampaign, $email) {
-      $username = get_email_part($email, 'username');
+      if (!empty($email)) {
+        $idUser = UsersModel::getOrCreateUserByEmail($email);
 
-      if (!empty($username)) {
-        $user = UsersModel::getUserByEmail($email);
-        $idUser = $user['id_user'] ?? null;
-
-        // Pokud uživatel neexistuje, je nutné ho založit v databázi
-        // a teprve poté jej přidat jako příjemce do dané tabulky.
-        if ($idUser == null) {
-          $newUser = new UsersModel();
-          $ldap = new LdapModel();
-
-          $newUser->email = $email;
-
-          // Získání uživatelského jména uživatele z LDAP.
-          $newUser->username = $ldap->getUsernameByEmail($email);
-
-          // Pokud se podařilo z LDAPu získat uživatelské jméno, dojde k nucené registraci nového uživatele.
-          if (!empty($newUser->email) && !empty($newUser->username)) {
-            Logger::info('Registering a new user when creating a phishing campaign.', $username);
-
-            $newUser->dbTableName = 'phg_users';
-
-            $newUser->idUserGroup = NEW_USER_BY_CAMPAIGN_DEFAULT_GROUP_ID;
-            $newUser->recieveEmail = NEW_USER_BY_CAMPAIGN_PARTICIPATION;
-            $newUser->emailLimit = NEW_USER_BY_CAMPAIGN_PARTICIPATION_EMAILS_LIMIT;
-
-            $newUser->insertUser();
-
-            $idUser = Database::getLastInsertId();
-          }
-          else {
-            Logger::error('Failed to retrieve a new users email from LDAP while creating a phishing campaign.', $username);
-          }
-        }
-
-        // Znovu ověření existence ID uživatele pro případ, že by se
-        // nepodařilo založit nového uživatele v databázi.
-        if ($idUser != null) {
+        // Pokud se uživatele podařilo dohledat, popř. založit, přidat jej mezi příjemce.
+        if ($idUser !== null) {
           $recipient = [
             'id_campaign' => $idCampaign,
             'id_user' => $idUser,
@@ -784,38 +749,43 @@
             'signed' => 1
           ];
 
-          Logger::info('New recipient added to the phishing campaign.', $recipient);
+          Logger::info('New recipient added to the phishing campaign.', [$idCampaign, $email]);
 
           Database::insert('phg_campaigns_recipients', $recipient);
         }
         else {
-          Logger::error('Failed to add new recipient to the phishing campaign.', $username);
+          Logger::error('Failed to add new recipient to the phishing campaign.', [$idCampaign, $email]);
         }
       }
     }
 
 
     /**
-     * Odhlásí uživatele ze zvolené kampaně.
+     * Odebere uživatele ze seznamu příjemců u dané kampaně.
      *
      * @param int $idCampaign          ID kampaně
      * @param string $email            E-mail příjemce
      */
     public function unsignRecipient($idCampaign, $email) {
-      if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      if (!empty($email)) {
         $user = UsersModel::getUserByEmail($email);
 
-        $unsignRecipient = [
-          'id_campaign' => $idCampaign,
-          'id_user' => $user['id_user'],
-          'id_sign_by_user' => PermissionsModel::getUserId(),
-          'sign_date' => date('Y-m-d H:i:s'),
-          'signed' => 0
-        ];
+        if (!empty($user['id_user'])) {
+          $recipient = [
+            'id_campaign' => $idCampaign,
+            'id_user' => $user['id_user'],
+            'id_sign_by_user' => PermissionsModel::getUserId(),
+            'sign_date' => date('Y-m-d H:i:s'),
+            'signed' => 0
+          ];
 
-        Logger::info('Recipient removed from the phishing campaign.', $unsignRecipient);
+          Logger::info('Recipient removed from the phishing campaign.', [$idCampaign, $email]);
 
-        Database::insert('phg_campaigns_recipients', $unsignRecipient);
+          Database::insert('phg_campaigns_recipients', $recipient);
+        }
+        else {
+          Logger::error('Failed to remove recipient from the phishing campaign.', [$idCampaign, $email]);
+        }
       }
     }
 

@@ -53,23 +53,31 @@
      * @return array                   Pole obsahující data o uživateli.
      */
     private function makeUser() {
+      $user = null;
+
       $ldap = new LdapModel();
 
-      $user = [
-        'id_user_group' => $this->idUserGroup,
-        'email' => $this->email
-      ];
+      // Získání preferovaného e-mailu (pro případ aliasů) uživatele z LDAP.
+      $userEmail = $ldap->getPreferredEmailByEmail($this->email);
 
-      // Získání uživatelského jména a členství ve skupinách z LDAP.
-      $user['username'] = $ldap->getUsernameByEmail($this->email);
-      $user['departments'] = $ldap->getGroupsByUsername($user['username'], false);
+      if (!empty($userEmail)) {
+        $user['email'] = $userEmail;
 
-      // Výjimka pro případ, kdy se registruje nový uživatel - v takovém případě
-      // je do databáze nutné zapsat nikoliv NULL hodnoty, ale hodnoty nastavené
-      // v configu aplikace během registrace uživatele.
-      if ($this->recieveEmail !== NULL && $this->emailLimit !== NULL) {
-        $user['recieve_email'] = $this->recieveEmail;
-        $user['email_limit'] = $this->emailLimit;
+        // Přepsání uživatelem zadaného e-mailu za preferovaný e-mail z LDAP.
+        $this->email = $userEmail;
+
+        $user['username'] = $ldap->getUsernameByEmail($user['email']);
+        $user['departments'] = $ldap->getGroupsByUsername($user['username'], false);
+
+        $user['id_user_group'] = $this->idUserGroup;
+
+        // Výjimka pro případ, kdy se registruje nový uživatel - v takovém případě
+        // je do databáze nutné zapsat nikoliv NULL hodnoty, ale hodnoty nastavené
+        // v configu aplikace během registrace uživatele.
+        if ($this->recieveEmail !== NULL && $this->emailLimit !== NULL) {
+          $user['recieve_email'] = $this->recieveEmail;
+          $user['email_limit'] = $this->emailLimit;
+        }
       }
 
       $ldap->close();
@@ -145,6 +153,65 @@
               WHERE `url` = ?
               AND `visible` = 1
       ', $url);
+    }
+
+
+    /**
+     * Vrátí ID uživatele z databáze, popř. založí a vrátí jeho ID.
+     *
+     * @param string $email            E-mail uživatele
+     * @return int|null                ID uživatele, nebo NULL
+     * @throws UserError
+     */
+    public static function getOrCreateUserByEmail($email) {
+      // Ověření, zdali již uživatel v databázi existuje.
+      $user = self::getUserByEmail($email);
+      $idUser = $user['id_user'] ?? null;
+
+      // Pokud se uživatele nepodařilo v databázi podle e-mailu nalézt, je možné, že jde o jeho e-mailový alias.
+      if ($idUser === null) {
+        $ldap = new LdapModel();
+
+        // Získání preferovaného e-mailu uživatele z LDAP na základě předaného e-mailu (např. e-mailového aliasu).
+        $prefferedEmail = $ldap->getPreferredEmailByEmail($email);
+
+        if (!empty($prefferedEmail)) {
+          $user = UsersModel::getUserByEmail($prefferedEmail);
+          $idUser = $user['id_user'] ?? null;
+
+          // Pokud uživatel nebyl v databázi nalezen ani na základě preferovaného e-mailu, vytvořit ho.
+          if ($idUser === null) {
+            $newUser = new UsersModel();
+
+            $newUser->email = $prefferedEmail;
+            $newUser->username = $ldap->getUsernameByEmail($prefferedEmail);
+
+            // Pokud se podařilo z LDAPu k preferovanému e-mailu získat uživatelské jméno,
+            // dojde k registraci nového uživatele v rámci založení kampaně.
+            if (!empty($newUser->username)) {
+              Logger::info('Registering a new user when creating a phishing campaign.', $email);
+
+              $newUser->dbTableName = 'phg_users';
+
+              $newUser->idUserGroup = NEW_USER_BY_CAMPAIGN_DEFAULT_GROUP_ID;
+              $newUser->recieveEmail = NEW_USER_BY_CAMPAIGN_PARTICIPATION;
+              $newUser->emailLimit = NEW_USER_BY_CAMPAIGN_PARTICIPATION_EMAILS_LIMIT;
+
+              $newUser->insertUser();
+
+              $idUser = Database::getLastInsertId();
+            }
+            else {
+              Logger::error('Failed to retrieve a new users username from LDAP while creating a phishing campaign.', $email);
+            }
+          }
+        }
+        else {
+          Logger::error('Failed to retrieve a new users email from LDAP while creating a phishing campaign.', $email);
+        }
+      }
+
+      return $idUser;
     }
 
 
@@ -630,20 +697,14 @@
     /**
      * Vloží do databáze nového uživatele.
      *
-     * @return bool                    TRUE, pokud došlo k úspěšnému vložení uživatele do databáze, jinak FALSE
+     * @return bool                    TRUE, pokud došlo k úspěšnému vložení uživatele do databáze
      * @throws UserError
      */
     public function insertUser() {
-      $registrated = false;
-      $ldap = new LdapModel();
-
       $user = $this->makeUser();
 
-      // Získání preferovaného e-mailu (pro případ aliasů) uživatele z LDAP.
-      $user['email'] = $ldap->getEmailByUsername($user['username']);
-
       // Pokud se podařilo získat informace o uživateli z LDAP, vytvořit záznam v databázi.
-      if (!empty($user['username']) && filter_var($user['email'], FILTER_VALIDATE_EMAIL)) {
+      if ($user !== null) {
         $this->isEmailUnique();
 
         $user['url'] = $this->generateUserUrl();
@@ -653,12 +714,14 @@
         Logger::info('New user added.', $user);
 
         Database::insert($this->dbTableName, $user);
-        $registrated = true;
+      }
+      else {
+        Logger::error('Failed to retrieve user data from LDAP during user creation.', $user);
+
+        throw new UserError('Žádný uživatel s tímto e-mailem neexistuje.', MSG_ERROR);
       }
 
-      $ldap->close();
-
-      return $registrated;
+      return true;
     }
 
 
@@ -783,7 +846,6 @@
       $this->isEmailTooLong();
       $this->isEmailValid();
       $this->isEmailInAllowedDomains();
-      $this->existsEmailInLdap();
 
       $this->isGroupEmpty();
       $this->existsGroup();
@@ -835,28 +897,6 @@
       if (!PhishingEmailModel::isEmailInAllowedDomains($this->email)) {
         throw new UserError('E-mail uživatele vede na nepovolenou doménu.', MSG_ERROR);
       }
-    }
-
-
-    /**
-     * Ověří, zdali zadaný e-mail (včetně možných aliasů) opravdu pro daného uživatele existuje v LDAP.
-     *
-     * @throws UserError
-     */
-    private function existsEmailInLdap() {
-      $ldap = new LdapModel();
-
-      $username = $this->dbRecordData['username'] ?? '';
-
-      if (empty($username)) {
-        $username = $ldap->getUsernameByEmail($this->email);
-      }
-
-      if (!in_array(mb_strtolower($this->email), $ldap->getEmailsByUsername($username))) {
-        throw new UserError('Zadaný e-mail neexistuje nebo není s tímto uživatele svázán.', MSG_ERROR);
-      }
-
-      $ldap->close();
     }
 
 

@@ -27,10 +27,15 @@
         $user->recieveEmail = NEW_USER_PARTICIPATION;
         $user->emailLimit = NEW_USER_PARTICIPATION_EMAILS_LIMIT;
 
-        $registrated = $user->insertUser();
+        try {
+          $registrated = $user->insertUser();
 
-        if ($registrated) {
-          $this->login($identity);
+          if ($registrated) {
+            $this->login($identity);
+          }
+        }
+        catch (Exception $e) {
+          $registrated = false;
         }
       }
 

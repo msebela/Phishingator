@@ -236,14 +236,57 @@
       $emails = [];
 
       if (!empty($username)) {
-        $emails = $this->getAttributeValue($username, 'mail', null);
-      }
+        $emails = $this->getAttributeValue($username, LDAP_USER_ATTR_EMAIL, null);
 
-      if (!is_array($emails)) {
-        $emails = [$emails];
+        if (!is_array($emails)) {
+          $emails = [$emails];
+        }
+
+        // Získání e-mailových aliasů, pokud nějaké uživatel má.
+        $emailAliases = $this->getAttributeValue($username, LDAP_USER_ATTR_EMAIL_ALIASES, null);
+
+        if ($emailAliases !== null) {
+          $emails = array_merge($emails, $emailAliases);
+        }
       }
 
       return array_map('mb_strtolower', $emails);
+    }
+
+
+    /**
+     * Vrátí z LDAP hlavní (preferovanou) e-mailovou adresu na
+     * základě e-mailu uživatele (např. e-mailového aliasu).
+     *
+     * @param string $email            E-mail uživatele (např. e-mailový alias)
+     * @return string|null             Hlavní (preferovaný) e-mail uživatele, nebo NULL
+     */
+    public function getPreferredEmailByEmail($email) {
+      $preferredEmail = null;
+
+      if (!empty($email)) {
+        $escapedEmail = ldap_escape($email, '', LDAP_ESCAPE_FILTER);
+
+        // Získání všech e-mailů uživatele (tj. preferovaného i aliasů).
+        $filter = sprintf(
+          '(|(%s=%s)(%s=%s))',
+          LDAP_USER_ATTR_EMAIL, $escapedEmail,
+          LDAP_USER_ATTR_EMAIL_ALIASES, $escapedEmail
+        );
+
+        $data = $this->getDataByFilter(LDAP_USERS_DN, $filter);
+
+        // Získání hodnoty atributu, ve kterém je uložen preferovaný e-mail.
+        if (!empty($data) && !empty($data[0][LDAP_USER_ATTR_EMAIL][0])) {
+          $preferredEmail = $data[0][LDAP_USER_ATTR_EMAIL][0];
+
+          if (isset($data['count']) && $data['count'] > 1) {
+            Logger::warning('Multiple LDAP users found for email.', [$email, $preferredEmail, $data['count']]);
+          }
+        }
+      }
+
+      return $preferredEmail;
     }
 
 
