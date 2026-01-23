@@ -721,8 +721,11 @@
       // Zjištění ID nově vložené kampaně.
       $campaign['id'] = Database::getLastInsertId();
 
+      // Odstranění případných duplicit ze seznamu příjemců.
+      $uniqueRecipients = array_unique($this->recipients);
+
       // Vkládání vybraných příjemců ke kampani.
-      foreach ($this->recipients as $recipientEmail) {
+      foreach ($uniqueRecipients as $recipientEmail) {
         $this->insertRecipient($campaign['id'], $recipientEmail);
       }
     }
@@ -741,17 +744,20 @@
 
         // Pokud se uživatele podařilo dohledat, popř. založit, přidat jej mezi příjemce.
         if ($idUser !== null) {
-          $recipient = [
-            'id_campaign' => $idCampaign,
-            'id_user' => $idUser,
-            'id_sign_by_user' => PermissionsModel::getUserId(),
-            'sign_date' => date('Y-m-d H:i:s'),
-            'signed' => 1
-          ];
+          // Ověření, zdali již uživatel není mezi příjemci.
+          if (self::isUserRecipient($idCampaign, $idUser) === 0) {
+            $recipient = [
+              'id_campaign' => $idCampaign,
+              'id_user' => $idUser,
+              'id_sign_by_user' => PermissionsModel::getUserId(),
+              'sign_date' => date('Y-m-d H:i:s'),
+              'signed' => 1
+            ];
 
-          Logger::info('New recipient added to the phishing campaign.', [$idCampaign, $email]);
+            Logger::info('New recipient added to the phishing campaign.', [$idCampaign, $email]);
 
-          Database::insert('phg_campaigns_recipients', $recipient);
+            Database::insert('phg_campaigns_recipients', $recipient);
+          }
         }
         else {
           Logger::error('Failed to add new recipient to the phishing campaign.', [$idCampaign, $email]);
@@ -811,11 +817,14 @@
       // Aktuální seznam příjemců kampaně.
       $currentRecipientsArray = $this->getCampaignRecipients($id);
 
+      // Odstranění případných duplicit ze seznamu příjemců.
+      $uniqueRecipients = array_unique($this->recipients);
+
       // Seznam příjemců, kteří v databázi přebývají (oproti vyplněnému seznamu).
-      $recipientsToUnsign = array_udiff($currentRecipientsArray, $this->recipients, 'strcasecmp');
+      $recipientsToUnsign = array_udiff($currentRecipientsArray, $uniqueRecipients, 'strcasecmp');
 
       // Seznam příjemců, kteří v databázi nejsou (oproti vyplněnému seznamu).
-      $recipientsToSign = array_udiff($this->recipients, $currentRecipientsArray, 'strcasecmp');
+      $recipientsToSign = array_udiff($uniqueRecipients, $currentRecipientsArray, 'strcasecmp');
 
       // Odhlášení smazaných příjemců.
       foreach ($recipientsToUnsign as $recipient) {
@@ -1333,7 +1342,6 @@
 
       $this->isRecipientsEmpty();
       $this->isRecipientsValid();
-      $this->isRecipientsUnique();
     }
 
 
@@ -1621,18 +1629,6 @@
           }
         }
         */
-      }
-    }
-
-
-    /**
-     * Ověří, zdali seznam příjemců neobsahuje duplicity.
-     *
-     * @throws UserError
-     */
-    private function isRecipientsUnique() {
-      if (count(array_unique($this->recipients)) != count($this->recipients)) {
-        throw new UserError('Seznam příjemců obsahuje duplicitní záznam.', MSG_ERROR);
       }
     }
   }
