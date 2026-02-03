@@ -84,7 +84,9 @@
         'tests' => [
           $this->formalizeTestResult('database-backup', $this->databaseBackupMessageTest()),
           $this->formalizeTestResult('database-connection', $this->databaseConnectionTest()),
-          $this->formalizeTestResult('ldap-connection', $this->ldapConnectionTest()),
+
+          $this->formalizeTestResult('ldap-local-connection', $this->localLdapConnectionTest()),
+          $this->formalizeTestResult('ldap-remote-connection', $this->remoteLdapConnectionTest()),
 
           $this->formalizeTestResult('credentials-valid', $this->credentialsTest()),
           $this->formalizeTestResult('credentials-invalid', $this->credentialsTest(true)),
@@ -210,11 +212,11 @@
 
 
     /**
-     * Pokusí se navázat připojení s LDAP a vyhledat v jeho databázi testovací identitu.
+     * Pokusí se navázat připojení k lokálnímu LDAP a vyhledat v jeho struktuře testovací identitu.
      *
      * @return bool                    TRUE pokud se vše podaří, jinak FALSE
      */
-    private function ldapConnectionTest() {
+    private function localLdapConnectionTest() {
       $ldap = new LdapModel();
 
       $name = $ldap->getFullnameByUsername(TEST_USERNAME);
@@ -223,6 +225,38 @@
       $ldap->close();
 
       return $name != null && $email != null;
+    }
+
+
+    /**
+     * Pokusí se navázat připojení s externím LDAP.
+     *
+     * @return bool                    TRUE v případě úspěšného navazání, FALSE pokud ne,
+     *                                 3 pokud připojení k externímu LDAP není nastaveno
+     */
+    private function remoteLdapConnectionTest() {
+      $result = false;
+
+      $ldapHost = getenv('LDAP_MIGRATOR_HOST');
+
+      if (!empty($ldapHost)) {
+        $ldap = ldap_connect($ldapHost);
+
+        if ($ldap) {
+          ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+          ldap_set_option($ldap, LDAP_OPT_NETWORK_TIMEOUT, 5);
+
+          ldap_unbind($ldap);
+
+          $result = true;
+        }
+      }
+      else {
+        // Připojení k externímu LDAP není nastaveno - tj. stav neznámý.
+        $result = 3;
+      }
+
+      return $result;
     }
 
 
