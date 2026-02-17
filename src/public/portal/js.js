@@ -55,7 +55,8 @@ $('.insert-recipients-emails').on('click', function() {
   const recipientsSeparator = "\n";
 
   const recipientsTextarea = document.querySelector('#campaign-recipients');
-  const recipientsCheckboxes = document.querySelectorAll('.modal-body input[type=checkbox]');
+  const recipientsCheckboxes = document.querySelectorAll('#recipientsDialog input[type=checkbox]');
+
   const recipientsList = new Set(extractEmails(recipientsTextarea.value, recipientsSeparator));
 
   for (let i = 0; i < recipientsCheckboxes.length; i++) {
@@ -74,13 +75,52 @@ $('.insert-recipients-emails').on('click', function() {
   recipientsTextarea.value = Array.from(recipientsList).join(recipientsSeparator);
 
   updateSumEmails();
+
+  $('#recipientsDialog').modal('hide');
+});
+
+$('.remove-recipients-emails').on('click', function() {
+  const recipientsSeparator = "\n";
+
+  const recipientsTextarea = document.querySelector('#campaign-recipients');
+  const recipientsToRemoveTextarea = document.querySelector('#campaign-remove-recipients');
+
+  const recipientsList = new Set(extractEmails(recipientsTextarea.value, recipientsSeparator));
+  const recipientsToRemove = extractEmails(recipientsToRemoveTextarea.value, recipientsSeparator);
+
+  let removeCount = 0;
+
+  for (let i = 0; i < recipientsToRemove.length; i++) {
+    const email = recipientsToRemove[i].toLowerCase();
+
+    if (isEmailValid(email) && recipientsList.has(email)) {
+      recipientsList.delete(email);
+      removeCount++;
+    }
+  }
+
+  if (removeCount === 0) {
+    alert('Žádné zadané e-maily nebyly v seznamu příjemců nalezeny.');
+  }
+  else {
+    if (confirm('V seznamu příjemců bylo nalezeno ' + removeCount + ' e-mailů, které budou odstraněny. Opravdu chcete e-maily těchto příjemců odebrat?')) {
+      recipientsTextarea.value = Array.from(recipientsList).join(recipientsSeparator);
+      syncRecipientsCheckboxes(recipientsTextarea.value);
+
+      $('#removeRecipientsDialog').modal('hide');
+    }
+  }
 });
 
 $('#campaign-recipients').on('change keyup', function() {
-  const recipientsSeparator = "\n";
-  const recipientsList = new Set(extractEmails(this.value, recipientsSeparator).filter(email => isEmailValid(email)));
+  syncRecipientsCheckboxes(this.value);
+});
 
-  const checkboxes = document.querySelectorAll('.modal-body input[type="checkbox"]');
+function syncRecipientsCheckboxes(recipients) {
+  const recipientsSeparator = "\n";
+  const recipientsList = new Set(extractEmails(recipients, recipientsSeparator).filter(email => isEmailValid(email)));
+
+  const checkboxes = document.querySelectorAll('#recipientsDialog input[type="checkbox"]');
 
   for (let i = 0; i < checkboxes.length; i++) {
     const checkbox = checkboxes[i];
@@ -97,7 +137,7 @@ $('#campaign-recipients').on('change keyup', function() {
   }
 
   updateSumEmails(recipientsList.size);
-});
+}
 
 function updateSumEmails(sumEmails = null) {
   const sumEmailsLabel = document.querySelector('#countRecipients');
@@ -165,7 +205,7 @@ $('.mark-same-checkboxes').on('click', function() {
 
 function markSameCheckboxes(recipient) {
   const recipientCheckboxes = document.querySelectorAll(
-      '.modal-body input[type="checkbox"][value="' + recipient.value + '" i]'
+      '#recipientsDialog input[type="checkbox"][value="' + recipient.value + '" i]'
   );
 
   for (const checkbox of recipientCheckboxes) {
@@ -228,7 +268,7 @@ $('.select-recipients').on('click', function() {
   updateGroupCheckboxStates();
 });
 
-document.querySelectorAll('.modal-body input[type="checkbox"]').forEach(checkbox => {
+document.querySelectorAll('#recipientsDialog input[type="checkbox"]').forEach(checkbox => {
   checkbox.addEventListener('change', function () {
     updateGroupCheckboxStates();
   });
@@ -259,7 +299,7 @@ $('.import-recipients').on('click', function() {
 
         importedRecipients.forEach(function (recipient) {
           if (isEmailValid(recipient)) {
-            let recipientCheckbox = document.querySelector('.modal-body input[value="' + recipient + '" i]');
+            let recipientCheckbox = document.querySelector('#recipientsDialog input[value="' + recipient + '" i]');
 
             if (recipientCheckbox) {
               recipientCheckbox.checked = true;

@@ -175,18 +175,27 @@
             <small>Každý z&nbsp;příjemců musí být umístěn na samostatném řádku.</small>
           </div>
 
-          <div class="float-right mt-2 mb-4 text-right">
-            <input type="file" id="file-recipients" class="d-none">
+          <div class="d-flex justify-content-between align-items-top mt-2 mb-4">
+            <div class="mr-3">
+              <button type="button" class="btn btn-outline-danger btn-sm mb-1" data-toggle="modal" data-target="#removeRecipientsDialog">
+                <span data-feather="user-x"></span>
+                Hromadně odebrat
+              </button>
+            </div>
 
-            <button type="button" class="btn btn-secondary btn-sm mb-1 import-recipients">
-              <span data-feather="upload"></span>
-              Importovat příjemce
-            </button>
+            <div class="text-right">
+              <input type="file" id="file-recipients" class="d-none">
 
-            <button type="button" class="btn btn-secondary btn-sm mb-1 select-recipients" data-toggle="modal" data-target="#recipientsDialog">
-              <span data-feather="user-check"></span>
-              Vybrat příjemce
-            </button>
+              <button type="button" class="btn btn-secondary btn-sm mb-1 import-recipients">
+                <span data-feather="upload"></span>
+                Importovat příjemce
+              </button>
+
+              <button type="button" class="btn btn-secondary btn-sm mb-1 select-recipients" data-toggle="modal" data-target="#recipientsDialog">
+                <span data-feather="user-check"></span>
+                Vybrat příjemce
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -262,11 +271,9 @@
                 </div>
               </div>
             </div>
-
             <?php endif; ?>
 
             <?php foreach ($recipientsLdapGroups as $groupName => $groupUsers): ?>
-
             <div class="container-fluid pt-3 mt-3 border-top">
               <div class="row">
                 <div class="col-lg-11">
@@ -302,10 +309,38 @@
               <span data-feather="x"></span>
               Zavřít
             </button>
-
-            <button type="button" class="btn btn-primary insert-recipients-emails" data-dismiss="modal">
+            <button type="button" class="btn btn-primary insert-recipients-emails">
               <span data-feather="save"></span>
               Uložit změny
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="removeRecipientsDialog" tabindex="-1" role="dialog" aria-labelledby="removeRecipientsDialogTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="removeRecipientsDialogTitle">Hromadné odebrání příjemců podle seznamu</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <?php $input = 'remove-recipients'; ?>
+            <label for="<?= $formPrefix . $input ?>">E-maily k&nbsp;odebrání</label>
+            <textarea id="<?= $formPrefix . $input ?>" class="form-control text-monospace" rows="20"></textarea>
+            <small class="text-muted">Každý e-mail, který má být ze seznamu příjemců odstraněn, musí být umístěn na samostatném řádku.</small>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              <span data-feather="x"></span>
+              Zavřít
+            </button>
+            <button type="button" class="btn btn-danger remove-recipients-emails">
+              <span data-feather="user-x"></span>
+              Odebrat ze seznamu
             </button>
           </div>
         </div>

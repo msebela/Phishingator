@@ -129,7 +129,7 @@
     <script src="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.2/bootstrap.bundle.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
     <script src="/<?= CORE_DIR_EXTENSIONS ?>/feather.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
-    <script src="/portal/js.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+    <script src="/portal/js.js?20260217" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
     <script src="/js.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
     <script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">feather.replace();</script>
 
