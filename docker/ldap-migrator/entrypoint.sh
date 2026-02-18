@@ -6,13 +6,19 @@ log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$1] ${*:2}"
 }
 
+check_ldif_files() {
+  for f in "$1"/*.ldif; do
+    [ -s "$f" ] || return
+  done
+}
+
 DATA_SOURCE=""
 mkdir -p ldap/data
 
 if [ -x ./run-ldapsearch.sh ]; then
   log INFO "Running ldapsearch..."
 
-  if ./run-ldapsearch.sh && [ -s ldap/data/users.ldif ]; then
+  if ./run-ldapsearch.sh && check_ldif_files "ldap/data"; then
     log INFO "ldapsearch completed successfully."
     DATA_SOURCE=ldap
   else
@@ -23,7 +29,7 @@ else
 fi
 
 if [ "$DATA_SOURCE" = ldap ]; then
-  log INFO "Using freshly exported LDAP data as input (ldap/data/users.ldif)."
+  log INFO "Using freshly exported LDAP data as input (ldap/data/*.ldif)."
 elif [ -s ldap/data/users.csv ]; then
   log INFO "Using CSV file as input (ldap/data/users.csv)."
   DATA_SOURCE="csv"
