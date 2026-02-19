@@ -61,8 +61,7 @@ $('.insert-recipients-emails').on('click', function() {
 
   for (let i = 0; i < recipientsCheckboxes.length; i++) {
     const checkbox = recipientsCheckboxes[i];
-
-    const recipientEmail = checkbox.value.toLowerCase();
+    const recipientEmail = checkbox.dataset.emailLowercase;
 
     if (checkbox.checked && isEmailValid(recipientEmail)) {
       recipientsList.add(recipientEmail);
@@ -91,10 +90,9 @@ $('.remove-recipients-emails').on('click', function() {
   let removeCount = 0;
 
   for (let i = 0; i < recipientsToRemove.length; i++) {
-    const email = recipientsToRemove[i].toLowerCase();
+    const recipientEmail = recipientsToRemove[i];
 
-    if (isEmailValid(email) && recipientsList.has(email)) {
-      recipientsList.delete(email);
+    if (isEmailValid(recipientEmail) && recipientsList.delete(recipientEmail)) {
       removeCount++;
     }
   }
@@ -126,7 +124,7 @@ function syncRecipientsCheckboxes(recipients) {
     const checkbox = checkboxes[i];
 
     if (!checkbox.dataset.checkboxesGroup) {
-      const recipient = checkbox.value.trim().toLowerCase();
+      const recipient = checkbox.dataset.emailLowercase;
       const recipientChecked = recipientsList.has(recipient);
 
       if (checkbox.checked !== recipientChecked) {
@@ -205,11 +203,11 @@ $('.mark-same-checkboxes').on('click', function() {
 
 function markSameCheckboxes(recipient) {
   const recipientCheckboxes = document.querySelectorAll(
-      '#recipientsDialog input[type="checkbox"][value="' + recipient.value + '" i]'
+      '#recipientsDialog input[type="checkbox"][data-email-lowercase="' + recipient.dataset.emailLowercase + '"]'
   );
 
-  for (const checkbox of recipientCheckboxes) {
-    checkbox.checked = recipient.checked;
+  for (let i = 0; i < recipientCheckboxes.length; i++) {
+    recipientCheckboxes[i].checked = recipient.checked;
   }
 }
 

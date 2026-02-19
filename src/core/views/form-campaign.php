@@ -265,7 +265,7 @@
                 <div class="d-flex flex-row flex-wrap mt-2">
                   <?php foreach ($recipientsVolunteers as $volunteer): ?>
                   <label class="recipients-list-email text-truncate">
-                    <input type="checkbox" value="<?= $volunteer['email'] ?>" class="mark-same-checkboxes" data-group-checkbox="#group-checkbox-volunteers"<?php if ($volunteer['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($volunteer['color'])) ? '<span class="badge badge-' . $volunteer['color'] . '">' . $volunteer['username'] . '</span>@' . $volunteer['domain'] : $volunteer['email']) . ((!empty($volunteer['email_limit'])) ? '&nbsp;<span class="badge badge-secondary">' . $volunteer['email_limit'] . '</span>' : '') ?>
+                    <input type="checkbox" value="<?= $volunteer['email'] ?>" class="mark-same-checkboxes" data-email-lowercase="<?= mb_strtolower($volunteer['email']) ?>" data-group-checkbox="#group-checkbox-volunteers"<?php if ($volunteer['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($volunteer['color'])) ? '<span class="badge badge-' . $volunteer['color'] . '">' . $volunteer['username'] . '</span>@' . $volunteer['domain'] : $volunteer['email']) . ((!empty($volunteer['email_limit'])) ? '&nbsp;<span class="badge badge-secondary">' . $volunteer['email_limit'] . '</span>' : '') ?>
                   </label>
                   <?php endforeach; ?>
                 </div>
@@ -296,7 +296,7 @@
                 <div class="d-flex flex-row flex-wrap mt-2">
                   <?php foreach ($groupUsers as $user): ?>
                   <label class="text-truncate">
-                    <input type="checkbox" value="<?= $user['email'] ?>" class="mark-same-checkboxes" data-group-checkbox="#group-checkbox-<?= remove_special_chars($groupName) ?>"<?php if ($user['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($user['color'])) ? '<span class="badge badge-' . $user['color'] . '">' . $user['username'] . '</span>@' . $user['domain'] : $user['email']); ?>
+                    <input type="checkbox" value="<?= $user['email'] ?>" class="mark-same-checkboxes" data-email-lowercase="<?= mb_strtolower($user['email']) ?>" data-group-checkbox="#group-checkbox-<?= remove_special_chars($groupName) ?>"<?php if ($user['checked']): ?> checked<?php endif; ?>>&nbsp;<?= ((!empty($user['color'])) ? '<span class="badge badge-' . $user['color'] . '">' . $user['username'] . '</span>@' . $user['domain'] : $user['email']); ?>
                   </label>
                   <?php endforeach; ?>
                 </div>
