@@ -22,8 +22,8 @@
       $csvData = CampaignModel::getUsersResponsesInCampaign($id, false);
 
       // Informace o datech pro CSV export.
-      $csvHeader = ['username', 'email', 'group', 'action', 'reported'];
-      $csvDataIndexes = ['username', 'used_email', 'used_group', 'name', 'reported'];
+      $csvHeader = ['username', 'email', 'group', 'action', 'reported', 'educational_site_visited', 'educational_site_visited_utc'];
+      $csvDataIndexes = ['username', 'used_email', 'used_group', 'name', 'reported', 'edusite_visit_datetime', 'edusite_visit_datetime_utc'];
 
       $data = [
         'csvFilename' => $csvFilename,

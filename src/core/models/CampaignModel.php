@@ -970,7 +970,7 @@
       $records = Database::queryMulti('
               SELECT
                 userWorstAction.id_captured_data, userWorstAction.id_user, userWorstAction.used_email, userWorstAction.used_group, userWorstAction.id_action, userWorstAction.reported,
-                userEduSiteVisit.visit_datetime AS `edusite_visit_datetime`,
+                userEduSiteVisit.edusite_visit_datetime, userEduSiteVisit.edusite_visit_datetime_utc,
                 phg_captured_data_actions.name,
                 `username`, `email`
               FROM `phg_captured_data_actions`
@@ -981,7 +981,8 @@
                  GROUP BY `id_user`) userWorstAction
               ON phg_captured_data_actions.id_action = userWorstAction.id_action
               LEFT JOIN
-                (SELECT MIN(`id_captured_data`), `id_user`, visit_datetime
+                (SELECT MIN(`id_captured_data`), `id_user`, `visit_datetime` AS `edusite_visit_datetime`,
+                 DATE_FORMAT(CONVERT_TZ(`visit_datetime`, @@session.time_zone, "+00:00"), "%Y-%m-%dT%TZ") AS `edusite_visit_datetime_utc`
                  FROM `phg_captured_data_end`
                  WHERE `id_campaign` = ?
                  GROUP BY `id_user`) userEduSiteVisit
