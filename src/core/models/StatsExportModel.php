@@ -37,6 +37,42 @@
 
 
     /**
+     * Exportuje seznam kompromitovaných účtů pro konkrétní kampaň.
+     *
+     * @param int $id                  ID kampaně
+     * @param string|null $filepath    Cesta na webovém serveru, kde má být exportovaný soubor uložen nebo NULL,
+     *                                 pokud se soubor na webový server ukládat nemá.
+     * @return string|null             Vrátí cestu k souboru (pokud měl být soubor uložen na webovém serveru),
+     *                                 jinak NULL.
+     * @throws UserError
+     */
+    public static function exportUsersCompromised($id, $filepath = null) {
+      Logger::info('Request to export phishing campaign data (compromised users).', $id);
+
+      $csvFilename = PHISHING_CAMPAIGN_EXPORT_FILENAME . '-' . $id . '-users-compromised';
+      $csvData = CampaignModel::getCompromisedUsersInCampaign($id, false);
+
+      // Doplnění pořadí kompromitace.
+      foreach ($csvData as $key => $record) {
+        $csvData[$key]['compromise_order'] = $key + 1;
+      }
+
+      // Informace o datech pro CSV export.
+      $csvHeader = ['compromise_order', 'username', 'email', 'group', 'reported', 'time_since_campaign_start', 'seconds_since_campaign_start', 'compromise_datetime', 'compromise_datetime_utc'];
+      $csvDataIndexes = ['compromise_order', 'username', 'used_email', 'used_group', 'reported', 'time_since_campaign_start', 'seconds_since_campaign_start', 'visit_datetime', 'visit_datetime_utc'];
+
+      $data = [
+        'csvFilename' => $csvFilename,
+        'csvHeader' => $csvHeader,
+        'csvData' => $csvData,
+        'csvDataIndexes' => $csvDataIndexes
+      ];
+
+      return self::exportToCSV($data, $filepath);
+    }
+
+
+    /**
      * Exportuje počet jednotlivých akcí každého uživatele zaznamenaných na podvodné stránce u konkrétní kampaně.
      *
      * @param int $id                  ID kampaně
@@ -164,6 +200,7 @@
         $files[] = self::exportUsersResponses($idCampaign, CORE_DIR_TEMP);
         $files[] = self::exportAllCapturedData($idCampaign, CORE_DIR_TEMP);
         $files[] = self::exportUsersResponsesSum($idCampaign, CORE_DIR_TEMP);
+        $files[] = self::exportUsersCompromised($idCampaign, CORE_DIR_TEMP);
 
         // Vložení všech souborů do archivu.
         foreach ($files as $file) {

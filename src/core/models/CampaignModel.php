@@ -1001,6 +1001,46 @@
 
 
     /**
+     * Vrátí seznam uživatelů (resp. kompromitovaných účtů), kteří v dané kampani
+     * podlehli cvičnému phishingu a skončili ve stavu "zadání platných údajů".
+     *
+     * @param int $idCampaign          ID kampaně
+     * @param bool $replaceUsernames   TRUE (výchozí) pokud má dojít k nahrazení uživatelských jmen podle konfigurace
+     * @return mixed                   Seznam kompromitovaných účtů
+     */
+    public static function getCompromisedUsersInCampaign($idCampaign, $replaceUsernames = true) {
+      $records = Database::queryMulti('
+              SELECT `id_captured_data`, `used_email`, `used_group`, `visit_datetime`, `reported`,
+              DATE_FORMAT(CONVERT_TZ(`visit_datetime`, @@session.time_zone, "+00:00"), "%Y-%m-%dT%TZ") AS `visit_datetime_utc`,
+              TIMESTAMPDIFF(SECOND, TIMESTAMP(phg_campaigns.date_active_since, phg_campaigns.time_active_since), `visit_datetime`) AS `seconds_since_campaign_start`,
+              SEC_TO_TIME(TIMESTAMPDIFF(SECOND, TIMESTAMP(phg_campaigns.date_active_since, phg_campaigns.time_active_since), `visit_datetime`)) AS `time_since_campaign_start`,
+              `username`
+              FROM `phg_captured_data`
+              JOIN (
+                  SELECT `id_user`, MIN(`id_captured_data`) AS `first_id_captured_data`
+                  FROM `phg_captured_data`
+                  WHERE `id_campaign` = ?
+                  AND `id_action` = ?
+                  GROUP BY `id_user`
+              ) `first_captured_data` ON phg_captured_data.id_captured_data = first_captured_data.first_id_captured_data
+              JOIN `phg_campaigns`
+              ON phg_captured_data.id_campaign = phg_campaigns.id_campaign
+              JOIN `phg_users`
+              ON phg_captured_data.id_user = phg_users.id_user
+              WHERE phg_captured_data.id_campaign = ?
+              AND phg_captured_data.id_action = ?
+              ORDER BY `id_captured_data`
+          ', [$idCampaign, CAMPAIGN_VALID_CREDENTIALS_ID, $idCampaign, CAMPAIGN_VALID_CREDENTIALS_ID]);
+
+      if ($replaceUsernames) {
+        $records = UsersModel::setUsernamesByConfig($records);
+      }
+
+      return $records;
+    }
+
+
+    /**
      * Vrátí všechny záznamy o navštívení stránky o absolvování phishingu pro konkrétní kampaň.
      *
      * @param int $idCampaign          ID kampaně

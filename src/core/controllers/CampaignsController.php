@@ -276,6 +276,10 @@
             StatsExportModel::exportUsersResponsesSum($idCampaign);
             break;
 
+          case 'users-compromised':
+            StatsExportModel::exportUsersCompromised($idCampaign);
+            break;
+
           case 'all':
             StatsExportModel::exportAllToZipArchive($idCampaign);
             break;

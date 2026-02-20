@@ -128,6 +128,10 @@
         Akce na podvodné stránce
         <span class="badge bg-light ml-3">CSV</span>
       </a>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-compromised&amp;id=<?= $campaign['id_campaign'] ?>" class="d-flex align-items-center justify-content-between dropdown-item">
+        Kompromitované účty
+        <span class="badge bg-light ml-3">CSV</span>
+      </a>
       <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses-sum&amp;id=<?= $campaign['id_campaign'] ?>" class="d-flex align-items-center justify-content-between dropdown-item">
         Počet akcí každého uživatele
         <span class="badge bg-light ml-3">CSV</span>
