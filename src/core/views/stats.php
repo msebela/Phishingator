@@ -16,15 +16,17 @@
 
   <div class="btn-toolbar mb-2 mb-md-0 align-items-center">
     <button type="button" id="exportDropdown" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <span data-feather="save"></span>
-      Export
+      <span data-feather="download"></span>
+      Export dat
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-users-responses">
-        Graf: Reakce uživatelů na cvičný phishing <code>[PNG]</code>
+      <a href="#" class="d-flex align-items-center justify-content-between dropdown-item" data-chart="#chart-users-responses-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-users-responses">
+        Reakce uživatelů
+        <span class="badge bg-light ml-3">PNG</span>
       </a>
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-groups-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-users-responses-groups">
-        Graf: Reakce uživatelů dle oddělení <code>[PNG]</code>
+      <a href="#" class="d-flex align-items-center justify-content-between dropdown-item" data-chart="#chart-users-responses-groups-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-users-responses-groups">
+        Reakce uživatelů dle oddělení
+        <span class="badge bg-light ml-3">PNG</span>
       </a>
     </div>
   </div>

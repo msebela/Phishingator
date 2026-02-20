@@ -101,31 +101,40 @@
 
   <div class="btn-toolbar mb-2 mb-md-0 align-items-center">
     <button type="button" id="exportDropdown" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <span data-feather="save"></span>
-      Export
+      <span data-feather="download"></span>
+      Export dat
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-<?= date('Y-m-d') ?>">
-        Graf: Reakce uživatelů <code>[PNG]</code>
+      <h6 class="dropdown-header">Grafy</h6>
+      <a href="#" class="d-flex align-items-center justify-content-between dropdown-item" data-chart="#chart-users-responses" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-<?= date('Y-m-d') ?>">
+        Reakce uživatelů
+        <span class="badge bg-light ml-3">PNG</span>
       </a>
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-groups" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-groups-<?= date('Y-m-d') ?>">
-        Graf: Reakce uživatelů dle oddělení <code>[PNG]</code>
+      <a href="#" class="d-flex align-items-center justify-content-between dropdown-item" data-chart="#chart-users-responses-groups" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-groups-<?= date('Y-m-d') ?>">
+        Reakce uživatelů dle oddělení
+        <span class="badge bg-light ml-3">PNG</span>
       </a>
-      <a href="#" class="dropdown-item export-chart" data-chart="#chart-users-responses-sum" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-sum-<?= date('Y-m-d') ?>">
-        Graf: Všechny provedené akce <code>[PNG]</code>
+      <a href="#" class="d-flex align-items-center justify-content-between dropdown-item" data-chart="#chart-users-responses-sum" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-sum-<?= date('Y-m-d') ?>">
+        Všechny provedené akce
+        <span class="badge bg-light ml-3">PNG</span>
       </a>
       <div class="dropdown-divider"></div>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
-        Tabulka: Reakce uživatelů <code>[CSV]</code>
+      <h6 class="dropdown-header">Data</h6>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses&amp;id=<?= $campaign['id_campaign'] ?>" class="d-flex align-items-center justify-content-between dropdown-item">
+        Reakce uživatelů
+        <span class="badge bg-light ml-3">CSV</span>
       </a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=website-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
-        Tabulka: Akce na podvodné stránce <code>[CSV]</code>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=website-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="d-flex align-items-center justify-content-between dropdown-item">
+        Akce na podvodné stránce
+        <span class="badge bg-light ml-3">CSV</span>
       </a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses-sum&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
-        Počet akcí každého uživatele <code>[CSV]</code>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses-sum&amp;id=<?= $campaign['id_campaign'] ?>" class="d-flex align-items-center justify-content-between dropdown-item">
+        Počet akcí každého uživatele
+        <span class="badge bg-light ml-3">CSV</span>
       </a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all&amp;id=<?= $campaign['id_campaign'] ?>" class="dropdown-item">
-        Všechna data v&nbsp;archivu <code>[ZIP]</code>
+      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all&amp;id=<?= $campaign['id_campaign'] ?>" class="d-flex align-items-center justify-content-between dropdown-item">
+        Všechna data v&nbsp;archivu
+        <span class="badge bg-light ml-3">ZIP</span>
       </a>
     </div>
   </div>
