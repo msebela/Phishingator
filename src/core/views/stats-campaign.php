@@ -106,15 +106,15 @@
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
       <h6 class="dropdown-header">Grafy</h6>
-      <button type="button" class="dropdown-item d-flex align-items-center justify-content-between dropdown-item export-chart" data-chart="#chart-users-responses" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-<?= date('Y-m-d') ?>">
+      <button type="button" class="dropdown-item d-flex align-items-center justify-content-between dropdown-item export-chart" data-chart="chart-users-responses" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-<?= date('Y-m-d') ?>">
         Reakce uživatelů
         <span class="badge bg-light ml-3">PNG</span>
       </button>
-      <button type="button" class="d-flex align-items-center justify-content-between dropdown-item export-chart" data-chart="#chart-users-responses-groups" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-groups-<?= date('Y-m-d') ?>">
+      <button type="button" class="d-flex align-items-center justify-content-between dropdown-item export-chart" data-chart="chart-users-responses-groups" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-groups-<?= date('Y-m-d') ?>">
         Reakce uživatelů dle oddělení
         <span class="badge bg-light ml-3">PNG</span>
       </button>
-      <button type="button" class="d-flex align-items-center justify-content-between dropdown-item export-chart" data-chart="#chart-users-responses-sum" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-sum-<?= date('Y-m-d') ?>">
+      <button type="button" class="d-flex align-items-center justify-content-between dropdown-item export-chart" data-chart="chart-users-responses-sum" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-sum-<?= date('Y-m-d') ?>">
         Všechny provedené akce
         <span class="badge bg-light ml-3">PNG</span>
       </button>

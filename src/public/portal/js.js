@@ -347,14 +347,38 @@ $('#blur-identities').on('click', function() {
   });
 });
 
-$('.export-chart').on('click', function() {
-  const chart = document.querySelector(this.dataset.chart);
+$('.export-chart').on('click', function(e) {
+  e.preventDefault();
 
-  const link = document.createElement('a');
+  const canvas = document.getElementById(this.dataset.chart);
 
-  link.href = chart.toDataURL('image/png', 1);
-  link.download = this.dataset.filename + '.png';
-  link.click();
+  if (canvas) {
+    const chart = Chart.getChart(canvas);
+
+    if (chart) {
+      const link = document.createElement('a');
+
+      const multiplier = 2;
+
+      const originalWidth = chart.width;
+      const originalHeight = chart.height;
+      const originalDPR = chart.options.devicePixelRatio || window.devicePixelRatio;
+
+      chart.resize(originalWidth * multiplier, originalHeight * multiplier);
+      chart.options.devicePixelRatio = 3;
+
+      chart.update('none');
+
+      link.href = chart.toBase64Image('image/png');
+      link.download = this.dataset.filename + '.png';
+      link.click();
+
+      chart.resize(originalWidth, originalHeight);
+      chart.options.devicePixelRatio = originalDPR;
+
+      chart.update('none');
+    }
+  }
 });
 
 
