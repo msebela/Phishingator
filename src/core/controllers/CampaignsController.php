@@ -257,40 +257,44 @@
      *
      * @param CampaignModel $model     Instance třídy
      * @param int $idCampaign          ID kampaně
-     * @param string $exportData       Jaká data se mají exportovat
+     * @param string $dataToExport     Typ dat, která se mají exportovat
      */
-    private function processExportStats($model, $idCampaign, $exportData) {
+    private function processExportStats($model, $idCampaign, $dataToExport) {
       $this->checkRecordExistence($model->getCampaign($idCampaign));
 
-      try {
-        switch ($exportData) {
-          case 'users-responses':
-            StatsExportModel::exportUsersResponses($idCampaign);
-            break;
+      if (isset($_POST)) {
+        try {
+          $model->isValidCsrfToken($_POST);
 
-          case 'website-actions':
-            StatsExportModel::exportAllCapturedData($idCampaign);
-            break;
+          switch ($dataToExport) {
+            case 'users-responses':
+              StatsExportModel::exportUsersResponses($idCampaign);
+              break;
 
-          case 'users-responses-sum':
-            StatsExportModel::exportUsersResponsesSum($idCampaign);
-            break;
+            case 'website-actions':
+              StatsExportModel::exportAllCapturedData($idCampaign);
+              break;
 
-          case 'users-compromised':
-            StatsExportModel::exportUsersCompromised($idCampaign);
-            break;
+            case 'users-responses-sum':
+              StatsExportModel::exportUsersResponsesSum($idCampaign);
+              break;
 
-          case 'all':
-            StatsExportModel::exportAllToZipArchive($idCampaign);
-            break;
+            case 'users-compromised':
+              StatsExportModel::exportUsersCompromised($idCampaign);
+              break;
 
-          default:
-            throw new UserError('Zvolená možnost exportu neexistuje!', MSG_ERROR);
+            case 'all':
+              StatsExportModel::exportAllToZipArchive($idCampaign);
+              break;
+
+            default:
+              throw new UserError('Zvolená možnost exportu neexistuje!', MSG_ERROR);
+          }
         }
-      }
-      catch (UserError $error) {
-        $this->addMessage($error->getCode(), $error->getMessage());
-        $this->redirect($this->urlSection . '/' . ACT_STATS . '/' . $idCampaign);
+        catch (UserError $error) {
+          $this->addMessage($error->getCode(), $error->getMessage());
+          $this->redirect($this->urlSection . '/' . ACT_STATS . '/' . $idCampaign);
+        }
       }
     }
 

@@ -106,40 +106,60 @@
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
       <h6 class="dropdown-header">Grafy</h6>
-      <a href="#" class="d-flex align-items-center justify-content-between dropdown-item" data-chart="#chart-users-responses" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-<?= date('Y-m-d') ?>">
+      <button type="button" class="dropdown-item d-flex align-items-center justify-content-between dropdown-item export-chart" data-chart="#chart-users-responses" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-<?= date('Y-m-d') ?>">
         Reakce uživatelů
         <span class="badge bg-light ml-3">PNG</span>
-      </a>
-      <a href="#" class="d-flex align-items-center justify-content-between dropdown-item" data-chart="#chart-users-responses-groups" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-groups-<?= date('Y-m-d') ?>">
+      </button>
+      <button type="button" class="d-flex align-items-center justify-content-between dropdown-item export-chart" data-chart="#chart-users-responses-groups" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-groups-<?= date('Y-m-d') ?>">
         Reakce uživatelů dle oddělení
         <span class="badge bg-light ml-3">PNG</span>
-      </a>
-      <a href="#" class="d-flex align-items-center justify-content-between dropdown-item" data-chart="#chart-users-responses-sum" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-sum-<?= date('Y-m-d') ?>">
+      </button>
+      <button type="button" class="d-flex align-items-center justify-content-between dropdown-item export-chart" data-chart="#chart-users-responses-sum" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME ?>-<?= $campaign['id_campaign'] ?>-chart-users-responses-sum-<?= date('Y-m-d') ?>">
         Všechny provedené akce
         <span class="badge bg-light ml-3">PNG</span>
-      </a>
+      </button>
       <div class="dropdown-divider"></div>
       <h6 class="dropdown-header">Data</h6>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses&amp;id=<?= $campaign['id_campaign'] ?>" class="d-flex align-items-center justify-content-between dropdown-item">
-        Reakce uživatelů
-        <span class="badge bg-light ml-3">CSV</span>
-      </a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=website-actions&amp;id=<?= $campaign['id_campaign'] ?>" class="d-flex align-items-center justify-content-between dropdown-item">
-        Akce na podvodné stránce
-        <span class="badge bg-light ml-3">CSV</span>
-      </a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-compromised&amp;id=<?= $campaign['id_campaign'] ?>" class="d-flex align-items-center justify-content-between dropdown-item">
-        Kompromitované účty
-        <span class="badge bg-light ml-3">CSV</span>
-      </a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=users-responses-sum&amp;id=<?= $campaign['id_campaign'] ?>" class="d-flex align-items-center justify-content-between dropdown-item">
-        Počet akcí každého uživatele
-        <span class="badge bg-light ml-3">CSV</span>
-      </a>
-      <a href="/portal/<?= $urlSection . '/' . ACT_EXPORT ?>?data=all&amp;id=<?= $campaign['id_campaign'] ?>" class="d-flex align-items-center justify-content-between dropdown-item">
-        Všechna data v&nbsp;archivu
-        <span class="badge bg-light ml-3">ZIP</span>
-      </a>
+      <form method="post" action="/portal/<?= $urlSection . '/' . ACT_EXPORT . '/' . $campaign['id_campaign'] ?>?data=users-responses">
+        <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+
+        <button type="submit" class="btn btn-link dropdown-item d-flex align-items-center justify-content-between w-100">
+          Reakce uživatelů
+          <span class="badge bg-light ml-3">CSV</span>
+        </button>
+      </form>
+      <form method="post" action="/portal/<?= $urlSection . '/' . ACT_EXPORT . '/' . $campaign['id_campaign'] ?>?data=website-actions">
+        <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+
+        <button type="submit" class="btn btn-link dropdown-item d-flex align-items-center justify-content-between w-100">
+          Akce na podvodné stránce
+          <span class="badge bg-light ml-3">CSV</span>
+        </button>
+      </form>
+      <form method="post" action="/portal/<?= $urlSection . '/' . ACT_EXPORT . '/' . $campaign['id_campaign'] ?>?data=users-compromised">
+        <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+
+        <button type="submit" class="btn btn-link dropdown-item d-flex align-items-center justify-content-between w-100">
+          Kompromitované účty
+          <span class="badge bg-light ml-3">CSV</span>
+        </button>
+      </form>
+      <form method="post" action="/portal/<?= $urlSection . '/' . ACT_EXPORT . '/' . $campaign['id_campaign'] ?>?data=users-responses-sum">
+        <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+
+        <button type="submit" class="btn btn-link dropdown-item d-flex align-items-center justify-content-between w-100">
+          Počet akcí každého uživatele
+          <span class="badge bg-light ml-3">CSV</span>
+        </button>
+      </form>
+      <form method="post" action="/portal/<?= $urlSection . '/' . ACT_EXPORT . '/' . $campaign['id_campaign'] ?>?data=all">
+        <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+
+        <button type="submit" class="btn btn-link dropdown-item d-flex align-items-center justify-content-between w-100">
+          Všechna data v&nbsp;archivu
+          <span class="badge bg-light ml-3">ZIP</span>
+        </button>
+      </form>
     </div>
   </div>
 </div>

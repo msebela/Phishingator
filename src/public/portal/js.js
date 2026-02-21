@@ -350,8 +350,11 @@ $('#blur-identities').on('click', function() {
 $('.export-chart').on('click', function() {
   const chart = document.querySelector(this.dataset.chart);
 
-  this.setAttribute('href', chart.toDataURL('image/png', 1));
-  this.setAttribute('download', this.dataset.filename + '.png');
+  const link = document.createElement('a');
+
+  link.href = chart.toDataURL('image/png', 1);
+  link.download = this.dataset.filename + '.png';
+  link.click();
 });
 
 

@@ -20,14 +20,15 @@
       Export dat
     </button>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
-      <a href="#" class="d-flex align-items-center justify-content-between dropdown-item" data-chart="#chart-users-responses-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-users-responses">
+      <h6 class="dropdown-header">Grafy</h6>
+      <button type="button" class="dropdown-item d-flex align-items-center justify-content-between dropdown-item export-chart" data-chart="#chart-users-responses-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-users-responses">
         Reakce uživatelů
         <span class="badge bg-light ml-3">PNG</span>
-      </a>
-      <a href="#" class="d-flex align-items-center justify-content-between dropdown-item" data-chart="#chart-users-responses-groups-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-users-responses-groups">
+      </button>
+      <button type="button" class="d-flex align-items-center justify-content-between dropdown-item export-chart" data-chart="#chart-users-responses-groups-<?= $year ?>" data-filename="<?= PHISHING_CAMPAIGN_EXPORT_FILENAME . 's-' . $year ?>-chart-users-responses-groups">
         Reakce uživatelů dle oddělení
         <span class="badge bg-light ml-3">PNG</span>
-      </a>
+      </button>
     </div>
   </div>
 </div>
