@@ -291,8 +291,8 @@
      * @return string[]|string         Pole (výchozí) nebo řetězec se seznamem povolených domén
      */
     public static function getAllowedEmailDomains($returnString = false) {
-      $domains = explode(',', EMAILS_ALLOWED_DOMAINS);
-      $domains = array_map('strtolower', $domains);
+      $domains = explode(',', strtolower(EMAILS_ALLOWED_DOMAINS));
+      $domains = array_map('trim', $domains);
 
       if ($returnString) {
         $domainsString = '';
@@ -310,22 +310,32 @@
 
 
     /**
-     * Vrátí informaci, zdali zadaný e-mail vede na některou z povolených domén.
+     * Vrátí informaci, zdali zadaný e-mail vede na některou z povolených (sub)domén.
      *
-     * @param string $email            E-mail
-     * @return bool                    TRUE pokud je e-mail z povolené domény, jinak FALSE
+     * @param string $email            E-mail, který se kontroluje
+     * @return bool                    TRUE pokud je e-mail z povolené (sub)domény, jinak FALSE
      */
     public static function isEmailInAllowedDomains($email) {
       $allowedDomains = self::getAllowedEmailDomains();
-      $prefix = '@';
 
-      $email = mb_strtolower($email);
+      $email = strtolower($email);
+      $emailParts = explode('@', $email, 2);
+      $emailDomain = $emailParts[1] ?? '';
+
       $allowed = false;
 
-      foreach ($allowedDomains as $domain) {
-        $domain = mb_strtolower($domain);
+      foreach ($allowedDomains as $allowedDomain) {
+        // Pokud jsou u domény povoleny i všechny její subdomény.
+        if (str_starts_with($allowedDomain, '*.')) {
+          $domain = substr($allowedDomain, 2);
 
-        if (mb_substr($email, -mb_strlen($domain) - mb_strlen($prefix)) === $prefix . $domain) {
+          $match = $emailDomain === $domain || str_ends_with($emailDomain, '.' . $domain);
+        }
+        else {
+          $match = $emailDomain === $allowedDomain;
+        }
+
+        if ($match) {
           $allowed = true;
           break;
         }
