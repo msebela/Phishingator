@@ -276,3 +276,28 @@
 
     return $inRange;
   }
+
+
+  /**
+   * Vrátí seznam domén organizace.
+   *
+   * @return string[]                  Seznam domén organizace
+   */
+  function get_organization_domains() {
+    $domains = getenv('ORG_DOMAIN') ?: '';
+
+    $domains = array_map('trim', explode(',', $domains));
+    $domains = array_filter($domains, fn($d) => $d !== '');
+
+    return $domains;
+  }
+
+
+  /**
+   * Vrátí primární (první) doménu organizace.
+   *
+   * @return string|null               Primární doména nebo null, pokud žádná doména není definována
+   */
+  function get_organization_domain() {
+    return get_organization_domains()[0] ?? null;
+  }

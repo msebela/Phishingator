@@ -99,7 +99,10 @@
      * @return bool                    TRUE, pokud je uživatel z organizace, jinak FALSE
      */
     private function isRemoteUserFromOrganization($identity) {
-      return get_domain_from_url('https://' . get_email_part($identity, 'domain')) == getenv('ORG_DOMAIN');
+      $identityDomain = get_domain_from_url('https://' . get_email_part($identity, 'domain'));
+      $organizationDomains = get_organization_domains();
+
+      return in_array($identityDomain, $organizationDomains);
     }
 
 
@@ -126,7 +129,7 @@
       if (!$this->isRemoteUserFromOrganization($identity)) {
         Logger::error('The user identity provided by SSO does not match this Phishingator instance.', $identity);
 
-        echo 'Jste přihlášeni identitou "' . Controller::escapeOutput($identity). '", která nespadá do organizace ' . Controller::escapeOutput(getenv('ORG_DOMAIN')) . '. Odhlaste se, prosím, a přihlaste správnou identitou.';
+        echo 'Jste přihlášeni identitou "' . Controller::escapeOutput($identity). '", která nespadá do organizace ' . Controller::escapeOutput(get_organization_domain()) . '. Odhlaste se, prosím, a přihlaste správnou identitou.';
         exit();
       }
 

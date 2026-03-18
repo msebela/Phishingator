@@ -91,8 +91,8 @@
           $this->formalizeTestResult('credentials-valid', $this->credentialsTest()),
           $this->formalizeTestResult('credentials-invalid', $this->credentialsTest(true)),
 
-          $this->formalizeTestResult('credentials-email-valid', $this->credentialsTest(false, '@' . getenv('ORG_DOMAIN'))),
-          $this->formalizeTestResult('credentials-email-invalid', $this->credentialsTest(true, '@' . getenv('ORG_DOMAIN')))
+          $this->formalizeTestResult('credentials-email-valid', $this->credentialsTest(false, '@' . get_organization_domain())),
+          $this->formalizeTestResult('credentials-email-invalid', $this->credentialsTest(true, '@' . get_organization_domain()))
         ]
       ];
 

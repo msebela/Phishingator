@@ -47,7 +47,7 @@
       $phishing = [
         'recipient' => PermissionsModel::getUserName(),
         'org' => strtoupper(getenv('ORG')),
-        'orgDomain' => getenv('ORG_DOMAIN')
+        'orgDomain' => get_organization_domain()
       ];
 
       // Seznam indicií pro příklad phishingového e-mailu.
@@ -89,6 +89,8 @@
 
       $this->setTitle('Jak připravit phishing');
       $this->setView('help-principles-phishing');
+
+      $this->setViewData('orgDomain', get_organization_domain());
 
       $this->setHelpLink('https://github.com/CESNET/Phishingator/blob/main/MANUAL.md#2-p%C5%99%C3%ADru%C4%8Dka-pro-administr%C3%A1tory');
     }
