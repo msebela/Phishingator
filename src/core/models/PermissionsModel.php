@@ -7,10 +7,10 @@
    */
   class PermissionsModel {
     /**
-     * Registruje do systému nového uživatele na základě jeho identity získané z SSO.
+     * Registruje do Phishingatoru nového uživatele na základě jeho identity získané z SSO.
      *
      * @param string $identity         Identita uživatele
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele
+     * @return bool                    TRUE, pokud se registrace nového uživatele podaří, jinak FALSE
      */
     private function register($identity) {
       $registrated = false;
@@ -39,18 +39,12 @@
         }
       }
 
-      // Pokud se nepodaří získat informace o uživateli z LDAP.
-      if (!$registrated) {
-        Logger::error('Failed to retrieve data about user from LDAP during registration.', [$identity, $_SERVER['REMOTE_USER'], $_SERVER['OIDC_CLAIM_voperson_external_id']]);
-
-        echo 'Nepodařilo se získat informace o Vaší identitě (neznámá identita "' . Controller::escapeOutput($identity). '"). Kontaktujte, prosím, administrátora.';
-        exit();
-      }
+      return $registrated;
     }
 
 
     /**
-     * Vrátí jednu konkrétní identitu (při existenci více identit) uživatele z SSO,
+     * Vrátí primární identitu (při existenci více identit) uživatele z SSO,
      * na základě které bude uživatel identifikován.
      *
      * @param string $identity         Identita/identity uživatele získané z SSO
@@ -63,7 +57,7 @@
       $externalIdentities = explode(',', $_SERVER['OIDC_CLAIM_voperson_external_id'] ?? '');
       $identities = array_merge($serverIdentities, $externalIdentities);
 
-      // U uživatele s více identitami použít tu, která už je evidována v databázi Phishingatoru z LDAP.
+      // U uživatele s více identitami použít tu, která už je evidována jako primární v databázi Phishingatoru z LDAP.
       foreach ($identities as $email) {
         $user = UsersModel::getUserByEmail($email);
 
@@ -73,9 +67,25 @@
         }
       }
 
-      if ($primaryIdentity == null && !empty($identity)) {
-        // Pokud se identita uživatele nepodařilo v databázi dohledat, použít tu první z nich.
-        $primaryIdentity = (isset($identities[0]) && filter_var($identities[0], FILTER_VALIDATE_EMAIL)) ? $identities[0] : $identity;
+      if ($primaryIdentity == null) {
+        // Pokud se nepodařilo v databázi primární identitu uživatele nalézt, ověřit v LDAP, zdali nejde o e-mailový alias.
+        $ldap = new LdapModel();
+
+        foreach ($identities as $email) {
+          $ldapPreferredEmail = $ldap->getPreferredEmailByEmail($email);
+
+          if (!empty($ldapPreferredEmail)) {
+            $primaryIdentity = $ldapPreferredEmail;
+            break;
+          }
+        }
+
+        $ldap->close();
+
+        // Pokud se identitu uživatele nepodařilo v databázi, ani v LDAP dohledat, použít jako primární tu první z nich.
+        if ($primaryIdentity == null && isset($identities[0]) && filter_var($identities[0], FILTER_VALIDATE_EMAIL)) {
+          $primaryIdentity = $identities[0];
+        }
       }
 
       return $primaryIdentity;
@@ -86,7 +96,7 @@
      * Ověří, zdali je identita získaná z federativního SSO z organizace, pro kterou byla instance nasazena.
      *
      * @param string $identity         Identita uživatele
-     * @return bool                    TRUE pokud je uživatel z
+     * @return bool                    TRUE, pokud je uživatel z organizace, jinak FALSE
      */
     private function isRemoteUserFromOrganization($identity) {
       return get_domain_from_url('https://' . get_email_part($identity, 'domain')) == getenv('ORG_DOMAIN');
@@ -99,7 +109,6 @@
      * v programu.
      *
      * @param string $identity         Identita uživatele
-     * @throws UserError               Výjimka obsahující textovou informaci o chybě pro uživatele
      */
     public function login($identity) {
       $identity = $this->getUserIdentity($identity);
@@ -150,14 +159,21 @@
           $this->logLogin($user['id_user']);
         }
 
-        // Pokud se jedná o první přihlášení uživatele, úmyslně ho přesměrovat do sekce "Moje účast v programu".
+        // Pokud se jedná o první přihlášení uživatele, přesměrovat ho do sekce "Moje účast v programu".
         if ($countUserLogins == 0) {
           header('Location: ' . WEB_URL . '/portal/my-participation');
           exit();
         }
       }
       else {
-        $this->register($identity);
+        $registrated = $this->register($identity);
+
+        if (!$registrated) {
+          Logger::error('Failed to retrieve data about user from LDAP during registration.', [$identity, $_SERVER['REMOTE_USER'], $_SERVER['OIDC_CLAIM_voperson_external_id']]);
+
+          echo 'Nepodařilo se získat informace o Vaší identitě (neznámá identita "' . Controller::escapeOutput($identity). '"). Kontaktujte, prosím, administrátora.';
+          exit();
+        }
       }
     }
 
