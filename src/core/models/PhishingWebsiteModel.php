@@ -699,7 +699,7 @@
         $websiteUrl = str_replace(VAR_RECIPIENT_URL, $varReplace, $websiteUrl);
       }
 
-      return Controller::escapeOutput($websiteUrl);
+      return $websiteUrl;
     }
 
 

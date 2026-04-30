@@ -419,41 +419,47 @@
       $xpath = new DOMXPath($dom);
 
       $foundValidOccurrence = false;
+      $foundInvalidOccurrence = false;
 
-      // Proměnné používané v hlavičce e-mailu.
+      // Pokud se má zvýraznit některá z proměnných používaných v hlavičce e-mailu.
       if (in_array($this->expression, PhishingEmailModel::getEmailHeaderVariables())) {
         $foundValidOccurrence = true;
       }
-
-      // Procházení všech textových uzlů.
-      foreach ($xpath->query('//text()') as $textNode) {
-        if (!str_contains($textNode->nodeValue, $this->expression)) {
-          continue;
-        }
-
-        $parent = $textNode->parentNode;
-
-        // Provedení dalších kontrol, pokud je rodič HTML element.
-        if ($parent instanceof DOMElement) {
-          $tag = strtolower($parent->tagName);
-
-          // Výskyt indicie uvnitř odkazu.
-          if ($tag === 'a') {
-            continue;
-          }
-
-          // Výskyt indicie u již zpracovabých elementů (např. už označená indicie, proměnná apod.).
-          if ($parent->hasAttribute('class')) {
-            $class = $parent->getAttribute('class');
-
-            if (str_contains($class, 'email-variable') || str_contains($class, 'indication-link')) {
-              continue;
+      else {
+        // Pokud se má zvýraznit odkaz na podvodnou stráku (resp. přímo proměnná %url%).
+        if ($this->expression === VAR_URL) {
+          foreach ($xpath->query('//a[@href]') as $node) {
+            if ($node->getAttribute('href') === VAR_URL) {
+              $foundValidOccurrence = true;
+              break;
             }
           }
         }
+        // Pokud se má zvýraznit jakýkoli jiný text.
+        else {
+          foreach ($xpath->query('//text()') as $textNode) {
+            if (!str_contains($textNode->nodeValue, $this->expression)) {
+              continue;
+            }
 
-        $foundValidOccurrence = true;
-        break;
+            $parent = $textNode->parentNode;
+
+            if ($parent instanceof DOMElement) {
+              // Ověření, zdali se nezvýrazňuje část textu podvodného odkazu.
+              if (strtolower($parent->tagName) === 'a' && $parent->getAttribute('href') === VAR_URL) {
+                $foundInvalidOccurrence = true;
+                continue;
+              }
+            }
+
+            $foundValidOccurrence = true;
+            break;
+          }
+        }
+      }
+
+      if (!$foundValidOccurrence && $foundInvalidOccurrence) {
+        throw new UserError('Podezřelý text je součástí textu podvodného odkazu a musí být zvýrazněn celý (proměnnou ' . VAR_URL . '), nebo vůbec.', MSG_ERROR);
       }
 
       if (!$foundValidOccurrence) {

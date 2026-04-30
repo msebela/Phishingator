@@ -89,7 +89,7 @@
 
       if ($html) {
         $this->mailer->isHTML();
-        $this->mailer->AltBody = strip_tags($body);
+        $this->mailer->AltBody = PhishingEmailModel::convertEmailBodyToPlainText($body);
 
         $body = $this->getHTMLEmailSkeleton($subject, $body);
       }

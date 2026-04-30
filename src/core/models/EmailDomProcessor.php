@@ -12,23 +12,32 @@
      *
      * @param string $body             Tělo e-mailu
      * @param array $indications       Pole obsahující všechny indicie, které mají být v těle e-mailu zvýrazněny
+     * @param bool $applyIndications   TRUE (výchozí), pokud mají být v těle e-mailu vyznačeny indicie pro jeho rozpoznání, jinak FALSE
      * @param bool $highlightVariables TRUE, pokud má dojít ke zvýraznění proměnných, jinak FALSE (výchozí)
      * @return false|string            Zpracované tělo e-mailu
      * @throws DOMException
      */
-    public static function processEmailBodyHtml($body, $indications, $highlightVariables = false) {
+    public static function processEmailBodyHtml($body, $indications, $applyIndications = true, $highlightVariables = false) {
       $dom = self::loadDom($body);
 
       self::sanitizeDom($dom);
-      self::applyTextIndications($dom, $indications);
+
+      if ($applyIndications) {
+        self::applyTextIndications($dom, $indications);
+      }
 
       if ($highlightVariables) {
         self::applyVariableHighlighting($dom);
       }
 
-      self::applyLinksHighlighting($dom, $indications, $highlightVariables);
+      if ($applyIndications) {
+        self::applyLinksHighlighting($dom, $indications, $highlightVariables);
+      }
 
-      return $dom->saveHTML($dom->getElementById('root'));
+      // Výstup saveHTML automaticky vše převádí do HTML entit, včetně české diakritiky,
+      return Controller::decodeHtmlEntities(
+        $dom->saveHTML($dom->getElementById('root'))
+      );
     }
 
 
@@ -180,34 +189,35 @@
 
 
     /**
-     * Vrátí, zda je daný uzel uvnitř elementu, do kterého by se nemělo zasahovat
-     * (např. při vkládání označení indicií, proměnných nebo odkazů).
+     * Určuje, zda se daný uzel nachází v kontextu, kde není bezpečné provádět zásahy
+     * (např. vkládání označení indicií, proměnných nebo odkazů).
      *
      * @param DOMNode $node            Kontrolovaný uzel
-     * @return bool                    TRUE, pokud se nemá do uzlu zasahovat, jinak FALSE
+     * @return bool                    TRUE, pokud je uzel v zakázaném kontextu, jinak FALSE
      */
-    private static function isInsideProtectedNode($node) {
+    public static function isNodeInRestrictedContext($node) {
       $allowedTags = self::getAllowedHtmlTags();
 
       while ($node !== null) {
         if ($node instanceof DOMElement) {
           $tag = strtolower($node->tagName);
+          $class = $node->getAttribute('class');
 
-          // Ověření, zdali jde o tag, který je povolen.
+          // Nepovolený HTML tag.
           if (!isset($allowedTags[$tag])) {
             return true;
           }
 
-          // Speciální pravidlo pro již zpracované odkazy.
-          if ($node->hasAttribute('class') && str_contains($node->getAttribute('class'), 'indication-link')) {
+          // Už zpracovaný odkaz (tooltip wrapper apod.)
+          if (str_contains($class, 'indication-link') || str_contains($class, 'email-variable')) {
             return true;
           }
 
-          // Speciální pravidlo pro odkazy s indiciemi, kam je povolené zasahovat (pro vložení tooltip komponenty aj.).
           if ($tag === 'a') {
-            $isIndication = $node->hasAttribute('class') && str_contains($node->getAttribute('class'), 'indication');
+            $href = $node->getAttribute('href');
 
-            if (!$isIndication) {
+            // Zakázat, pokud jde o podvodný odkaz.
+            if ($href === VAR_URL) {
               return true;
             }
           }
@@ -221,39 +231,16 @@
 
 
     /**
-     * Určuje, zda se daný uzel nachází v kontextu, kde není bezpečné provádět zásahy
-     * (např. vkládání označení indicií, proměnných nebo odkazů).
+     * Ověří, zdali je textový element uvnitř daného tagu.
      *
-     * @param DOMNode $node            Kontrolovaný uzel
-     * @return bool                    TRUE, pokud je uzel v zakázaném kontextu, jinak FALSE
+     * @param DOMElement $node         Textový element
+     * @param string $tagName          Název tagu, který by měl být rodičem textového elementu
+     * @return bool                    TRUE, pokud je textový element uvnitř daného tagu, jinak FALSE
      */
-    public static function isNodeInRestrictedContext($node) {
-      $allowedTags = self::getAllowedHtmlTags();
-
+    private static function isInsideTag($node, $tagName) {
       while ($node !== null) {
-        if ($node instanceof DOMElement) {
-          $tag = strtolower($node->tagName);
-          $class = $node->getAttribute('class') ?? '';
-
-          // Nepovolený HTML tag.
-          if (!isset($allowedTags[$tag])) {
-            return true;
-          }
-
-          // Už zpracovaný odkaz (tooltip wrapper apod.)
-          if (str_contains($class, 'indication-link') || str_contains($class, 'email-variable')) {
-            return true;
-          }
-
-          // Běžný odkaz.
-          if ($tag === 'a') {
-            $isIndication = str_contains($class, 'indication');
-
-            // Zakázat, pokud nejde o indicii nebo o proměnno pro podvodný odkaz.
-            if (!$isIndication) {
-              return true;
-            }
-          }
+        if ($node instanceof DOMElement && strtolower($node->tagName) === $tagName) {
+          return true;
         }
 
         $node = $node->parentNode;
@@ -309,27 +296,29 @@
         $offset = 0;
 
         // Procházení všech výskytů daného výrazu v textu.
-        while (($pos = strpos($text, $expression, $offset)) !== false) {
+        while (($pos = mb_strpos($text, $expression, $offset)) !== false) {
           // Vložení textu před nalezeným výrazem zpět jako textový uzel.
           if ($pos > $offset) {
             $parent->insertBefore(
-              $dom->createTextNode(substr($text, $offset, $pos - $offset)),
+              $dom->createTextNode(mb_substr($text, $offset, $pos - $offset)),
               $textNode
             );
           }
 
+          $isInsideLink = self::isInsideTag($textNode->parentNode, 'a');
+
           // Vytvoření obalového elementu.
-          $wrapper = $wrapperFactory($dom, $expression);
+          $wrapper = $wrapperFactory($dom, $expression, $isInsideLink);
           $parent->insertBefore($wrapper, $textNode);
 
           // Posunutí offsetu za aktuální výskyt textu.
-          $offset = $pos + strlen($expression);
+          $offset = $pos + mb_strlen($expression);
         }
 
         // Vložení zbytku textu za poslední výskyt zpět.
-        if ($offset < strlen($text)) {
+        if ($offset < mb_strlen($text)) {
           $parent->insertBefore(
-            $dom->createTextNode(substr($text, $offset)),
+            $dom->createTextNode(mb_substr($text, $offset)),
             $textNode
           );
         }
@@ -345,13 +334,23 @@
      *
      * @param DOMElement $node         Element, který bude zvýrazněn jako indicie
      * @param int $idIndication        Identifikátor indicie
+     * @param bool $asLink             TRUE (výchozí), pokud jde o indicii pro odkaz, FALSE pokud o běžnou indicii
      * @return void
      */
-    private static function applyIndicationAttributes($node, $idIndication) {
+    private static function applyIndicationAttributes($node, $idIndication, $asLink = true) {
+      // Základní CSS třídy indicií.
+      $classes = ['indication', 'mark-indication'];
+
+      if ($asLink) {
+        // Dodatečná třída, pokud jde o indicii pro odkaz, která je klikatelná.
+        $classes[] = 'anchor-link';
+      }
+
+      $node->setAttribute('class', implode(' ', $classes));
+
       if ($idIndication != null) {
         $node->setAttribute('href', '#indication-' . $idIndication . '-text');
         $node->setAttribute('id', 'indication-' . $idIndication);
-        $node->setAttribute('class', 'indication anchor-link mark-indication');
         $node->setAttribute('data-indication', $idIndication);
       }
     }
@@ -363,13 +362,16 @@
      * @param DOMDocument $dom         Dokument, ve kterém dojde k vyznačení indicií
      * @param string $expression       Text, který se bude obalovat
      * @param int $idIndication        Identifikátor indicie
+     * @param bool $asLink             TRUE (výchozí), pokud má element obalovat odkaz, FALSE pokud běžný text
      * @return DOMElement              Element s textem obalený jako indicie
      * @throws DOMException
      */
-    private static function createIndicationNode($dom, $expression, $idIndication) {
-      $node = $dom->createElement('a');
+    private static function createIndicationNode($dom, $expression, $idIndication, $asLink = true) {
+      $tag = $asLink ? 'a' : 'span';
 
-      self::applyIndicationAttributes($node, $idIndication);
+      $node = $dom->createElement($tag);
+
+      self::applyIndicationAttributes($node, $idIndication, $asLink);
 
       $node->appendChild($dom->createTextNode($expression));
       $node->appendChild(self::createIconsNode($dom));
@@ -510,7 +512,8 @@
         self::wrapExpression(
           $dom,
           $indication['expression'],
-          fn($dom, $expr) => self::createIndicationNode($dom, $expr, $indication['id_indication'])
+          fn($dom, $expr, $isInsideLink) =>
+          self::createIndicationNode($dom, $expr, $indication['id_indication'], !$isInsideLink)
         );
       }
     }

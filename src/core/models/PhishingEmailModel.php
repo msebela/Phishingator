@@ -399,7 +399,7 @@
 
       // Nahrazení proměnné pro odkaz na podvodnou stránku za personalizovaný odkaz.
       if (!empty($url) && $user !== null && !empty($idCampaign)) {
-        $variables[VAR_URL] = PhishingWebsiteModel::makeWebsiteUrl($url, WebsitePrependerModel::makeUserWebsiteId($idCampaign, $user['url']));
+        $variables[VAR_URL] = Controller::escapeOutput(PhishingWebsiteModel::makeWebsiteUrl($url, WebsitePrependerModel::makeUserWebsiteId($idCampaign, $user['url'])));
       }
       else {
         $variables[VAR_URL] = VAR_URL_PREVIEW;
@@ -436,12 +436,13 @@
      *
      * @param string $body             Tělo e-mailu
      * @param array $indications       Pole obsahující všechny indicie, které mají být v těle e-mailu zvýrazněny
+     * @param bool $applyIndications   TRUE (výchozí), pokud mají být v těle e-mailu vyznačeny indicie pro jeho rozpoznání, jinak FALSE
      * @param bool $highlightVariables TRUE, pokud má dojít ke zvýraznění proměnných, jinak FALSE (výchozí)
-     * @param bool $isHtml             TRUE, pokud se jedná o HTML e-mail, jinak FALSE
+     * @param bool $isHtml             TRUE, pokud se jedná o HTML e-mail, jinak FALSE (výchozí)
      * @return false|string
      * @throws DOMException
      */
-    private static function renderEmailBodyHtml($body, $indications = [], $highlightVariables = false, $isHtml = false) {
+    private static function renderEmailBodyHtml($body, $indications = [], $applyIndications = true, $highlightVariables = false, $isHtml = false) {
       $body = normalize_new_lines($body);
 
       // Pokud je tělo e-mailu v plain textu, převést ho do HTML pro následné zpracování.
@@ -449,17 +450,17 @@
         $body = nl2br(Controller::escapeOutput($body));
       }
 
-      return EmailDomProcessor::processEmailBodyHtml($body, $indications, $highlightVariables);
+      return EmailDomProcessor::processEmailBodyHtml($body, $indications, $applyIndications, $highlightVariables);
     }
 
 
     /**
-     * Vrátí normalizované tělo e-mailu zpracované pro výpis v plain textu.
+     * Vrátí normalizované tělo e-mailu bez HTML tagů zpracované pro výpis v plain textu.
      *
      * @param string $body             Tělo e-mailu
      * @return string                  Normalizované tělo e-mailu v plain textu
      */
-    private static function renderEmailBodyPlain($body) {
+    public static function convertEmailBodyToPlainText($body) {
       $body = normalize_new_lines($body);
 
       $body = strip_tags($body);
@@ -474,7 +475,7 @@
      *
      * @param array $email                 Pole s daty o e-mailu
      * @param array|null $user             Pole s daty o uživateli, nebo NULL, pokud se nemají informace o uživateli do e-mailu vkládat
-     * @param bool|array $applyIndications TRUE (výchozí), pokud mají být k e-mailu zahrnuty i indicie pro jeho rozpoznání, jinak FALSE
+     * @param bool $applyIndications       TRUE (výchozí), pokud mají být v e-mailu vyznačeny indicie pro jeho rozpoznání, jinak FALSE
      * @param bool $highlightVariables     TRUE, pokud se mají v těle e-mailu vyznačit proměnné, jinak FALSE (výchozí)
      * @param bool $htmlOutput             TRUE (výchozí), pokud je cílem e-mail vypsat do HTML, jinak FALSE
      * @return array                       Personalizovaný e-mail
@@ -486,8 +487,9 @@
       // Personalizace hlaviček e-mailu.
       $email = self::personalizeEmailHeader($email, $user);
 
-      // Získání indicií, pokud mají být v e-mailu zvýrazněny.
-      if ($applyIndications) {
+      // Získání indicií, pokud mají být v e-mailu zvýrazněny a pokud e-mail
+      // již existuje v databázi (kvůli náhledu zatím nepřidaného e-mailu).
+      if ($applyIndications && isset($email['id_email'])) {
         $indications = EmailIndicationsModel::getEmailIndications($email['id_email']);
         $email['indications'] = $indications;
 
@@ -502,7 +504,7 @@
       $email['sender'] = self::formatEmailSenderNameHeader($email['sender_email'], $email['sender_name']);
 
       // Personalizace těla e-mailu.
-      $email['body'] = self::processEmailBody($email, $user, $indications, $highlightVariables, $htmlOutput);
+      $email['body'] = self::processEmailBody($email, $user, $indications, $applyIndications, $highlightVariables, $htmlOutput);
 
       return $email;
     }
@@ -560,17 +562,18 @@
      * @param array $email             Pole s daty o e-mailu
      * @param array $user              Pole s daty o uživateli, který bude příjemcem e-mailu
      * @param array $indications       Pole s daty o indiciích
+     * @param bool $applyIndications   TRUE (výchozí), pokud mají být v těle e-mailu vyznačeny indicie pro jeho rozpoznání, jinak FALSE
      * @param bool $highlightVariables TRUE, pokud se mají v těle e-mailu vyznačit proměnné, jinak FALSE (výchozí)
      * @param bool $htmlOutput         TRUE (výchozí), pokud je cílem e-mail vypsat do HTML, jinak FALSE
      * @return string                  Personalizované tělo e-mailu
      * @throws DOMException
      */
-    private static function processEmailBody($email, $user, $indications, $highlightVariables, $htmlOutput) {
+    private static function processEmailBody($email, $user, $indications, $applyIndications = true, $highlightVariables = false, $htmlOutput = true) {
       if (!empty($email['body'])) {
         // Sanitizace HTML, doplnění indicií, proměnných.
         $body = $htmlOutput
-          ? self::renderEmailBodyHtml($email['body'], $indications, $highlightVariables, $email['html'])
-          : self::renderEmailBodyPlain($email['body']);
+          ? self::renderEmailBodyHtml($email['body'], $indications, $applyIndications, $highlightVariables, $email['html'])
+          : self::convertEmailBodyToPlainText($email['body']);
 
         // Personalizace těla e-mailu.
         if (isset($user['email'])) {

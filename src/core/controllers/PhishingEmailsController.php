@@ -227,7 +227,7 @@
       // Uložení čistého těla e-mailu (bez vložených HTML indicií apod.) do modelu pro následné kontroly.
       $modelIndication->email = $phishingEmail['body'];
 
-      // Personalizace e-mailu podle přihlášeného uživatele.
+      // Načtení e-mailu bez personalizace proměnných, aby byly viditelné pro případné vyznačení indicií.
       $phishingEmail = $model->preparePhishingEmail($phishingEmail, null, true, true);
 
       $this->setViewData('phishingEmail', $phishingEmail);
@@ -341,7 +341,7 @@
       $this->checkRecordExistence($phishingEmail);
 
       // Personalizace e-mailu podle přihlášeného uživatele.
-      $phishingEmail = $model->preparePhishingEmail($phishingEmail, $this->user, false, true);
+      $phishingEmail = $model->preparePhishingEmail($phishingEmail, $this->user);
 
       $this->setViewData('email', $phishingEmail);
     }
