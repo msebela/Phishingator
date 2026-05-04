@@ -23,7 +23,6 @@
           self::$connection = new PDO(DB_PDO_DSN, DB_USERNAME, DB_PASSWORD);
 
           self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-          self::$connection->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, 'SET NAMES ' . DB_ENCODING);
           self::$connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         }
       }

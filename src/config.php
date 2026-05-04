@@ -9,8 +9,11 @@
 
 
   /* --- PŘIPOJENÍ K DATABÁZI --- */
-  /** PDO řetězec sloužící pro připojení k databázi (včetně hostitele a názvu databáze). */
-  define('DB_PDO_DSN', 'mysql:host=' . ((getenv('DB_HOST')) ? getenv('DB_HOST') : 'database') . ';dbname=' . ((getenv('DB_DATABASE')) ? getenv('DB_DATABASE') : 'phishingator'));
+  /** Hostitel databáze. */
+  define('DB_HOST', ((getenv('DB_HOST')) ? getenv('DB_HOST') : 'database'));
+
+  /** Název databáze. */
+  define('DB_DATABASE', ((getenv('DB_DATABASE')) ? getenv('DB_DATABASE') : 'phishingator'));
 
   /** Uživatelské jméno do databáze. */
   define('DB_USERNAME', getenv('DB_USERNAME'));
@@ -18,8 +21,11 @@
   /** Heslo do databáze. */
   define('DB_PASSWORD', getenv('DB_PASSWORD'));
 
-  /** Kódování použité při práci s databází. */
-  define('DB_ENCODING', 'utf8');
+  /** Kódování připojení k databázi. */
+  define('DB_CHARSET', 'utf8mb4');
+
+  /** PDO DSN pro připojení k databázi. */
+  define('DB_PDO_DSN', 'mysql:host=' . DB_HOST . ';dbname=' . DB_DATABASE . ';charset=' . DB_CHARSET);
 
 
 
