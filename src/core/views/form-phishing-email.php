@@ -42,6 +42,7 @@
       valid_styles: {'*': 'color,background-color,text-align,font-weight'},
       content_css: '/style-email.css',
       language: 'cs',
+      link_default_target: '_blank',
 
       setup: function(editor) {
         function wrapVariables() {
