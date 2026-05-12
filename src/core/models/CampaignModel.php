@@ -1378,8 +1378,10 @@
       $this->isEmptyDateActiveTo();
       $this->isDateActiveToValid();
 
-      $this->isDateActiveSinceGreatherThanDateActiveTo();
-      $this->isTimeActiveSinceGreatherThanTimeActiveTo();
+      $this->isDateActiveSinceGreaterThanDateActiveTo();
+      $this->isTimeActiveSinceGreaterThanTimeActiveTo();
+      $this->isDatetimeActiveSinceDifferentThanDatetimeActiveTo();
+      $this->isDatetimeDiffAtLeastMinutes();
 
       $this->isRecipientsEmpty();
       $this->isRecipientsValid();
@@ -1599,7 +1601,7 @@
      *
      * @throws UserError
      */
-    private function isDateActiveSinceGreatherThanDateActiveTo() {
+    private function isDateActiveSinceGreaterThanDateActiveTo() {
       if (strtotime($this->dateActiveSince) > strtotime($this->dateActiveTo)) {
         throw new UserError('Datum zahájení kampaně nemůže být později než datum ukončení kampaně.', MSG_ERROR);
       }
@@ -1611,9 +1613,36 @@
      *
      * @throws UserError
      */
-    private function isTimeActiveSinceGreatherThanTimeActiveTo() {
+    private function isTimeActiveSinceGreaterThanTimeActiveTo() {
       if (strtotime($this->dateActiveSince . ' ' . $this->timeActiveSince) > strtotime($this->dateActiveTo . ' ' . $this->timeActiveTo)) {
         throw new UserError('Čas zahájení kampaně nemůže být ve stejném dni později než čas ukončení kampaně.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali není datum a čas zahájení kampaně shodné s datem a časem ukončení kampaně.
+     *
+     * @throws UserError
+     */
+    private function isDatetimeActiveSinceDifferentThanDatetimeActiveTo() {
+      if (strtotime($this->dateActiveSince . ' ' . $this->timeActiveSince) == strtotime($this->dateActiveTo . ' ' . $this->timeActiveTo)) {
+        throw new UserError('Datum a čas zahájení kampaně nemůže být stejné jako datum a čas ukončení kampaně.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali je mezi datem a časem zahájení kampaně a datem a časem ukončení kampaně nějaký minimální čas.
+     *
+     * @throws UserError
+     */
+    private function isDatetimeDiffAtLeastMinutes($minutes = 10) {
+      $datetimeSinceTimestamp = strtotime($this->dateActiveSince . ' ' . $this->timeActiveSince);
+      $datetimeToTimestamp = strtotime($this->dateActiveTo . ' ' . $this->timeActiveTo);
+
+      if (($datetimeToTimestamp - $datetimeSinceTimestamp) < $minutes * 60) {
+        throw new UserError('Rozdíl mezi časem zahájení a časem ukončení kampaně musí být alespoň ' . $minutes . ' minut.', MSG_ERROR);
       }
     }
 
