@@ -282,8 +282,8 @@
         Příklad HTML tagu pro odkaz v&nbsp;e-mailu:
       </p>
       <ul class="form-text text-muted list-unstyled <?= $formPrefix ?>variables">
-        <li><code class="cursor-pointer" data-var='<a href="<?= VAR_URL ?>">odkaz</a>' data-type="html">&lt;a href="<?= VAR_URL ?>"&gt;odkaz&lt;/a&gt;</code> &ndash; odkaz na podvodnou stránku</li>
-        <li><code class="cursor-pointer" data-var='<a href="https://">odkaz</a>' data-type="html">&lt;a href="https://&hellip;"&gt;odkaz&lt;/a&gt;</code> &ndash; libovolný HTTP(S) odkaz</li>
+        <li><code class="cursor-pointer" data-var='<a href="<?= VAR_URL ?>" target="_blank">odkaz</a>' data-type="html">&lt;a href="<?= VAR_URL ?>"&gt;odkaz&lt;/a&gt;</code> &ndash; odkaz na podvodnou stránku</li>
+        <li><code class="cursor-pointer" data-var='<a href="https://" target="_blank">odkaz</a>' data-type="html">&lt;a href="https://&hellip;"&gt;odkaz&lt;/a&gt;</code> &ndash; libovolný HTTP(S) odkaz</li>
       </ul>
     </div>
   </div>
