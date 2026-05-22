@@ -386,17 +386,23 @@ $('.export-chart').on('click', function(e) {
 $('.replace-variable').on('click', function() {
   const input = document.querySelector(this.dataset.input);
 
-  if (confirm('Opravdu chcete obsah pole nahradit touto proměnnou?')) {
-    input.value = this.dataset.var;
-    input.focus();
+  if (input) {
+    const hasValue = input.value.trim() !== '';
+
+    if (!hasValue || confirm('Opravdu chcete obsah pole nahradit touto proměnnou?')) {
+      input.value = this.dataset.var;
+      input.focus();
+    }
   }
 });
 
 $('.insert-variable').on('click', function() {
   const input = document.querySelector(this.dataset.input);
 
-  input.value = input.value + this.dataset.var;
-  input.focus();
+  if (input) {
+    input.value = input.value + this.dataset.var;
+    input.focus();
+  }
 });
 
 

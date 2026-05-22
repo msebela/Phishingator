@@ -230,8 +230,12 @@
       // Načtení e-mailu bez personalizace proměnných, aby byly viditelné pro případné vyznačení indicií.
       $phishingEmail = $model->preparePhishingEmail($phishingEmail, null, true, true);
 
+      $countIndications = count($phishingEmail['indications']);
+
       $this->setViewData('phishingEmail', $phishingEmail);
       $this->setViewData('emailIndications', $phishingEmail['indications']);
+      $this->setViewData('emailIndicationsSum', $countIndications);
+      $this->setViewData('emailIndicationsColor', EmailIndicationsModel::getColorByCountIndications($countIndications));
       $this->setViewData('existsUrlIndication', EmailIndicationsModel::findIndicationIdByExpression($phishingEmail['indications'], VAR_URL) !== null);
 
       // Přidání nové indicie.
