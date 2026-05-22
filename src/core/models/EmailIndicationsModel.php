@@ -23,7 +23,7 @@
     protected $position;
 
     /**
-     * @var string      Výraz (podezřelý text), který představuje indicii k rozpoznání phishingu.
+     * @var string      Výraz (zvýrazněný text), který představuje indicii k rozpoznání phishingu.
      */
     protected $expression;
 
@@ -304,8 +304,6 @@
       $this->isPositionNumeric();
       $this->isPositionInLimit();
 
-      $this->isExpressionEmpty();
-      $this->isExpressionTooShort();
       $this->isExpressionTooLong();
       $this->existExpressionInText();
       $this->isExpressionInValidPlacement();
@@ -355,43 +353,19 @@
 
 
     /**
-     * Ověří, zdali byl vyplněn podezřelý text k rozpoznání phishingu.
-     *
-     * @throws UserError
-     */
-    private function isExpressionEmpty() {
-      if (empty($this->expression)) {
-        throw new UserError('Není vyplněn podezřelý text.', MSG_ERROR);
-      }
-    }
-
-
-    /**
-     * Ověří, zdali zadaný podezřelý text není příliš krátký.
-     *
-     * @throws UserError
-     */
-    private function isExpressionTooShort() {
-      if (mb_strlen($this->expression) < 3) {
-        throw new UserError('Podezřelý text je příliš krátký.', MSG_ERROR);
-      }
-    }
-
-
-    /**
-     * Ověří, zdali zadaný podezřelý text není příliš dlouhý.
+     * Ověří, zdali zadaný zvýrazněný text není příliš dlouhý.
      *
      * @throws UserError
      */
     private function isExpressionTooLong() {
       if (mb_strlen($this->expression) > $this->inputsMaxLengths['expression']) {
-        throw new UserError('Podezřelý text je příliš dlouhý.', MSG_ERROR);
+        throw new UserError('Zvýrazněný text je příliš dlouhý.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali se podezřelý text nachází v těle e-mailu, nebo zda jde
+     * Ověří, zdali se zvýrazněný text nachází v těle e-mailu, nebo zda jde
      * o proměnnou, která se může vyskytovat v hlavičce e-mailu.
      *
      * @throws UserError
@@ -399,20 +373,20 @@
     private function existExpressionInText() {
       if (!str_contains($this->email, $this->expression)
           && !in_array($this->expression, PhishingEmailModel::getEmailHeaderVariables())) {
-        throw new UserError('Podezřelý text nebyl v e-mailu nalezen.', MSG_ERROR);
+        throw new UserError('Zvýrazněný text nebyl v e-mailu nalezen.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali nebyl jako podezřelý text vybrán HTML tag nebo jeho část.
+     * Ověří, zdali nebyl jako zvýrazněný text vybrán HTML tag nebo jeho část.
      *
      * @throws UserError
      */
     private function isExpressionInValidPlacement() {
       // Ověření, zda není cílem zvýraznit HTML tag.
       if (str_contains($this->expression, '<') || str_contains($this->expression, '>')) {
-        throw new UserError('Podezřelý text nemůže být HTML tag nebo jeho část.', MSG_ERROR);
+        throw new UserError('Zvýrazněný text nemůže být HTML tag nebo jeho část.', MSG_ERROR);
       }
 
       $dom = EmailDomProcessor::loadDom($this->email);
@@ -459,17 +433,17 @@
       }
 
       if (!$foundValidOccurrence && $foundInvalidOccurrence) {
-        throw new UserError('Podezřelý text je součástí textu podvodného odkazu a musí být zvýrazněn celý (proměnnou ' . VAR_URL . '), nebo vůbec.', MSG_ERROR);
+        throw new UserError('Zvýrazněný text je součástí textu podvodného odkazu a musí být zvýrazněn celý (proměnnou ' . VAR_URL . '), nebo vůbec.', MSG_ERROR);
       }
 
       if (!$foundValidOccurrence) {
-        throw new UserError('Podezřelý text musí být mimo odkazy nebo již označené prvky.', MSG_ERROR);
+        throw new UserError('Zvýrazněný text musí být mimo odkazy nebo již označené prvky.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali podezřelý text není podřetězcem některé z proměnných.
+     * Ověří, zdali zvýrazněný text není podřetězcem některé z proměnných.
      *
      * @throws UserError
      */
@@ -477,41 +451,40 @@
       $variables = PhishingEmailModel::getEmailBodyVariables();
 
       foreach ($variables as $variable) {
-        // Přeskočit přesnou shodu s názvem proměnné.
-        if ($this->expression === $variable) {
+        // Přeskočit, pokud se zvýrazněný text shoduje s názvem proměnné, nebo pokud jde o obecnou indicii (tj. je prázdný).
+        if ($this->expression === $variable || empty($this->expression)) {
           continue;
         }
 
-        // Pokud je expression obsaženo uvnitř proměnné → zakázat
         if (str_contains($variable, $this->expression)) {
-          throw new UserError('Podezřelý text je částečně obsažen v názvu některé z proměnných.', MSG_ERROR);
+          throw new UserError('Zvýrazněný text je částečně obsažen v názvu některé z proměnných.', MSG_ERROR);
         }
       }
     }
 
 
     /**
-     * Ověří, zdali podezřelý text není již mezi ostatními indiciemi (tzn. jestli je unikátní).
+     * Ověří, zdali zvýrazněný text není již mezi ostatními indiciemi (tzn. jestli je unikátní).
      *
      * @param int $idIndication        ID indicie (nepovinný parametr), aby se při úpravě vyloučila upravovaná indicie
      * @throws UserError
      */
     private function isExpressionUnique($idIndication = 0) {
-      if (self::existEmailIndication($this->idEmail, $this->expression, $idIndication) > 0) {
-        throw new UserError('Stejný podezřelý text je již veden mezi ostatními indiciemi.', MSG_ERROR);
+      if (!empty($this->expression) && self::existEmailIndication($this->idEmail, $this->expression, $idIndication) > 0) {
+        throw new UserError('Stejný zvýrazněný text je již veden mezi ostatními indiciemi.', MSG_ERROR);
       }
     }
 
 
     /**
-     * Ověří, zdali podezřelý text není obsažen jako podřetězec v některé z jiných indicií.
+     * Ověří, zdali zvýrazněný text není obsažen jako podřetězec v některé z jiných indicií.
      *
      * @param int $idIndication        ID indicie (nepovinný parametr), aby se při úpravě vyloučila upravovaná indicie
      * @throws UserError
      */
     private function isNotExpressionInExpressions($idIndication = 0) {
-      if (self::existEmailIndication($this->idEmail, $this->expression, $idIndication, true) > 0) {
-        throw new UserError('Podezřelý text je obsažen v některé z jiných indicií.', MSG_ERROR);
+      if (!empty($this->expression) && self::existEmailIndication($this->idEmail, $this->expression, $idIndication, true) > 0) {
+        throw new UserError('Zvýrazněný text je obsažen v některé z jiných indicií.', MSG_ERROR);
       }
     }
 

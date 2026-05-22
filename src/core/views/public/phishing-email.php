@@ -86,13 +86,14 @@
             <?= $indication['title'] ?>
           </h5>
           <p class="card-text"><?= $indication['description'] ?></p>
-
+          <?php if (!empty($indication['expression'])): ?>
           <div class="clearfix">
             <button type="button" id="indication-<?= $indication['id_indication'] ?>-btn" class="btn btn-sm btn-info float-right mark-indication" data-indication="<?= $indication['id_indication'] ?>">
               <span data-feather="chevron-up"></span>
               <span>Označit</span>
             </button>
           </div>
+          <?php endif; ?>
         </div>
       </a>
     </div>

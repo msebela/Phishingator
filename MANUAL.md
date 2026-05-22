@@ -156,12 +156,13 @@ Následující tabulka uvádí seznam povolených tagů, které je možné použ
 Pro přidání indicií k phishingovému e-mailu stačí v souhrnném seznamu všech e-mailů kliknout na tlačítko *Nastavit indicie* (číslo u popisku tlačítka udává počet již přidaných indicií). Následuje zobrazení náhledu přidaného podvodného e-mailu a formuláře pro přidání nových či úpravu dosud přidaných indicií. Vstupní pole jsou následující:
 
 * **pořadí** – pořadí, podle kterého se budou indicie vypisovat u náhledu podvodného e-mailu a především na vzdělávací stránce
-* **podezřelý text** – konkrétní pasáž v textu, která má být červeně zvýrazněna (resp. podtržena) a se kterou má být svázán název a popis indicie
-  * pokud není cílem odkázat na text v těle e-mailu, ale na jinou část e-mailu (předmět, odesílatel), je možné použít následující **proměnné**:
+* **zvýrazněný text** – nepovinný údaj obsahující konkrétní pasáž v textu, která má být zvýrazněna a spojena s názvem a popisem indicie
+  * pokud zvýrazněný text nebude vyplněn, jde o **obecnou indicii** (platí pro celý e-mail a nezvýrazňuje konkrétní text) 
+  * pokud je cílem označit jinou část e-mailu než tělo (předmět, odesílatele), je možné použít následující **proměnné**:
     * `%sender_name%` – pro označení jména odesílatele e-mailu
     * `%sender_email%` – pro označení e-mailu odesílatele
     * `%subject%` – pro označení předmětu e-mailu
-* **název indicie** – stručný název indicie (např. podvodný odesílatel, podvodný odkaz, podezřelé oslovení, překlepy apod.)
+* **název indicie** – stručný název indicie (např. podvodný odesílatel, podvodný odkaz, podezřelé oslovení, časový nátlak, vyhrožování apod.)
 * **popis** – nepovinný údaj obsahující podrobnější popis indicie
 
 Po přidání či úpravě indicie je v horní části obrazovky uveden náhled zvýrazněné pasáže přímo v e-mailu.

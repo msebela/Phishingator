@@ -49,30 +49,30 @@
 
   <div class="form-row">
     <?php $input = 'position'; ?>
-    <div class="form-group col-md-2 col-xl-1">
+    <div class="form-group col-lg-2 col-xl-1">
       <label for="<?= $formPrefix . $input ?>">Pořadí</label>
       <input type="number" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" min="0" max="100" value="<?= !empty($inputsValues[$input]) ? $inputsValues[$input] : $emailIndicationsSum + 1 ?>" required>
     </div>
 
     <?php $input = 'expression'; ?>
-    <div class="form-group col-md-5 col-xl-2">
-      <label for="<?= $formPrefix . $input ?>">Podezřelý text</label>
-      <input type="text" class="form-control" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
+    <div class="form-group col-lg-5 col-xl-2">
+      <label for="<?= $formPrefix . $input ?>">Zvýrazněný text (nepovinné)</label>
+      <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>">
     </div>
 
     <?php $input = 'title'; ?>
-    <div class="form-group col-md-9 col-xl-3">
+    <div class="form-group col-lg-9 col-xl-3">
       <label for="<?= $formPrefix . $input ?>">Název indicie</label>
       <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
     </div>
 
     <?php $input = 'description'; ?>
-    <div class="form-group col-md-13 col-xl-9">
+    <div class="form-group col-lg-13 col-xl-9">
       <label for="<?= $formPrefix . $input ?>">Popis (nepovinné)</label>
       <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>">
     </div>
 
-    <div class="form-group col-md-3 col-xl-1 text-right">
+    <div class="form-group col-lg-3 col-xl-1 text-right">
       <label>&nbsp;</label><br>
 
       <button type="submit" name="<?= $formPrefix . ACT_NEW ?>" class="btn btn-primary" title="Přidat" aria-label="Přidat">
@@ -83,12 +83,13 @@
 </form>
 
 <div class="alert alert-info" role="alert">
-  Chcete-li jako indicii označit část mimo samotné tělo e-mailu (např. odesílatele nebo předmět), použijte v&nbsp;poli <span class="badge badge-secondary">Podezřelý text</span> některou z&nbsp;následujících proměnných:
+  Chcete-li jako indicii označit část mimo samotné tělo e-mailu (např. odesílatele nebo předmět), použijte v&nbsp;poli <span class="badge badge-secondary">Zvýrazněný text</span> některou z&nbsp;následujících proměnných:
   <ul class="mt-2">
     <li><code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix . 'expression' ?>" data-var="<?= VAR_INDICATION_SENDER_NAME ?>"><?= VAR_INDICATION_SENDER_NAME ?></code> &ndash; označí jméno odesílatele,</li>
     <li><code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix . 'expression' ?>" data-var="<?= VAR_INDICATION_SENDER_EMAIL ?>"><?= VAR_INDICATION_SENDER_EMAIL ?></code> &ndash; označí e-mail odesílatele,</li>
     <li><code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix . 'expression' ?>" data-var="<?= VAR_INDICATION_SUBJECT ?>"><?= VAR_INDICATION_SUBJECT ?></code> &ndash; označí předmět.</li>
   </ul>
+  Pokud chcete vytvořit <strong>obecnou indicii</strong> pro celý e-mail, ponechte pole <span class="badge badge-secondary">Zvýrazněný text</span> prázdné.
 </div>
 
 <?php if (!$existsUrlIndication): ?>
@@ -98,7 +99,7 @@
   </div>
   <div>
     <h4 class="alert-heading">Indicie k&nbsp;podvodnému odkazu</h4>
-    Nezapomeňte přidat indicii k&nbsp;podvodnému odkazu &ndash; stačí uvést jako podezřelý text proměnnou <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>expression" data-var="<?= VAR_URL ?>"><?= VAR_URL ?></code> a&nbsp;vyplnit název indicie. Po přidání dojde k&nbsp;vyznačení indicie u&nbsp;odkazu na podvodnou stránku.
+    Nezapomeňte přidat indicii k&nbsp;podvodnému odkazu &ndash; stačí uvést v&nbsp;poli <span class="badge badge-secondary">Zvýrazněný text</span> proměnnou <code class="replace-variable cursor-pointer" data-input="#<?= $formPrefix ?>expression" data-var="<?= VAR_URL ?>"><?= VAR_URL ?></code> a&nbsp;vyplnit název indicie. Po přidání dojde k&nbsp;vyznačení indicie u&nbsp;odkazu na podvodnou stránku.
   </div>
 </div>
 <?php endif; ?>
@@ -113,41 +114,47 @@
   Indicie k&nbsp;rozpoznání e-mailu
 </h4>
 <?php foreach ($emailIndications as $i => $indication): $i++; ?>
-<form method="post" action="/portal/<?= $urlSection . '/' . ACT_INDICATIONS . '/' . $phishingEmail['id_email'] ?>" id="indication-<?= $indication['id_indication'] ?>-text" class="border-bottom pb-2 mb-2 mark-indication" data-indication="<?= $indication['id_indication'] ?>">
+<form method="post" action="/portal/<?= $urlSection . '/' . ACT_INDICATIONS . '/' . $phishingEmail['id_email'] ?>" class="border-bottom pb-2 mb-2">
   <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
   <input type="hidden" name="<?= $formPrefix . ACT_EDIT ?>-id" value="<?= $indication['id_indication'] ?>">
 
   <div class="form-row">
     <?php $input = 'position'; ?>
-    <div class="form-group col-md-2 col-xl-1">
+    <div class="form-group col-lg-2 col-xl-1">
       <label for="<?= $formPrefix . $input . '-' . $i ?>">Pořadí</label>
       <input type="number" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control" min="0" max="100" value="<?= $indication[$input] ?>" required>
     </div>
 
     <?php $input = 'expression'; ?>
-    <div class="form-group col-md-5 col-xl-2">
-      <label for="<?= $formPrefix . $input . '-' . $i ?>">Podezřelý text</label>
-      <input type="text" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $indication[$input] ?>" required>
+    <div class="form-group col-lg-5 col-xl-2">
+      <label for="<?= $formPrefix . $input . '-' . $i ?>">Zvýrazněný text (nepovinné)</label>
+      <input type="text" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $indication[$input] ?>">
     </div>
 
     <?php $input = 'title'; ?>
-    <div class="form-group col-md-9 col-xl-3">
+    <div class="form-group col-lg-9 col-xl-3">
       <label for="<?= $formPrefix . $input . '-' . $i ?>">Název indicie</label>
       <input type="text" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $indication[$input] ?>" required>
     </div>
 
     <?php $input = 'description'; ?>
-    <div class="form-group col-md-13 col-xl-8">
+    <div class="form-group col-lg-13 col-xl-8">
       <label for="<?= $formPrefix . $input . '-' . $i ?>">Popis (nepovinné)</label>
       <input type="text" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $indication[$input] ?>">
     </div>
 
-    <div class="form-group col-md-3 col-xl-2 text-right">
+    <div class="form-group col-lg-3 col-xl-2 text-right">
       <label>&nbsp;</label><br>
 
       <button type="submit" name="<?= $formPrefix . ACT_EDIT ?>" class="btn btn-primary float-right ml-1" title="Upravit" aria-label="Upravit">
         <span data-feather="edit-2"></span>
       </button>
+
+      <a href="#indication-<?= $indication['id_indication'] ?>" class="anchor-link">
+        <button type="button" id="indication-26-btn" class="btn btn-info float-right ml-1 mark-indication" title="Zvýraznit" aria-label="Zvýraznit" data-indication="<?= $indication['id_indication'] ?>"<?= ((empty($indication['expression'])) ? ' disabled' : '') ?>>
+          <span data-feather="eye"></span>
+        </button>
+      </a>
 
       <button type="submit" name="<?= $formPrefix . ACT_DEL ?>" class="btn btn-secondary btn-confirm" data-confirm="Opravdu chcete odstranit tento záznam?" title="Odstranit" aria-label="Odstranit">
         <span data-feather="trash"></span>
