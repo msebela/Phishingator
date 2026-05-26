@@ -128,8 +128,8 @@ CREATE TABLE `phg_emails_indications` (
   `id_email` smallint(5) UNSIGNED NOT NULL,
   `position` tinyint(3) UNSIGNED NOT NULL,
   `expression` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(512) COLLATE utf8mb4_unicode_ci NOT NULL,
   `date_added` datetime NOT NULL,
   `visible` tinyint(1) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
