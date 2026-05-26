@@ -69,7 +69,7 @@
           <span class="badge badge-pill badge-dark"><?= ($i + 1) ?>.&nbsp;indicie</span>
           <?= $indication['title'] ?>
         </h5>
-        <p class="card-text"><?= $indication['description'] ?></p>
+        <p class="card-text"><?= nl2br($indication['description']) ?></p>
         <?php if (!empty($indication['expression'])): ?>
         <div class="clearfix">
           <button type="button" id="indication-<?= $indication['id_indication'] ?>-btn" class="btn btn-sm btn-info float-right mark-indication" data-indication="<?= $indication['id_indication'] ?>">

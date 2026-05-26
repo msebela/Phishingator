@@ -49,31 +49,33 @@
 
   <div class="form-row">
     <?php $input = 'position'; ?>
-    <div class="form-group col-lg-2 col-xl-1">
+    <div class="form-group col-4 col-sm-3 col-lg-2 col-xl-1">
       <label for="<?= $formPrefix . $input ?>">Pořadí</label>
       <input type="number" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" min="0" max="100" value="<?= !empty($inputsValues[$input]) ? $inputsValues[$input] : $emailIndicationsSum + 1 ?>" required>
     </div>
 
     <?php $input = 'expression'; ?>
-    <div class="form-group col-lg-5 col-xl-2">
+    <div class="form-group col-12 col-sm-13 col-lg-14 col-xl-3">
       <label for="<?= $formPrefix . $input ?>">Zvýrazněný text (nepovinné)</label>
       <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>">
     </div>
 
     <?php $input = 'title'; ?>
-    <div class="form-group col-lg-9 col-xl-3">
+    <div class="form-group col-lg-16 col-xl-3">
       <label for="<?= $formPrefix . $input ?>">Název indicie</label>
-      <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
+      <textarea name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control minh-4-rem" maxlength="<?= $inputsMaxLengths[$input] ?>" required><?= $inputsValues[$input] ?></textarea>
     </div>
 
     <?php $input = 'description'; ?>
-    <div class="form-group col-lg-13 col-xl-9">
+    <div class="form-group col-lg-16 col-xl-8">
       <label for="<?= $formPrefix . $input ?>">Popis (nepovinné)</label>
-      <input type="text" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>">
+      <textarea name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="form-control minh-4-rem" maxlength="<?= $inputsMaxLengths[$input] ?>" rows="2"><?= $inputsValues[$input] ?></textarea>
     </div>
 
-    <div class="form-group col-lg-3 col-xl-1 text-right">
-      <label>&nbsp;</label><br>
+    <div class="form-group col-lg-16 col-xl-1 text-right">
+      <div class="d-none d-xl-block">
+        <label>&nbsp;</label><br>
+      </div>
 
       <button type="submit" name="<?= $formPrefix . ACT_NEW ?>" class="btn btn-primary" title="Přidat" aria-label="Přidat">
         <span data-feather="plus"></span>
@@ -120,31 +122,33 @@
 
   <div class="form-row">
     <?php $input = 'position'; ?>
-    <div class="form-group col-lg-2 col-xl-1">
+    <div class="form-group col-4 col-sm-3 col-lg-2 col-xl-1">
       <label for="<?= $formPrefix . $input . '-' . $i ?>">Pořadí</label>
       <input type="number" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control" min="0" max="100" value="<?= $indication[$input] ?>" required>
     </div>
 
     <?php $input = 'expression'; ?>
-    <div class="form-group col-lg-5 col-xl-2">
+    <div class="form-group col-12 col-sm-13 col-lg-14 col-xl-3">
       <label for="<?= $formPrefix . $input . '-' . $i ?>">Zvýrazněný text (nepovinné)</label>
       <input type="text" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $indication[$input] ?>">
     </div>
 
     <?php $input = 'title'; ?>
-    <div class="form-group col-lg-9 col-xl-3">
+    <div class="form-group col-lg-16 col-xl-3">
       <label for="<?= $formPrefix . $input . '-' . $i ?>">Název indicie</label>
-      <input type="text" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $indication[$input] ?>" required>
+      <textarea name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control minh-4-rem" maxlength="<?= $inputsMaxLengths[$input] ?>" rows="2" required><?= $indication[$input] ?></textarea>
     </div>
 
     <?php $input = 'description'; ?>
-    <div class="form-group col-lg-13 col-xl-8">
+    <div class="form-group col-lg-16 col-xl-7">
       <label for="<?= $formPrefix . $input . '-' . $i ?>">Popis (nepovinné)</label>
-      <input type="text" name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $indication[$input] ?>">
+      <textarea name="<?= $formPrefix . ACT_EDIT . '-' . $input ?>" id="<?= $formPrefix . $input . '-' . $i ?>" class="form-control minh-4-rem" maxlength="<?= $inputsMaxLengths[$input] ?>" rows="2"><?= $indication[$input] ?></textarea>
     </div>
 
-    <div class="form-group col-lg-3 col-xl-2 text-right">
-      <label>&nbsp;</label><br>
+    <div class="form-group col-lg-16 col-xl-2 text-right">
+      <div class="d-none d-xl-block">
+        <label>&nbsp;</label><br>
+      </div>
 
       <button type="submit" name="<?= $formPrefix . ACT_EDIT ?>" class="btn btn-primary float-right ml-1" title="Upravit" aria-label="Upravit">
         <span data-feather="edit-2"></span>
