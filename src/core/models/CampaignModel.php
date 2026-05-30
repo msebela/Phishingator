@@ -65,6 +65,12 @@
      */
     public $sendUsersNotification;
 
+    /**
+     * @var string       Proměnná uchovávající informaci o tom, v jakých jazycích mám být
+     *                   uživatelská notifikace po ukončení kampaně odeslána.
+     */
+    public $usersNotificationLanguage;
+
 
     /**
      * Načte a zpracuje předaná data.
@@ -87,6 +93,13 @@
       }
 
       $this->sendUsersNotification = (empty($this->sendUsersNotification) ? 0 : 1);
+
+      if (is_array($this->usersNotificationLanguage)) {
+        $this->usersNotificationLanguage = implode(',', $this->usersNotificationLanguage);
+      }
+      else {
+        $this->usersNotificationLanguage = '';
+      }
     }
 
 
@@ -108,7 +121,8 @@
         'time_active_to' => $this->timeActiveTo,
         'date_active_since' => $this->dateActiveSince,
         'date_active_to' => $this->dateActiveTo,
-        'send_users_notification' => $this->sendUsersNotification
+        'send_users_notification' => $this->sendUsersNotification,
+        'users_notification_language' => $this->usersNotificationLanguage
       ];
     }
 
@@ -126,7 +140,7 @@
       }
 
       $this->dbRecordData = Database::querySingle('
-              SELECT `id_campaign`, `id_by_user`, `id_email`, `id_website`, `id_onsubmit`, `id_ticket`, `name`, `date_active_since`, `date_active_to`, `send_users_notification`,
+              SELECT `id_campaign`, `id_by_user`, `id_email`, `id_website`, `id_onsubmit`, `id_ticket`, `name`, `date_active_since`, `date_active_to`, `send_users_notification`, `users_notification_language`,
               `time_active_since`, DATE_FORMAT(time_active_since, "%H:%i") AS `time_active_since`,
               `time_active_to`, DATE_FORMAT(time_active_to, "%H:%i") AS `time_active_to`,
               TIMESTAMP(date_active_since, time_active_since) AS `datetime_active_since`,
@@ -138,6 +152,7 @@
 
       if (!empty($this->dbRecordData)) {
         $this->dbRecordData['status'] = $this->getCampaignStatus($this->dbRecordData['datetime_active_since'], $this->dbRecordData['datetime_active_to']);
+        $this->dbRecordData['users_notification_language'] = NotificationsModel::parseNotificationLanguages($this->dbRecordData['users_notification_language']);
       }
 
       return $this->dbRecordData;
@@ -426,8 +441,8 @@
      * @return mixed                   Pole obsahující informace o všech kampaních, které již skončily
      */
     public static function getFinishedCampaigns() {
-      return Database::queryMulti('
-              SELECT `id_campaign`, phg_campaigns.id_by_user, `date_active_to`, `send_users_notification`,
+      $result = Database::queryMulti('
+              SELECT `id_campaign`, phg_campaigns.id_by_user, `date_active_to`, `send_users_notification`, `users_notification_language`,
               `username`, `email`,
               DATE_FORMAT(phg_campaigns.date_added, "%e. %c. %Y (%k:%i)") AS `date_added`,
               DATE_FORMAT(date_active_to, "%e. %c. %Y") AS `date_active_to`
@@ -437,6 +452,14 @@
               WHERE NOW() > TIMESTAMP(`date_active_to`, `time_active_to`)
               AND phg_campaigns.visible = 1
       ');
+
+      if (!empty($result)) {
+        foreach ($result as $key => $campaign) {
+          $result[$key]['users_notification_language'] = NotificationsModel::parseNotificationLanguages($campaign['users_notification_language']);
+        }
+      }
+
+      return $result;
     }
 
 
@@ -1383,6 +1406,9 @@
       $this->isDatetimeActiveSinceDifferentThanDatetimeActiveTo();
       $this->isDatetimeDiffAtLeastMinutes();
 
+      $this->isNotificationLanguageEmpty();
+      $this->existNotificationLanguage();
+
       $this->isRecipientsEmpty();
       $this->isRecipientsValid();
     }
@@ -1643,6 +1669,39 @@
 
       if (($datetimeToTimestamp - $datetimeSinceTimestamp) < $minutes * 60) {
         throw new UserError('Rozdíl mezi časem zahájení a časem ukončení kampaně musí být alespoň ' . $minutes . ' minut.', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali byl vybrán jazyk, ve kterém bude odeslána uživatelská notifikace
+     * o absolvování cvičného phishingu (resp. ukončení kampaně).
+     *
+     * @throws UserError
+     */
+    private function isNotificationLanguageEmpty() {
+      if ($this->sendUsersNotification && empty($this->usersNotificationLanguage)) {
+        throw new UserError('Není vybrán jazyk uživatelské notifikace o ukončení kampaně!', MSG_ERROR);
+      }
+    }
+
+
+    /**
+     * Ověří, zdali vybraný jazyk uživatelské notifikace o absolvování
+     * cvičného phishingu (resp. ukončení kampaně) existuje.
+     *
+     * @throws UserError
+     */
+    private function existNotificationLanguage() {
+      if ($this->sendUsersNotification && !empty($this->usersNotificationLanguage)) {
+        $allowedLanguages = array_keys(NotificationsModel::getUserNotificationLanguages());
+        $selectedLanguages = NotificationsModel::parseNotificationLanguages($this->usersNotificationLanguage);
+
+        foreach ($selectedLanguages as $language) {
+          if (!in_array($language, $allowedLanguages, true)) {
+            throw new UserError('Vybraný jazyk uživatelské notifikace o ukončení kampaně neexistuje!', MSG_ERROR);
+          }
+        }
       }
     }
 

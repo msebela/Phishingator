@@ -155,9 +155,21 @@
       <div class="form-group">
         <?php $input = 'send-users-notification'; ?>
         <div class="custom-control custom-checkbox">
-          <input type="checkbox" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="custom-control-input"<?= (($action == ACT_NEW && empty($inputsValues[$input]) || $inputsValues[$input]) ? ' checked' : ''); ?>>
-          <label for="<?= $formPrefix . $input ?>" class="custom-control-label">Po ukončení kampaně odeslat příjemcům notifikaci</label>
+          <input type="checkbox" name="<?= $formPrefix . $input ?>" id="<?= $formPrefix . $input ?>" class="custom-control-input campaign-send-users-notification"<?= (($action == ACT_NEW && empty($inputsValues[$input]) || $inputsValues[$input]) ? ' checked' : ''); ?>>
+          <label for="<?= $formPrefix . $input ?>" class="custom-control-label">Odeslat příjemcům notifikaci po ukončení kampaně</label>
           <small class="form-text text-muted">Notifikace obsahuje informaci o&nbsp;absolvování cvičného phishingu a&nbsp;odkaz na vzdělávací stránku s&nbsp;indiciemi.</small>
+          <div class="mt-2">
+            <?php $input = 'users-notification-language'; ?>
+            <label class="d-block mt-3">Jazyk notifikace</label>
+            <?php foreach ($languages as $language => $languageDescription): ?>
+            <div class="custom-control custom-checkbox d-inline-block mr-4">
+              <input type="checkbox" name="<?= $formPrefix . $input ?>[]" id="<?= $formPrefix . $input . '-' . $language ?>" value="<?= $language ?>" class="custom-control-input"<?= ((($action == ACT_NEW && empty($inputsValues[$input]) && $language == 'cz') || (!empty($inputsValues[$input]) && in_array($language, $inputsValues[$input]))) ? ' checked' : '') . ((($action == ACT_NEW && empty($inputsValues[$input])) || (!empty($inputsValues['send-users-notification']))) ? '' : ' disabled'); ?>>
+              <label for="<?= $formPrefix . $input . '-' . $language ?>" class="custom-control-label">
+                <?= $languageDescription[1] . '&nbsp;' . $languageDescription[0] ?>
+              </label>
+            </div>
+            <?php endforeach; ?>
+          </div>
         </div>
       </div>
     </div>

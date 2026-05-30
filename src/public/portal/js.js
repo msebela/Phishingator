@@ -43,6 +43,14 @@ function isEmailValid(input) {
   return validEmailPattern.test(input);
 }
 
+$('.campaign-send-users-notification').on('change', function() {
+  const lang = document.querySelectorAll('input[name="campaign-users-notification-language[]"]');
+
+  lang.forEach(checkbox => {
+    checkbox.disabled = !this.checked;
+  });
+});
+
 $('.set-preview-btn').on('change', function() {
   const baseLink = this.dataset.previewLink;
   const id = this.querySelector(':checked').value;

@@ -19,7 +19,7 @@
 
       $model = new CampaignModel();
       $formData = [
-        'inputsNames' => ['id-email', 'id-website', 'id-onsubmit', 'id-ticket', 'name', 'time-active-since', 'time-active-to', 'date-active-since', 'date-active-to', 'send-users-notification'],
+        'inputsNames' => ['id-email', 'id-website', 'id-onsubmit', 'id-ticket', 'name', 'time-active-since', 'time-active-to', 'date-active-since', 'date-active-to', 'send-users-notification', 'users-notification-language'],
         'formPrefix' => 'campaign-',
         'dbTable' => 'phg_campaigns'
       ];
@@ -79,6 +79,7 @@
       $this->setViewData('websites', PhishingWebsiteModel::getActivePhishingWebsites());
       $this->setViewData('websiteActions', $model->getWebsiteActions());
       $this->setViewData('recipients', ($_POST[$model->formPrefix . 'recipients'] ?? ''));
+      $this->setViewData('languages', NotificationsModel::getUserNotificationLanguages());
 
       $recipients = split_items(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients'));
 
@@ -138,6 +139,7 @@
       $this->setViewData('websites', PhishingWebsiteModel::getActivePhishingWebsites());
       $this->setViewData('websiteActions', $model->getWebsiteActions());
       $this->setViewData('recipients', ($_POST[$model->formPrefix . 'recipients'] ?? $model->getCampaignRecipients($idCampaign, true)));
+      $this->setViewData('languages', NotificationsModel::getUserNotificationLanguages());
 
       $recipients = split_items(CAMPAIGN_EMAILS_DELIMITER, $this->getData('recipients'));
 

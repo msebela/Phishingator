@@ -244,10 +244,13 @@
         $recipients = CampaignModel::getCampaignRecipients($campaign['id_campaign']);
 
         // Pokud byl tvůrce kampaně uživatel s rolí správce testů, dojde ke zjištění jeho
-        // jména a příjmení a k jeho doplnění do obsahu notifikace.
+        // jména, příjmení a e-mailu a k doplnění této informace do obsahu notifikace.
         if (UsersModel::getUserRole($campaign['id_by_user']) == PERMISSION_TEST_MANAGER) {
           $ldapModel = new LdapModel();
-          $testManager = $ldapModel->getFullnameByUsername(get_email_part($campaign['email'], 'username'));
+
+          $testManager['name'] = $ldapModel->getFullnameByUsername(get_email_part($campaign['email'], 'username'));
+          $testManager['email'] = $campaign['email'];
+
           $ldapModel->close();
         }
         else {
@@ -267,74 +270,29 @@
             continue;
           }
 
-          // Zjištění uživatelského URL klíče pro vzdělávací stránku.
-          $code = WebsitePrependerModel::makeUserWebsiteId($campaign['id_campaign'], $user['url']);
+          // Zjištění uživatelské URL adresy pro přístup na vzdělávací stránku.
+          $user['code'] = WebsitePrependerModel::makeUserWebsiteId($campaign['id_campaign'], $user['url']);
 
-          // Zjištění data a času odeslání podvodného e-mailu konkrétnímu uživateli.
-          $emailSent = RecievedEmailModel::getRecievedPhishingEmail($campaign['id_campaign'], $campaignDetail['id_email'], $user['id_user']);
-
-          // Získání reakce příjemce na phishingovou kampaň.
+          // Získání reakce uživatele ve phishingové kampani.
           $user['response'] = CampaignModel::getUserResponse($campaign['id_campaign'], $user['id_user']);
 
-          // Úprava znění notifikace podle reakce příjemce - pokud uživatel (ne)vyplnil platné přihlašovací údaje.
-          if ($user['response']['id_action'] != CAMPAIGN_VALID_CREDENTIALS_ID) {
-            $userResponseText = 'Gratulujeme, ve cvičení jste obstáli :-)' . "\n\n";
-          }
-          else {
-            $userResponseText = '';
-          }
+          // Zjištění informací o odeslaném podvodném e-mailu konkrétnímu uživateli.
+          $email = RecievedEmailModel::getRecievedPhishingEmail($campaign['id_campaign'], $campaignDetail['id_email'], $user['id_user']);
 
-          // Předmět a obsah notifikace.
-          $notificationSubject = 'Cvičný phishing z ' . $emailSent['date_sent_formatted'];
-          $notificationBody =
-            'Automatická notifikace systému Phishingator' . "\n" .
-            '-------------------------------------------' . "\n\n" .
-            'Dne ' . $emailSent['datetime_sent_formatted'] . ' Vám byl odeslán e-mail "' . $campaignDetail['subject'] . '".' . "\n" .
-            'Jednalo se o cvičný phishing (podvodný e-mail) s typickými znaky, které útočníci' . "\n" .
-            'používají při snaze získat Vaše heslo, osobní údaje nebo číslo platební karty.' . "\n\n" .
-            $userResponseText .
-            'E-mail včetně indicií, podle kterých bylo možné podvod rozpoznat, si můžete prohlédnout zde:' . "\n" .
-            WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $code . "\n\n\n";
-
-          // Pokud je uživatel dobrovolník.
-          if ($user['recieve_email'] == 1) {
-            $notificationBody .=
-              'Děkujeme, že máte zájem vzdělávat se v oblasti phishingu.' . "\n\n" .
-              'Váš zbývající počet cvičných phishingových zpráv: ' . ((!is_null($user['email_limit'])) ? $user['email_limit'] : 'nenastaven') . "\n" .
-              'Změnu můžete provést po přihlášení na:' . "\n" .
-              WEB_URL;
-          }
-          else {
-            // Pokud uživatel není dobrovolník.
-            $notificationBody .=
-              'Cílem je zvýšit povědomí o phishingu a ukázat Vám, čeho jsou dnes útočníci schopni a hlavně,' . "\n" .
-              'podle čeho můžete podvodný e-mail (phishing) rozpoznat. Ne každý podvodný e-mail totiž zachytí' . "\n" .
-              'filtry a antiviry a je tak možné, že narazíte i na skutečný phishing.' . "\n" .
-              "\n" .
-              'Další informace naleznete na stránkách Phishingatoru, kde se můžete přihlásit i k dobrovolnému' . "\n" .
-              'odebírání cvičných phishingových zpráv od bezpečnostního oddělení tak, abyste vždy věděli, co je' . "\n" .
-              'právě aktuální a na co si dát pozor, více na:' . "\n" .
-              WEB_BASE_URL;
-          }
-
-          if ($testManager != null) {
-            $notificationBody .= "\n\n" .
-            '-------------------------------------------' . "\n\n" .
-            'Tento cvičný phishing pro Vás připravil ' . $testManager . ' (' . $campaign['email'] . ').' . "\n" .
-            'Jeho cílem nebylo nachytat Vás, ale zvýšit povědomí o této bezpečnostní hrozbě.';
-          }
+          // Připravení textu personalizované notifikace.
+          $notification = $this->prepareUserNotification($user, $email['subject'], $email['date_sent'], $campaign['users_notification_language'], $testManager);
 
           Logger::info('Notification ready to send.', [
               'id_campaign' => $campaign['id_campaign'],
               'id_user' => $user['id_user'],
-              'recipient' => Controller::escapeOutput($recipient),
-              'subject' => Controller::escapeOutput($notificationSubject),
-              'body' => Controller::escapeOutput($notificationBody)
+              'recipient' => $recipient,
+              'subject' => $notification['subject'],
+              'body' => $notification['body']
             ]
           );
 
           // Odeslání e-mailu.
-          $mailResult = $this->sendNotificationEmail($recipient, $notificationSubject, $notificationBody);
+          $mailResult = $this->sendNotificationEmail($recipient, $notification['subject'], $notification['body']);
 
           // Uložení záznamu o tom, zda se e-mail podařilo odeslat.
           $this->logSentNotificationEmail($campaign['id_campaign'], $user['id_user'], 3, $mailResult, $this->mailer->ErrorInfo);
@@ -346,6 +304,155 @@
           $countSentMails = $this->sleepSender($countSentMails);
         }
       }
+    }
+
+
+    /**
+     * Vrátí personalizovanou notifikaci o absolvování cvičného phishingu ve zvoleném jazyce vůči konkrétnímu uživateli.
+     *
+     * @param array $user              Data o uživateli včetně reakce uživatele v kampani a odkazu na vzdělávací stránku
+     * @param string $emailSubject     Předmět odeslaného e-mailu
+     * @param string $emailSent        Datum a čas odeslání e-mailu
+     * @param string[] $languages      Jazyky, ve kterých má být notifikace odeslána (nepovinné)
+     * @param array|null $testManager  Data o správci testů, který phishingovou kampaň vytvořil, jinak NULL (výchozí)
+     * @return string[]                Předmět a tělo uživatelské notifikace
+     */
+    private function prepareUserNotification($user, $emailSubject, $emailSent, $languages = ['cz'], $testManager = null) {
+      $isUserSuccess = ($user['response']['id_action'] != CAMPAIGN_VALID_CREDENTIALS_ID);
+      $isUserVolunteer = ($user['recieve_email'] == 1);
+      $userEducationalSiteUrl = WEB_URL . '/' . ACT_PHISHING_TEST . '/' . $user['code'];
+
+      // Datum a čas odeslání e-mailu v různých formátech.
+      $emailDatetime = new DateTime($emailSent);
+
+      $emailDatetimeSentCz = $emailDatetime->format('j. n. Y (G:i)');
+      $emailDateSentCz = $emailDatetime->format('j. n. Y');
+      $emailDatetimeSentEn = $emailDatetime->format('F j, Y (g:i A)');
+      $emailDateSentEn = $emailDatetime->format('j M Y');
+
+      // Úprava notifikace podle reakce příjemce (pokud uživatel do podvodné stránky nezadal platné přihlašovací údaje).
+      $userResponseTextCz = $isUserSuccess ? "Gratulujeme, ve cvičení jste obstáli :-)\n\n" : '';
+      $userResponseTextEn = $isUserSuccess ? "Congratulations, you passed the exercise :-)\n\n" : '';
+
+      $bodyCz =
+        "Automatická notifikace systému Phishingator\n" .
+        "-------------------------------------------\n\n" .
+        "Dne {$emailDatetimeSentCz} Vám byl odeslán e-mail \"{$emailSubject}\".\n" .
+        "Jednalo se o cvičný phishing (podvodný e-mail) s typickými znaky, které útočníci\n" .
+        "používají při snaze získat Vaše heslo, osobní údaje nebo číslo platební karty.\n\n" .
+        $userResponseTextCz .
+        "E-mail včetně indicií, podle kterých bylo možné podvod rozpoznat, si můžete prohlédnout zde:\n" .
+        $userEducationalSiteUrl . "\n\n\n";
+
+      $bodyEn =
+        "Automatic notification from the Phishingator system\n" .
+        "---------------------------------------------------\n\n" .
+        "On {$emailDatetimeSentEn}, you received an email titled \"{$emailSubject}\".\n" .
+        "This was a simulated phishing email with typical characteristics that attackers use\n" .
+        "when attempting to obtain your password, personal information, or credit card number.\n\n" .
+        $userResponseTextEn .
+        "You can view the email, including clues that would have allowed you to recognize the scam, here:\n" .
+        $userEducationalSiteUrl . "\n\n\n";
+
+      // Pokud je uživatel dobrovolník.
+      if ($isUserVolunteer) {
+        $emailLimitCz = $user['email_limit'] ?? 'nenastaven';
+        $emailLimitEn = $user['email_limit'] ?? 'not set';
+
+        $bodyCz .=
+          "Děkujeme, že máte zájem vzdělávat se v oblasti phishingu.\n\n" .
+          "Váš zbývající počet cvičných phishingových zpráv: " . $emailLimitCz . "\n" .
+          "Změnu můžete provést po přihlášení na:\n" .
+          WEB_URL;
+
+        $bodyEn .=
+          "Thank you for your interest in learning about phishing.\n\n" .
+          "Your remaining number of practice phishing messages: " . $emailLimitEn . "\n" .
+          "You can make changes after logging in at:\n" .
+          WEB_URL;
+      }
+      else {
+        $bodyCz .=
+          "Cílem je zvýšit povědomí o phishingu a ukázat Vám, čeho jsou dnes útočníci schopni a hlavně,\n" .
+          "podle čeho můžete podvodný e-mail (phishing) rozpoznat. Ne každý podvodný e-mail totiž zachytí\n" .
+          "filtry a antiviry a je tak možné, že narazíte i na skutečný phishing.\n" .
+          "\n" .
+          "Další informace naleznete na stránkách Phishingatoru, kde se můžete přihlásit i k dobrovolnému\n" .
+          "odebírání cvičných phishingových zpráv od bezpečnostního oddělení tak, abyste vždy věděli, co je\n" .
+          "právě aktuální a na co si dát pozor, více na:\n" .
+          WEB_BASE_URL;
+
+        $bodyEn .=
+          "The goal is to raise awareness about phishing and show you what attackers are capable of these days and,\n" .
+          "most importantly, how you can recognize a fraudulent email (phishing). Not every fraudulent email is\n" .
+          "caught by filters and antivirus software, so it is possible that you may encounter a real phishing attempt.\n" .
+          "\n" .
+          "For more information, visit the Phishingator website, where you can also sign up to voluntarily receive\n" .
+          "practice phishing messages from the security department so that you always know what’s currently\n" .
+          "happening and what to watch out for. For more details, visit:\n" .
+          WEB_BASE_URL;
+      }
+
+      // Dodatečná informace, pokud e-mail připravil uživatel s oprávněním správce testů, nikoliv administrátor.
+      if ($testManager !== null) {
+        $bodyCz .= "\n\n-------------------------------------------\n\n" .
+          "Tento cvičný phishing pro Vás připravil {$testManager['name']} ({$testManager['email']}).\n" .
+          "Jeho cílem nebylo nachytat Vás, ale zvýšit povědomí o této bezpečnostní hrozbě.";
+
+        $bodyEn .= "\n\n-------------------------------------------\n\n" .
+          "This phishing simulation was prepared by {$testManager['name']} ({$testManager['email']}).\n" .
+          "The goal was not to trick you, but to raise awareness of this security threat.";
+      }
+
+      // Předmět uživatelské notifikace.
+      $subjectCz = 'Cvičný phishing z ' . $emailDateSentCz;
+      $subjectEn = 'Phishing Simulation on ' . $emailDateSentEn;
+
+      // Sestavení textu notifikace podle vybraných jazyků.
+      $bodyParts = [];
+      $subjectParts = [];
+
+      if (in_array('cz', $languages)) {
+        $bodyParts[] = $bodyCz;
+        $subjectParts[] = $subjectCz;
+      }
+
+      if (in_array('en', $languages)) {
+        $bodyParts[] = $bodyEn;
+        $subjectParts[] = $subjectEn;
+      }
+
+      $notificationBody = implode("\n\n\n", $bodyParts);
+      $notificationSubject = implode(' / ', $subjectParts);
+
+      return [
+        'subject' => $notificationSubject,
+        'body' => $notificationBody
+      ];
+    }
+
+
+    /**
+     * Vrátí pole podporovaných jazyků uživatelských notifikací.
+     *
+     * @return array[]                 Pole podporovaných jazyků
+     */
+    public static function getUserNotificationLanguages() {
+      return [
+        'cz' => ['Čeština', '🇨🇿'],
+        'en' => ['Angličtina', '🇬🇧']
+      ];
+    }
+
+
+    /**
+     * Vrátí pole podporovaných jazyků uživatelských notifikací na základě řetězce s podporovanými jazyky.
+     *
+     * @param string $languages        Řetězec s podporovanými jazyky (oddělenými ",")
+     * @return string[]                Pole podporovaných jazyků
+     */
+    public static function parseNotificationLanguages($languages) {
+      return $languages ? explode(',', $languages) : [];
     }
 
 
