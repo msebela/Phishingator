@@ -37,6 +37,11 @@
     protected $csrfToken;
 
     /**
+     * @var string      Nastavená jazyková lokalizace GUI
+     */
+    protected $currentLanguage;
+
+    /**
      * @var string      Odkaz na nápovědu
      */
     protected $helpLink;
@@ -271,6 +276,19 @@
 
 
     /**
+     * Vrátí možnosti dostupné v menu pro výběr jazykové lokalizace GUI.
+     *
+     * @return array[]                 Menu s podporovanými jazyky
+     */
+    public function getLanguagesMenu() {
+      return [
+        'cs' => ['label' => 'Čeština', 'flag' => '🇨🇿'],
+        'en' => ['label' => 'English', 'flag' => '🇬🇧']
+      ];
+    }
+
+
+    /**
      * Vrátí možnosti dostupné v menu s rolemi v závislosti na právě zvolené roli uživatele.
      *
      * @return array                   Menu s rolemi
@@ -354,6 +372,73 @@
      */
     public function getTitle() {
       return $this->htmlTitle;
+    }
+
+
+    /**
+     * Nastaví jazykovou lokalizaci GUI podle vybraného jazyka.
+     *
+     * @param string $language         Kód jazyka, do kterého se má GUI přepnout
+     * @param bool $forceChange        TRUE, pokud jde o přepsání aktuálního (např. výchozího) nastavení, jinak FALSE (výchozí)
+     * @return void
+     */
+    public function setLanguage($language, $forceChange = false) {
+      if (!empty($language)) {
+        if (!isset($_SESSION['language']) || $forceChange) {
+          $language = $this->normalizeLanguage($language);
+
+          // Nastavení výchozího jazyka, pokud požadovaný jazyk není podporován.
+          if (!in_array($language, $this->getSupportedLanguages(), true)) {
+            $language = DEFAULT_LANGUAGE;
+          }
+
+          $this->currentLanguage = $language;
+          $_SESSION['language'] = $language;
+        }
+      }
+    }
+
+
+    /**
+     * Vrátí kód aktuálně nastavené jazykové lokalizace GUI.
+     *
+     * @return string                  Kód aktuálně nastaveného jazyka
+     */
+    public function getLanguage() {
+      $language = $this->currentLanguage;
+
+      if (!empty($_SESSION['language'])) {
+        $language = $_SESSION['language'];
+      }
+
+      return $language;
+    }
+
+
+    /**
+     * Vrátí normalizovaný kód jazyka.
+     *
+     * @param string $language         Kód jazyka
+     * @return string                  Normalizovaný kód jazyka
+     */
+    public static function normalizeLanguage($language) {
+      $map = [
+        'cz' => 'cs',
+      ];
+
+      $language = strtolower(substr(trim($language), 0, 2));
+
+      return $map[$language] ?? $language;
+    }
+
+
+    /**
+     * Vrátí seznam s kódy jazyků podporovaných GUI lokalizací.
+     *
+     * @return string[]                Pole podporovaných jazyků
+     */
+    public function getSupportedLanguages() {
+      return ['cs', 'en'];
     }
 
 

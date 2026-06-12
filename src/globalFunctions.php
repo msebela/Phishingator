@@ -58,6 +58,28 @@
 
 
   /**
+   * Vrátí text podle klíče pro aktuálně nastavenou jazykovou lokalizaci.
+   *
+   * @param string $textKey            Klíč textu
+   * @return string                    Lokalizovaný text, nebo klíč textu, pokud se lokalizovaný text nepodařilo načíst
+   */
+  function t($textKey) {
+    $setLanguage = $_SESSION['language'] ?? DEFAULT_LANGUAGE;
+
+    $translationFilepath = CORE_DOCUMENT_ROOT . '/' . CORE_DIR_LANGUAGES . '/';
+
+    if (file_exists($translationFilepath . $setLanguage . '.php')) {
+      $translations = require $translationFilepath . $setLanguage . '.php';
+    }
+    else {
+      $translations = require $translationFilepath . DEFAULT_LANGUAGE . '.php';
+    }
+
+    return $translations[$textKey] ?? $textKey;
+  }
+
+
+  /**
    * Rozdělí e-mailovou adresu na části a vrátí tu část, která je požadována.
    *
    * @param string $email              E-mail

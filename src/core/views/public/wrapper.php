@@ -18,7 +18,7 @@
   <link rel="icon" type="image/png" href="/favicon.png">
 
   <link rel="stylesheet" href="/<?= CORE_DIR_EXTENSIONS ?>/bootstrap-4.6.2/bootstrap.min.css">
-  <link rel="stylesheet" href="/style-intro.css?20260410">
+  <link rel="stylesheet" href="/style-intro.css?20260612">
 </head>
 <body>
   <header>
@@ -30,6 +30,23 @@
             Phishingator
           </h1>
         </a>
+        <ul class="navbar-nav ml-auto language-dropdown">
+          <li class="nav-item dropdown mr-0">
+            <a href="#" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false">
+              <?= $languagesMenu[$currentLanguage]['flag'] ?><span class="d-none d-sm-inline">&nbsp;<?= $languagesMenu[$currentLanguage]['label'] ?></span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+              <?php
+                foreach ($languagesMenu as $languageCode => $language):
+                  if ($languageCode === $currentLanguage) continue;
+              ?>
+              <a href="?lang=<?= $languageCode ?>" class="dropdown-item">
+                <?= $language['flag'] ?><span class="d-none d-sm-inline">&nbsp;<?= $language['label'] ?></span>
+              </a>
+              <?php endforeach; ?>
+            </div>
+          </li>
+        </ul>
       </div>
     </nav>
   </header>

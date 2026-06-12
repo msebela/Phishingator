@@ -122,6 +122,33 @@
 
 
     /**
+     * Vrátí preferovaný jazyk uživatele z HTTP hlavičky Accept-Language,
+     * který je zároveň ve Phishingatoru podporován.
+     *
+     * @param string[] $supportedLanguages Pole podporovaných jazyků
+     * @return string                      Vybraný kód jazyka
+     */
+    public static function getClientPreferredLanguage($supportedLanguages) {
+      $resultLanguage = $supportedLanguages[0];
+
+      if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        $userLanguages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+
+        foreach ($userLanguages as $lang) {
+          $code = Controller::normalizeLanguage($lang);
+
+          if (in_array($code, $supportedLanguages, true)) {
+            $resultLanguage = $code;
+            break;
+          }
+        }
+      }
+
+      return $resultLanguage;
+    }
+
+
+    /**
      * Zpracuje předaná data (typicky $_POST data z formuláře), nalezne v nich vstupní pole pro heslo
      * a uživatelem zadaný řetězec anonymizuje (podle konfigurace Phishingatoru).
      *

@@ -245,6 +245,9 @@
   /** Adresář obsahující soubory views (pohledů). */
   define('CORE_DIR_VIEWS', 'core/views');
 
+  /** Adresář obsahující soubory s texty (překlady). */
+  define('CORE_DIR_LANGUAGES', 'core/languages');
+
   /** Adresář obsahující další dodatečné knihovny. */
   define('CORE_DIR_EXTENSIONS', 'extensions');
 
@@ -259,6 +262,12 @@
   /* --- CROSS-SITE REQUEST FORGERY --- */
   /** Klíč přidávaný ke generovanému CSRF tokenu (libovolný, náhodný řetězec). */
   define('CSRF_KEY', (getenv('CSRF_KEY')) ? getenv('CSRF_KEY') : base64_encode(openssl_random_pseudo_bytes(32)));
+
+
+
+  /* --- LOKALIZACE GUI --- */
+  /** Výchozí jazyk lokalizace GUI. */
+  define('DEFAULT_LANGUAGE', 'cs');
 
 
 

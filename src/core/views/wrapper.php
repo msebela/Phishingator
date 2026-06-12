@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title><?= $html_title ?></title>
+    <title><?= $htmlTitle ?></title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Phishingator je systém pro rozesílání cvičných phishingových zpráv, jehož cílem je naučit uživatele odhalovat reálný phishing.">

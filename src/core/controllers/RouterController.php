@@ -99,6 +99,17 @@
         $publicSite = true;
       }
 
+      // Změna jazyka GUI na základě GET požadavku od uživatele.
+      if (isset($_GET['lang'])) {
+        $this->controller->setLanguage($_GET['lang'], true);
+      }
+      else {
+        // Pokud uživatel jazyk nezvolil sám, nastavit jej automaticky na základě HTTP hlavičky.
+        $this->controller->setLanguage(
+          WebsitePrependerModel::getClientPreferredLanguage($this->controller->getSupportedLanguages())
+        );
+      }
+
       // Aktivovat Controller určený pro danou stránku (sekci).
       $this->setControllerData($arguments, $publicSite);
     }
@@ -135,14 +146,17 @@
      * Předá uživatelský vstup a data instanci Controlleru.
      *
      * @param string $arguments        Uživatelský vstup
-     * @param bool $public             TRUE pokud se jedná o Controller přístupný na veřejné části aplikace, jinak FALSE (výchozí)
+     * @param bool $public             TRUE, pokud se jedná o Controller přístupný na veřejné části aplikace, jinak FALSE (výchozí)
      * @return void
      */
     private function setControllerData($arguments, $public = false) {
       if ($this->controller != null) {
         $this->controller->process($arguments);
 
-        $this->setViewData('html_title', $this->controller->getTitle());
+        $this->setViewData('htmlTitle', $this->controller->getTitle());
+
+        $this->setViewData('languagesMenu', $this->getLanguagesMenu());
+        $this->setViewData('currentLanguage', $this->controller->getLanguage());
 
         if (!$public) {
           $currentSection = $_GET['section'] ?? '';
