@@ -18,15 +18,17 @@
 
 
     /**
-     * Ověří, zdali jsou uživatelem zadané přihlašovací údaje platné.
+     * Ověří vůči zvolené autentizační metodě, zdali jsou zadané přihlašovací údaje platné.
      *
-     * @param string $username         Uživatelské jméno
+     * @param string $username         Identita uživatele (uživatelské jméno nebo e-mail)
      * @param string $password         Heslo uživatele
-     * @param string $method           Metoda použitá k ověření platnosti přihlašovacích údajů, při nevyplnění
-     *                                 bude použita metoda nastavená v konfiguračním souboru [nepovinné]
-     * @return bool                    TRUE pokud byly zadány platné přihlašovací údaje, jinak FALSE
+     * @param string $methods          Metoda (popř. různé metody) použitá k ověření platnosti přihlašovacích údajů, při
+     *                                 nevyplnění bude použita metoda nastavená v konfiguračním souboru (nepovinné)
+     * @return bool                    TRUE, pokud jsou zadané přihlašovací údaje platné, jinak FALSE
      */
-    public static function tryLogin($username, $password, $method = AUTHENTICATION_TYPE) {
+    public static function tryLogin($username, $password, $methods = AUTHENTICATION_TYPE) {
+      $methods = array_map('trim', explode(',', $methods));
+
       $validCreds = false;
 
       if (str_contains($username, '@')) {
@@ -40,23 +42,29 @@
       self::$username = $username;
       self::$password = $password;
 
-      if ($method == 'ldap') {
-        $validCreds = self::tryLdapLogin();
-      }
-      elseif ($method == 'web') {
-        $validCreds = self::tryWebLogin();
-      }
-      elseif ($method == 'm365') {
-        $validCreds = self::tryM365Login();
-      }
-      elseif ($method == 'kerberos') {
-        $validCreds = self::tryKerberosLogin();
-      }
-      elseif ($method == 'imap') {
-        $validCreds = self::tryImapLogin();
-      }
-      elseif ($method == 'policy') {
-        $validCreds = self::tryPolicyCheck();
+      foreach ($methods as $method) {
+        if ($method == 'ldap') {
+          $validCreds = self::tryLdapLogin();
+        }
+        elseif ($method == 'web') {
+          $validCreds = self::tryWebLogin();
+        }
+        elseif ($method == 'm365') {
+          $validCreds = self::tryM365Login();
+        }
+        elseif ($method == 'kerberos') {
+          $validCreds = self::tryKerberosLogin();
+        }
+        elseif ($method == 'imap') {
+          $validCreds = self::tryImapLogin();
+        }
+        elseif ($method == 'policy') {
+          $validCreds = self::tryPolicyCheck();
+        }
+
+        if ($validCreds) {
+          break;
+        }
       }
 
       return $validCreds;
