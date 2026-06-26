@@ -46,6 +46,9 @@
       elseif ($method == 'web') {
         $validCreds = self::tryWebLogin();
       }
+      elseif ($method == 'm365') {
+        $validCreds = self::tryM365Login();
+      }
       elseif ($method == 'kerberos') {
         $validCreds = self::tryKerberosLogin();
       }
@@ -92,7 +95,7 @@
      * Odesláním přihlašovacího formuláře přes metodu POST na zvoleném webu ověří,
      * zdali byly zadány platné přihlašovací údaje.
      *
-     * @return bool                    TRUE pokud byly zadány platné přihlašovací údaje, jinak FALSE
+     * @return bool                    TRUE, pokud byly zadány platné přihlašovací údaje, jinak FALSE
      */
     private static function tryWebLogin() {
       $ch = curl_init();
@@ -106,12 +109,71 @@
         ])
       );
 
-      $server_output = curl_exec($ch);
-      $server_response = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      $serverOutput = curl_exec($ch);
+      $serverResponse = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
       curl_close($ch);
 
-      return ($server_response == AUTHENTICATION_WEB_RESPONSE_CODE || $server_output == AUTHENTICATION_WEB_RESPONSE_OUTPUT);
+      return ($serverResponse == AUTHENTICATION_WEB_RESPONSE_CODE || $serverOutput == AUTHENTICATION_WEB_RESPONSE_OUTPUT);
+    }
+
+
+    /**
+     * Odesláním požadavku na M365 endpoint přes metodu POST ověří,
+     * zdali byly zadány platné přihlašovací údaje.
+     *
+     * @return bool                    TRUE, pokud byly zadány platné přihlašovací údaje, jinak FALSE
+     */
+    private static function tryM365Login() {
+      $validCreds = false;
+
+      $username = self::$username;
+
+      if (!empty(AUTHENTICATION_M365_USER_SUFFIX) && !str_contains($username, AUTHENTICATION_M365_USER_SUFFIX)) {
+        $username .= AUTHENTICATION_M365_USER_SUFFIX;
+      }
+
+      $ch = curl_init();
+
+      curl_setopt($ch, CURLOPT_URL, AUTHENTICATION_M365_URL);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_POST, true);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+          'client_id' => AUTHENTICATION_M365_CLIENT_ID,
+          'client_secret' => AUTHENTICATION_M365_CLIENT_SECRET,
+          'scope' => 'openid profile offline_access',
+          'grant_type' => 'password',
+          'username' => $username,
+          'password' => self::$password
+        ])
+      );
+
+      $serverOutput = curl_exec($ch);
+
+      curl_close($ch);
+
+      $serverOutputDecoded = json_decode($serverOutput, true);
+      $serverOutputError = $serverOutputDecoded['error_description'] ?? '';
+
+      $validOutputErrors = [
+        'AADSTS65001', // Consent required
+        'AADSTS50076', // MFA required
+        'AADSTS50079', // MFA registration required
+        'AADSTS53003', // Conditional Access
+      ];
+
+      foreach ($validOutputErrors as $errorCode) {
+        if (str_contains($serverOutputError, $errorCode)) {
+          $validCreds = true;
+          break;
+        }
+      }
+
+      if (isset($serverOutputDecoded['access_token'])) {
+        $validCreds = true;
+      }
+
+      return $validCreds;
     }
 
 

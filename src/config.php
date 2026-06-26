@@ -107,7 +107,7 @@
 
   /* --- OVĚŘENÍ PŘIHLAŠOVACÍCH ÚDAJŮ ZADANÝCH NA PODVODNÝCH STRÁNKÁCH --- */
   /** Typ autentizace, který se bude používat při ověřování přihlašovací údajů:
-   *    Možnosti: ldap/web/kerberos/imap/policy
+   *    Možnosti: ldap/web/m365/kerberos/imap/policy
    */
   define('AUTHENTICATION_TYPE', getenv('AUTHENTICATION_TYPE'));
 
@@ -140,6 +140,18 @@
 
   /** Vrácený výstup, pokud dojde na webu pro autentizaci k úspěšnému přihlášení. */
   define('AUTHENTICATION_WEB_RESPONSE_OUTPUT', getenv('AUTHENTICATION_WEB_RESPONSE_OUTPUT'));
+
+  /** Pokud se použije autentizace přes webový endpoint M365, je nutné uvést URL adresu, na které dojde k ověření přihlašovacích údajů. */
+  define('AUTHENTICATION_M365_URL', getenv('AUTHENTICATION_M365_URL'));
+
+  /** Hodnota client_id u ověřování vůči webovému endpointu M365. */
+  define('AUTHENTICATION_M365_CLIENT_ID', getenv('AUTHENTICATION_M365_CLIENT_ID'));
+
+  /** Hodnota client_secret u ověřování vůči webovému endpointu M365. */
+  define('AUTHENTICATION_M365_CLIENT_SECRET', getenv('AUTHENTICATION_M365_CLIENT_SECRET'));
+
+  /** Sufix automaticky přidávaný k uživatelskému jménu (pokud již v uživatelském jménu není obsažen). */
+  define('AUTHENTICATION_M365_USER_SUFFIX', getenv('AUTHENTICATION_M365_USER_SUFFIX'));
 
   /** Pokud se použije IMAP autentizace, je nutné uvést IMAP server (a port) a případné flagy (např. "{domain.tld:993/imap/ssl/}"). */
   define('AUTHENTICATION_IMAP_ARGS', getenv('AUTHENTICATION_IMAP_ARGS'));
