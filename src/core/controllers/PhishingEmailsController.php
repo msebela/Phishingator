@@ -87,6 +87,7 @@
       $this->initViewData($model, ACT_NEW, $formData['formPrefix']);
 
       $this->setViewData('phishingEmailVariables', json_encode($model->getEmailBodyVariables()));
+      $this->setViewData('phishingEmailAllowedCssProperties', implode(',', EmailDomProcessor::getAllowedCssProperties()));
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {
@@ -120,7 +121,9 @@
 
       $model->initForm($formData['inputsNames'], $formData['formPrefix'], $formData['dbTable']);
       $this->setViewData('phishingEmail', $model->getPhishingEmail($idEmail));
+
       $this->setViewData('phishingEmailVariables', json_encode($model->getEmailBodyVariables()));
+      $this->setViewData('phishingEmailAllowedCssProperties', implode(',', EmailDomProcessor::getAllowedCssProperties()));
 
       // Ověření existence záznamu.
       $this->checkRecordExistence($this->getData('phishingEmail'));

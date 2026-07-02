@@ -78,12 +78,21 @@
      *
      * @return array                   Pole povolených CSS vlastností
      */
-    private static function getAllowedCssProperties() {
+    public static function getAllowedCssProperties() {
       return [
+        'display',
+        'padding',
+        'margin',
+        'font-family',
+        'font-size',
         'color',
         'background-color',
         'text-align',
-        'font-weight'
+        'text-decoration',
+        'font-weight',
+        'line-height',
+        'border',
+        'border-radius',
       ];
     }
 
