@@ -2,13 +2,17 @@
 
 // PHISHING E-MAILS AND WEBSITES: INDICATIONS
 .indication {
-  padding: 0 0 0 .2rem;
-  text-decoration: none;
-  border-bottom: 2px solid #dc3545;
+  text-decoration: underline;
+  text-decoration-color: #dc3545;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
   color: $black;
 
   &:hover, &.active {
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-color: #dc3545;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
     color: #dc3545;
 
     .icons {
@@ -27,12 +31,6 @@
   .icons {
     display: inline-block;
     color: #dc3545;
-    border-bottom: 1px solid $white;
-    background: $white;
-
-    &.top {
-      background: #f1f1f1;
-    }
 
     .icon {
       display: inline-block;
@@ -50,13 +48,30 @@
     }
   }
 
-  &.indication-link {
-    border-bottom: 2px solid #dc3545;
+  .indication-link {
+    text-decoration-color: #dc3545;
 
-    .icons {
-      border-bottom: 2px solid #fff59d;
-      background: none;
+    &:hover {
+      color: #dc3545;
     }
+  }
+}
+
+.indication-link {
+  text-decoration: underline;
+  text-decoration-color: $black;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+  color: $black;
+  cursor: pointer;
+
+  a {
+    color: $black;
+  }
+
+  &:hover, a:hover {
+    text-decoration: none;
+    color: $black;
   }
 }
 
@@ -137,11 +152,6 @@
         background-color: #aaa;
       }
     }
-
-    .indication .icons {
-      border-bottom: 1px solid #f1f1f1;
-      background: #f1f1f1;
-    }
   }
 
   // WINDOW - CONTENT
@@ -182,30 +192,5 @@
       width: auto;
       border-top: 1px solid #aaa;
     }
-  }
-}
-
-.indication-link {
-  border-bottom: 2px solid $black;
-  color: $black;
-  cursor: pointer;
-
-  a {
-    color: $black;
-  }
-
-  &:hover, a:hover {
-    text-decoration: none;
-    border-bottom: 0;
-    color: $black;
-  }
-}
-
-.indication .indication-link {
-  border-bottom: 2px solid #dc3545;
-  cursor: pointer;
-
-  &:hover {
-    color: #dc3545;
   }
 }

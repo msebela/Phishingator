@@ -18,7 +18,7 @@
   <link rel="icon" type="image/png" href="/favicon.png">
 
   <link rel="stylesheet" href="/assets/vendor/bootstrap-4.6.2/bootstrap.min.css">
-  <link rel="stylesheet" href="/assets/css/style-intro.css?20260612">
+  <link rel="stylesheet" href="/assets/css/style-intro.css?20260703">
 </head>
 <body>
   <header>
