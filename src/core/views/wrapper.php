@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link href="/assets/vendor/bootstrap-4.6.2/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/css/style.css?20260703" rel="stylesheet">
+    <link href="/assets/css/style.css?20260717" rel="stylesheet">
   </head>
 
   <body>
