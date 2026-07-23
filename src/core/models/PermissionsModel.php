@@ -359,8 +359,8 @@
      * Odhlásí právě přihlášeného uživatele ze systému.
      */
     public static function logout() {
-      session_destroy();
       unset($_SESSION['user']);
+      session_destroy();
     }
 
 

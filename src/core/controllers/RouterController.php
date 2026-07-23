@@ -95,6 +95,12 @@
       // Ve všech ostatních případech se uživatel nalézá ve veřejné části aplikace (to se ovšem může
       // dít i za předpokladu, že je přihlášený, proto to není jako ELSE větev první podmínky).
       if ($this->controller == null) {
+        // Přesměrování uživatele po odhlášení.
+        if (isset($_GET['logged-out']) && !isset($_SESSION['user'])) {
+          header('Location: ' . WEB_BASE_URL);
+          exit();
+        }
+
         $this->controller = $this->getController('public-homepage', true);
         $publicSite = true;
       }
@@ -197,14 +203,14 @@
 
 
     /**
-     * Odhlásí uživatele z Phishingatoru a přesměruje ho na úvodní stránku projektu.
+     * Odhlásí uživatele a přesměruje ho na veřejnou úvodní stránku Phishingatoru.
      *
      * @return void
      */
     private function logout() {
       PermissionsModel::logout();
 
-      header('Location: ' . WEB_BASE_URL);
+      header('Location: /oauth2callback?logout=' . rawurlencode(WEB_URL . '/?logged-out'));
       exit();
     }
   }
