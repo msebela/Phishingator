@@ -88,11 +88,8 @@
           $this->formalizeTestResult('ldap-local-connection', $this->localLdapConnectionTest()),
           $this->formalizeTestResult('ldap-remote-connection', $this->remoteLdapConnectionTest()),
 
-          $this->formalizeTestResult('credentials-valid', $this->credentialsTest()),
-          $this->formalizeTestResult('credentials-invalid', $this->credentialsTest(true)),
-
-          $this->formalizeTestResult('credentials-email-valid', $this->credentialsTest(false, '@' . get_organization_domain())),
-          $this->formalizeTestResult('credentials-email-invalid', $this->credentialsTest(true, '@' . get_organization_domain()))
+          $this->formalizeTestResult('authentication-username', $this->authenticationTest()),
+          $this->formalizeTestResult('authentication-email', $this->authenticationTest('@' . get_organization_domain())),
         ]
       ];
 
@@ -261,33 +258,16 @@
 
 
     /**
-     * Pokusí se provést přihlášení do autentizační služby s přihlašovacími údaji testovací identity.
+     * Ověří přihlášení testovací identity vůči autentizační službě nastavené v konfiguraci.
      *
-     * @param bool $wrongPassword      TRUE pokud má dojít k přihlášení s nesprávným heslem, jinak FALSE (výchozí)
-     * @param string $usernameSuffix   Nepovinný sufix přidávaný k uživatelskému jménu (např. doména)
-     * @return bool                    TRUE pokud byl výsledek správný, FALSE pokud ne, 3 pokud byl neznámý
+     * @param string $usernameSuffix   Nepovinný sufix připojený k uživatelskému jménu (např. doména)
+     * @return bool                    TRUE při úspěšném přihlášení, jinak FALSE
      */
-    private function credentialsTest($wrongPassword = false, $usernameSuffix = '') {
-      if (!($wrongPassword && MONITORING_SKIP_TEST_CREDS_INVALID)) {
-        if ($wrongPassword) {
-          $password = 'test-wrong-password';
-        }
-        else {
-          $password = TEST_PASSWORD;
-        }
-
-        $result = CredentialsTesterModel::tryLogin(TEST_USERNAME . $usernameSuffix, $password);
-
-        if ($wrongPassword) {
-          $result = !$result;
-        }
-      }
-      else {
-        // Testování zadání neplatných údajů se na základě konfigurace neprovádí - tj. stav neznámý.
-        $result = 3;
-      }
-
-      return $result;
+    private function authenticationTest($usernameSuffix = '') {
+      return CredentialsTesterModel::tryLogin(
+        TEST_USERNAME . $usernameSuffix,
+        TEST_PASSWORD
+      );
     }
 
 

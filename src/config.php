@@ -293,10 +293,6 @@
   /** IP adresy (oddělené čárkou), které mají přístup k zobrazení monitoringu. */
   define('MONITORING_ALLOWED_IP', getenv('MONITORING_ALLOWED_IP'));
 
-  /** Určuje, zdali se má nad testovacím uživatelem přeskočit test monitoringu zadání neplatných údajů
-   * (např. z důvodu možného zablokování testovacího účtu při neplatných pokusech). */
-  define('MONITORING_SKIP_TEST_CREDS_INVALID', (getenv('MONITORING_SKIP_TEST_CREDS_INVALID') && getenv('MONITORING_SKIP_TEST_CREDS_INVALID') == 1));
-
   /** Uživatelské jméno testovacího uživatele (sondy), který v rámci monitoringu periodicky a automatizovaně
    * testuje funkčnost aplikace (např. funkčnost ověřování přihlašovacích údajů). U testovacího uživatele
    * se neprovádí logování přihlášení. */
