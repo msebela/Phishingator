@@ -83,7 +83,6 @@
      * @throws \PHPMailer\PHPMailer\Exception
      */
     private function sendEmails() {
-      self::requirePhpMailerClasess();
       Database::connect();
 
       $mailer = new EmailSenderModel();
@@ -98,7 +97,6 @@
      * @throws \PHPMailer\PHPMailer\Exception
      */
     private function sendNotifications() {
-      self::requirePhpMailerClasess();
       Database::connect();
 
       $mailer = new NotificationsModel();
@@ -125,17 +123,5 @@
      */
     private function deployWebsites() {
       PhishingWebsiteConfigs::processAllConfigs();
-    }
-
-
-    /**
-     * Načte zdrojové soubory knihovny PHPMailer.
-     *
-     * @return void
-     */
-    private function requirePhpMailerClasess() {
-      require $_SERVER['DOCUMENT_ROOT'] . '/../phpmailer/src/Exception.php';
-      require $_SERVER['DOCUMENT_ROOT'] . '/../phpmailer/src/PHPMailer.php';
-      require $_SERVER['DOCUMENT_ROOT'] . '/../phpmailer/src/SMTP.php';
     }
   }

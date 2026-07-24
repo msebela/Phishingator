@@ -16,6 +16,7 @@ services:
       - .env
     volumes:
       - ./src:/var/www/phishingator/
+      - /var/www/phishingator/vendor
       - ./phishingator-data/${ORG}/logs:/var/www/phishingator/logs
       - ./phishingator-data/${ORG}/websites-templates/sites-config:/var/www/phishingator/templates/sites-config
       - ./phishingator-data/${ORG}/websites-templates/websites:/var/www/phishingator/templates/websites:ro

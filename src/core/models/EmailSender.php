@@ -1,6 +1,9 @@
 <?php
+  require dirname(__DIR__) . '/../vendor/autoload.php';
+
   use PHPMailer\PHPMailer\PHPMailer;
   use PHPMailer\PHPMailer\SMTP;
+  use PHPMailer\PHPMailer\Exception;
 
   /**
    * Třída sdružující obecné metody týkající se odesílání e-mailů.
