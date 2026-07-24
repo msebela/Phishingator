@@ -11,8 +11,8 @@
 
     <link rel="icon" type="image/png" href="/favicon.png">
 
-    <link href="/assets/vendor/bootstrap-4.6.2/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/css/style.css?20260717" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap-4.6.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/style.min.css?20260717" rel="stylesheet">
   </head>
 
   <body>
@@ -125,9 +125,9 @@
       </div>
     </div>
 
-    <script src="/assets/vendor/jquery-3.7.1.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
-    <script src="/assets/vendor/bootstrap-4.6.2/bootstrap.bundle.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
-    <script src="/assets/vendor/feather.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+    <script src="/assets/vendor/jquery/jquery.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+    <script src="/assets/vendor/bootstrap-4.6.2/js/bootstrap.bundle.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+    <script src="/assets/vendor/feather/feather.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
     <script src="/assets/js/app.js?20260530" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
     <script src="/assets/js/public.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>

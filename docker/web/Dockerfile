@@ -1,3 +1,15 @@
+# Stage 1: Build frontend assets
+FROM node:24-trixie-slim AS frontend
+
+WORKDIR /app
+
+COPY src/package.json src/package-lock.json ./
+RUN npm ci
+
+COPY src/ ./
+RUN npm run build
+
+# Stage 2: Build PHP application image
 FROM php:8.3-apache-trixie
 
 ENV TZ="Europe/Prague" \
@@ -46,5 +58,8 @@ RUN composer install --no-dev --no-interaction --no-progress --prefer-dist --opt
 
 # Phishingator
 COPY --chown=phishingator:phishingator src/ ./
+
+COPY --chown=phishingator:phishingator --from=frontend /app/public/assets/css/ "${APP_ROOT}/public/assets/css/"
+COPY --chown=phishingator:phishingator --from=frontend /app/public/assets/vendor/ "${APP_ROOT}/public/assets/vendor/"
 
 USER phishingator

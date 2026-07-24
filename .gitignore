@@ -2,3 +2,4 @@
 .env
 phishingator-data
 src/tests
+src/node_modules/

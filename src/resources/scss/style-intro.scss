@@ -1,10 +1,10 @@
-@import '../vendor/bootstrap-4.6.2/_functions.scss';
-@import '../vendor/bootstrap-4.6.2/_variables.scss';
-@import '../vendor/bootstrap-4.6.2/mixins/_breakpoints.scss';
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
+@import "../../node_modules/bootstrap/scss/mixins/breakpoints";
 
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam:wght@400;600;700;800&display=swap');
 
-@import 'style-variables.scss';
+@import 'style-variables';
 
 
 html, body {
@@ -292,7 +292,7 @@ a.btn {
 }
 
 // PHISHING INDICATIONS
-@import 'style-indications.scss';
+@import 'style-indications';
 
 .card {
   a {

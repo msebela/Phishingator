@@ -1,0 +1,28 @@
+{
+  "name": "phishingator-frontend",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:bootstrap && npm run build:css && npm run build:jquery && npm run build:tinymce && npm run build:chartjs && npm run build:feather && npm run build:tablesort && npm run build:highlighttextarea",
+    "build:css": "mkdir -p public/assets/css && sass --style=compressed --no-source-map resources/scss/style.scss public/assets/css/style.min.css && sass --style=compressed --no-source-map resources/scss/style-email.scss public/assets/css/style-email.min.css && sass --style=compressed --no-source-map resources/scss/style-intro.scss public/assets/css/style-intro.min.css",
+    "build:bootstrap": "rm -rf public/assets/vendor/bootstrap-4.6.2 && mkdir -p public/assets/vendor/bootstrap-4.6.2/css public/assets/vendor/bootstrap-4.6.2/js && sass --style=compressed --no-source-map resources/scss/bootstrap-custom.scss public/assets/vendor/bootstrap-4.6.2/css/bootstrap.min.css && cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js public/assets/vendor/bootstrap-4.6.2/js/bootstrap.bundle.min.js",
+    "build:jquery": "rm -rf public/assets/vendor/jquery && mkdir -p public/assets/vendor/jquery && cp node_modules/jquery/dist/jquery.min.js public/assets/vendor/jquery/",
+    "build:tinymce": "rm -rf public/assets/vendor/tinymce && mkdir -p public/assets/vendor/tinymce && cp -R node_modules/tinymce/. public/assets/vendor/tinymce/ && mkdir -p public/assets/vendor/tinymce/langs && cp resources/tinymce/langs/cs.js public/assets/vendor/tinymce/langs/cs.js",
+    "build:chartjs": "rm -rf public/assets/vendor/chartjs && mkdir -p public/assets/vendor/chartjs && cp node_modules/chart.js/dist/chart.umd.min.js public/assets/vendor/chartjs/ && cp node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js public/assets/vendor/chartjs/",
+    "build:feather": "rm -rf public/assets/vendor/feather && mkdir -p public/assets/vendor/feather && cp node_modules/feather-icons/dist/feather.min.js public/assets/vendor/feather/",
+    "build:tablesort": "rm -rf public/assets/vendor/table-sort-js && mkdir -p public/assets/vendor/table-sort-js && cp node_modules/table-sort-js/table-sort.js public/assets/vendor/table-sort-js/",
+    "build:highlighttextarea": "rm -rf public/assets/vendor/jquery-highlighttextarea && mkdir -p public/assets/vendor/jquery-highlighttextarea && cp node_modules/jquery-highlighttextarea/jquery.highlighttextarea.min.js public/assets/vendor/jquery-highlighttextarea/ && cp node_modules/jquery-highlighttextarea/jquery.highlighttextarea.min.css public/assets/vendor/jquery-highlighttextarea/"
+  },
+  "dependencies": {
+    "bootstrap": "4.6.2",
+    "chart.js": "^4.5.1",
+    "chartjs-plugin-datalabels": "2.2.0",
+    "feather-icons": "4.29.2",
+    "jquery": "3.7.1",
+    "jquery-highlighttextarea": "3.2.1",
+    "table-sort-js": "1.22.3",
+    "tinymce": "^8.8.1"
+  },
+  "devDependencies": {
+    "sass": "^1.101.7"
+  }
+}
