@@ -3,6 +3,7 @@ workflow:
     - if: '$CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH'
 
 stages:
+  - test
   - build
   - deploy
 
@@ -12,6 +13,39 @@ stages:
   - source "/phishingator-data/${ORG}/.env"
   - set +a
   - export FRAUDULENT_HOSTS_TRAEFIK=$(echo "$FRAUDULENT_HOSTS" | tr ',' '\n' | awk '{printf "Host(`%s`) || ", $0}' | sed 's/ || $//')
+
+composer-audit:
+  stage: test
+  image: composer:2
+  script:
+    - cd src
+    - composer validate --no-check-publish --strict
+    - composer audit --locked
+
+npm-audit:
+  stage: test
+  image: node:24-trixie-slim
+  script:
+    - cd src
+    - npm audit --audit-level=moderate
+
+php-lint:
+  stage: test
+  image: php:8.3-cli-trixie
+  script:
+    - find src -type f -name '*.php' -print0 | xargs -0 -r -n1 php -l
+
+semgrep:
+  stage: test
+  image: semgrep/semgrep:1.171.0-nonroot
+  script:
+    - semgrep scan --config p/php --error --metrics=off src/
+
+shellcheck:
+  stage: test
+  image: koalaman/shellcheck-alpine:v0.11.0
+  script:
+    - find scripts docker -type f -name '*.sh' -print0 | xargs -0 -r shellcheck
 
 build:
   image: docker:29.6.1-cli
