@@ -292,7 +292,7 @@
                   <h6>
                     <label>
                       <input type="checkbox" id="group-checkbox-<?= remove_special_chars($groupName) ?>" class="mark-group-checkboxes" data-checkboxes-group="#group-<?= remove_special_chars($groupName) ?>" data-checkboxes-group-checked="0" data-checkboxes-group-total="<?= count($groupUsers) ?>">
-                      <span class="font-weight-normal text-muted">Import:</span> <?= stripcslashes($groupName) ?>
+                      <?= stripcslashes($groupName) ?><?php if (!empty($ldapGroupsDescription[$groupName])): ?><span class="font-weight-normal text-muted"> &ndash; <?=$ldapGroupsDescription[$groupName]; ?></span><?php endif; ?>
                     </label>
                   </h6>
                 </div>

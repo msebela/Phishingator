@@ -480,14 +480,14 @@
     private function existsLdapGroup() {
       $ldap = new LdapModel();
 
-      $ldapGroups = $ldap->getGroupNames();
+      $ldapGroups = array_keys($ldap->getGroups());
       $inputGroups = explode(LDAP_GROUPS_DELIMITER, $this->ldapGroups);
 
       $ldap->close();
 
       foreach ($inputGroups as $group) {
         if (!empty($group) && !in_array($group, $ldapGroups)) {
-          throw new UserError('Vybraná LDAP skupina (' . $group . ') neexistuje.', MSG_ERROR);
+          throw new UserError(sprintf('LDAP skupina "%s" neexistuje!', $group), MSG_ERROR);
         }
       }
     }

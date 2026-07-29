@@ -7,12 +7,6 @@
    */
   class UserGroupsController extends Controller {
     /**
-     * @var int         Od jakého počtu znaků se bude název uživatelské skupiny považovat za dlouhý.
-     */
-    private $longUserGroupMinLength = 15;
-
-
-    /**
      * Zpracuje vstup z URL adresy a na základě toho zavolá odpovídající metodu.
      *
      * @param array $arguments         Uživatelský vstup
@@ -69,13 +63,11 @@
       $this->initViewData($model, ACT_NEW, $formData['formPrefix']);
 
       $ldap = new LdapModel();
-      $groups = $ldap->getGroupNames();
+      $groups = $ldap->getGroups();
       $ldap->close();
 
       $this->setViewData('roles', $model->getRoles(true));
-
       $this->setViewData('groups', $groups);
-      $this->setViewData('groupsLongNames', max(array_map('mb_strlen', $groups)) > $this->longUserGroupMinLength);
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {
@@ -113,13 +105,11 @@
       $this->initViewData($model, ACT_EDIT, $formData['formPrefix']);
 
       $ldap = new LdapModel();
-      $groups = $ldap->getGroupNames();
+      $groups = $ldap->getGroups();
       $ldap->close();
 
       $this->setViewData('roles', $model->getRoles(true));
-
       $this->setViewData('groups', $groups);
-      $this->setViewData('groupsLongNames', max(array_map('mb_strlen', $groups)) > $this->longUserGroupMinLength);
 
       $groupRole = $model->getRole($this->getData('group')['role']);
       $this->setViewData('displayGroups', $groupRole['value'] == PERMISSION_ADMIN || $groupRole['value'] == PERMISSION_TEST_MANAGER);

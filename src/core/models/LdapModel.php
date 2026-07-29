@@ -391,18 +391,18 @@
 
 
     /**
-     * Vrátí z LDAP seznam názvů všech skupin.
+     * Vrátí z LDAP seznam všech skupin.
      *
-     * @return array                   Pole názvů skupin
+     * @return array                   Pole skupin s popisy
      */
-    public function getGroupNames() {
+    public function getGroups() {
       $groupNames = [];
 
       $groups = $this->getDataByFilter(LDAP_GROUPS_DN, 'cn=*');
 
       foreach ($groups as $group) {
         if (isset($group['cn'][0])) {
-          $groupNames[] = $group['cn'][0];
+          $groupNames[$group['cn'][0]] = $group['description'][0] ?? '';
         }
       }
 

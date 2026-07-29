@@ -44,11 +44,23 @@
   <div class="form-group<?php if ($action == ACT_EDIT && !$displayGroups && empty($inputsValues[$input])): ?> d-none<?php endif; ?>" id="groups">
     <label>LDAP skupiny zobrazené v&nbsp;dialogu se seznamem příjemců při <a href="/portal/campaigns/<?= ACT_NEW ?>">vytváření kampaně</a> (pouze pro oprávnění <span class="badge badge-danger">Administrátor</span> a&nbsp;<span class="badge badge-warning">Správce testů</span>)</label>
 
-    <div class="d-flex flex-row flex-wrap justify-content-between justify-content-sm-start list-groups<?= (($groupsLongNames) ? ' group-names-lg' : '') ?>">
-      <?php foreach ($groups as $group): ?>
-      <label class="text-truncate"<?php if ($groupsLongNames): ?> title="<?= $group ?>"<?php endif; ?>>
-        <input type="checkbox" name="<?= $formPrefix . $input ?>[]" value="<?= $group ?>"<?php if ((!is_array($inputsValues[$input]) && in_array($group, explode(LDAP_GROUPS_DELIMITER, $inputsValues[$input]))) || (is_array($inputsValues[$input]) && in_array($group, $inputsValues[$input]))): ?> checked<?php endif; ?>>&nbsp;<?= $group ?>
-      </label>
+    <div class="row">
+      <?php
+        foreach ($groups as $group => $groupDescription):
+          $checked = (!is_array($inputsValues[$input]) && in_array($group, explode(LDAP_GROUPS_DELIMITER, $inputsValues[$input]))) || (is_array($inputsValues[$input]) && in_array($group, $inputsValues[$input]));
+      ?>
+      <div class="col-16 col-md-8 col-xl-4 mb-2">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" name="<?= $formPrefix . $input ?>[]" id="<?= $formPrefix . $input . '-' . $group ?>" value="<?= $group ?>" class="custom-control-input"<?php if ($checked): ?> checked<?php endif; ?>>
+
+          <label class="custom-control-label" for="<?= $formPrefix . $input . '-' . $group ?>">
+            <strong><?= $group ?></strong>
+            <?php if (!empty($groupDescription)): ?>
+            <span class="text-muted"> &ndash; <?= $groupDescription ?></span>
+            <?php endif; ?>
+          </label>
+        </div>
+      </div>
       <?php endforeach; ?>
     </div>
 

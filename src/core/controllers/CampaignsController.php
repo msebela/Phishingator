@@ -92,8 +92,13 @@
         $this->setViewData('recipientsVolunteers', array());
       }
 
+      $ldap = new LdapModel();
+      $groups = $ldap->getGroups();
+      $ldap->close();
+
       $userAllowedLdapGroups = (PermissionsModel::getUserAllowedLdapGroups() != null) ? PermissionsModel::getUserAllowedLdapGroups() : null;
       $this->setViewData('recipientsLdapGroups', $model->getLdapRecipients($recipients, $userAllowedLdapGroups, PermissionsModel::getUserEmailRestrictions()));
+      $this->setViewData('ldapGroupsDescription', $groups);
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {
@@ -152,8 +157,13 @@
         $this->setViewData('recipientsVolunteers', array());
       }
 
+      $ldap = new LdapModel();
+      $groups = $ldap->getGroups();
+      $ldap->close();
+
       $userAllowedLdapGroups = (PermissionsModel::getUserAllowedLdapGroups() != null) ? PermissionsModel::getUserAllowedLdapGroups() : null;
       $this->setViewData('recipientsLdapGroups', $model->getLdapRecipients($recipients, $userAllowedLdapGroups, PermissionsModel::getUserEmailRestrictions()));
+      $this->setViewData('ldapGroupsDescription', $groups);
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {
