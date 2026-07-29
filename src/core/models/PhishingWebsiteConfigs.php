@@ -137,7 +137,7 @@
       $changes = false;
 
       foreach ($files as $file) {
-        if (str_contains($file, PHISHING_WEBSITE_CONF_EXT)) {
+        if (str_ends_with($file, PHISHING_WEBSITE_CONF_EXT) || str_ends_with($file, PHISHING_WEBSITE_CONF_EXT_DEL) || str_ends_with($file, PHISHING_WEBSITE_CONF_EXT_NEW)) {
           $filepath = PHISHING_WEBSITE_CONF_DIR . $file;
 
           $serverName = self::pregMatchInFile($filepath, '/ServerName (.*)/');
@@ -149,19 +149,23 @@
               $filepathNewConfig = PHISHING_WEBSITE_APACHE_DIR . $serverName . PHISHING_WEBSITE_CONF_EXT;
               $filepathAppliedConfig = PHISHING_WEBSITE_CONF_DIR . $serverName . PHISHING_WEBSITE_CONF_EXT;
 
-              copy($filepath, $filepathNewConfig);
-              exec('a2ensite ' . escapeshellarg($serverName));
-              rename($filepath, $filepathAppliedConfig);
+              if (copy($filepath, $filepathNewConfig)) {
+                CommandRunnerModel::run('/usr/sbin/a2ensite', [$serverName]);
+                rename($filepath, $filepathAppliedConfig);
 
-              Logger::info('New phishing website activated in Apache.', [$filepath, $filepathNewConfig, $filepathAppliedConfig, $serverName]);
+                Logger::info('New phishing website activated in Apache.', [$filepath, $filepathNewConfig, $filepathAppliedConfig, $serverName]);
 
-              $changes = true;
+                $changes = true;
+              }
+              else {
+                Logger::error('Failed to activate new phishing website in Apache.', [$filepath, $filepathNewConfig, $serverName]);
+              }
             }
 
             // Deaktivace podvodné stránky.
             elseif (self::isConfigType($file, PHISHING_WEBSITE_CONF_EXT_DEL)) {
-              exec('a2dissite ' . escapeshellarg($serverName));
-              unlink($filepath);
+              CommandRunnerModel::run('/usr/sbin/a2dissite', [$serverName]);
+              FileManagerModel::deleteFileInDirectory($filepath, PHISHING_WEBSITE_CONF_DIR);
 
               Logger::info('Phishing website deactivated in Apache.', [$filepath, $serverName]);
 
@@ -172,19 +176,23 @@
             elseif (self::isConfigType($file, PHISHING_WEBSITE_CONF_EXT) && !file_exists(PHISHING_WEBSITE_APACHE_DIR . $file)) {
               $filepathNewConfig = PHISHING_WEBSITE_APACHE_DIR . $serverName . PHISHING_WEBSITE_CONF_EXT;
 
-              copy($filepath, $filepathNewConfig);
-              exec('a2ensite ' . escapeshellarg($serverName));
+              if (copy($filepath, $filepathNewConfig)) {
+                CommandRunnerModel::run('/usr/sbin/a2ensite', [$serverName]);
 
-              Logger::info('Existing phishing website activated in Apache.', [$filepath, $filepathNewConfig, $serverName]);
+                Logger::info('Existing phishing website activated in Apache.', [$filepath, $filepathNewConfig, $serverName]);
 
-              $changes = true;
+                $changes = true;
+              }
+              else {
+                Logger::error('Failed to activate existing phishing website in Apache.', [$filepath, $filepathNewConfig, $serverName]);
+              }
             }
           }
         }
       }
 
       if ($changes) {
-        exec('apachectl graceful');
+        CommandRunnerModel::run('/usr/sbin/apachectl', ['graceful']);
 
         Logger::info('Apache configuration reloaded.');
       }
