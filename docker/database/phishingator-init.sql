@@ -306,7 +306,8 @@ ALTER TABLE `phg_users`
   ADD PRIMARY KEY (`id_user`),
   ADD UNIQUE KEY `url` (`url`),
   ADD KEY `id_by_user` (`id_by_user`),
-  ADD KEY `id_user_group` (`id_user_group`);
+  ADD KEY `id_user_group` (`id_user_group`),
+  ADD KEY `idx_email_visible` (`email`, `visible`);
 
 ALTER TABLE `phg_users_groups`
   ADD PRIMARY KEY (`id_user_group`),
