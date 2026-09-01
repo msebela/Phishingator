@@ -112,9 +112,9 @@ services:
     depends_on:
       - web
     environment:
-      - PARANOIA=1
-      - ANOMALY_INBOUND=10
-      - ANOMALY_OUTBOUND=5
+      - BLOCKING_PARANOIA=1
+      - ANOMALY_INBOUND=5
+      - ANOMALY_OUTBOUND=4
       - BACKEND=http://phishingator-${ORG}-web
       - REMOTEIP_INT_PROXY=172.18.0.0/16
       - MODSEC_REQ_BODY_NOFILES_LIMIT=524288
