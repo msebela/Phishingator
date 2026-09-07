@@ -406,7 +406,7 @@
         }
       }
 
-      natcasesort($groupNames);
+      uksort($groupNames, 'strnatcasecmp');
 
       return $groupNames;
     }
