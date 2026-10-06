@@ -1404,7 +1404,7 @@
       $this->isDateActiveSinceGreaterThanDateActiveTo();
       $this->isTimeActiveSinceGreaterThanTimeActiveTo();
       $this->isDatetimeActiveSinceDifferentThanDatetimeActiveTo();
-      $this->isDatetimeActiveSinceInPast();
+      $this->isDatetimeActiveSinceValid();
       $this->isDatetimeActiveToInPast();
       $this->isDatetimeDiffAtLeastMinutes();
 
@@ -1661,23 +1661,29 @@
 
 
     /**
-     * Ověří, zdali není datum a čas zahájení kampaně z minulosti.
+     * Ověří, zdali jsou datum a čas zahájení kampaně platné.
      *
      * @throws UserError
      */
-    private function isDatetimeActiveSinceInPast() {
+    private function isDatetimeActiveSinceValid() {
       $datetimeSinceTimestamp = strtotime($this->dateActiveSince . ' ' . $this->timeActiveSince);
+      $now = time();
 
       if (isset($this->dbRecordData['id_campaign'])) {
-        $originalDatetime = strtotime($this->dbRecordData['date_active_since'] . ' ' . $this->dbRecordData['time_active_since']);
+        $originalDatetimeSinceTimestamp = strtotime($this->dbRecordData['date_active_since'] . ' ' . $this->dbRecordData['time_active_since']);
 
-        if ($datetimeSinceTimestamp < $originalDatetime) {
-          throw new UserError('Datum a čas zahájení kampaně nesmí být starší než původně nastavené datum zahájení.', MSG_ERROR);
+        if ($originalDatetimeSinceTimestamp <= $now) {
+          if ($this->dateActiveSince !== $this->dbRecordData['date_active_since'] || $this->timeActiveSince !== $this->dbRecordData['time_active_since']) {
+            throw new UserError('Datum a čas zahájení již spuštěné kampaně nelze změnit.', MSG_ERROR);
+          }
+        }
+        else {
+          if ($datetimeSinceTimestamp < $now) {
+            throw new UserError('Datum a čas zahájení kampaně nesmí být v minulosti.', MSG_ERROR);
+          }
         }
       }
       else {
-        $now = time();
-
         if ($datetimeSinceTimestamp < $now) {
           throw new UserError('Datum a čas zahájení kampaně nesmí být v minulosti.', MSG_ERROR);
         }

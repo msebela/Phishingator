@@ -124,14 +124,14 @@
         <?php $input = 'date-active-since'; ?>
         <div class="form-group col-md-8">
           <label for="<?= $formPrefix . $input ?>">Datum zahájení kampaně</label>
-          <input type="date" class="form-control" id="<?= $formPrefix . $input ?>" name="<?= $formPrefix . $input ?>" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input]; ?>" min="<?= (($action == ACT_NEW) ? date('Y-m-d') : $inputsValues[$input]) ?>" required>
+          <input type="date" class="form-control" id="<?= $formPrefix . $input ?>" name="<?= $formPrefix . $input ?>" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>"<?php if ($action == ACT_NEW || ($action == ACT_EDIT && !in_array($campaign['status'], ['running', 'ending', 'ended']))): ?> min="<?= date('Y-m-d') ?>"<?php else: ?> min="<?= $inputsValues[$input] ?>" max="<?= $inputsValues[$input] ?>"<?php endif; ?> required>
           <small class="form-text text-muted">Den, kdy započne rozesílání e-mailů zvoleným příjemcům a&nbsp;zároveň den, od kterého bude přístupná podvodná stránka.</small>
         </div>
 
         <div class="form-group col-md-8">
           <?php $input = 'time-active-since'; ?>
           <label for="<?= $formPrefix . $input ?>">Čas zahájení</label>
-          <input type="time" class="form-control" id="<?= $formPrefix . $input ?>" name="<?= $formPrefix . $input ?>" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>" required>
+          <input type="time" class="form-control" id="<?= $formPrefix . $input ?>" name="<?= $formPrefix . $input ?>" maxlength="<?= $inputsMaxLengths[$input] ?>" value="<?= $inputsValues[$input] ?>"<?php if ($action == ACT_EDIT && in_array($campaign['status'], ['running', 'ending', 'ended'])): ?> min="<?= $inputsValues[$input] ?>" max="<?= $inputsValues[$input] ?>"<?php endif; ?> required>
           <small class="form-text text-muted">Čas, kdy se zahájí rozesílání vybraného e-mailu zvoleným příjemcům a&nbsp;kdy začne být dostupná podvodná stránka.</small>
         </div>
       </div>
