@@ -1,5 +1,5 @@
 # Stage 1: Build frontend assets
-FROM node:24-trixie-slim AS frontend
+FROM node:26-trixie-slim AS frontend
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ COPY src/ ./
 RUN npm run build
 
 # Stage 2: Build PHP application image
-FROM php:8.3-apache-trixie
+FROM php:8.4-apache-trixie
 
 ENV TZ="Europe/Prague" \
     APP_ROOT="/var/www/phishingator/" \
