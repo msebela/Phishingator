@@ -162,10 +162,10 @@
 
 
     /**
-     * Ošetří řetězec nebo všechny prvky pole pro výstup do stránky.
+     * Ošetří řetězec nebo všechny prvky pole pro výstup do HTML.
      *
      * @param string|array $pattern    Ošetřovaný řetězec/pole
-     * @return array|string            Ošetřený řetězec pro výstup do stránky
+     * @return array|string            Ošetřený řetězec pro výstup do HTML
      */
     public static function escapeOutput($pattern) {
       if (is_array($pattern)) {
@@ -176,7 +176,7 @@
         $escaped = $pattern;
       }
       else {
-        $escaped = htmlspecialchars(stripslashes(trim($pattern ?? '')), ENT_QUOTES);
+        $escaped = htmlspecialchars(trim($pattern ?? ''));
       }
 
       return $escaped;
