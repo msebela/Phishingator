@@ -230,9 +230,9 @@
         $this->setViewData('usersResponsesLegend', $statsModel->legend);
         $this->setViewData('usersResponsesLegendCssClasses', $statsModel->cssClasess);
 
-        // Data o navštívení stránky o absolvování phishingu.
-        $testPageData = $model->getCapturedDataTestPage($idCampaign);
-        $this->setViewData('testPageData', $testPageData);
+        // Data o přístupech uživatelů na vzdělávací stránku.
+        $educationalSiteVisits = $model->getFirstEducationalSiteVisitsByCampaign($idCampaign);
+        $this->setViewData('educationalSiteVisits', $educationalSiteVisits);
       }
       elseif (isset($_POST[ACT_STATS_REPORT_PHISH])) {
         // Úprava nastavení uživatelského hlášení o phishingu.

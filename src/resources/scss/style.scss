@@ -365,6 +365,32 @@ header {
   -webkit-filter: blur(4px);
 }
 
+.campaign-user-responses {
+  table-layout: fixed;
+
+  th {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:nth-child(n+3) {
+      width: 30px;
+    }
+  }
+
+  th, td {
+    &:nth-child(n+3) {
+      text-align: center;
+    }
+  }
+
+  td:nth-child(n+3) {
+    button {
+      padding: 0;
+    }
+  }
+}
+
 
 // SECTION: PHISHING E-MAILS AND INDICATIONS
 @import 'style-indications.scss';

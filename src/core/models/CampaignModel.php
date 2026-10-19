@@ -1064,23 +1064,26 @@
 
 
     /**
-     * Vrátí všechny záznamy o navštívení stránky o absolvování phishingu pro konkrétní kampaň.
+     * Vrátí první návštěvu vzdělávací stránky každého uživatele v rámci zadané kampaně.
      *
      * @param int $idCampaign          ID kampaně
      * @return array                   Pole zaznamenaných akcí
      */
-    public static function getCapturedDataTestPage($idCampaign) {
+    public static function getFirstEducationalSiteVisitsByCampaign($idCampaign) {
       $data = null;
-      $db_data = Database::queryMulti('
-              SELECT `id_user`, `visit_datetime`,
-              DATE_FORMAT(visit_datetime, "%e. %c. %Y %k:%i:%s") AS `visit_datetime`
+      $records = Database::queryMulti('
+              SELECT `id_user`, MIN(`visit_datetime`) AS `visit_datetime`,
+              DATE_FORMAT(MIN(`visit_datetime`), "%e. %c. %Y %k:%i:%s") AS `visit_datetime_formatted`
               FROM `phg_captured_data_end`
               WHERE `id_campaign` = ?
               GROUP BY `id_user`
       ', $idCampaign);
 
-      foreach ($db_data as $record) {
-        $data[$record['id_user']] = $record['visit_datetime'];
+      foreach ($records as $record) {
+        $data[$record['id_user']] = [
+          'datetime' => $record['visit_datetime'],
+          'datetime_formatted' => $record['visit_datetime_formatted']
+        ];
       }
 
       return $data;

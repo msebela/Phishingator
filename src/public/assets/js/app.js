@@ -1,6 +1,9 @@
-$(function() {
-  $('[data-toggle="tooltip"]').tooltip();
+$('body').tooltip({
+  selector: '[data-toggle="tooltip"]',
+  container: 'body'
+});
 
+$(function() {
   if (window.innerHeight + 50 < document.documentElement.scrollHeight && window.innerWidth >= 768) {
     document.querySelector('.btn-top-page').classList.toggle('d-none');
   }
@@ -11,7 +14,7 @@ $('.btn-close').on('click', function() {
   window.close();
 });
 
-$('.btn-confirm').on('click', function() {
+$(document).on('click', '.btn-confirm', function() {
   const message = this.dataset.confirm;
 
   if (message && !confirm(message)) {

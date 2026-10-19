@@ -55,7 +55,7 @@
 
   <script src="/assets/vendor/jquery/jquery.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
   <script src="/assets/vendor/bootstrap-4.6.2/js/bootstrap.bundle.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
-  <script src="/assets/js/public.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+  <script src="/assets/js/public.js?20261019" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
   <script src="/assets/vendor/feather/feather.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
   <script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">
     feather.replace()

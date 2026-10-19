@@ -1,5 +1,6 @@
-$(function() {
-  $('[data-toggle="tooltip"]').tooltip();
+$('body').tooltip({
+  selector: '[data-toggle="tooltip"]',
+  container: 'body'
 });
 
 $(document).on('click', '.anchor-link', function (event) {

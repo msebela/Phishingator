@@ -232,77 +232,81 @@
 
 <div class="row">
   <?php foreach ($usersResponsesLegend as $idAction => $nameAction): ?>
-  <div class="col-xl-4">
-    <h4>
+  <div class="col-16 col-lg-8 col-xl-4 mb-4 mb-xl-0">
+    <h4 class="mb-2">
       <span class="badge badge-<?= $usersResponsesLegendCssClasses[$idAction] ?>"><?= $nameAction ?></span>
+      <small class="text-muted">(<?= $statsSummary[$idAction]['value'] ?>)</small>
     </h4>
-    <br>
 
-    <div class="table-responsive">
-      <table class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Uživatel</th>
-            <th>Pracoviště</th>
-            <th colspan="3">Záznamy</th>
-          </tr>
-        </thead>
-        <tbody>
-        <?php $i = 1; foreach ($usersResponses as $data): ?>
-          <?php if ($data['id_action'] != $idAction) continue; ?>
-          <tr class="campaign-user-action">
-            <td>
-              <small><?= $i++; ?></small>
-            </td>
-            <td>
-              <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
-              <a href="/portal/users/<?= ACT_EDIT . '/' . $data['id_user'] ?>">
-                <span class="identity <?= $blurIdentities ?>" title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></span>
-              </a>
-              <?php else: ?>
-              <abbr class="identity <?= $blurIdentities ?>" title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></abbr>
-              <?php endif; ?>
-            </td>
-            <td>
-              <?php if (CAMPAIGN_STATS_AGGREGATION == 2): ?>
-              <small><?= mb_strtoupper(StatsModel::getSubdomainFromEmail($data['used_email'])) ?></small>
-              <?php else: ?>
-              <small class="d-block maxw-6-rem text-truncate cursor-help" data-toggle="tooltip" data-placement="left" data-html="true" data-original-title="<?= str_replace(LDAP_GROUPS_DELIMITER, '<br>', $data['used_group']) ?>"><?= mb_strtoupper(str_replace(LDAP_GROUPS_DELIMITER, '; ', $data['used_group'])) ?></small>
-              <?php endif; ?>
-            </td>
-            <td>
-              <form method="post" action="/portal/<?= $urlSection . '/' . ACT_STATS . '/' . $campaign['id_campaign'] ?>">
-                <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
+    <script src="/assets/vendor/table-sort-js/table-sort.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
-                <input type="hidden" name="<?= ACT_STATS_REPORT_PHISH ?>" value="<?= $data['id_captured_data'] ?>">
+    <table class="table table-sm table-striped table-hover table-sort table-arrows campaign-user-responses">
+      <thead>
+        <tr>
+          <th>Uživatel</th>
+          <th>Pracoviště</th>
+          <th scope="col" class="data-sort">
+            <span class="sr-only">Nahlášení phishingu</span>
+          </th>
+          <th scope="col" class="data-sort">
+            <span class="sr-only">Návštěva vzdělávací stránky</span>
+          </th>
+          <th scope="col" class="disable-sort">
+            <span class="sr-only">Aktivita uživatele</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php foreach ($usersResponses as $data): ?>
+        <?php if ($data['id_action'] != $idAction) continue; ?>
+        <tr class="campaign-user-action">
+          <td>
+            <?php if (PermissionsModel::getUserRole() == PERMISSION_ADMIN): ?>
+            <a href="/portal/users/<?= ACT_EDIT . '/' . $data['id_user'] ?>">
+              <span class="d-block text-truncate identity <?= $blurIdentities ?>" title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></span>
+            </a>
+            <?php else: ?>
+            <abbr class="d-block text-truncate identity <?= $blurIdentities ?>" title="<?= $data['used_email'] ?>" data-toggle="tooltip"><?= $data['username'] ?></abbr>
+            <?php endif; ?>
+          </td>
+          <td>
+            <?php if (CAMPAIGN_STATS_AGGREGATION == 2): ?>
+            <small><?= mb_strtoupper(StatsModel::getSubdomainFromEmail($data['used_email'])) ?></small>
+            <?php else: ?>
+            <small class="d-block text-truncate cursor-help" data-toggle="tooltip" data-placement="left" data-html="true" data-original-title="<?= str_replace(LDAP_GROUPS_DELIMITER, '<br>', $data['used_group']) ?>"><?= mb_strtoupper(str_replace(LDAP_GROUPS_DELIMITER, '; ', $data['used_group'])) ?></small>
+            <?php endif; ?>
+          </td>
+          <td data-sort="<?= $data['reported'] ?>">
+            <form method="post" action="/portal/<?= $urlSection . '/' . ACT_STATS . '/' . $campaign['id_campaign'] ?>">
+              <input type="hidden" name="csrf-token" value="<?= $csrfToken ?>">
 
-                <div class="text-purple<?php if ($data['reported'] == 0): ?> user-phishing-report<?php endif; ?>" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel nahlásil pokus o&nbsp;cvičný phishing<br>(např. na helpdesk, správci IT, &hellip;)">
-                  <button type="submit" class="border-0 bg-transparent btn-confirm" data-confirm="Opravdu chcete u uživatele upravit nastavení o nahlášení cvičného phishingu?">
-                    <span data-feather="message-circle"></span>
-                  </button>
-                </div>
-              </form>
-            </td>
-            <td>
-              <?php if (isset($testPageData[$data['id_user']])): ?>
-              <div class="text-primary cursor-help" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel navštívil vzdělávací stránku o&nbsp;phishingu<br><?= $testPageData[$data['id_user']] ?>">
-                <span data-feather="flag"></span>
+              <input type="hidden" name="<?= ACT_STATS_REPORT_PHISH ?>" value="<?= $data['id_captured_data'] ?>">
+
+              <div class="text-purple<?php if ($data['reported'] == 0): ?> user-phishing-report<?php endif; ?>">
+                <button type="submit" class="border-0 bg-transparent btn-confirm" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel nahlásil pokus o&nbsp;cvičný phishing<br>(např. na helpdesk, správci IT, &hellip;)" data-confirm="Opravdu chcete u uživatele upravit nastavení o nahlášení cvičného phishingu?">
+                  <span data-feather="message-circle"></span>
+                </button>
               </div>
-              <?php endif; ?>
-            </td>
-            <td>
-              <?php if ($idAction != CAMPAIGN_NO_REACTION_ID): ?>
-              <a href="?<?= ACT_STATS_WEBSITE_ACTIONS ?>&amp;rows=<?= $data['id_user'] ?>#d<?= $data['id_captured_data'] ?>" class="text-dark">
-                <span data-feather="eye"></span>
-              </a>
-              <?php endif; ?>
-            </td>
-          </tr>
-        <?php endforeach; ?>
-        </tbody>
-      </table>
-    </div>
+            </form>
+          </td>
+          <td data-sort="<?= $educationalSiteVisits[$data['id_user']]['datetime'] ?? 0 ?>">
+            <?php if (isset($educationalSiteVisits[$data['id_user']]['datetime_formatted'])): ?>
+            <div class="text-primary cursor-help" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Uživatel navštívil vzdělávací stránku o&nbsp;phishingu<br><?= $educationalSiteVisits[$data['id_user']]['datetime_formatted'] ?>">
+              <span data-feather="flag"></span>
+            </div>
+            <?php endif; ?>
+          </td>
+          <td>
+            <?php if ($idAction != CAMPAIGN_NO_REACTION_ID): ?>
+            <a href="?<?= ACT_STATS_WEBSITE_ACTIONS ?>&amp;rows=<?= $data['id_user'] ?>#d<?= $data['id_captured_data'] ?>" class="text-dark" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Zobrazit aktivitu uživatele na podvodné stránce">
+              <span data-feather="eye"></span>
+            </a>
+            <?php endif; ?>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+      </tbody>
+    </table>
   </div>
   <?php endforeach; ?>
 </div>

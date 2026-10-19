@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link href="/assets/vendor/bootstrap-4.6.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/css/style.min.css?20260717" rel="stylesheet">
+    <link href="/assets/css/style.min.css?20261019" rel="stylesheet">
   </head>
 
   <body>
@@ -129,8 +129,8 @@
     <script src="/assets/vendor/bootstrap-4.6.2/js/bootstrap.bundle.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
     <script src="/assets/vendor/feather/feather.min.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
 
-    <script src="/assets/js/app.js?20260530" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
-    <script src="/assets/js/public.js" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+    <script src="/assets/js/app.js?20261019" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
+    <script src="/assets/js/public.js?20261019" nonce="<?= HTTP_HEADER_CSP_NONCE ?>"></script>
     <script nonce="<?= HTTP_HEADER_CSP_NONCE ?>">feather.replace();</script>
 
     <?php if ($userRole == PERMISSION_ADMIN && ($currentSection == 'phishing-emails' || $currentSection == 'phishing-websites') && ($currentAction == ACT_NEW || $currentAction == ACT_EDIT)): ?>
