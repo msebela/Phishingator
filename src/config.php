@@ -378,7 +378,7 @@
   define('PHISHING_WEBSITE_SCREENSHOT_FILENAME', 'thumbnail.png');
 
   /** Povolené znaky v názvech subdomén u podvodných stránek v proxy Phishingatoru. */
-  define('PHISHING_WEBSITE_SUBDOMAINS_REGEXP', '/[^a-z0-9]/');
+  define('PHISHING_WEBSITE_SUBDOMAINS_REGEXP', '/[^a-z0-9-]/');
 
   /** Regulární výraz specifikující, čím může začínat a jaké znaky může obsahovat uživatelské jméno zadané na podvodné stránce. */
   define('PHISHING_WEBSITE_USERNAME_REGEXP', '/^[a-zA-Z0-9]+[a-zA-Z0-9._@-]+$/');

@@ -138,6 +138,10 @@
 
     if (!empty($url)) {
       $host = parse_url($url, PHP_URL_HOST);
+
+      if (!$host) {
+        $host = '';
+      }
     }
 
     return $host;
@@ -154,11 +158,12 @@
     $domain = parse_url($url, PHP_URL_HOST);
     $secondLevelDomain = null;
 
-    if ($domain != null) {
+    if (!empty($domain)) {
       $hostNames = explode('.', $domain);
+      $count = count($hostNames);
 
-      if (count($hostNames) >= 2) {
-        $secondLevelDomain = $hostNames[count($hostNames) - 2] . '.' . $hostNames[count($hostNames) - 1];
+      if ($count >= 2) {
+        $secondLevelDomain = $hostNames[$count - 2] . '.' . $hostNames[$count - 1];
       }
     }
 

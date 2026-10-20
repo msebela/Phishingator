@@ -823,8 +823,18 @@
       $domain = get_domain_from_url('https://' . $hostname);
       $subdomain = mb_substr($hostname, 0, -mb_strlen($domain) - 1);
 
-      if (!empty($subdomain) && preg_match(PHISHING_WEBSITE_SUBDOMAINS_REGEXP, $subdomain, $matches)) {
-        throw new UserError('Zadaná subdoména obsahuje nepovolený znak (' . implode(',', $matches) . ').', MSG_ERROR);
+      if ($subdomain !== '') {
+        if (strlen($subdomain) > 63) {
+          throw new UserError('Subdoména nesmí být delší než 63 znaků.', MSG_ERROR);
+        }
+
+        if (preg_match(PHISHING_WEBSITE_SUBDOMAINS_REGEXP, $subdomain, $matches)) {
+          throw new UserError('Zadaná subdoména obsahuje nepovolený znak (' . implode(',', $matches) . ').', MSG_ERROR);
+        }
+
+        if (str_starts_with($subdomain, '-') || str_ends_with($subdomain, '-')) {
+          throw new UserError('Subdoména nesmí začínat ani končit pomlčkou.', MSG_ERROR);
+        }
       }
     }
 
