@@ -226,30 +226,64 @@
 
 
     /**
-     * Pokusí se navázat připojení s externím LDAP.
+     * Ověří dostupnost externího LDAP serveru.
+     * V případě LDAPS navíc ověří platnost TLS certifikátu.
      *
-     * @return bool                    TRUE v případě úspěšného navazání, FALSE pokud ne,
-     *                                 3 pokud připojení k externímu LDAP není nastaveno
+     * @return bool|int                TRUE v případě úspěšného navazání, FALSE pokud ne,
+     *                                 3 pokud připojení k externímu LDAP není nakonfigurováno
      */
     private function remoteLdapConnectionTest() {
-      $result = false;
+      $ldapUri = getenv('LDAP_MIGRATOR_HOST');
 
-      $ldapHost = getenv('LDAP_MIGRATOR_HOST');
+      if (!empty($ldapUri)) {
+        $result = false;
+        $ldapUrl = parse_url($ldapUri);
 
-      if (!empty($ldapHost)) {
-        $ldap = ldap_connect($ldapHost);
+        if ($ldapUrl !== false && isset($ldapUrl['scheme'], $ldapUrl['host'])) {
+          $protocol = strtolower($ldapUrl['scheme']);
 
-        if ($ldap) {
-          ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
-          ldap_set_option($ldap, LDAP_OPT_NETWORK_TIMEOUT, 5);
+          if (in_array($protocol, ['ldap', 'ldaps'], true)) {
+            $isLdaps = $protocol === 'ldaps';
 
-          ldap_unbind($ldap);
+            $hostname = $ldapUrl['host'];
+            $port = $ldapUrl['port'] ?? ($isLdaps ? 636 : 389);
 
-          $result = true;
+            $socketAddress = sprintf(
+              '%s://%s:%d',
+              $isLdaps ? 'ssl' : 'tcp',
+              str_contains($hostname, ':') ? '[' . $hostname . ']' : $hostname,
+              $port
+            );
+
+            $caFile = getenv('LDAPTLS_CACERT');
+
+            if (!$isLdaps || ($caFile !== false && is_readable($caFile))) {
+              $options = [];
+
+              if ($isLdaps) {
+                $options['ssl'] = [
+                  'verify_peer' => true,
+                  'verify_peer_name' => true,
+                  'cafile' => $caFile
+                ];
+              }
+
+              $context = stream_context_create($options);
+
+              $connection = stream_socket_client(
+                $socketAddress, $errno, $errstr, 5, STREAM_CLIENT_CONNECT, $context
+              );
+
+              if ($connection !== false) {
+                $result = true;
+                fclose($connection);
+              }
+            }
+          }
         }
       }
       else {
-        // Připojení k externímu LDAP není nastaveno - tj. stav neznámý.
+        // Připojení k externímu LDAP není nakonfigurované - tj. stav neznámý.
         $result = 3;
       }
 
