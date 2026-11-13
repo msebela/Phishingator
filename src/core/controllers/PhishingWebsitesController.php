@@ -71,7 +71,7 @@
       $this->initViewData($model, ACT_NEW, $formData['formPrefix']);
 
       $this->setViewData('templates', $model->getPhishingWebsitesTemplates());
-      $this->setViewData('domains', $model->getDomainsRegisteredInProxy());
+      $this->setViewData('domains', $model->getBaseDomains());
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {
@@ -112,7 +112,7 @@
       $this->initViewData($model, ACT_EDIT, $formData['formPrefix']);
 
       $this->setViewData('templates', $model->getPhishingWebsitesTemplates());
-      $this->setViewData('domains', $model->getDomainsRegisteredInProxy());
+      $this->setViewData('domains', $model->getBaseDomains());
 
       if (isset($_POST[$model->formPrefix . $this->getData('action')])) {
         try {

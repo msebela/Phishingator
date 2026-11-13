@@ -28,6 +28,7 @@ services:
       - PHISHINGATOR_TOKEN
       - DOMAINER_ALLOWED_IP
       - MONITORING_ALLOWED_IP
+      - BASE_DOMAINS
       - FRAUDULENT_HOSTS
       - DB_HOST
       - DB_USERNAME

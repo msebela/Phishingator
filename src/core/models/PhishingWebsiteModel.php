@@ -633,6 +633,22 @@
 
 
     /**
+     * Vrátí pole výchozích domén a subdomén přiřazených dané instanci Phishingatoru.
+     *
+     * @return string[]                Pole výchozích domén a subdomén
+     */
+    public static function getBaseDomains() {
+      $baseDomains = [];
+
+      if (getenv('BASE_DOMAINS') !== false) {
+        $baseDomains = explode(',', mb_strtolower(getenv('BASE_DOMAINS')));
+      }
+
+      return $baseDomains;
+    }
+
+
+    /**
      * Vrátí pole všech (sub)domén, které jsou registrované v proxy Phishingatoru
      * a které mohou být použity jako podvodné domény ve phishingových kampaních.
      *
@@ -641,7 +657,7 @@
     public static function getDomainsRegisteredInProxy() {
       $proxyDomains = [];
 
-      if (getenv('FRAUDULENT_HOSTS') !== null) {
+      if (getenv('FRAUDULENT_HOSTS') !== false) {
         $proxyDomains = explode(',', mb_strtolower(getenv('FRAUDULENT_HOSTS')));
       }
 

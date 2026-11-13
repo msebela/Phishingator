@@ -80,7 +80,6 @@
         'phishingator-version' => WEB_VERSION,
         'phishingator-organization' => getenv('ORG'),
         'error-messages' => $this->getErrorMessages(),
-        'domains-list' => $this->getDomainsList(),
         'tests' => [
           $this->formalizeTestResult('database-backup', $this->databaseBackupMessageTest()),
           $this->formalizeTestResult('database-connection', $this->databaseConnectionTest()),
@@ -302,27 +301,5 @@
         TEST_USERNAME . $usernameSuffix,
         TEST_PASSWORD
       );
-    }
-
-
-    /**
-     * Vrátí pole se jmény všech domén (tj. bez subdomén), které jsou
-     * registrovány v proxy Phishingatoru.
-     *
-     * @return array                   Pole se jmény registrovaných domén
-     */
-    private function getDomainsList() {
-      $registeredDomains = PhishingWebsiteModel::getDomainsRegisteredInProxy();
-      $domainsList = [];
-
-      foreach ($registeredDomains as $registeredDomain) {
-        $domain = get_domain_from_url('https://' . $registeredDomain);
-
-        if (!in_array($domain, $domainsList)) {
-          $domainsList[] = $domain;
-        }
-      }
-
-      return $domainsList;
     }
   }
