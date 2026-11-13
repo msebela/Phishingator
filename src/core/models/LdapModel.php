@@ -50,6 +50,7 @@
 
       if ($this->ldapConnection) {
         ldap_set_option($this->ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
+        ldap_set_option($this->ldapConnection, LDAP_OPT_NETWORK_TIMEOUT, 5);
 
         if ($username === null || $password === null) {
           $username = LDAP_USERNAME;
